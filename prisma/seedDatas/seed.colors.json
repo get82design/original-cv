@@ -1,0 +1,42 @@
+[
+  {
+    "name": "black",
+    "primary": ""
+  },
+  {
+    "name": "gray",
+    "primary": "-500"
+  },
+  {
+    "name": "orange",
+    "primary": "-400"
+  },
+  {
+    "name": "lime",
+    "primary": "-400"
+  },
+  {
+    "name": "sky",
+    "primary": "-500"
+  },
+  {
+    "name": "violet",
+    "primary": "-400"
+  },
+  {
+    "name": "red",
+    "primary": "-600"
+  },
+  {
+    "name": "pink",
+    "primary": "-500"
+  },
+  {
+    "name": "yellow",
+    "primary": "-600"
+  },
+  {
+    "name": "teal",
+    "primary": "-600"
+  }
+]

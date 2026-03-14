@@ -1,0 +1,900 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma-test"
+  engineType = "binary"   
+}
+
+datasource db {
+  provider = "sqlite"
+//   url      = "file:./test.db"
+}
+
+// === Colors ===
+model Color {
+  id      String @id @default(cuid())
+  name    String @unique
+  // name    NameOfColor
+  primary String
+}
+
+// === NextAuth ===
+// Gestion de l'authentification
+model Account {
+  id                String  @id @default(cuid()) // id unique
+  userId            String                       // id du user associé
+  type              String                       // type de compte (oauth, email, etc.)
+  provider          String                       // fournisseur (google, github…)
+  providerAccountId String                       // id du compte chez le provider
+  access_token      String?                      // token OAuth
+  refresh_token     String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade) // relation avec User
+  @@unique([provider, providerAccountId]) // chaque compte provider unique par user
+  @@index([userId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique       // token unique de session
+  userId       String
+  expires      DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@index([userId])
+}
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique      // email unique
+  name          String
+  password      String                      // mot de passe hashé
+  emailVerified DateTime?
+  image         String?
+
+  accounts      Account[]                   // NextAuth relation
+  sessions      Session[]
+  profile       Profile?                    // relation 1:1 avec le profil détaillé
+  cvs           CV[]                        // relation 1:N avec les CVs
+}
+
+// === Profil utilisateur ===
+model Profile {
+  id          String @id @default(cuid())
+  userId      String @unique                // un profile par user
+  firstName   String
+  lastName    String
+  phone       String?
+  location    String?
+
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  description Description?
+  skills      ProfileSkillGroup[]                           // 1:N
+  experiences Experience[]
+  educations  Education[]
+  achievements Achievement[]
+  strengths Strength[]
+  volunteerings Volunteering[]
+  projects Project[]
+  publications Publication[]
+  languages Language[]
+  passions Passion[]
+  socialMedias SocialMedia[]
+  philosophy Philosophy?
+  expertises Expertise[]
+  prices Price[]
+  certifications Certification[]
+  formations Formation[]
+  competences ProfileCompetenceGroup[]
+}
+
+enum Level {
+  Débutant
+  Junior
+  Intermédiaire
+  Senior
+  Expert
+}
+
+model CvHeader {
+  id          String @id @default(cuid())
+  title       String
+  subtitle    String
+  phone       String
+  email       String
+  location    String
+  portfolio   String
+  nom         String
+  prenom      String
+
+  cv          CV @relation(fields: [cvId], references: [id], onDelete: Cascade)
+  cvId        String @unique
+  @@index([cvId])
+}
+
+// === Description ===
+model Description {
+  id          String @id @default(cuid())
+  description String
+
+  profile     Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  profileId   String @unique
+}
+
+model CvDescription {
+  id          String @id @default(cuid())
+  description String
+
+  cv          CV @relation(fields: [cvId], references: [id], onDelete: Cascade)
+  cvId        String @unique
+}
+
+// === Compétences ===
+model Skill {
+  id   String @id @default(cuid())
+  name String @unique // compétences globales
+
+  profileSkills ProfileSkill[]
+  cvSkills      CvSkill[]
+}
+
+model ProfileSkillGroup {
+  id        String @id @default(cuid())
+  title     String?                     // titre du groupe, optionnel
+  order     Int @default(0)             // pour trier les groupes
+  skills    ProfileSkill[]              // compétences dans ce groupe
+  profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  profileId String
+
+  @@unique([profileId, order]) // pas de doublon dans un profile
+}
+
+model ProfileSkill {
+  id           String @id @default(cuid())
+  level        Level
+  skill        Skill  @relation(fields: [skillId], references: [id])
+  skillId      String
+  group        ProfileSkillGroup @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  groupId      String
+
+  @@unique([groupId, skillId]) // pas de doublon dans un groupe
+}
+
+model CvSkillGroup {
+  id    String @id @default(cuid())
+  title String?
+  order  Int @default(0)
+  skills CvSkill[]
+  cv    CV @relation(fields: [cvId], references: [id], onDelete: Cascade)
+  cvId  String
+  @@unique([cvId, order]) // pas de doublon dans un cv
+}
+
+model CvSkill {
+  id      String @id @default(cuid())
+  level   Level
+  skill   Skill  @relation(fields: [skillId], references: [id])
+  skillId String
+  group   CvSkillGroup @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  groupId String
+  @@unique([groupId, skillId])
+}
+
+// === Compétence ===
+model Competence {
+  id   String @id @default(cuid())
+  name String @unique // compétences globales
+  profileCompetences ProfileCompetence[]
+  cvCompetences      CvCompetence[]
+}
+
+model ProfileCompetenceGroup {
+  id        String @id @default(cuid())
+  title     String?                     // titre du groupe, optionnel
+  order     Int @default(0)             // pour trier les groupes
+  competences    ProfileCompetence[]              // compétences dans ce groupe
+  profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  profileId String
+  @@unique([profileId, order]) // pas de doublon dans un profile
+}
+
+model ProfileCompetence {
+  id           String @id @default(cuid())
+  competence        Competence  @relation(fields: [competenceId], references: [id])
+  competenceId      String
+  group        ProfileCompetenceGroup @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  groupId      String
+  @@unique([groupId, competenceId]) // pas de doublon dans un groupe
+}
+
+model CvCompetenceGroup {
+  id    String @id @default(cuid())
+  title String?
+  order  Int @default(0)
+  cv    CV @relation(fields: [cvId], references: [id], onDelete: Cascade)
+  cvId  String
+  cvCompetences CvCompetence[]
+  @@unique([cvId, order]) // pas de doublon dans un cv
+}
+
+model CvCompetence {
+  id      String @id @default(cuid())
+  competence   Competence  @relation(fields: [competenceId], references: [id])
+  competenceId String
+  group   CvCompetenceGroup @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  groupId String
+  @@unique([groupId, competenceId])
+}
+
+// === Expériences professionnelles ===
+model Experience {
+  id          String   @id @default(cuid())
+  title       String
+  company     String
+  start       DateTime
+  end         DateTime?
+  location    String?
+  description String?
+  missions    MissionExperience[]
+  
+  order       Int @default(0)     
+  profile     Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  profileId   String
+
+  @@unique([profileId, title]) // pas de doublon dans un profile
+  @@unique([profileId, order]) // pas de doublon dans un profile
+  @@index([profileId])
+}
+
+model MissionExperience {
+  id          String      @id @default(cuid())
+  content     String
+
+  experience  Experience  @relation(fields: [experienceId], references: [id], onDelete: Cascade)
+  experienceId String
+
+  @@index([experienceId])
+}
+
+model CvExperience {
+  id          String @id @default(cuid())
+  title       String
+  company     String
+  start       DateTime
+  end         DateTime?
+  location    String?
+  description String?
+  cvMissions  CvMissionExperience[]
+
+  order       Int @default(0)     
+  cv          CV @relation(fields: [cvId], references: [id], onDelete: Cascade)
+  cvId        String
+
+  @@unique([cvId, title])
+  @@unique([cvId, order])
+  @@index([cvId])
+}
+
+model CvMissionExperience {
+  id          String      @id @default(cuid())
+  content     String
+
+  cvExperience  CvExperience  @relation(fields: [cvExperienceId], references: [id], onDelete: Cascade)
+  cvExperienceId String
+
+  @@index([cvExperienceId])
+}
+
+// === Diplomes ===
+model Education {
+  id        String   @id @default(cuid())
+  title     String?
+  school    String
+  city      String?
+  degree    String
+  start     DateTime
+  end       DateTime?
+  obtained  Boolean @default(false)
+
+  order     Int @default(0) 
+  profile   Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  profileId String
+
+  @@unique([profileId, title])
+  @@unique([profileId, order]) // pas de doublon dans un profile
+  @@index([profileId])
+}
+
+model CvEducation {
+  id          String @id @default(cuid())
+  title     String?
+  school    String
+  city      String?
+  degree    String
+  start     DateTime
+  end       DateTime?
+  obtained  Boolean @default(false)
+
+  order     Int @default(0) 
+  cv          CV @relation(fields: [cvId], references: [id], onDelete: Cascade)
+  cvId        String
+
+  @@unique([cvId, title])
+  @@unique([cvId, order])
+  @@index([cvId])
+}
+
+// === Réalisations ===
+model Achievement {
+  id          String @id @default(cuid())
+  title       String
+  description String?
+  year        Int?
+  technology  String?
+
+  order       Int @default(0)     
+  profile     Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  profileId   String
+
+  @@unique([profileId, title])
+  @@unique([profileId, order]) // pas de doublon dans un profile
+  @@index([profileId])
+}
+
+model CvAchievement {
+  id            String @id @default(cuid())
+  title         String
+  description   String?
+  year          Int?
+  technology    String?
+
+  order         Int @default(0)     
+  cv            CV @relation(fields: [cvId], references: [id], onDelete: Cascade)
+  cvId          String
+  
+  @@unique([cvId, order])
+  @@unique([cvId, title])
+  @@index([cvId])
+}
+
+// === Atouts ===
+model Strength {
+  id          String @id @default(cuid())
+  title       String
+  icon        String?
+  
+  order       Int @default(0)
+  profile     Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  profileId   String
+
+  @@unique([profileId, title])
+  @@unique([profileId, order]) // pas de doublon dans un profile
+  @@index([profileId])
+}
+
+model CvStrength {
+  id          String @id @default(cuid())
+  title       String
+  icon        String?
+
+  order       Int @default(0)
+  cv          CV @relation(fields: [cvId], references: [id], onDelete: Cascade)
+  cvId        String
+
+  @@unique([cvId, title])
+  @@unique([cvId, order])
+  @@index([cvId])
+}
+
+// === Benevolat ===
+model Volunteering {
+  id          String @id @default(cuid())
+  title       String
+  organisation String
+  description String?
+  start       DateTime
+  end         DateTime?
+  location    String?
+  missions    MissionVolunteering[]
+
+  order       Int @default(0)       
+  profile     Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  profileId   String
+
+  @@unique([profileId, title])
+  @@unique([profileId, order]) // pas de doublon dans un profile
+  @@index([profileId])
+}
+
+model MissionVolunteering {
+  id          String      @id @default(cuid())
+  content     String
+
+  volunteering  Volunteering  @relation(fields: [volunteeringId], references: [id], onDelete: Cascade)
+  volunteeringId String
+
+  @@index([volunteeringId])
+}
+
+model CvVolunteering {
+  id          String @id @default(cuid())
+  title       String
+  organisation String
+  description String?
+  start       DateTime
+  end         DateTime?
+  location    String?
+  cvMissions    CvMissionVolunteering[]
+
+  order       Int @default(0)
+  cv          CV @relation(fields: [cvId], references: [id], onDelete: Cascade)
+  cvId        String
+
+  @@unique([cvId, title])
+  @@unique([cvId, order])
+  @@index([cvId])
+}
+
+model CvMissionVolunteering {
+  id          String      @id @default(cuid())
+  content     String
+
+  cvVolunteering  CvVolunteering  @relation(fields: [cvVolunteeringId], references: [id], onDelete: Cascade)
+  cvVolunteeringId String
+
+  @@index([cvVolunteeringId])
+}
+
+// === Projet ===
+model Project {
+  id          String @id @default(cuid())
+  title       String
+  description String?
+  location    String?
+  start       DateTime
+  end         DateTime?
+  technology  String?
+  missions    MissionProject[]
+
+  order       Int @default(0)  
+  profile     Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  profileId   String
+
+  @@unique([profileId, title])
+  @@unique([profileId, order]) // pas de doublon dans un profile
+  @@index([profileId])
+}
+
+model MissionProject {
+  id          String      @id @default(cuid())
+  content     String
+
+  project  Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  projectId String
+
+  @@index([projectId])
+}
+
+model CvProject {
+  id          String @id @default(cuid())
+  title       String
+  description String?
+  location    String?
+  start       DateTime
+  end         DateTime?
+  technology  String?
+  cvMissions    CvMissionProject[]
+
+  order       Int @default(0)  
+  cv          CV @relation(fields: [cvId], references: [id], onDelete: Cascade)
+  cvId        String
+
+  @@unique([cvId, title])
+  @@unique([cvId, order])
+  @@index([cvId])
+}
+
+model CvMissionProject {
+  id          String      @id @default(cuid())
+  content     String
+
+  cvProject  CvProject  @relation(fields: [cvProjectId], references: [id], onDelete: Cascade)
+  cvProjectId String
+
+  @@index([cvProjectId])
+}
+
+// === Publication ===
+model Publication {
+  id          String @id @default(cuid())
+  title       String
+  description String?
+  journalName String?
+  start       DateTime
+  end         DateTime?
+  url         String?
+
+  order       Int @default(0)    
+  profile     Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  profileId   String
+
+  @@unique([profileId, title])
+  @@unique([profileId, order]) // pas de doublon dans un profile
+  @@index([profileId])
+}
+
+model CvPublication {
+  id          String @id @default(cuid())
+  title       String
+  description String?
+  journalName String?
+  start       DateTime
+  end         DateTime?
+  url         String?
+
+  order       Int @default(0)    
+  cv          CV @relation(fields: [cvId], references: [id], onDelete: Cascade)
+  cvId        String
+
+  @@unique([cvId, title])
+  @@unique([cvId, order])
+  @@index([cvId])
+}
+
+// === Langue ===
+model Language {
+  id          String @id @default(cuid())
+  name        String   
+  level       Level
+  
+  order       Int @default(0)  
+  profile     Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  profileId   String
+
+  @@unique([profileId, name])
+  @@unique([profileId, order]) // pas de doublon dans un profile
+  @@index([profileId])
+}
+
+model CvLanguage {
+  id          String @id @default(cuid())
+  name        String   
+  level       Level
+
+  order       Int @default(0)    
+  cv          CV @relation(fields: [cvId], references: [id], onDelete: Cascade)
+  cvId        String
+
+  @@unique([cvId, name])
+  @@unique([cvId, order])
+  @@index([cvId])
+}
+
+// === Passion ===
+model Passion {
+  id          String @id @default(cuid())
+  title       String
+  icon        String
+
+  order       Int @default(0)    
+  profile     Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  profileId   String
+
+  @@unique([profileId, title])
+  @@unique([profileId, order]) // pas de doublon dans un profile
+  @@index([profileId])
+}
+
+model CvPassion {
+  id          String @id @default(cuid())
+  title       String
+  icon        String
+  
+  order       Int @default(0)    
+  cv          CV @relation(fields: [cvId], references: [id], onDelete: Cascade)
+  cvId        String
+
+  @@unique([cvId, title])
+  @@unique([cvId, order])
+  @@index([cvId])
+}
+
+// === Social Media ===
+model SocialMedia {
+  id            String @id @default(cuid())
+  socialNetwork String
+  username      String
+  
+  order         Int @default(0)   
+  profile       Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  profileId     String
+
+  @@unique([profileId, socialNetwork])
+  @@unique([profileId, order]) // pas de doublon dans un profile
+  @@index([profileId])
+}
+
+model CvSocialMedia {
+  id            String @id @default(cuid())
+  socialNetwork String
+  username      String
+
+  order         Int @default(0)   
+  cv            CV @relation(fields: [cvId], references: [id], onDelete: Cascade)
+  cvId          String
+
+  @@unique([cvId, socialNetwork])
+  @@unique([cvId, order])
+  @@index([cvId])
+}
+
+// === Philosophie ===
+model Philosophy {
+  id          String @id @default(cuid())
+  citation    String
+  author      String?
+
+  profile     Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  profileId   String @unique
+}
+
+model CvPhilosophy {
+  id          String @id @default(cuid())
+  citation    String
+  author      String?
+
+  cv          CV @relation(fields: [cvId], references: [id], onDelete: Cascade)
+  cvId        String @unique
+}
+
+// === Expertise ===
+model Expertise {
+  id          String @id @default(cuid())
+  title       String
+  level       Level
+
+  order       Int @default(0)  
+  profile     Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  profileId   String
+
+  @@unique([profileId, title])
+  @@unique([profileId, order]) // pas de doublon dans un profile
+  @@index([profileId])
+}
+
+model CvExpertise {
+  id          String @id @default(cuid())
+  title       String
+  level       Level
+
+  order       Int @default(0)  
+  cv          CV @relation(fields: [cvId], references: [id], onDelete: Cascade)
+  cvId        String
+
+  @@unique([cvId, title])
+  @@unique([cvId, order])
+  @@index([cvId])
+}
+
+// === Prix ===
+model Price {
+  id          String @id @default(cuid())
+  title       String
+  domaine     String
+  icon        String?
+
+  order       Int @default(0)   
+  profile     Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  profileId   String
+
+  @@unique([profileId, title])
+  @@unique([profileId, order])        
+  @@index([profileId])
+}
+
+model CvPrice {
+  id          String @id @default(cuid())
+  title       String
+  domaine     String
+  icon        String?
+
+  order       Int @default(0)   
+  cv          CV @relation(fields: [cvId], references: [id], onDelete: Cascade)
+  cvId        String
+
+  @@unique([cvId, title])
+  @@unique([cvId, order])
+  @@index([cvId])
+}
+
+// === Certification ===
+model Certification {
+  id          String @id @default(cuid())
+  title       String
+  organismeCertification String?
+
+  order       Int @default(0)   
+  profile     Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  profileId   String
+
+  @@unique([profileId, title])
+  @@unique([profileId, order])        
+  @@index([profileId])
+}
+
+model CvCertification {
+  id          String @id @default(cuid())
+  title       String
+  organismeCertification String?
+
+  order       Int @default(0)   
+  cv          CV @relation(fields: [cvId], references: [id], onDelete: Cascade)
+  cvId        String
+
+  @@unique([cvId, title])
+  @@unique([cvId, order])
+  @@index([cvId])
+}
+
+// === Formation ===
+model Formation {
+  id          String @id @default(cuid())
+  title       String
+  organismeFormation String?
+  start       DateTime
+  end         DateTime?
+  
+  order       Int @default(0)    
+  profile     Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  profileId   String
+
+  @@unique([profileId, title])
+  @@unique([profileId, order]) // pas de doublon dans un profile
+  @@index([profileId])
+}
+
+model CvFormation {
+  id          String @id @default(cuid())
+  title       String
+  organismeFormation String?
+  start       DateTime
+  end         DateTime?
+
+  order       Int @default(0)    
+  cv          CV @relation(fields: [cvId], references: [id], onDelete: Cascade)
+  cvId        String
+
+  @@unique([cvId, title])
+  @@unique([cvId, order])
+  @@index([cvId])
+}
+
+// === CV ===
+model CV {
+  id       String @id @default(cuid())
+  photo    String?
+  title    String                                // titre du CV
+  templateId String
+  template   CVTemplate @relation(fields: [templateId], references: [id])
+  userId   String
+  user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  modules  CVModule[]                           // modules qui composent le CV (Skills, Experiences, Education)
+  // Le reste passera par modules mais ça peut me permettre de faire des appels pour récupérer les données
+  headerCv CvHeader?
+  skillGroups CvSkillGroup[]
+  educations  CvEducation[]
+  experiences CvExperience[]
+  achievements CvAchievement[]
+  strengths CvStrength[]
+  volunteerings CvVolunteering[]
+  projects CvProject[]
+  publications CvPublication[]
+  languages CvLanguage[]
+  passions CvPassion[]
+  socialMedias CvSocialMedia[]
+  philosophy CvPhilosophy?
+  expertises CvExpertise[]
+  prices CvPrice[]
+  certifications CvCertification[]
+  formations CvFormation[]
+  description CvDescription?
+  competences CvCompetenceGroup[]
+
+  status CVStatus @default(DRAFT) // statut du CV, brouillon, publié, archivé
+  publishedAt DateTime?
+
+  publicSlug String? @unique // slug du CV public
+  isPublic   Boolean @default(false) // si le CV est public
+
+  isDefault Boolean @default(false) // si le CV est le CV par défaut de l'utilisateur
+  pdfUrl     String?
+  pdfVersion Int @default(0) // version du PDF
+  pdfGeneratedAt DateTime?
+
+  @@index([userId])
+  @@index([templateId])
+}
+
+enum CVStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+// === Template de CV ===
+model CVTemplate {
+  id       String @id @default(cuid())
+  name     String                              // nom du template
+  structure    Json                            // structure du template (zones, sections)
+  defaultStyles Json                           // styles par défaut (fontSize, color, align, show, etc.)
+  cvs           CV[]                           // CVs utilisant ce template
+}
+
+// === Item d'un module ===
+model CVModuleItem {
+  id         String @id @default(cuid())
+  moduleId   String
+  module     CVModule @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+
+  itemType   CVModuleItemType
+  itemId     String   // id du cvSkill / Experience / Education
+
+  @@index([moduleId])
+  @@index([itemType, itemId])
+}
+
+enum CVModuleItemType {
+  cvSkillGroup
+  cvExperience
+  cvEducation
+  cvProject
+  cvVolunteering
+  cvPublication
+  cvAchievement
+  cvExpertise
+  cvFormation
+  cvCertification
+  cvPrice
+  cvLanguage
+  cvPassion
+  cvCompetenceGroup
+  cvDescription
+}
+
+// === Module d'un CV ===
+model CVModule {
+  id       String @id @default(cuid())
+  title    String?          // titre du module, optionnel
+  type     CVModuleType     // type du module : "skill", "experience", "education"
+  order    Int @default(0)  // position dans le CV
+  cvId     String
+  cv       CV               @relation(fields: [cvId], references: [id], onDelete: Cascade)
+  items    CVModuleItem[]   // items liés au module
+  settings Json?            // personnalisations spécifiques : fontSize, color, align, show, etc.
+
+  @@unique([cvId, order]) // pas de doublon dans un cv
+  @@index([cvId])
+}
+
+enum CVModuleType {
+  skill
+  experience
+  education
+  project
+  volunteering
+  publication
+  achievement
+  expertise
+  formation
+  certification
+  price
+  language
+  passion
+  competence
+  description
+}

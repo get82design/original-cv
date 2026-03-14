@@ -1,0 +1,8 @@
+{
+  "version": 3,
+  "sources": [],
+  "sections": [
+    {"offset": {"line": 18, "column": 0}, "map": {"version":3,"sources":["file:///C:/www/Perso/original-cv/server/trpc.ts"],"sourcesContent":["import { initTRPC } from '@trpc/server';\r\n\r\nconst t = initTRPC.create();\r\n\r\nexport const router = t.router;\r\nexport const publicProcedure = t.procedure;\r\n"],"names":[],"mappings":";;;;;;AAAA;;;;;;AAEA,MAAM,IAAI,mMAAQ,CAAC,MAAM;AAElB,MAAM,SAAS,EAAE,MAAM;AACvB,MAAM,kBAAkB,EAAE,SAAS"}},
+    {"offset": {"line": 40, "column": 0}, "map": {"version":3,"sources":["file:///C:/www/Perso/original-cv/server/routers/example.ts"],"sourcesContent":["import { router, publicProcedure } from '../trpc';\r\n\r\nexport const exampleRouter = router({\r\n  hello: publicProcedure.query(() => {\r\n    return 'Hello world';\r\n  }),\r\n});\r\n"],"names":[],"mappings":";;;;AAAA;;;;;;AAEO,MAAM,gBAAgB,IAAA,iHAAM,EAAC;IAClC,OAAO,0HAAe,CAAC,KAAK,CAAC;QAC3B,OAAO;IACT;AACF"}},
+    {"offset": {"line": 62, "column": 0}, "map": {"version":3,"sources":["file:///C:/www/Perso/original-cv/pages/api/trpc/%5Btrpc%5D.ts"],"sourcesContent":["import * as trpcNext from '@trpc/server/adapters/next';\r\nimport { router } from '../../../server/trpc';\r\nimport { exampleRouter } from '../../../server/routers/example';\r\n\r\nexport const appRouter = router({\r\n  example: exampleRouter,\r\n});\r\n\r\nexport type AppRouter = typeof appRouter;\r\n\r\nexport default trpcNext.createNextApiHandler({\r\n  router: appRouter,\r\n  createContext: () => ({}),\r\n});\r\n"],"names":[],"mappings":";;;;;;AAAA;AACA;AACA;;;;;;;;;;AAEO,MAAM,YAAY,IAAA,iHAAM,EAAC;IAC9B,SAAS,sIAAa;AACxB;uCAIe,uPAA6B,CAAC;IAC3C,QAAQ;IACR,eAAe,IAAM,CAAC,CAAC,CAAC;AAC1B"}}]
+}
