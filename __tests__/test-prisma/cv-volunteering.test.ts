@@ -1,228 +1,219 @@
-import { describe, it, expect, beforeEach, afterAll } from 'vitest';
-import { prismaTest } from '../../lib/prismaTest';
-import { resetTestDB } from '../utils/setup';
-import { createTestUser } from '../utils/create-test-user';
-import { createTestTemplate } from '../utils/create-test-template';
-import { createTestCV } from '../utils/create-test-cv';
+import { describe, it, expect } from "vitest";
+import { prismaTest } from "../../lib/prismaTest";
+import { createTestUser } from "../utils/create-test-user";
+import { createTestTemplate } from "../utils/create-test-template";
+import { createTestCV } from "../utils/create-test-cv";
 
-describe('CvVolunteering model', () => {
-  beforeEach(async () => {
-    await resetTestDB();
-  });
+describe("CvVolunteering model", () => {
+	//? 6 tests pour le model CvVolunteering => 6 tests ok
+	//   model CvVolunteering {
+	//     id          String @id @default(cuid())
+	//     title       String
+	//     organisation String
+	//     description String?
+	//     start       DateTime
+	//     end         DateTime?
+	//     location    String?
+	//     cvMissions    CvMissionVolunteering[]
 
-  afterAll(async () => {
-    await prismaTest.$disconnect();
-  });
+	//     order       Int @default(0)
+	//     cv          CV @relation(fields: [cvId], references: [id], onDelete: Cascade)
+	//     cvId        String
 
-  //? 6 tests pour le model CvVolunteering => 6 tests ok
-  //   model CvVolunteering {
-  //     id          String @id @default(cuid())
-  //     title       String
-  //     organisation String
-  //     description String?
-  //     start       DateTime
-  //     end         DateTime?
-  //     location    String?
-  //     cvMissions    CvMissionVolunteering[]
+	//     @@unique([cvId, title])
+	//     @@unique([cvId, order])
+	//     @@index([cvId])
+	//   }
 
-  //     order       Int @default(0)
-  //     cv          CV @relation(fields: [cvId], references: [id], onDelete: Cascade)
-  //     cvId        String
+	//   model CvMissionVolunteering {
+	//     id          String      @id @default(cuid())
+	//     content     String
 
-  //     @@unique([cvId, title])
-  //     @@unique([cvId, order])
-  //     @@index([cvId])
-  //   }
+	//     cvVolunteering  CvVolunteering  @relation(fields: [cvVolunteeringId], references: [id], onDelete: Cascade)
+	//     cvVolunteeringId String
 
-  //   model CvMissionVolunteering {
-  //     id          String      @id @default(cuid())
-  //     content     String
+	//     @@index([cvVolunteeringId])
+	//   }
 
-  //     cvVolunteering  CvVolunteering  @relation(fields: [cvVolunteeringId], references: [id], onDelete: Cascade)
-  //     cvVolunteeringId String
+	//! 1️⃣ CREATE
+	describe("CREATE", () => {
+		it("should create volunteering entry", async () => {
+			const user = await createTestUser();
+			const template = await createTestTemplate();
+			const { cv } = await createTestCV(
+				// @ts-expect-error
+				{ userId: user.id, templateId: template.id },
+			);
 
-  //     @@index([cvVolunteeringId])
-  //   }
+			const volunteering = await prismaTest.cvVolunteering.create({
+				data: {
+					title: "Volunteer Teacher",
+					organisation: "NGO",
+					start: new Date("2022-01-01"),
+					order: 1,
+					cvId: cv.id,
+				},
+			});
 
-  //! 1️⃣ CREATE
-  describe('CREATE', () => {
-    it('should create volunteering entry', async () => {
-      const user = await createTestUser();
-      const template = await createTestTemplate();
-      const { cv } = await createTestCV(
-        // @ts-expect-error
-        { userId: user.id, templateId: template.id },
-      );
+			expect(volunteering.title).toBe("Volunteer Teacher");
+			expect(volunteering.organisation).toBe("NGO");
+		});
 
-      const volunteering = await prismaTest.cvVolunteering.create({
-        data: {
-          title: 'Volunteer Teacher',
-          organisation: 'NGO',
-          start: new Date('2022-01-01'),
-          order: 1,
-          cvId: cv.id,
-        },
-      });
+		it("should create volunteering with optional fields", async () => {
+			const user = await createTestUser();
+			const template = await createTestTemplate();
+			const { cv } = await createTestCV(
+				// @ts-expect-error
+				{ userId: user.id, templateId: template.id },
+			);
 
-      expect(volunteering.title).toBe('Volunteer Teacher');
-      expect(volunteering.organisation).toBe('NGO');
-    });
+			const volunteering = await prismaTest.cvVolunteering.create({
+				data: {
+					title: "Volunteer Dev",
+					organisation: "OpenSource Org",
+					description: "Helping community",
+					start: new Date("2021-01-01"),
+					end: new Date("2021-12-31"),
+					location: "Remote",
+					order: 2,
+					cvId: cv.id,
+				},
+			});
 
-    it('should create volunteering with optional fields', async () => {
-      const user = await createTestUser();
-      const template = await createTestTemplate();
-      const { cv } = await createTestCV(
-        // @ts-expect-error
-        { userId: user.id, templateId: template.id },
-      );
+			expect(volunteering.description).toBe("Helping community");
+			expect(volunteering.location).toBe("Remote");
+		});
+	});
 
-      const volunteering = await prismaTest.cvVolunteering.create({
-        data: {
-          title: 'Volunteer Dev',
-          organisation: 'OpenSource Org',
-          description: 'Helping community',
-          start: new Date('2021-01-01'),
-          end: new Date('2021-12-31'),
-          location: 'Remote',
-          order: 2,
-          cvId: cv.id,
-        },
-      });
+	//! 2️⃣ UNIQUE CONSTRAINTS
+	describe("UNIQUE CONSTRAINTS", () => {
+		it("should not allow duplicate title in same CV", async () => {
+			const user = await createTestUser();
+			const template = await createTestTemplate();
+			const { cv } = await createTestCV(
+				// @ts-expect-error
+				{ userId: user.id, templateId: template.id },
+			);
 
-      expect(volunteering.description).toBe('Helping community');
-      expect(volunteering.location).toBe('Remote');
-    });
-  });
+			await prismaTest.cvVolunteering.create({
+				data: {
+					title: "Volunteer",
+					organisation: "Org1",
+					start: new Date(),
+					order: 1,
+					cvId: cv.id,
+				},
+			});
 
-  //! 2️⃣ UNIQUE CONSTRAINTS
-  describe('UNIQUE CONSTRAINTS', () => {
-    it('should not allow duplicate title in same CV', async () => {
-      const user = await createTestUser();
-      const template = await createTestTemplate();
-      const { cv } = await createTestCV(
-        // @ts-expect-error
-        { userId: user.id, templateId: template.id },
-      );
+			await expect(
+				prismaTest.cvVolunteering.create({
+					data: {
+						title: "Volunteer",
+						organisation: "Org2",
+						start: new Date(),
+						order: 2,
+						cvId: cv.id,
+					},
+				}),
+			).rejects.toThrow();
+		});
 
-      await prismaTest.cvVolunteering.create({
-        data: {
-          title: 'Volunteer',
-          organisation: 'Org1',
-          start: new Date(),
-          order: 1,
-          cvId: cv.id,
-        },
-      });
+		it("should not allow duplicate order in same CV", async () => {
+			const user = await createTestUser();
+			const template = await createTestTemplate();
+			const { cv } = await createTestCV(
+				// @ts-expect-error
+				{ userId: user.id, templateId: template.id },
+			);
 
-      await expect(
-        prismaTest.cvVolunteering.create({
-          data: {
-            title: 'Volunteer',
-            organisation: 'Org2',
-            start: new Date(),
-            order: 2,
-            cvId: cv.id,
-          },
-        }),
-      ).rejects.toThrow();
-    });
+			await prismaTest.cvVolunteering.create({
+				data: {
+					title: "V1",
+					organisation: "Org1",
+					start: new Date(),
+					order: 1,
+					cvId: cv.id,
+				},
+			});
 
-    it('should not allow duplicate order in same CV', async () => {
-      const user = await createTestUser();
-      const template = await createTestTemplate();
-      const { cv } = await createTestCV(
-        // @ts-expect-error
-        { userId: user.id, templateId: template.id },
-      );
+			await expect(
+				prismaTest.cvVolunteering.create({
+					data: {
+						title: "V2",
+						organisation: "Org2",
+						start: new Date(),
+						order: 1,
+						cvId: cv.id,
+					},
+				}),
+			).rejects.toThrow();
+		});
+	});
 
-      await prismaTest.cvVolunteering.create({
-        data: {
-          title: 'V1',
-          organisation: 'Org1',
-          start: new Date(),
-          order: 1,
-          cvId: cv.id,
-        },
-      });
+	//! 3️⃣ RELATION MISSIONS
+	describe("MISSIONS RELATION", () => {
+		it("should create mission for volunteering", async () => {
+			const user = await createTestUser();
+			const template = await createTestTemplate();
+			const { cv } = await createTestCV(
+				// @ts-expect-error
+				{ userId: user.id, templateId: template.id },
+			);
 
-      await expect(
-        prismaTest.cvVolunteering.create({
-          data: {
-            title: 'V2',
-            organisation: 'Org2',
-            start: new Date(),
-            order: 1,
-            cvId: cv.id,
-          },
-        }),
-      ).rejects.toThrow();
-    });
-  });
+			const volunteering = await prismaTest.cvVolunteering.create({
+				data: {
+					title: "Volunteer",
+					organisation: "Org",
+					start: new Date(),
+					order: 1,
+					cvId: cv.id,
+				},
+			});
 
-  //! 3️⃣ RELATION MISSIONS
-  describe('MISSIONS RELATION', () => {
-    it('should create mission for volunteering', async () => {
-      const user = await createTestUser();
-      const template = await createTestTemplate();
-      const { cv } = await createTestCV(
-        // @ts-expect-error
-        { userId: user.id, templateId: template.id },
-      );
+			const mission = await prismaTest.cvMissionVolunteering.create({
+				data: {
+					content: "Organized events",
+					cvVolunteeringId: volunteering.id,
+				},
+			});
 
-      const volunteering = await prismaTest.cvVolunteering.create({
-        data: {
-          title: 'Volunteer',
-          organisation: 'Org',
-          start: new Date(),
-          order: 1,
-          cvId: cv.id,
-        },
-      });
+			expect(mission.cvVolunteeringId).toBe(volunteering.id);
+		});
 
-      const mission = await prismaTest.cvMissionVolunteering.create({
-        data: {
-          content: 'Organized events',
-          cvVolunteeringId: volunteering.id,
-        },
-      });
+		it("should delete missions when volunteering is deleted", async () => {
+			const user = await createTestUser();
+			const template = await createTestTemplate();
+			const { cv } = await createTestCV(
+				// @ts-expect-error
+				{ userId: user.id, templateId: template.id },
+			);
 
-      expect(mission.cvVolunteeringId).toBe(volunteering.id);
-    });
+			const volunteering = await prismaTest.cvVolunteering.create({
+				data: {
+					title: "Volunteer",
+					organisation: "Org",
+					start: new Date(),
+					order: 1,
+					cvId: cv.id,
+				},
+			});
 
-    it('should delete missions when volunteering is deleted', async () => {
-      const user = await createTestUser();
-      const template = await createTestTemplate();
-      const { cv } = await createTestCV(
-        // @ts-expect-error
-        { userId: user.id, templateId: template.id },
-      );
+			await prismaTest.cvMissionVolunteering.create({
+				data: {
+					content: "Mission 1",
+					cvVolunteeringId: volunteering.id,
+				},
+			});
 
-      const volunteering = await prismaTest.cvVolunteering.create({
-        data: {
-          title: 'Volunteer',
-          organisation: 'Org',
-          start: new Date(),
-          order: 1,
-          cvId: cv.id,
-        },
-      });
+			await prismaTest.cvVolunteering.delete({
+				where: { id: volunteering.id },
+			});
 
-      await prismaTest.cvMissionVolunteering.create({
-        data: {
-          content: 'Mission 1',
-          cvVolunteeringId: volunteering.id,
-        },
-      });
+			const missions = await prismaTest.cvMissionVolunteering.findMany({
+				where: { cvVolunteeringId: volunteering.id },
+			});
 
-      await prismaTest.cvVolunteering.delete({
-        where: { id: volunteering.id },
-      });
-
-      const missions = await prismaTest.cvMissionVolunteering.findMany({
-        where: { cvVolunteeringId: volunteering.id },
-      });
-
-      expect(missions.length).toBe(0);
-    });
-  });
+			expect(missions.length).toBe(0);
+		});
+	});
 });

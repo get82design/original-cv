@@ -1,11 +1,24 @@
-import 'dotenv/config';
-import { PrismaClient } from '../generated/prisma-test/client';
-import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3';
+import "dotenv/config";
+// import { PrismaPg } from "@prisma/adapter-pg";
+import { PrismaClient } from "../generated/prisma/client";
 
-const prismaTest = new PrismaClient({
-  adapter: new PrismaBetterSqlite3({
-    url: 'file:./prisma/test.db',
-  }),
+// const connectionString = `${process.env.DATABASE_TEST_URL}`;
+
+// const adapter = new PrismaPg({ connectionString });
+// const prisma = new PrismaClient({ adapter });
+
+// export { prisma };
+
+const databaseUrl = process.env.DATABASE_TEST_URL;
+
+if (!databaseUrl) {
+	throw new Error("DATABASE_TEST_URL is not defined");
+}
+
+export const prismaTest = new PrismaClient({
+	datasources: {
+		db: {
+			url: databaseUrl,
+		},
+	},
 });
-
-export { prismaTest };

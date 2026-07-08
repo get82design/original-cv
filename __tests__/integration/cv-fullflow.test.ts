@@ -1,263 +1,256 @@
-import { describe, it, expect, beforeEach, afterAll } from 'vitest';
-import { prismaTest } from '../../lib/prismaTest';
-import { resetTestDB } from '../utils/setup';
-import { createTestUserWithTemplateAndCV } from '../utils/create-test-user-with-template-and-cv';
-import { Level } from '../../generated/prisma-test/enums';
+import { describe, it, expect } from "vitest";
+import { prismaTest } from "../../lib/prismaTest";
+import { createTestUserWithTemplateAndCV } from "../utils/create-test-user-with-template-and-cv";
+import { Level } from "../../generated/prisma/enums";
 
-describe('CV FULL FLOW', () => {
-  beforeEach(async () => {
-    await resetTestDB();
-  });
+describe("CV FULL FLOW", () => {
+	it("should create a complete CV with all modules and relations", async () => {
+		const { cv } = await createTestUserWithTemplateAndCV();
 
-  afterAll(async () => {
-    await prismaTest.$disconnect();
-  });
+		// ========================
+		// HEADER
+		// ========================
+		await prismaTest.cvHeader.create({
+			data: {
+				cvId: cv.id,
+				title: "Developer",
+				subtitle: "Fullstack",
+				phone: "123",
+				email: "test@test.com",
+				location: "Paris",
+				portfolio: "portfolio.com",
+				nom: "Doe",
+				prenom: "John",
+			},
+		});
 
-  it('should create a complete CV with all modules and relations', async () => {
-    const { cv } = await createTestUserWithTemplateAndCV();
+		// ========================
+		// DESCRIPTION
+		// ========================
+		await prismaTest.cvDescription.create({
+			data: {
+				cvId: cv.id,
+				description: "Passionate developer",
+			},
+		});
 
-    // ========================
-    // HEADER
-    // ========================
-    await prismaTest.cvHeader.create({
-      data: {
-        cvId: cv.id,
-        title: 'Developer',
-        subtitle: 'Fullstack',
-        phone: '123',
-        email: 'test@test.com',
-        location: 'Paris',
-        portfolio: 'portfolio.com',
-        nom: 'Doe',
-        prenom: 'John',
-      },
-    });
+		// ========================
+		// SKILLS
+		// ========================
+		const skill = await prismaTest.skill.create({
+			data: { name: "JavaScript" },
+		});
 
-    // ========================
-    // DESCRIPTION
-    // ========================
-    await prismaTest.cvDescription.create({
-      data: {
-        cvId: cv.id,
-        description: 'Passionate developer',
-      },
-    });
+		const skillGroup = await prismaTest.cvSkillGroup.create({
+			data: { cvId: cv.id, title: "Tech", order: 1 },
+		});
 
-    // ========================
-    // SKILLS
-    // ========================
-    const skill = await prismaTest.skill.create({
-      data: { name: 'JavaScript' },
-    });
+		await prismaTest.cvSkill.create({
+			data: {
+				groupId: skillGroup.id,
+				skillId: skill.id,
+				level: Level.Expert,
+			},
+		});
 
-    const skillGroup = await prismaTest.cvSkillGroup.create({
-      data: { cvId: cv.id, title: 'Tech', order: 1 },
-    });
+		// ========================
+		// COMPETENCES
+		// ========================
+		const competence = await prismaTest.competence.create({
+			data: { name: "Leadership" },
+		});
 
-    await prismaTest.cvSkill.create({
-      data: {
-        groupId: skillGroup.id,
-        skillId: skill.id,
-        level: Level.Expert,
-      },
-    });
+		const competenceGroup = await prismaTest.cvCompetenceGroup.create({
+			data: { cvId: cv.id, title: "Soft", order: 1 },
+		});
 
-    // ========================
-    // COMPETENCES
-    // ========================
-    const competence = await prismaTest.competence.create({
-      data: { name: 'Leadership' },
-    });
+		await prismaTest.cvCompetence.create({
+			data: {
+				groupId: competenceGroup.id,
+				competenceId: competence.id,
+			},
+		});
 
-    const competenceGroup = await prismaTest.cvCompetenceGroup.create({
-      data: { cvId: cv.id, title: 'Soft', order: 1 },
-    });
+		// ========================
+		// EXPERIENCE
+		// ========================
+		const experience = await prismaTest.cvExperience.create({
+			data: {
+				cvId: cv.id,
+				title: "Dev",
+				company: "Google",
+				start: new Date(),
+				order: 1,
+			},
+		});
 
-    await prismaTest.cvCompetence.create({
-      data: {
-        groupId: competenceGroup.id,
-        competenceId: competence.id,
-      },
-    });
+		await prismaTest.cvMissionExperience.create({
+			data: {
+				cvExperienceId: experience.id,
+				content: "Built stuff",
+			},
+		});
 
-    // ========================
-    // EXPERIENCE
-    // ========================
-    const experience = await prismaTest.cvExperience.create({
-      data: {
-        cvId: cv.id,
-        title: 'Dev',
-        company: 'Google',
-        start: new Date(),
-        order: 1,
-      },
-    });
+		// ========================
+		// EDUCATION
+		// ========================
+		await prismaTest.cvEducation.create({
+			data: {
+				cvId: cv.id,
+				school: "MIT",
+				degree: "CS",
+				start: new Date(),
+				order: 1,
+			},
+		});
 
-    await prismaTest.cvMissionExperience.create({
-      data: {
-        cvExperienceId: experience.id,
-        content: 'Built stuff',
-      },
-    });
+		// ========================
+		// ACHIEVEMENT
+		// ========================
+		await prismaTest.cvAchievement.create({
+			data: {
+				cvId: cv.id,
+				title: "Hackathon Winner",
+				order: 1,
+			},
+		});
 
-    // ========================
-    // EDUCATION
-    // ========================
-    await prismaTest.cvEducation.create({
-      data: {
-        cvId: cv.id,
-        school: 'MIT',
-        degree: 'CS',
-        start: new Date(),
-        order: 1,
-      },
-    });
+		// ========================
+		// STRENGTH
+		// ========================
+		await prismaTest.cvStrength.create({
+			data: {
+				cvId: cv.id,
+				title: "Team player",
+				order: 1,
+			},
+		});
 
-    // ========================
-    // ACHIEVEMENT
-    // ========================
-    await prismaTest.cvAchievement.create({
-      data: {
-        cvId: cv.id,
-        title: 'Hackathon Winner',
-        order: 1,
-      },
-    });
+		// ========================
+		// VOLUNTEERING
+		// ========================
+		const volunteering = await prismaTest.cvVolunteering.create({
+			data: {
+				cvId: cv.id,
+				title: "NGO Work",
+				organisation: "Red Cross",
+				start: new Date(),
+				order: 1,
+			},
+		});
 
-    // ========================
-    // STRENGTH
-    // ========================
-    await prismaTest.cvStrength.create({
-      data: {
-        cvId: cv.id,
-        title: 'Team player',
-        order: 1,
-      },
-    });
+		await prismaTest.cvMissionVolunteering.create({
+			data: {
+				cvVolunteeringId: volunteering.id,
+				content: "Helped people",
+			},
+		});
 
-    // ========================
-    // VOLUNTEERING
-    // ========================
-    const volunteering = await prismaTest.cvVolunteering.create({
-      data: {
-        cvId: cv.id,
-        title: 'NGO Work',
-        organisation: 'Red Cross',
-        start: new Date(),
-        order: 1,
-      },
-    });
+		// ========================
+		// PROJECT
+		// ========================
+		const project = await prismaTest.cvProject.create({
+			data: {
+				cvId: cv.id,
+				title: "My App",
+				start: new Date(),
+				order: 1,
+			},
+		});
 
-    await prismaTest.cvMissionVolunteering.create({
-      data: {
-        cvVolunteeringId: volunteering.id,
-        content: 'Helped people',
-      },
-    });
+		await prismaTest.cvMissionProject.create({
+			data: {
+				cvProjectId: project.id,
+				content: "Built API",
+			},
+		});
 
-    // ========================
-    // PROJECT
-    // ========================
-    const project = await prismaTest.cvProject.create({
-      data: {
-        cvId: cv.id,
-        title: 'My App',
-        start: new Date(),
-        order: 1,
-      },
-    });
+		// ========================
+		// PUBLICATION
+		// ========================
+		await prismaTest.cvPublication.create({
+			data: {
+				cvId: cv.id,
+				title: "Research Paper",
+				start: new Date(),
+				order: 1,
+			},
+		});
 
-    await prismaTest.cvMissionProject.create({
-      data: {
-        cvProjectId: project.id,
-        content: 'Built API',
-      },
-    });
+		// ========================
+		// LANGUAGE
+		// ========================
+		await prismaTest.cvLanguage.create({
+			data: {
+				cvId: cv.id,
+				name: "English",
+				level: Level.Expert,
+				order: 1,
+			},
+		});
 
-    // ========================
-    // PUBLICATION
-    // ========================
-    await prismaTest.cvPublication.create({
-      data: {
-        cvId: cv.id,
-        title: 'Research Paper',
-        start: new Date(),
-        order: 1,
-      },
-    });
+		// ========================
+		// PASSION
+		// ========================
+		await prismaTest.cvPassion.create({
+			data: {
+				cvId: cv.id,
+				title: "Music",
+				icon: "🎵",
+				order: 1,
+			},
+		});
 
-    // ========================
-    // LANGUAGE
-    // ========================
-    await prismaTest.cvLanguage.create({
-      data: {
-        cvId: cv.id,
-        name: 'English',
-        level: Level.Expert,
-        order: 1,
-      },
-    });
+		// ========================
+		// FINAL CHECK
+		// ========================
+		const fullCV = await prismaTest.cV.findUnique({
+			where: { id: cv.id },
+			include: {
+				headerCv: true,
+				description: true,
+				skillGroups: { include: { skills: { include: { skill: true } } } },
+				competences: {
+					include: { cvCompetences: { include: { competence: true } } },
+				},
+				experiences: { include: { cvMissions: true } },
+				educations: true,
+				achievements: true,
+				strengths: true,
+				volunteerings: { include: { cvMissions: true } },
+				projects: { include: { cvMissions: true } },
+				publications: true,
+				languages: true,
+				passions: true,
+			},
+		});
 
-    // ========================
-    // PASSION
-    // ========================
-    await prismaTest.cvPassion.create({
-      data: {
-        cvId: cv.id,
-        title: 'Music',
-        icon: '🎵',
-        order: 1,
-      },
-    });
+		expect(fullCV).not.toBeNull();
+		expect(fullCV!.skillGroups.length).toBe(1);
+		expect(fullCV!.experiences.length).toBe(1);
+		expect(fullCV!.projects.length).toBe(1);
+	});
 
-    // ========================
-    // FINAL CHECK
-    // ========================
-    const fullCV = await prismaTest.cV.findUnique({
-      where: { id: cv.id },
-      include: {
-        headerCv: true,
-        description: true,
-        skillGroups: { include: { skills: { include: { skill: true } } } },
-        competences: { include: { cvCompetences: { include: { competence: true } } } },
-        experiences: { include: { cvMissions: true } },
-        educations: true,
-        achievements: true,
-        strengths: true,
-        volunteerings: { include: { cvMissions: true } },
-        projects: { include: { cvMissions: true } },
-        publications: true,
-        languages: true,
-        passions: true,
-      },
-    });
+	it("should delete the full CV and cascade everything", async () => {
+		const { cv } = await createTestUserWithTemplateAndCV();
 
-    expect(fullCV).not.toBeNull();
-    expect(fullCV!.skillGroups.length).toBe(1);
-    expect(fullCV!.experiences.length).toBe(1);
-    expect(fullCV!.projects.length).toBe(1);
-  });
+		await prismaTest.cvHeader.create({
+			data: {
+				cvId: cv.id,
+				title: "t",
+				subtitle: "t",
+				phone: "t",
+				email: "t",
+				location: "t",
+				portfolio: "t",
+				nom: "t",
+				prenom: "t",
+			},
+		});
 
-  it('should delete the full CV and cascade everything', async () => {
-    const { cv } = await createTestUserWithTemplateAndCV();
+		await prismaTest.cV.delete({ where: { id: cv.id } });
 
-    await prismaTest.cvHeader.create({
-      data: {
-        cvId: cv.id,
-        title: 't',
-        subtitle: 't',
-        phone: 't',
-        email: 't',
-        location: 't',
-        portfolio: 't',
-        nom: 't',
-        prenom: 't',
-      },
-    });
-
-    await prismaTest.cV.delete({ where: { id: cv.id } });
-
-    const header = await prismaTest.cvHeader.findMany();
-    expect(header.length).toBe(0);
-  });
+		const header = await prismaTest.cvHeader.findMany();
+		expect(header.length).toBe(0);
+	});
 });

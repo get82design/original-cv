@@ -1,221 +1,212 @@
-import { describe, it, expect, beforeEach, afterAll } from 'vitest';
-import { prismaTest } from '../../lib/prismaTest';
-import { resetTestDB } from '../utils/setup';
-import { createTestUserWithTemplateAndCV } from '../utils/create-test-user-with-template-and-cv';
+import { describe, it, expect } from "vitest";
+import { prismaTest } from "../../lib/prismaTest";
+import { createTestUserWithTemplateAndCV } from "../utils/create-test-user-with-template-and-cv";
 
-describe('CvHeader model', () => {
-  beforeEach(async () => {
-    await resetTestDB();
-  });
+describe("CvHeader model", () => {
+	//? 6 tests pour le model CvHeader => 6 tests ok
+	//   model CvHeader {
+	//     id          String @id @default(cuid())
+	//     title       String
+	//     subtitle    String
+	//     phone       String
+	//     email       String
+	//     location    String
+	//     portfolio   String
+	//     nom         String
+	//     prenom      String
 
-  afterAll(async () => {
-    await prismaTest.$disconnect();
-  });
+	//     cv          CV @relation(fields: [cvId], references: [id], onDelete: Cascade)
+	//     cvId        String @unique
+	//     @@index([cvId])
+	//   }
 
-  //? 6 tests pour le model CvHeader => 6 tests ok
-  //   model CvHeader {
-  //     id          String @id @default(cuid())
-  //     title       String
-  //     subtitle    String
-  //     phone       String
-  //     email       String
-  //     location    String
-  //     portfolio   String
-  //     nom         String
-  //     prenom      String
+	//! 1- CREATE TESTS
+	describe("CREATE", () => {
+		// 1-1: créer un header pour un CV
+		it("should create a CvHeader for a CV", async () => {
+			const { user, template } = await createTestUserWithTemplateAndCV();
 
-  //     cv          CV @relation(fields: [cvId], references: [id], onDelete: Cascade)
-  //     cvId        String @unique
-  //     @@index([cvId])
-  //   }
+			const cv = await prismaTest.cV.create({
+				data: {
+					title: "Mon CV",
+					userId: user.id,
+					templateId: template.id,
+				},
+			});
 
-  //! 1- CREATE TESTS
-  describe('CREATE', () => {
-    // 1-1: créer un header pour un CV
-    it('should create a CvHeader for a CV', async () => {
-      const { user, template } = await createTestUserWithTemplateAndCV();
+			const header = await prismaTest.cvHeader.create({
+				data: {
+					title: "Développeur Fullstack",
+					subtitle: "Node / React",
+					phone: "0123456789",
+					email: "test@example.com",
+					location: "Paris",
+					portfolio: "https://portfolio.com",
+					nom: "Dupont",
+					prenom: "Jean",
+					cvId: cv.id,
+				},
+			});
 
-      const cv = await prismaTest.cV.create({
-        data: {
-          title: 'Mon CV',
-          userId: user.id,
-          templateId: template.id,
-        },
-      });
+			expect(header.cvId).toBe(cv.id);
+			expect(header.title).toBe("Développeur Fullstack");
+		});
 
-      const header = await prismaTest.cvHeader.create({
-        data: {
-          title: 'Développeur Fullstack',
-          subtitle: 'Node / React',
-          phone: '0123456789',
-          email: 'test@example.com',
-          location: 'Paris',
-          portfolio: 'https://portfolio.com',
-          nom: 'Dupont',
-          prenom: 'Jean',
-          cvId: cv.id,
-        },
-      });
+		// 1-2: ne pas pouvoir créer un header sans un CV
+		it("should not create CvHeader without a CV", async () => {
+			await expect(
+				prismaTest.cvHeader.create({
+					data: {
+						title: "Titre",
+						subtitle: "Subtitle",
+						phone: "0123456789",
+						email: "test@example.com",
+						location: "Paris",
+						portfolio: "https://portfolio.com",
+						nom: "Dupont",
+						prenom: "Jean",
+						cvId: "fake-cv-id",
+					},
+				}),
+			).rejects.toThrow();
+		});
 
-      expect(header.cvId).toBe(cv.id);
-      expect(header.title).toBe('Développeur Fullstack');
-    });
+		// 1-3: ne pas pouvoir créer deux headers pour le même CV
+		it("should not create two headers for the same CV", async () => {
+			const { user, template } = await createTestUserWithTemplateAndCV();
 
-    // 1-2: ne pas pouvoir créer un header sans un CV
-    it('should not create CvHeader without a CV', async () => {
-      await expect(
-        prismaTest.cvHeader.create({
-          data: {
-            title: 'Titre',
-            subtitle: 'Subtitle',
-            phone: '0123456789',
-            email: 'test@example.com',
-            location: 'Paris',
-            portfolio: 'https://portfolio.com',
-            nom: 'Dupont',
-            prenom: 'Jean',
-            cvId: 'fake-cv-id',
-          },
-        }),
-      ).rejects.toThrow();
-    });
+			const cv = await prismaTest.cV.create({
+				data: { title: "CV 1", userId: user.id, templateId: template.id },
+			});
 
-    // 1-3: ne pas pouvoir créer deux headers pour le même CV
-    it('should not create two headers for the same CV', async () => {
-      const { user, template } = await createTestUserWithTemplateAndCV();
+			await prismaTest.cvHeader.create({
+				data: {
+					title: "Header 1",
+					subtitle: "Sub 1",
+					phone: "0123",
+					email: "a@b.com",
+					location: "Paris",
+					portfolio: "",
+					nom: "N",
+					prenom: "P",
+					cvId: cv.id,
+				},
+			});
 
-      const cv = await prismaTest.cV.create({
-        data: { title: 'CV 1', userId: user.id, templateId: template.id },
-      });
+			await expect(
+				prismaTest.cvHeader.create({
+					data: {
+						title: "Header 2",
+						subtitle: "Sub 2",
+						phone: "0456",
+						email: "c@d.com",
+						location: "Lyon",
+						portfolio: "",
+						nom: "N2",
+						prenom: "P2",
+						cvId: cv.id,
+					},
+				}),
+			).rejects.toThrow(); // @@unique(cvId)
+		});
+	});
 
-      await prismaTest.cvHeader.create({
-        data: {
-          title: 'Header 1',
-          subtitle: 'Sub 1',
-          phone: '0123',
-          email: 'a@b.com',
-          location: 'Paris',
-          portfolio: '',
-          nom: 'N',
-          prenom: 'P',
-          cvId: cv.id,
-        },
-      });
+	//! 2- UPDATE TESTS
+	describe("UPDATE", () => {
+		// 2-1: mettre à jour les champs d'un header
+		it("should update a CvHeader fields", async () => {
+			const { user, template } = await createTestUserWithTemplateAndCV();
+			const cv = await prismaTest.cV.create({
+				data: { title: "CV 1", userId: user.id, templateId: template.id },
+			});
 
-      await expect(
-        prismaTest.cvHeader.create({
-          data: {
-            title: 'Header 2',
-            subtitle: 'Sub 2',
-            phone: '0456',
-            email: 'c@d.com',
-            location: 'Lyon',
-            portfolio: '',
-            nom: 'N2',
-            prenom: 'P2',
-            cvId: cv.id,
-          },
-        }),
-      ).rejects.toThrow(); // @@unique(cvId)
-    });
-  });
+			const header = await prismaTest.cvHeader.create({
+				data: {
+					title: "Dev",
+					subtitle: "JS",
+					phone: "01",
+					email: "a@b.com",
+					location: "Paris",
+					portfolio: "",
+					nom: "N",
+					prenom: "P",
+					cvId: cv.id,
+				},
+			});
 
-  //! 2- UPDATE TESTS
-  describe('UPDATE', () => {
-    // 2-1: mettre à jour les champs d'un header
-    it('should update a CvHeader fields', async () => {
-      const { user, template } = await createTestUserWithTemplateAndCV();
-      const cv = await prismaTest.cV.create({
-        data: { title: 'CV 1', userId: user.id, templateId: template.id },
-      });
+			const updated = await prismaTest.cvHeader.update({
+				where: { id: header.id },
+				data: { phone: "09", title: "Dev Senior" },
+			});
 
-      const header = await prismaTest.cvHeader.create({
-        data: {
-          title: 'Dev',
-          subtitle: 'JS',
-          phone: '01',
-          email: 'a@b.com',
-          location: 'Paris',
-          portfolio: '',
-          nom: 'N',
-          prenom: 'P',
-          cvId: cv.id,
-        },
-      });
+			expect(updated.phone).toBe("09");
+			expect(updated.title).toBe("Dev Senior");
+			expect(updated.email).toBe("a@b.com"); // inchangé
+		});
+	});
 
-      const updated = await prismaTest.cvHeader.update({
-        where: { id: header.id },
-        data: { phone: '09', title: 'Dev Senior' },
-      });
+	//! 3- DELETE TESTS
+	describe("DELETE", () => {
+		// 3-1: supprimer un header lorsque le CV est supprimé
+		it("should delete CvHeader when CV is deleted", async () => {
+			const { user, template } = await createTestUserWithTemplateAndCV();
+			const cv = await prismaTest.cV.create({
+				data: { title: "CV", userId: user.id, templateId: template.id },
+			});
 
-      expect(updated.phone).toBe('09');
-      expect(updated.title).toBe('Dev Senior');
-      expect(updated.email).toBe('a@b.com'); // inchangé
-    });
-  });
+			const header = await prismaTest.cvHeader.create({
+				data: {
+					title: "Dev",
+					subtitle: "JS",
+					phone: "01",
+					email: "a@b.com",
+					location: "Paris",
+					portfolio: "",
+					nom: "N",
+					prenom: "P",
+					cvId: cv.id,
+				},
+			});
 
-  //! 3- DELETE TESTS
-  describe('DELETE', () => {
-    // 3-1: supprimer un header lorsque le CV est supprimé
-    it('should delete CvHeader when CV is deleted', async () => {
-      const { user, template } = await createTestUserWithTemplateAndCV();
-      const cv = await prismaTest.cV.create({
-        data: { title: 'CV', userId: user.id, templateId: template.id },
-      });
+			await prismaTest.cV.delete({ where: { id: cv.id } });
 
-      const header = await prismaTest.cvHeader.create({
-        data: {
-          title: 'Dev',
-          subtitle: 'JS',
-          phone: '01',
-          email: 'a@b.com',
-          location: 'Paris',
-          portfolio: '',
-          nom: 'N',
-          prenom: 'P',
-          cvId: cv.id,
-        },
-      });
+			const fetched = await prismaTest.cvHeader.findUnique({
+				where: { id: header.id },
+			});
 
-      await prismaTest.cV.delete({ where: { id: cv.id } });
+			expect(fetched).toBeNull();
+		});
+	});
 
-      const fetched = await prismaTest.cvHeader.findUnique({
-        where: { id: header.id },
-      });
+	//! 4- RELATIONS TESTS
+	describe("RELATIONS", () => {
+		// 4-1: lier un header à un CV
+		it("should link header to correct CV", async () => {
+			const { user, template } = await createTestUserWithTemplateAndCV();
+			const cv = await prismaTest.cV.create({
+				data: { title: "CV", userId: user.id, templateId: template.id },
+			});
 
-      expect(fetched).toBeNull();
-    });
-  });
+			const header = await prismaTest.cvHeader.create({
+				data: {
+					title: "Dev",
+					subtitle: "JS",
+					phone: "01",
+					email: "a@b.com",
+					location: "Paris",
+					portfolio: "",
+					nom: "N",
+					prenom: "P",
+					cvId: cv.id,
+				},
+			});
 
-  //! 4- RELATIONS TESTS
-  describe('RELATIONS', () => {
-    // 4-1: lier un header à un CV
-    it('should link header to correct CV', async () => {
-      const { user, template } = await createTestUserWithTemplateAndCV();
-      const cv = await prismaTest.cV.create({
-        data: { title: 'CV', userId: user.id, templateId: template.id },
-      });
+			const fetched = await prismaTest.cvHeader.findUnique({
+				where: { id: header.id },
+				include: { cv: true },
+			});
 
-      const header = await prismaTest.cvHeader.create({
-        data: {
-          title: 'Dev',
-          subtitle: 'JS',
-          phone: '01',
-          email: 'a@b.com',
-          location: 'Paris',
-          portfolio: '',
-          nom: 'N',
-          prenom: 'P',
-          cvId: cv.id,
-        },
-      });
-
-      const fetched = await prismaTest.cvHeader.findUnique({
-        where: { id: header.id },
-        include: { cv: true },
-      });
-
-      expect(fetched!.cv.id).toBe(cv.id);
-    });
-  });
+			expect(fetched!.cv.id).toBe(cv.id);
+		});
+	});
 });

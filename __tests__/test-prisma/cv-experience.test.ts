@@ -1,269 +1,260 @@
-import { describe, it, expect, beforeEach, afterAll } from 'vitest';
-import { prismaTest } from '../../lib/prismaTest';
-import { resetTestDB } from '../utils/setup';
-import { createTestUser } from '../utils/create-test-user';
-import { createTestTemplate } from '../utils/create-test-template';
-import { createTestCV } from '../utils/create-test-cv';
+import { describe, it, expect } from "vitest";
+import { prismaTest } from "../../lib/prismaTest";
+import { createTestUser } from "../utils/create-test-user";
+import { createTestTemplate } from "../utils/create-test-template";
+import { createTestCV } from "../utils/create-test-cv";
 
-describe('CvExperience & CvMissionExperience models', () => {
-  beforeEach(async () => {
-    await resetTestDB();
-  });
+describe("CvExperience & CvMissionExperience models", () => {
+	//? 7 tests pour le model CvExperience & CvMissionExperience => 7 tests ok
+	//   model CvExperience {
+	//     id          String @id @default(cuid())
+	//     title       String
+	//     company     String
+	//     start       DateTime
+	//     end         DateTime?
+	//     location    String?
+	//     description String?
+	//     cvMissions  CvMissionExperience[]
 
-  afterAll(async () => {
-    await prismaTest.$disconnect();
-  });
+	//     order       Int @default(0)
+	//     cv          CV @relation(fields: [cvId], references: [id], onDelete: Cascade)
+	//     cvId        String
 
-  //? 7 tests pour le model CvExperience & CvMissionExperience => 7 tests ok
-  //   model CvExperience {
-  //     id          String @id @default(cuid())
-  //     title       String
-  //     company     String
-  //     start       DateTime
-  //     end         DateTime?
-  //     location    String?
-  //     description String?
-  //     cvMissions  CvMissionExperience[]
+	//     @@unique([cvId, title])
+	//     @@unique([cvId, order])
+	//     @@index([cvId])
+	//   }
 
-  //     order       Int @default(0)
-  //     cv          CV @relation(fields: [cvId], references: [id], onDelete: Cascade)
-  //     cvId        String
+	//   model CvMissionExperience {
+	//     id          String      @id @default(cuid())
+	//     content     String
 
-  //     @@unique([cvId, title])
-  //     @@unique([cvId, order])
-  //     @@index([cvId])
-  //   }
+	//     cvExperience  CvExperience  @relation(fields: [cvExperienceId], references: [id], onDelete: Cascade)
+	//     cvExperienceId String
 
-  //   model CvMissionExperience {
-  //     id          String      @id @default(cuid())
-  //     content     String
+	//     @@index([cvExperienceId])
+	//   }
 
-  //     cvExperience  CvExperience  @relation(fields: [cvExperienceId], references: [id], onDelete: Cascade)
-  //     cvExperienceId String
+	//! 1️⃣ CREATE TESTS
+	describe("CREATE", () => {
+		it("should create a CV experience", async () => {
+			const user = await createTestUser();
+			const template = await createTestTemplate();
+			const { cv } = await createTestCV(
+				// @ts-expect-error
+				{ userId: user.id, templateId: template.id },
+			);
 
-  //     @@index([cvExperienceId])
-  //   }
+			const experience = await prismaTest.cvExperience.create({
+				data: {
+					title: "Frontend Developer",
+					company: "Google",
+					start: new Date(),
+					order: 1,
+					cvId: cv.id,
+				},
+			});
 
-  //! 1️⃣ CREATE TESTS
-  describe('CREATE', () => {
-    it('should create a CV experience', async () => {
-      const user = await createTestUser();
-      const template = await createTestTemplate();
-      const { cv } = await createTestCV(
-        // @ts-expect-error
-        { userId: user.id, templateId: template.id },
-      );
+			expect(experience.title).toBe("Frontend Developer");
+			expect(experience.company).toBe("Google");
+			expect(experience.cvId).toBe(cv.id);
+		});
 
-      const experience = await prismaTest.cvExperience.create({
-        data: {
-          title: 'Frontend Developer',
-          company: 'Google',
-          start: new Date(),
-          order: 1,
-          cvId: cv.id,
-        },
-      });
+		it("should create missions for an experience", async () => {
+			const user = await createTestUser();
+			const template = await createTestTemplate();
+			const { cv } = await createTestCV(
+				// @ts-expect-error
+				{ userId: user.id, templateId: template.id },
+			);
 
-      expect(experience.title).toBe('Frontend Developer');
-      expect(experience.company).toBe('Google');
-      expect(experience.cvId).toBe(cv.id);
-    });
+			const experience = await prismaTest.cvExperience.create({
+				data: {
+					title: "Backend Dev",
+					company: "Amazon",
+					start: new Date(),
+					order: 1,
+					cvId: cv.id,
+				},
+			});
 
-    it('should create missions for an experience', async () => {
-      const user = await createTestUser();
-      const template = await createTestTemplate();
-      const { cv } = await createTestCV(
-        // @ts-expect-error
-        { userId: user.id, templateId: template.id },
-      );
+			await prismaTest.cvMissionExperience.create({
+				data: {
+					content: "Developed APIs",
+					cvExperienceId: experience.id,
+				},
+			});
 
-      const experience = await prismaTest.cvExperience.create({
-        data: {
-          title: 'Backend Dev',
-          company: 'Amazon',
-          start: new Date(),
-          order: 1,
-          cvId: cv.id,
-        },
-      });
+			const missions = await prismaTest.cvMissionExperience.findMany({
+				where: { cvExperienceId: experience.id },
+			});
 
-      await prismaTest.cvMissionExperience.create({
-        data: {
-          content: 'Developed APIs',
-          cvExperienceId: experience.id,
-        },
-      });
+			expect(missions.length).toBe(1);
+			expect(missions[0]!.content).toBe("Developed APIs");
+		});
+	});
 
-      const missions = await prismaTest.cvMissionExperience.findMany({
-        where: { cvExperienceId: experience.id },
-      });
+	//! 2️⃣ UNIQUE CONSTRAINT TESTS
+	describe("UNIQUE CONSTRAINTS", () => {
+		it("should not allow duplicate title in same CV", async () => {
+			const user = await createTestUser();
+			const template = await createTestTemplate();
+			const { cv } = await createTestCV(
+				// @ts-expect-error
+				{ userId: user.id, templateId: template.id },
+			);
 
-      expect(missions.length).toBe(1);
-      expect(missions[0]!.content).toBe('Developed APIs');
-    });
-  });
+			await prismaTest.cvExperience.create({
+				data: {
+					title: "Dev",
+					company: "Company A",
+					start: new Date(),
+					order: 1,
+					cvId: cv.id,
+				},
+			});
 
-  //! 2️⃣ UNIQUE CONSTRAINT TESTS
-  describe('UNIQUE CONSTRAINTS', () => {
-    it('should not allow duplicate title in same CV', async () => {
-      const user = await createTestUser();
-      const template = await createTestTemplate();
-      const { cv } = await createTestCV(
-        // @ts-expect-error
-        { userId: user.id, templateId: template.id },
-      );
+			await expect(
+				prismaTest.cvExperience.create({
+					data: {
+						title: "Dev",
+						company: "Company B",
+						start: new Date(),
+						order: 2,
+						cvId: cv.id,
+					},
+				}),
+			).rejects.toThrow();
+		});
 
-      await prismaTest.cvExperience.create({
-        data: {
-          title: 'Dev',
-          company: 'Company A',
-          start: new Date(),
-          order: 1,
-          cvId: cv.id,
-        },
-      });
+		it("should not allow duplicate order in same CV", async () => {
+			const user = await createTestUser();
+			const template = await createTestTemplate();
+			const { cv } = await createTestCV(
+				// @ts-expect-error
+				{ userId: user.id, templateId: template.id },
+			);
 
-      await expect(
-        prismaTest.cvExperience.create({
-          data: {
-            title: 'Dev',
-            company: 'Company B',
-            start: new Date(),
-            order: 2,
-            cvId: cv.id,
-          },
-        }),
-      ).rejects.toThrow();
-    });
+			await prismaTest.cvExperience.create({
+				data: {
+					title: "Dev 1",
+					company: "Company A",
+					start: new Date(),
+					order: 1,
+					cvId: cv.id,
+				},
+			});
 
-    it('should not allow duplicate order in same CV', async () => {
-      const user = await createTestUser();
-      const template = await createTestTemplate();
-      const { cv } = await createTestCV(
-        // @ts-expect-error
-        { userId: user.id, templateId: template.id },
-      );
+			await expect(
+				prismaTest.cvExperience.create({
+					data: {
+						title: "Dev 2",
+						company: "Company B",
+						start: new Date(),
+						order: 1,
+						cvId: cv.id,
+					},
+				}),
+			).rejects.toThrow();
+		});
+	});
 
-      await prismaTest.cvExperience.create({
-        data: {
-          title: 'Dev 1',
-          company: 'Company A',
-          start: new Date(),
-          order: 1,
-          cvId: cv.id,
-        },
-      });
+	//! 3️⃣ RELATIONS
+	describe("RELATIONS", () => {
+		it("should link missions to correct experience", async () => {
+			const user = await createTestUser();
+			const template = await createTestTemplate();
+			const { cv } = await createTestCV(
+				// @ts-expect-error
+				{ userId: user.id, templateId: template.id },
+			);
 
-      await expect(
-        prismaTest.cvExperience.create({
-          data: {
-            title: 'Dev 2',
-            company: 'Company B',
-            start: new Date(),
-            order: 1,
-            cvId: cv.id,
-          },
-        }),
-      ).rejects.toThrow();
-    });
-  });
+			const experience = await prismaTest.cvExperience.create({
+				data: {
+					title: "Fullstack Dev",
+					company: "Meta",
+					start: new Date(),
+					order: 1,
+					cvId: cv.id,
+				},
+			});
 
-  //! 3️⃣ RELATIONS
-  describe('RELATIONS', () => {
-    it('should link missions to correct experience', async () => {
-      const user = await createTestUser();
-      const template = await createTestTemplate();
-      const { cv } = await createTestCV(
-        // @ts-expect-error
-        { userId: user.id, templateId: template.id },
-      );
+			const mission = await prismaTest.cvMissionExperience.create({
+				data: {
+					content: "Built scalable apps",
+					cvExperienceId: experience.id,
+				},
+			});
 
-      const experience = await prismaTest.cvExperience.create({
-        data: {
-          title: 'Fullstack Dev',
-          company: 'Meta',
-          start: new Date(),
-          order: 1,
-          cvId: cv.id,
-        },
-      });
+			expect(mission.cvExperienceId).toBe(experience.id);
+		});
+	});
 
-      const mission = await prismaTest.cvMissionExperience.create({
-        data: {
-          content: 'Built scalable apps',
-          cvExperienceId: experience.id,
-        },
-      });
+	//! 4️⃣ DELETE CASCADE
+	describe("DELETE CASCADE", () => {
+		it("should delete missions when experience is deleted", async () => {
+			const user = await createTestUser();
+			const template = await createTestTemplate();
+			const { cv } = await createTestCV(
+				// @ts-expect-error
+				{ userId: user.id, templateId: template.id },
+			);
 
-      expect(mission.cvExperienceId).toBe(experience.id);
-    });
-  });
+			const experience = await prismaTest.cvExperience.create({
+				data: {
+					title: "DevOps",
+					company: "Netflix",
+					start: new Date(),
+					order: 1,
+					cvId: cv.id,
+				},
+			});
 
-  //! 4️⃣ DELETE CASCADE
-  describe('DELETE CASCADE', () => {
-    it('should delete missions when experience is deleted', async () => {
-      const user = await createTestUser();
-      const template = await createTestTemplate();
-      const { cv } = await createTestCV(
-        // @ts-expect-error
-        { userId: user.id, templateId: template.id },
-      );
+			await prismaTest.cvMissionExperience.create({
+				data: {
+					content: "Managed CI/CD",
+					cvExperienceId: experience.id,
+				},
+			});
 
-      const experience = await prismaTest.cvExperience.create({
-        data: {
-          title: 'DevOps',
-          company: 'Netflix',
-          start: new Date(),
-          order: 1,
-          cvId: cv.id,
-        },
-      });
+			await prismaTest.cvExperience.delete({
+				where: { id: experience.id },
+			});
 
-      await prismaTest.cvMissionExperience.create({
-        data: {
-          content: 'Managed CI/CD',
-          cvExperienceId: experience.id,
-        },
-      });
+			const missions = await prismaTest.cvMissionExperience.findMany({
+				where: { cvExperienceId: experience.id },
+			});
 
-      await prismaTest.cvExperience.delete({
-        where: { id: experience.id },
-      });
+			expect(missions.length).toBe(0);
+		});
 
-      const missions = await prismaTest.cvMissionExperience.findMany({
-        where: { cvExperienceId: experience.id },
-      });
+		it("should delete experiences when CV is deleted", async () => {
+			const user = await createTestUser();
+			const template = await createTestTemplate();
+			const { cv } = await createTestCV(
+				// @ts-expect-error
+				{ userId: user.id, templateId: template.id },
+			);
 
-      expect(missions.length).toBe(0);
-    });
+			await prismaTest.cvExperience.create({
+				data: {
+					title: "Dev",
+					company: "Startup",
+					start: new Date(),
+					order: 1,
+					cvId: cv.id,
+				},
+			});
 
-    it('should delete experiences when CV is deleted', async () => {
-      const user = await createTestUser();
-      const template = await createTestTemplate();
-      const { cv } = await createTestCV(
-        // @ts-expect-error
-        { userId: user.id, templateId: template.id },
-      );
+			await prismaTest.cV.delete({
+				where: { id: cv.id },
+			});
 
-      await prismaTest.cvExperience.create({
-        data: {
-          title: 'Dev',
-          company: 'Startup',
-          start: new Date(),
-          order: 1,
-          cvId: cv.id,
-        },
-      });
+			const experiences = await prismaTest.cvExperience.findMany({
+				where: { cvId: cv.id },
+			});
 
-      await prismaTest.cV.delete({
-        where: { id: cv.id },
-      });
-
-      const experiences = await prismaTest.cvExperience.findMany({
-        where: { cvId: cv.id },
-      });
-
-      expect(experiences.length).toBe(0);
-    });
-  });
+			expect(experiences.length).toBe(0);
+		});
+	});
 });

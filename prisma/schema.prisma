@@ -5,6 +5,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 // === Colors ===
@@ -32,6 +33,7 @@ model Account {
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade) // relation avec User
   @@unique([provider, providerAccountId]) // chaque compte provider unique par user
+  @@index([userId])
 }
 
 model Session {
@@ -41,6 +43,7 @@ model Session {
   expires      DateTime
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@index([userId])
 }
 
 model User {
@@ -98,30 +101,32 @@ enum Level {
 model CvHeader {
   id          String @id @default(cuid())
   title       String
-  subtitle    String
-  phone       String
-  email       String
-  location    String
-  portfolio   String
-  nom         String
-  prenom      String
+  subtitle    String?
+  phone       String?
+  email       String?
+  location    String?
+  portfolio   String?
+  nom         String?
+  prenom      String?
+
   cv          CV @relation(fields: [cvId], references: [id], onDelete: Cascade)
   cvId        String @unique
+  @@index([cvId])
 }
 
 // === Description ===
 model Description {
   id          String @id @default(cuid())
   description String
+
   profile     Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
   profileId   String @unique
-  cvDescription CvDescription?
 }
 
 model CvDescription {
   id          String @id @default(cuid())
-  description   Description @relation(fields: [descriptionId], references: [id])
-  descriptionId String @unique
+  description String
+
   cv          CV @relation(fields: [cvId], references: [id], onDelete: Cascade)
   cvId        String @unique
 }
@@ -130,6 +135,7 @@ model CvDescription {
 model Skill {
   id   String @id @default(cuid())
   name String @unique // compétences globales
+
   profileSkills ProfileSkill[]
   cvSkills      CvSkill[]
 }
@@ -137,38 +143,42 @@ model Skill {
 model ProfileSkillGroup {
   id        String @id @default(cuid())
   title     String?                     // titre du groupe, optionnel
+  order     Int @default(0)             // pour trier les groupes
+  skills    ProfileSkill[]              // compétences dans ce groupe
   profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
   profileId String
-  skills    ProfileSkill[]              // compétences dans ce groupe
-  order     Int @default(0)             // pour trier les groupes
+
+  @@unique([profileId, order]) // pas de doublon dans un profile
 }
 
 model ProfileSkill {
   id           String @id @default(cuid())
+  level        Level
   skill        Skill  @relation(fields: [skillId], references: [id])
   skillId      String
   group        ProfileSkillGroup @relation(fields: [groupId], references: [id], onDelete: Cascade)
   groupId      String
-  level        Level
+
   @@unique([groupId, skillId]) // pas de doublon dans un groupe
 }
 
 model CvSkillGroup {
   id    String @id @default(cuid())
   title String?
+  order  Int @default(0)
+  skills CvSkill[]
   cv    CV @relation(fields: [cvId], references: [id], onDelete: Cascade)
   cvId  String
-  skills CvSkill[]
-  order  Int @default(0)
+  @@unique([cvId, order]) // pas de doublon dans un cv
 }
 
 model CvSkill {
   id      String @id @default(cuid())
+  level   Level
   skill   Skill  @relation(fields: [skillId], references: [id])
   skillId String
   group   CvSkillGroup @relation(fields: [groupId], references: [id], onDelete: Cascade)
   groupId String
-  level   Level
   @@unique([groupId, skillId])
 }
 
@@ -183,10 +193,11 @@ model Competence {
 model ProfileCompetenceGroup {
   id        String @id @default(cuid())
   title     String?                     // titre du groupe, optionnel
+  order     Int @default(0)             // pour trier les groupes
+  competences    ProfileCompetence[]              // compétences dans ce groupe
   profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
   profileId String
-  competences    ProfileCompetence[]              // compétences dans ce groupe
-  order     Int @default(0)             // pour trier les groupes
+  @@unique([profileId, order]) // pas de doublon dans un profile
 }
 
 model ProfileCompetence {
@@ -201,10 +212,11 @@ model ProfileCompetence {
 model CvCompetenceGroup {
   id    String @id @default(cuid())
   title String?
+  order  Int @default(0)
   cv    CV @relation(fields: [cvId], references: [id], onDelete: Cascade)
   cvId  String
-  competences CvCompetence[]
-  order  Int @default(0)
+  cvCompetences CvCompetence[]
+  @@unique([cvId, order]) // pas de doublon dans un cv
 }
 
 model CvCompetence {
@@ -226,25 +238,53 @@ model Experience {
   location    String?
   description String?
   missions    MissionExperience[]
-  order       Int @default(0)            
+  
+  order       Int @default(0)     
   profile     Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
   profileId   String
-  cvReferences CvExperience[]
+
+  @@unique([profileId, title]) // pas de doublon dans un profile
+  @@unique([profileId, order]) // pas de doublon dans un profile
+  @@index([profileId])
 }
 
 model MissionExperience {
   id          String      @id @default(cuid())
   content     String
+
   experience  Experience  @relation(fields: [experienceId], references: [id], onDelete: Cascade)
   experienceId String
+
+  @@index([experienceId])
 }
 
 model CvExperience {
   id          String @id @default(cuid())
-  experience  Experience @relation(fields: [experienceId], references: [id])
-  experienceId String
+  title       String
+  company     String
+  start       DateTime
+  end         DateTime?
+  location    String?
+  description String?
+  cvMissions  CvMissionExperience[]
+
+  order       Int @default(0)     
   cv          CV @relation(fields: [cvId], references: [id], onDelete: Cascade)
   cvId        String
+
+  @@unique([cvId, title])
+  @@unique([cvId, order])
+  @@index([cvId])
+}
+
+model CvMissionExperience {
+  id          String      @id @default(cuid())
+  content     String
+
+  cvExperience  CvExperience  @relation(fields: [cvExperienceId], references: [id], onDelete: Cascade)
+  cvExperienceId String
+
+  @@index([cvExperienceId])
 }
 
 // === Diplomes ===
@@ -257,18 +297,33 @@ model Education {
   start     DateTime
   end       DateTime?
   obtained  Boolean @default(false)
-  order     Int @default(0)            
-  profile   Profile  @relation(fields: [profileId], references: [id])
+
+  order     Int @default(0) 
+  profile   Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
   profileId String
-  cvReferences CvEducation[]
+
+  @@unique([profileId, title])
+  @@unique([profileId, order]) // pas de doublon dans un profile
+  @@index([profileId])
 }
 
 model CvEducation {
   id          String @id @default(cuid())
-  education   Education @relation(fields: [educationId], references: [id], onDelete: Cascade)
-  educationId String
+  title     String?
+  school    String
+  city      String?
+  degree    String
+  start     DateTime
+  end       DateTime?
+  obtained  Boolean @default(false)
+
+  order     Int @default(0) 
   cv          CV @relation(fields: [cvId], references: [id], onDelete: Cascade)
   cvId        String
+
+  @@unique([cvId, title])
+  @@unique([cvId, order])
+  @@index([cvId])
 }
 
 // === Réalisations ===
@@ -278,18 +333,30 @@ model Achievement {
   description String?
   year        Int?
   technology  String?
-  order       Int @default(0)           
+
+  order       Int @default(0)     
   profile     Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
   profileId   String
-  cvAchievements CvAchievement[]
+
+  @@unique([profileId, title])
+  @@unique([profileId, order]) // pas de doublon dans un profile
+  @@index([profileId])
 }
 
 model CvAchievement {
   id            String @id @default(cuid())
-  achievement   Achievement @relation(fields: [achievementId], references: [id])
-  achievementId String
+  title         String
+  description   String?
+  year          Int?
+  technology    String?
+
+  order         Int @default(0)     
   cv            CV @relation(fields: [cvId], references: [id], onDelete: Cascade)
   cvId          String
+  
+  @@unique([cvId, order])
+  @@unique([cvId, title])
+  @@index([cvId])
 }
 
 // === Atouts ===
@@ -297,18 +364,28 @@ model Strength {
   id          String @id @default(cuid())
   title       String
   icon        String?
+  
+  order       Int @default(0)
   profile     Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
   profileId   String
-  order       Int @default(0)           
-  cvStrengths CvStrength[]
+
+  @@unique([profileId, title])
+  @@unique([profileId, order]) // pas de doublon dans un profile
+  @@index([profileId])
 }
 
 model CvStrength {
   id          String @id @default(cuid())
-  strength    Strength @relation(fields: [strengthId], references: [id])
-  strengthId  String
+  title       String
+  icon        String?
+
+  order       Int @default(0)
   cv          CV @relation(fields: [cvId], references: [id], onDelete: Cascade)
   cvId        String
+
+  @@unique([cvId, title])
+  @@unique([cvId, order])
+  @@index([cvId])
 }
 
 // === Benevolat ===
@@ -321,25 +398,53 @@ model Volunteering {
   end         DateTime?
   location    String?
   missions    MissionVolunteering[]
-  order       Int @default(0)           
-  profile     Profile  @relation(fields: [profileId], references: [id])
+
+  order       Int @default(0)       
+  profile     Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
   profileId   String
-  cvVolunteerings CvVolunteering[]
+
+  @@unique([profileId, title])
+  @@unique([profileId, order]) // pas de doublon dans un profile
+  @@index([profileId])
 }
 
 model MissionVolunteering {
   id          String      @id @default(cuid())
   content     String
+
   volunteering  Volunteering  @relation(fields: [volunteeringId], references: [id], onDelete: Cascade)
   volunteeringId String
+
+  @@index([volunteeringId])
 }
 
 model CvVolunteering {
   id          String @id @default(cuid())
-  volunteering   Volunteering @relation(fields: [volunteeringId], references: [id])
-  volunteeringId String
+  title       String
+  organisation String
+  description String?
+  start       DateTime
+  end         DateTime?
+  location    String?
+  cvMissions    CvMissionVolunteering[]
+
+  order       Int @default(0)
   cv          CV @relation(fields: [cvId], references: [id], onDelete: Cascade)
   cvId        String
+
+  @@unique([cvId, title])
+  @@unique([cvId, order])
+  @@index([cvId])
+}
+
+model CvMissionVolunteering {
+  id          String      @id @default(cuid())
+  content     String
+
+  cvVolunteering  CvVolunteering  @relation(fields: [cvVolunteeringId], references: [id], onDelete: Cascade)
+  cvVolunteeringId String
+
+  @@index([cvVolunteeringId])
 }
 
 // === Projet ===
@@ -352,25 +457,53 @@ model Project {
   end         DateTime?
   technology  String?
   missions    MissionProject[]
-  order       Int @default(0)           
-  profile     Profile  @relation(fields: [profileId], references: [id])
+
+  order       Int @default(0)  
+  profile     Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
   profileId   String
-  cvProjects  CvProject[]
+
+  @@unique([profileId, title])
+  @@unique([profileId, order]) // pas de doublon dans un profile
+  @@index([profileId])
 }
 
 model MissionProject {
   id          String      @id @default(cuid())
   content     String
+
   project  Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
   projectId String
+
+  @@index([projectId])
 }
 
 model CvProject {
   id          String @id @default(cuid())
-  project     Project @relation(fields: [projectId], references: [id])
-  projectId   String
+  title       String
+  description String?
+  location    String?
+  start       DateTime
+  end         DateTime?
+  technology  String?
+  cvMissions    CvMissionProject[]
+
+  order       Int @default(0)  
   cv          CV @relation(fields: [cvId], references: [id], onDelete: Cascade)
   cvId        String
+
+  @@unique([cvId, title])
+  @@unique([cvId, order])
+  @@index([cvId])
+}
+
+model CvMissionProject {
+  id          String      @id @default(cuid())
+  content     String
+
+  cvProject  CvProject  @relation(fields: [cvProjectId], references: [id], onDelete: Cascade)
+  cvProjectId String
+
+  @@index([cvProjectId])
 }
 
 // === Publication ===
@@ -382,37 +515,61 @@ model Publication {
   start       DateTime
   end         DateTime?
   url         String?
-  order       Int @default(0)           
-  profile     Profile  @relation(fields: [profileId], references: [id])
+
+  order       Int @default(0)    
+  profile     Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
   profileId   String
-  cvPublications CvPublication[]
+
+  @@unique([profileId, title])
+  @@unique([profileId, order]) // pas de doublon dans un profile
+  @@index([profileId])
 }
 
 model CvPublication {
   id          String @id @default(cuid())
-  publication   Publication @relation(fields: [publicationId], references: [id])
-  publicationId String
+  title       String
+  description String?
+  journalName String?
+  start       DateTime
+  end         DateTime?
+  url         String?
+
+  order       Int @default(0)    
   cv          CV @relation(fields: [cvId], references: [id], onDelete: Cascade)
   cvId        String
+
+  @@unique([cvId, title])
+  @@unique([cvId, order])
+  @@index([cvId])
 }
 
 // === Langue ===
 model Language {
   id          String @id @default(cuid())
-  name        String
+  name        String   
   level       Level
-  profile     Profile  @relation(fields: [profileId], references: [id])
+  
+  order       Int @default(0)  
+  profile     Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
   profileId   String
-  order       Int @default(0)           
-  cvLanguages CvLanguage[]
+
+  @@unique([profileId, name])
+  @@unique([profileId, order]) // pas de doublon dans un profile
+  @@index([profileId])
 }
 
 model CvLanguage {
   id          String @id @default(cuid())
-  language   Language @relation(fields: [languageId], references: [id])
-  languageId String
+  name        String   
+  level       Level
+
+  order       Int @default(0)    
   cv          CV @relation(fields: [cvId], references: [id], onDelete: Cascade)
   cvId        String
+
+  @@unique([cvId, name])
+  @@unique([cvId, order])
+  @@index([cvId])
 }
 
 // === Passion ===
@@ -420,18 +577,28 @@ model Passion {
   id          String @id @default(cuid())
   title       String
   icon        String
-  order       Int @default(0)           
-  profile     Profile  @relation(fields: [profileId], references: [id])
+
+  order       Int @default(0)    
+  profile     Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
   profileId   String
-  cvPassions CvPassion[]
+
+  @@unique([profileId, title])
+  @@unique([profileId, order]) // pas de doublon dans un profile
+  @@index([profileId])
 }
 
 model CvPassion {
   id          String @id @default(cuid())
-  passion   Passion @relation(fields: [passionId], references: [id])
-  passionId String
+  title       String
+  icon        String
+  
+  order       Int @default(0)    
   cv          CV @relation(fields: [cvId], references: [id], onDelete: Cascade)
   cvId        String
+
+  @@unique([cvId, title])
+  @@unique([cvId, order])
+  @@index([cvId])
 }
 
 // === Social Media ===
@@ -439,18 +606,28 @@ model SocialMedia {
   id            String @id @default(cuid())
   socialNetwork String
   username      String
-  profile       Profile  @relation(fields: [profileId], references: [id])
+  
+  order         Int @default(0)   
+  profile       Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
   profileId     String
-  order         Int @default(0)           
-  cvSocialMedia CvSocialMedia[]
+
+  @@unique([profileId, socialNetwork])
+  @@unique([profileId, order]) // pas de doublon dans un profile
+  @@index([profileId])
 }
 
 model CvSocialMedia {
-  id          String @id @default(cuid())
-  socialMedia   SocialMedia @relation(fields: [socialMediaId], references: [id])
-  socialMediaId String
-  cv          CV @relation(fields: [cvId], references: [id], onDelete: Cascade)
-  cvId        String
+  id            String @id @default(cuid())
+  socialNetwork String
+  username      String
+
+  order         Int @default(0)   
+  cv            CV @relation(fields: [cvId], references: [id], onDelete: Cascade)
+  cvId          String
+
+  @@unique([cvId, socialNetwork])
+  @@unique([cvId, order])
+  @@index([cvId])
 }
 
 // === Philosophie ===
@@ -458,15 +635,16 @@ model Philosophy {
   id          String @id @default(cuid())
   citation    String
   author      String?
+
   profile     Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
   profileId   String @unique
-  cvPhilosophy CvPhilosophy?
 }
 
 model CvPhilosophy {
   id          String @id @default(cuid())
-  philosophy   Philosophy @relation(fields: [philosophyId], references: [id])
-  philosophyId String @unique
+  citation    String
+  author      String?
+
   cv          CV @relation(fields: [cvId], references: [id], onDelete: Cascade)
   cvId        String @unique
 }
@@ -476,18 +654,28 @@ model Expertise {
   id          String @id @default(cuid())
   title       String
   level       Level
-  order       Int @default(0)           
-  profile     Profile  @relation(fields: [profileId], references: [id])
+
+  order       Int @default(0)  
+  profile     Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
   profileId   String
-  cvExpertises CvExpertise[]
+
+  @@unique([profileId, title])
+  @@unique([profileId, order]) // pas de doublon dans un profile
+  @@index([profileId])
 }
 
 model CvExpertise {
   id          String @id @default(cuid())
-  expertise   Expertise @relation(fields: [expertiseId], references: [id])
-  expertiseId String
+  title       String
+  level       Level
+
+  order       Int @default(0)  
   cv          CV @relation(fields: [cvId], references: [id], onDelete: Cascade)
   cvId        String
+
+  @@unique([cvId, title])
+  @@unique([cvId, order])
+  @@index([cvId])
 }
 
 // === Prix ===
@@ -496,18 +684,29 @@ model Price {
   title       String
   domaine     String
   icon        String?
-  order       Int @default(0)           
-  profile     Profile  @relation(fields: [profileId], references: [id])
+
+  order       Int @default(0)   
+  profile     Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
   profileId   String
-  cvPrices CvPrice[]
+
+  @@unique([profileId, title])
+  @@unique([profileId, order])        
+  @@index([profileId])
 }
 
 model CvPrice {
   id          String @id @default(cuid())
-  price   Price @relation(fields: [priceId], references: [id])
-  priceId String
+  title       String
+  domaine     String
+  icon        String?
+
+  order       Int @default(0)   
   cv          CV @relation(fields: [cvId], references: [id], onDelete: Cascade)
   cvId        String
+
+  @@unique([cvId, title])
+  @@unique([cvId, order])
+  @@index([cvId])
 }
 
 // === Certification ===
@@ -515,18 +714,28 @@ model Certification {
   id          String @id @default(cuid())
   title       String
   organismeCertification String?
-  order       Int @default(0)           
-  profile     Profile  @relation(fields: [profileId], references: [id])
+
+  order       Int @default(0)   
+  profile     Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
   profileId   String
-  cvCertifications CvCertification[]
+
+  @@unique([profileId, title])
+  @@unique([profileId, order])        
+  @@index([profileId])
 }
 
 model CvCertification {
   id          String @id @default(cuid())
-  certification   Certification @relation(fields: [certificationId], references: [id])
-  certificationId String
+  title       String
+  organismeCertification String?
+
+  order       Int @default(0)   
   cv          CV @relation(fields: [cvId], references: [id], onDelete: Cascade)
   cvId        String
+
+  @@unique([cvId, title])
+  @@unique([cvId, order])
+  @@index([cvId])
 }
 
 // === Formation ===
@@ -536,18 +745,30 @@ model Formation {
   organismeFormation String?
   start       DateTime
   end         DateTime?
-  order       Int @default(0)           
-  profile     Profile  @relation(fields: [profileId], references: [id])
+  
+  order       Int @default(0)    
+  profile     Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
   profileId   String
-  cvFormations CvFormation[]
+
+  @@unique([profileId, title])
+  @@unique([profileId, order]) // pas de doublon dans un profile
+  @@index([profileId])
 }
 
 model CvFormation {
   id          String @id @default(cuid())
-  formation   Formation @relation(fields: [formationId], references: [id])
-  formationId String
+  title       String
+  organismeFormation String?
+  start       DateTime
+  end         DateTime?
+
+  order       Int @default(0)    
   cv          CV @relation(fields: [cvId], references: [id], onDelete: Cascade)
   cvId        String
+
+  @@unique([cvId, title])
+  @@unique([cvId, order])
+  @@index([cvId])
 }
 
 // === CV ===
@@ -559,6 +780,8 @@ model CV {
   template   CVTemplate @relation(fields: [templateId], references: [id])
   userId   String
   user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
   modules  CVModule[]                           // modules qui composent le CV (Skills, Experiences, Education)
   // Le reste passera par modules mais ça peut me permettre de faire des appels pour récupérer les données
   headerCv CvHeader?
@@ -572,7 +795,7 @@ model CV {
   publications CvPublication[]
   languages CvLanguage[]
   passions CvPassion[]
-  socialMedia CvSocialMedia[]
+  socialMedias CvSocialMedia[]
   philosophy CvPhilosophy?
   expertises CvExpertise[]
   prices CvPrice[]
@@ -580,12 +803,32 @@ model CV {
   formations CvFormation[]
   description CvDescription?
   competences CvCompetenceGroup[]
+
+  status CVStatus @default(DRAFT) // statut du CV, brouillon, publié, archivé
+  publishedAt DateTime?
+
+  publicSlug String? @unique // slug du CV public
+  isPublic   Boolean @default(false) // si le CV est public
+
+  isDefault Boolean @default(false) // si le CV est le CV par défaut de l'utilisateur
+  pdfUrl     String?
+  pdfVersion Int @default(0) // version du PDF
+  pdfGeneratedAt DateTime?
+
+  @@index([userId])
+  @@index([templateId])
+}
+
+enum CVStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
 }
 
 // === Template de CV ===
 model CVTemplate {
   id       String @id @default(cuid())
-  name     String                              // nom du template
+  name String @unique                          // nom du template
   structure    Json                            // structure du template (zones, sections)
   defaultStyles Json                           // styles par défaut (fontSize, color, align, show, etc.)
   cvs           CV[]                           // CVs utilisant ce template
@@ -596,18 +839,61 @@ model CVModuleItem {
   id         String @id @default(cuid())
   moduleId   String
   module     CVModule @relation(fields: [moduleId], references: [id], onDelete: Cascade)
-  itemType   String   // "cvSkillGroup", "experience", "education"
+
+  itemType   CVModuleItemType
   itemId     String   // id du cvSkill / Experience / Education
+
+  @@index([moduleId])
+  @@index([itemType, itemId])
+}
+
+enum CVModuleItemType {
+  cvSkillGroup
+  cvExperience
+  cvEducation
+  cvProject
+  cvVolunteering
+  cvPublication
+  cvAchievement
+  cvExpertise
+  cvFormation
+  cvCertification
+  cvPrice
+  cvLanguage
+  cvPassion
+  cvCompetenceGroup
+  cvDescription
 }
 
 // === Module d'un CV ===
 model CVModule {
   id       String @id @default(cuid())
   title    String?          // titre du module, optionnel
-  type     String           // type du module : "skill", "experience", "education"
+  type     CVModuleType     // type du module : "skill", "experience", "education"
   order    Int @default(0)  // position dans le CV
   cvId     String
-  cv       CV               @relation(fields: [cvId], references: [id])
+  cv       CV               @relation(fields: [cvId], references: [id], onDelete: Cascade)
   items    CVModuleItem[]   // items liés au module
   settings Json?            // personnalisations spécifiques : fontSize, color, align, show, etc.
+
+  @@unique([cvId, order]) // pas de doublon dans un cv
+  @@index([cvId])
+}
+
+enum CVModuleType {
+  skill
+  experience
+  education
+  project
+  volunteering
+  publication
+  achievement
+  expertise
+  formation
+  certification
+  price
+  language
+  passion
+  competence
+  description
 }

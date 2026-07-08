@@ -1,340 +1,336 @@
-import { describe, it, expect, beforeEach, afterAll } from 'vitest';
-import { prismaTest } from '../../lib/prismaTest';
-import { resetTestDB } from '../utils/setup';
-import { createTestUserWithCvs } from '../utils/create-test-user-with-cvs';
-import { createTestUserWithProfile } from '../utils/create-test-user-with-profile';
+import { describe, it, expect } from "vitest";
+import { prismaTest } from "../../lib/prismaTest";
+import { createTestUserWithCvs } from "../utils/create-test-user-with-cvs";
+import { createTestUserWithProfile } from "../utils/create-test-user-with-profile";
 
-describe('User model', () => {
-  // Nettoyage DB avant chaque test
-  beforeEach(async () => {
-    await resetTestDB();
-  });
+describe("User model", () => {
+	//? 18 tests pour le model User => 18 tests ok
+	// model User {
+	//   id            String    @id @default(cuid())
+	//   email         String    @unique      // email unique
+	//   name          String
+	//   password      String                      // mot de passe hashé
+	//   emailVerified DateTime?
+	//   image         String?
 
-  afterAll(async () => {
-    await prismaTest.$disconnect();
-  });
+	//   accounts      Account[]                   // NextAuth relation
+	//   sessions      Session[]
+	//   profile       Profile?                    // relation 1:1 avec le profil détaillé
+	//   cvs           CV[]                        // relation 1:N avec les CVs
+	// }
 
-  //? 18 tests pour le model User => 18 tests ok
-  // model User {
-  //   id            String    @id @default(cuid())
-  //   email         String    @unique      // email unique
-  //   name          String
-  //   password      String                      // mot de passe hashé
-  //   emailVerified DateTime?
-  //   image         String?
+	//! 1- CREATE TESTS
+	describe("CREATE", () => {
+		// 1-1: peut créer un user sans profile
+		it("should create a simple user", async () => {
+			const user = await prismaTest.user.create({
+				data: {
+					name: "Marc",
+					email: "marc@test.com", // TODO: use generateTestEmail()
+					password: "secret",
+				},
+			});
 
-  //   accounts      Account[]                   // NextAuth relation
-  //   sessions      Session[]
-  //   profile       Profile?                    // relation 1:1 avec le profil détaillé
-  //   cvs           CV[]                        // relation 1:N avec les CVs
-  // }
+			expect(user.id).toBeDefined();
+			expect(user.name).toBe("Marc");
+			expect(user.email).toBe("marc@test.com");
+		});
 
-  //! 1- CREATE TESTS
-  describe('CREATE', () => {
-    // 1-1: peut créer un user sans profile
-    it('should create a simple user', async () => {
-      const user = await prismaTest.user.create({
-        data: {
-          name: 'Marc',
-          email: 'marc@test.com', // TODO: use generateTestEmail()
-          password: 'secret',
-        },
-      });
+		// 1-2: peut créer un user avec tous les champs
+		it("should create a simple user with all fields", async () => {
+			const user = await prismaTest.user.create({
+				data: {
+					name: "Marc",
+					email: "marc@test.com",
+					password: "secret",
+					emailVerified: new Date(),
+					image: "https://example.com/image.jpg",
+				},
+			});
 
-      expect(user.id).toBeDefined();
-      expect(user.name).toBe('Marc');
-      expect(user.email).toBe('marc@test.com');
-    });
+			expect(user.id).toBeDefined();
+			expect(user.name).toBe("Marc");
+			expect(user.email).toBe("marc@test.com");
+			expect(user.emailVerified).toBeInstanceOf(Date);
+			expect(user.image).toBe("https://example.com/image.jpg");
+		});
 
-    // 1-2: peut créer un user avec tous les champs
-    it('should create a simple user with all fields', async () => {
-      const user = await prismaTest.user.create({
-        data: {
-          name: 'Marc',
-          email: 'marc@test.com',
-          password: 'secret',
-          emailVerified: new Date(),
-          image: 'https://example.com/image.jpg',
-        },
-      });
+		// 1-3: peut créer un user avec un profile
+		it("should create a user with a profile", async () => {
+			const user = await prismaTest.user.create({
+				data: {
+					name: "Charlie",
+					email: "charlie@test.com",
+					password: "123",
+					profile: {
+						create: { firstName: "Charlie", lastName: "Brown" },
+					},
+				},
+				include: { profile: true },
+			});
 
-      expect(user.id).toBeDefined();
-      expect(user.name).toBe('Marc');
-      expect(user.email).toBe('marc@test.com');
-      expect(user.emailVerified).toBeInstanceOf(Date);
-      expect(user.image).toBe('https://example.com/image.jpg');
-    });
+			expect(user.profile).toBeDefined();
+			expect(user.profile?.firstName).toBe("Charlie");
+		});
 
-    // 1-3: peut créer un user avec un profile
-    it('should create a user with a profile', async () => {
-      const user = await prismaTest.user.create({
-        data: {
-          name: 'Charlie',
-          email: 'charlie@test.com',
-          password: '123',
-          profile: {
-            create: { firstName: 'Charlie', lastName: 'Brown' },
-          },
-        },
-        include: { profile: true },
-      });
+		// 1-4: peut créer un user avec des CVs
+		it("should create user with multiple cvs", async () => {
+			const user = await createTestUserWithCvs({
+				cvs: [
+					{ title: "CV Dev", templateId: "template-1" },
+					{ title: "CV Manager", templateId: "template-2" },
+				],
+			});
 
-      expect(user.profile).toBeDefined();
-      expect(user.profile?.firstName).toBe('Charlie');
-    });
+			expect(user.cvs.length).toBe(2);
+			expect(user.cvs[0]!.title).toBe("CV Dev");
+		});
+	});
 
-    // 1-4: peut créer un user avec des CVs
-    it('should create user with multiple cvs', async () => {
-      const user = await createTestUserWithCvs({
-        cvs: [
-          { title: 'CV Dev', templateId: 'template-1' },
-          { title: 'CV Manager', templateId: 'template-2' },
-        ],
-      });
+	//! 2- CREATE ERROR TESTS
+	describe("CREATE ERRORS", () => {
+		// 2-1: ne peut pas créer un user sans email
+		it("should reject creation without email", async () => {
+			await expect(
+				// on veut volontairement passer un objet invalide pour tester l’erreur
+				// @ts-expect-error
+				prismaTest.user.create({ data: { name: "NoEmail", password: "123" } }),
+			).rejects.toThrow();
+		});
 
-      expect(user.cvs.length).toBe(2);
-      expect(user.cvs[0]!.title).toBe('CV Dev');
-    });
-  });
+		// 2-2: ne peut pas créer un user sans password
+		it("should reject creation without password", async () => {
+			await expect(
+				prismaTest.user.create({
+					// on veut volontairement passer un objet invalide pour tester l'erreur
+					// @ts-expect-error
+					data: { name: "NoPassword", email: "nopass@test.com" },
+				}),
+			).rejects.toThrow();
+		});
 
-  //! 2- CREATE ERROR TESTS
-  describe('CREATE ERRORS', () => {
-    // 2-1: ne peut pas créer un user sans email
-    it('should reject creation without email', async () => {
-      await expect(
-        // on veut volontairement passer un objet invalide pour tester l’erreur
-        // @ts-expect-error
-        prismaTest.user.create({ data: { name: 'NoEmail', password: '123' } }),
-      ).rejects.toThrow();
-    });
+		// 2-3: ne peut pas créer un user sans name
+		it("should reject creation without name", async () => {
+			await expect(
+				prismaTest.user.create({
+					// on veut volontairement passer un objet invalide pour tester l’erreur
+					// @ts-expect-error
+					data: { password: "NoPassword", email: "nopass@test.com" },
+				}),
+			).rejects.toThrow();
+		});
 
-    // 2-2: ne peut pas créer un user sans password
-    it('should reject creation without password', async () => {
-      await expect(
-        // on veut volontairement passer un objet invalide pour tester l’erreur
-        // @ts-expect-error
-        prismaTest.user.create({ data: { name: 'NoPassword', email: 'nopass@test.com' } }),
-      ).rejects.toThrow();
-    });
+		// 2-4: ne peut pas créer un user avec un email déjà existant
+		it("should reject duplicate emails", async () => {
+			await prismaTest.user.create({
+				data: { name: "Bob", email: "bob@test.com", password: "123" },
+			});
+			await expect(
+				prismaTest.user.create({
+					data: { name: "Bob2", email: "bob@test.com", password: "456" },
+				}),
+			).rejects.toThrow();
+		});
+	});
 
-    // 2-3: ne peut pas créer un user sans name
-    it('should reject creation without name', async () => {
-      await expect(
-        // on veut volontairement passer un objet invalide pour tester l’erreur
-        // @ts-expect-error
-        prismaTest.user.create({ data: { password: 'NoPassword', email: 'nopass@test.com' } }),
-      ).rejects.toThrow();
-    });
+	//! 3- UPDATE TESTS
+	describe("UPDATE", () => {
+		// 3-1: peut mettre à jour le name d'un user
+		it("should update user name", async () => {
+			const user = await prismaTest.user.create({
+				data: {
+					name: "OldName",
+					email: "update@test.com",
+					password: "123",
+				},
+			});
 
-    // 2-4: ne peut pas créer un user avec un email déjà existant
-    it('should reject duplicate emails', async () => {
-      await prismaTest.user.create({
-        data: { name: 'Bob', email: 'bob@test.com', password: '123' },
-      });
-      await expect(
-        prismaTest.user.create({ data: { name: 'Bob2', email: 'bob@test.com', password: '456' } }),
-      ).rejects.toThrow();
-    });
-  });
+			const updated = await prismaTest.user.update({
+				where: { id: user.id },
+				data: { name: "NewName" },
+			});
 
-  //! 3- UPDATE TESTS
-  describe('UPDATE', () => {
-    // 3-1: peut mettre à jour le name d'un user
-    it('should update user name', async () => {
-      const user = await prismaTest.user.create({
-        data: {
-          name: 'OldName',
-          email: 'update@test.com',
-          password: '123',
-        },
-      });
+			expect(updated.name).toBe("NewName");
+		});
 
-      const updated = await prismaTest.user.update({
-        where: { id: user.id },
-        data: { name: 'NewName' },
-      });
+		// 3-2: peut mettre à jour seulement les champs fournis
+		it("should update only provided fields", async () => {
+			const user = await prismaTest.user.create({
+				data: {
+					name: "Test",
+					email: "partial@test.com",
+					password: "123",
+				},
+			});
 
-      expect(updated.name).toBe('NewName');
-    });
+			await prismaTest.user.update({
+				where: { id: user.id },
+				data: { name: "Updated" },
+			});
 
-    // 3-2: peut mettre à jour seulement les champs fournis
-    it('should update only provided fields', async () => {
-      const user = await prismaTest.user.create({
-        data: {
-          name: 'Test',
-          email: 'partial@test.com',
-          password: '123',
-        },
-      });
+			const updated = await prismaTest.user.findUnique({
+				where: { id: user.id },
+			});
 
-      await prismaTest.user.update({
-        where: { id: user.id },
-        data: { name: 'Updated' },
-      });
+			expect(updated).not.toBeNull();
+			expect(updated!.email).toBe("partial@test.com");
+		});
 
-      const updated = await prismaTest.user.findUnique({
-        where: { id: user.id },
-      });
+		// 3-3: peut vérifier un email
+		it("should verify email", async () => {
+			const user = await prismaTest.user.create({
+				data: {
+					name: "Verify",
+					email: "verify@test.com",
+					password: "123",
+				},
+			});
 
-      expect(updated).not.toBeNull();
-      expect(updated!.email).toBe('partial@test.com');
-    });
+			const updated = await prismaTest.user.update({
+				where: { id: user.id },
+				data: { emailVerified: new Date() },
+			});
 
-    // 3-3: peut vérifier un email
-    it('should verify email', async () => {
-      const user = await prismaTest.user.create({
-        data: {
-          name: 'Verify',
-          email: 'verify@test.com',
-          password: '123',
-        },
-      });
+			expect(updated.emailVerified).toBeInstanceOf(Date);
+		});
+	});
 
-      const updated = await prismaTest.user.update({
-        where: { id: user.id },
-        data: { emailVerified: new Date() },
-      });
+	//! 4- UPDATE ERROR TESTS
+	describe("UPDATE ERRORS", () => {
+		// 4-1: ne peut pas mettre à jour un email déjà existant
+		it("should not allow updating to duplicate email", async () => {
+			const user1 = await prismaTest.user.create({
+				data: { name: "A", email: "a@test.com", password: "123" },
+			});
 
-      expect(updated.emailVerified).toBeInstanceOf(Date);
-    });
-  });
+			const user2 = await prismaTest.user.create({
+				data: { name: "B", email: "b@test.com", password: "123" },
+			});
 
-  //! 4- UPDATE ERROR TESTS
-  describe('UPDATE ERRORS', () => {
-    // 4-1: ne peut pas mettre à jour un email déjà existant
-    it('should not allow updating to duplicate email', async () => {
-      const user1 = await prismaTest.user.create({
-        data: { name: 'A', email: 'a@test.com', password: '123' },
-      });
+			await expect(
+				prismaTest.user.update({
+					where: { id: user2.id },
+					data: { email: "a@test.com" },
+				}),
+			).rejects.toThrow();
+		});
+	});
 
-      const user2 = await prismaTest.user.create({
-        data: { name: 'B', email: 'b@test.com', password: '123' },
-      });
+	//! 5- DELETE TESTS
+	describe("DELETE", () => {
+		// 5-1: peut supprimer un user
+		it("should delete a user", async () => {
+			const user = await prismaTest.user.create({
+				data: {
+					name: "Delete",
+					email: "delete@test.com",
+					password: "123",
+				},
+			});
 
-      await expect(
-        prismaTest.user.update({
-          where: { id: user2.id },
-          data: { email: 'a@test.com' },
-        }),
-      ).rejects.toThrow();
-    });
-  });
+			await prismaTest.user.delete({
+				where: { id: user.id },
+			});
 
-  //! 5- DELETE TESTS
-  describe('DELETE', () => {
-    // 5-1: peut supprimer un user
-    it('should delete a user', async () => {
-      const user = await prismaTest.user.create({
-        data: {
-          name: 'Delete',
-          email: 'delete@test.com',
-          password: '123',
-        },
-      });
+			const deleted = await prismaTest.user.findUnique({
+				where: { id: user.id },
+			});
+			expect(deleted).toBeNull();
+		});
 
-      await prismaTest.user.delete({
-        where: { id: user.id },
-      });
+		// 5-2: peut supprimer un user avec des CVs
+		it("should delete cvs when user is deleted", async () => {
+			const user = await createTestUserWithCvs({
+				cvs: [
+					{ title: "CV Dev", templateId: "template-1" },
+					{ title: "CV Manager", templateId: "template-2" },
+				],
+			});
 
-      const deleted = await prismaTest.user.findUnique({
-        where: { id: user.id },
-      });
-      expect(deleted).toBeNull();
-    });
+			expect(user.cvs.length).toBe(2);
 
-    // 5-2: peut supprimer un user avec des CVs
-    it('should delete cvs when user is deleted', async () => {
-      const user = await createTestUserWithCvs({
-        cvs: [
-          { title: 'CV Dev', templateId: 'template-1' },
-          { title: 'CV Manager', templateId: 'template-2' },
-        ],
-      });
+			await prismaTest.user.delete({
+				where: { id: user.id },
+			});
 
-      expect(user.cvs.length).toBe(2);
+			const cvs = await prismaTest.cV.findMany();
+			expect(cvs.length).toBe(0);
+		});
 
-      await prismaTest.user.delete({
-        where: { id: user.id },
-      });
+		// 5-3: peut supprimer un user avec un profile
+		it("should delete profile when user is deleted", async () => {
+			const user = await createTestUserWithProfile();
 
-      const cvs = await prismaTest.cV.findMany();
-      expect(cvs.length).toBe(0);
-    });
+			await prismaTest.user.delete({
+				where: { id: user.id },
+			});
 
-    // 5-3: peut supprimer un user avec un profile
-    it('should delete profile when user is deleted', async () => {
-      const user = await createTestUserWithProfile();
+			const profile = await prismaTest.profile.findUnique({
+				where: { userId: user.id },
+			});
+			expect(profile).toBeNull();
+		});
+	});
 
-      await prismaTest.user.delete({
-        where: { id: user.id },
-      });
+	//! 6- RELATIONS TESTS
+	describe("RELATIONS", () => {
+		// 6-1: ne peut pas créer deux profiles pour le même user
+		it("should not allow two profiles for the same user", async () => {
+			const user = await prismaTest.user.create({
+				data: {
+					name: "Test",
+					email: "profile@test.com",
+					password: "123",
+					profile: {
+						create: { firstName: "John", lastName: "Doe" },
+					},
+				},
+			});
 
-      const profile = await prismaTest.profile.findUnique({
-        where: { userId: user.id },
-      });
-      expect(profile).toBeNull();
-    });
-  });
+			await expect(
+				prismaTest.profile.create({
+					data: {
+						firstName: "Jane",
+						lastName: "Doe",
+						user: { connect: { id: user.id } },
+					},
+				}),
+			).rejects.toThrow();
+		});
 
-  //! 6- RELATIONS TESTS
-  describe('RELATIONS', () => {
-    // 6-1: ne peut pas créer deux profiles pour le même user
-    it('should not allow two profiles for the same user', async () => {
-      const user = await prismaTest.user.create({
-        data: {
-          name: 'Test',
-          email: 'profile@test.com',
-          password: '123',
-          profile: {
-            create: { firstName: 'John', lastName: 'Doe' },
-          },
-        },
-      });
+		// 6-2: peut lier des CVs à un user
+		it("should link cvs to correct user", async () => {
+			const user = await createTestUserWithCvs({
+				cvs: [{ title: "CV1", templateId: "t1" }],
+			});
 
-      await expect(
-        prismaTest.profile.create({
-          data: {
-            firstName: 'Jane',
-            lastName: 'Doe',
-            user: { connect: { id: user.id } },
-          },
-        }),
-      ).rejects.toThrow();
-    });
+			const cv = await prismaTest.cV.findFirst({
+				where: { userId: user.id },
+			});
 
-    // 6-2: peut lier des CVs à un user
-    it('should link cvs to correct user', async () => {
-      const user = await createTestUserWithCvs({
-        cvs: [{ title: 'CV1', templateId: 't1' }],
-      });
+			expect(cv!.userId).toBe(user.id);
+		});
 
-      const cv = await prismaTest.cV.findFirst({
-        where: { userId: user.id },
-      });
+		// 6-3: peut lier un profile à un user
+		it("should link profile to correct user", async () => {
+			const user = await createTestUserWithProfile();
 
-      expect(cv!.userId).toBe(user.id);
-    });
+			const profile = await prismaTest.profile.findUnique({
+				where: { userId: user.id },
+			});
 
-    // 6-3: peut lier un profile à un user
-    it('should link profile to correct user', async () => {
-      const user = await createTestUserWithProfile();
+			expect(profile!.userId).toBe(user.id);
+		});
+	});
 
-      const profile = await prismaTest.profile.findUnique({
-        where: { userId: user.id },
-      });
-
-      expect(profile!.userId).toBe(user.id);
-    });
-  });
-
-  // // ne peut pas créer un user sans un des champs obligatoires
-  // describe('User required fields', () => {
-  //   it.each([
-  //     [{ name: 'Alice', password: 'secret' }, 'email'], // email manquant
-  //     [{ email: 'alice@test.com', password: 'secret' }, 'name'], // name manquant
-  //     [{ name: 'Alice', email: 'alice@test.com' }, 'password'], // password manquant
-  //   ])('should reject creating a user without %s', async (userData, missingField) => {
-  //     await expect(prismaTest.user.create({ data: userData })).rejects.toThrow();
-  //   });
-  // });
+	// // ne peut pas créer un user sans un des champs obligatoires
+	// describe('User required fields', () => {
+	//   it.each([
+	//     [{ name: 'Alice', password: 'secret' }, 'email'], // email manquant
+	//     [{ email: 'alice@test.com', password: 'secret' }, 'name'], // name manquant
+	//     [{ name: 'Alice', email: 'alice@test.com' }, 'password'], // password manquant
+	//   ])('should reject creating a user without %s', async (userData, missingField) => {
+	//     await expect(prismaTest.user.create({ data: userData })).rejects.toThrow();
+	//   });
+	// });
 });

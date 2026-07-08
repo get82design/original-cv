@@ -1,12 +1,11 @@
 generator client {
   provider = "prisma-client"
-  output   = "../generated/prisma-test"
-  engineType = "binary"   
+  output   = "../generated/prisma"
 }
 
 datasource db {
-  provider = "sqlite"
-//   url      = "file:./test.db"
+  provider = "postgresql"
+  url      = env("DATABASE_TEST_URL")
 }
 
 // === Colors ===
@@ -102,13 +101,13 @@ enum Level {
 model CvHeader {
   id          String @id @default(cuid())
   title       String
-  subtitle    String
-  phone       String
-  email       String
-  location    String
-  portfolio   String
-  nom         String
-  prenom      String
+  subtitle    String?
+  phone       String?
+  email       String?
+  location    String?
+  portfolio   String?
+  nom         String?
+  prenom      String?
 
   cv          CV @relation(fields: [cvId], references: [id], onDelete: Cascade)
   cvId        String @unique
@@ -829,7 +828,7 @@ enum CVStatus {
 // === Template de CV ===
 model CVTemplate {
   id       String @id @default(cuid())
-  name     String                              // nom du template
+  name String @unique                          // nom du template
   structure    Json                            // structure du template (zones, sections)
   defaultStyles Json                           // styles par défaut (fontSize, color, align, show, etc.)
   cvs           CV[]                           // CVs utilisant ce template
