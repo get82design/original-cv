@@ -282,9 +282,17 @@ describe("Project model", () => {
 
 			const projectId = user.profile.projects![0]!.id;
 
-			await prismaTest.project.update({
-				where: { id: projectId },
-				data: { missions: { create: [{ content: "m2" }] } },
+			// await prismaTest.project.update({
+			// 	where: { id: projectId },
+			// 	data: { missions: { create: [{ content: "m2" }] } },
+			// });
+
+			await prismaTest.missionProject.create({
+				data: {
+					projectId,
+					content: "m2",
+					order: 2,
+				},
 			});
 
 			const updatedProject = await prismaTest.project.findUnique({

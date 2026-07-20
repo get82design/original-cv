@@ -8,5 +8,14 @@ export default defineConfig({
 		isolate: false,
 		include: ["**/__tests__/**/*.test.ts"],
 		setupFiles: ["./__tests__/utils/setup.ts"],
+		coverage: {
+			provider: "v8",
+			reporter: ["text", "html", "json-summary"],
+			include: ["src/**/*.ts"],
+			exclude: [
+				"src/**/*.d.ts",
+				"src/**/dto/**", // optionnel : exclure les DTOs
+			],
+		},
 	},
 });

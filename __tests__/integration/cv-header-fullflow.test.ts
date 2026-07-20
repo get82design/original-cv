@@ -2,7 +2,7 @@ import { describe, it, expect } from "vitest";
 import { prismaTest } from "../../lib/prismaTest";
 import * as utils from "../utils/create-test-cv-full-flow";
 
-describe("CV Fullflow Integration with competences", () => {
+describe("CV Fullflow Integration with header", () => {
 	it("should create a CV with header", async () => {
 		const { user, template } = await utils.createUserAndTemplate();
 		const cv = await utils.createCV(user.id, template.id);

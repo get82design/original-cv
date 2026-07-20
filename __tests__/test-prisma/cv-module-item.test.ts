@@ -44,6 +44,7 @@ describe("CvModule model", () => {
 					moduleId: module.id,
 					itemType: "cvSkillGroup",
 					itemId: "item1",
+					order: 1,
 				},
 			});
 
@@ -52,6 +53,7 @@ describe("CvModule model", () => {
 					moduleId: module.id,
 					itemType: "cvSkillGroup",
 					itemId: "item2",
+					order: 2,
 				},
 			});
 

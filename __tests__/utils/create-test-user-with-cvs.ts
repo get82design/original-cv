@@ -20,24 +20,26 @@ export async function createTestUserWithCvs(options?: TestUserWithCvsOptions) {
 			...(options?.cvs && {
 				cvs: {
 					create: await Promise.all(
-						options.cvs.map(async (cv) => {
+						options.cvs.map(async (cv, index) => {
 							const template = await prismaTest.cVTemplate.create({
 								data: {
-									name: `${cv.templateId}-${Date.now()}`,
-									structure: {
-										create: {
-											title: "Header",
-											order: 0,
-										},
-									},
-									defaultStyles: {
-										create: {
-											fontSize: 16,
-											color: "black",
-											align: "left",
-											show: true,
-										},
-									},
+									name: `${cv.templateId}-${index}-${Date.now()}`,
+									structure: { sections: ["header", "skills"] },
+									defaultStyles: { fontSize: 12, color: "black" },
+									// structure: {
+									// 	create: {
+									// 		title: "Header",
+									// 		order: 0,
+									// 	},
+									// },
+									// defaultStyles: {
+									// 	create: {
+									// 		fontSize: 16,
+									// 		color: "black",
+									// 		align: "left",
+									// 		show: true,
+									// 	},
+									// },
 								},
 							});
 

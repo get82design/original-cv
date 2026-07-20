@@ -6,8 +6,12 @@ import {
 } from "../../utils/create-test-cv-full-flow";
 import { createTestUser } from "../../utils/create-test-user";
 import { createTestTemplate } from "../../utils/create-test-template";
-import { ForbiddenError, NotFoundError } from "../../../src/services/errors";
-import { Level } from "../../../generated/prisma/client";
+import {
+	AppError,
+	ForbiddenError,
+	NotFoundError,
+} from "../../../src/services/errors";
+import { CvTimelineStatus, Level } from "../../../generated/prisma/client";
 import { prismaTest } from "../../../lib/prismaTest";
 
 const createCvAndReturnResult = async () => {
@@ -71,6 +75,19 @@ describe("CvService.create", () => {
 				title: "Mon CV",
 			}),
 		).rejects.toThrow(NotFoundError);
+	});
+
+	it("throws if CV already exists", async () => {
+		const user = await createTestUser();
+		const template = await createTestTemplate();
+		const cv = await createCV(user.id, template.id);
+		await expect(
+			cvService.create({
+				userId: user.id,
+				templateId: template.id,
+				title: "Fullflow CV",
+			}),
+		).rejects.toThrow(AppError);
 	});
 });
 
@@ -173,12 +190,12 @@ describe("CvService.findById", () => {
 		});
 	});
 
-	// TEST 10 : Charger prices
-	it("should load prices", async () => {
+	// TEST 10 : Charger prizes
+	it("should load prizes", async () => {
 		const { result } = await createCvAndReturnResult();
-		expect(result!.prices.length).toBe(1);
-		expect(result!.prices[0]).toMatchObject({
-			title: "Mon Price",
+		expect(result!.prizes.length).toBe(1);
+		expect(result!.prizes[0]).toMatchObject({
+			title: "Mon Prize",
 			domaine: "Mon Domaine",
 			order: 1,
 			icon: "Mon Icon",
@@ -313,7 +330,7 @@ describe("CvService.findById", () => {
 			start: dateStart,
 			end: dateEnd,
 			city: "Mon City",
-			obtained: true,
+			obtained: CvTimelineStatus.COMPLETED,
 			order: 1,
 		});
 	});

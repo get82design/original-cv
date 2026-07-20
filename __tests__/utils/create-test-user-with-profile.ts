@@ -22,24 +22,24 @@ import type {
 	SocialMedia,
 	Philosophy,
 	Expertise,
-	Price,
+	Prize,
 	Certification,
 	Formation,
 	User,
 } from "../../generated/prisma/client";
-import type { Level } from "../../generated/prisma/enums";
+import type { CvTimelineStatus, Level } from "../../generated/prisma/enums";
 import { prismaTest } from "../../lib/prismaTest";
 
 export type SkillGroupInput = {
 	title: string;
 	order: number;
-	skills: { name: string; level: Level }[];
+	skills: { name: string; level: Level; order: number }[];
 };
 
 export type CompetenceGroupInput = {
 	title: string;
 	order: number;
-	competences: { name: string }[];
+	competences: { name: string; order: number }[];
 };
 
 type TestUserOptions = {
@@ -61,9 +61,9 @@ type TestUserOptions = {
 		school: string;
 		degree: string;
 		start: Date;
-		end: Date;
-		obtained: boolean;
+		end?: Date;
 		order: number;
+		obtained?: CvTimelineStatus | null;
 	}[];
 	achievements?: {
 		title: string;
@@ -130,7 +130,7 @@ type TestUserOptions = {
 		level: Level;
 		order: number;
 	}[];
-	prices?: {
+	prizes?: {
 		title: string;
 		domaine: string;
 		icon?: string;
@@ -147,6 +147,7 @@ type TestUserOptions = {
 		start: Date;
 		end?: Date;
 		order: number;
+		status?: CvTimelineStatus | null;
 	}[];
 };
 
@@ -181,6 +182,7 @@ export async function createTestUserWithProfile(options?: TestUserOptions) {
 								skills: {
 									create: group.skills.map((s) => ({
 										level: s.level,
+										order: s.order,
 										skill: {
 											connectOrCreate: {
 												where: { name: s.name.toLowerCase() },
@@ -201,6 +203,7 @@ export async function createTestUserWithProfile(options?: TestUserOptions) {
 								order: group.order,
 								competences: {
 									create: group.competences.map((c) => ({
+										order: c.order,
 										competence: {
 											connectOrCreate: {
 												where: { name: c.name },
@@ -224,9 +227,14 @@ export async function createTestUserWithProfile(options?: TestUserOptions) {
 								end: e.end,
 								location: e.location,
 								order: e.order,
-								missions: {
-									create: e.missions.map((m) => ({ content: m })),
-								},
+								...(e.missions && {
+									missions: {
+										create: e.missions.map((m, index) => ({
+											content: m,
+											order: index + 1,
+										})),
+									},
+								}),
 							})),
 						},
 					}),
@@ -240,8 +248,8 @@ export async function createTestUserWithProfile(options?: TestUserOptions) {
 								degree: e.degree,
 								start: e.start,
 								end: e.end,
-								obtained: e.obtained,
 								order: e.order,
+								obtained: e.obtained ?? null,
 							})),
 						},
 					}),
@@ -280,9 +288,14 @@ export async function createTestUserWithProfile(options?: TestUserOptions) {
 								start: v.start,
 								end: v.end,
 								location: v.location,
-								missions: {
-									create: v.missions.map((m) => ({ content: m })),
-								},
+								...(v.missions && {
+									missions: {
+										create: v.missions.map((m, index) => ({
+											content: m,
+											order: index + 1,
+										})),
+									},
+								}),
 								order: v.order,
 							})),
 						},
@@ -300,7 +313,10 @@ export async function createTestUserWithProfile(options?: TestUserOptions) {
 								technology: p.technology,
 								...(p.missions && {
 									missions: {
-										create: p.missions.map((m) => ({ content: m })),
+										create: p.missions.map((m, index) => ({
+											content: m,
+											order: index + 1,
+										})),
 									},
 								}),
 								order: p.order,
@@ -377,10 +393,10 @@ export async function createTestUserWithProfile(options?: TestUserOptions) {
 						},
 					}),
 
-					// PRICES
-					...(options?.prices && {
-						prices: {
-							create: options.prices.map((p) => ({
+					// PRIzES
+					...(options?.prizes && {
+						prizes: {
+							create: options.prizes.map((p) => ({
 								title: p.title,
 								domaine: p.domaine,
 								icon: p.icon,
@@ -458,7 +474,7 @@ export async function createTestUserWithProfile(options?: TestUserOptions) {
 					socialMedias: true,
 					philosophy: true,
 					expertises: true,
-					prices: true,
+					prizes: true,
 					certifications: true,
 					formations: true,
 				},
@@ -493,7 +509,7 @@ export async function createTestUserWithProfile(options?: TestUserOptions) {
 			socialMedias: SocialMedia[];
 			philosophy: Philosophy;
 			expertises: Expertise[];
-			prices: Price[];
+			prizes: Prize[];
 			certifications: Certification[];
 			formations: Formation[];
 		};
@@ -578,11 +594,11 @@ export async function createEducation(
 	degree: string,
 	start: Date,
 	end: Date,
-	obtained: boolean,
 	order: number,
+	obtained: CvTimelineStatus | null,
 ) {
 	return prismaTest.education.create({
-		data: { profileId, title, school, degree, start, end, obtained, order },
+		data: { profileId, title, school, degree, start, end, order, obtained },
 	});
 }
 
@@ -672,15 +688,15 @@ export async function createPhilosophy(
 	});
 }
 
-// === PRICE ===
-export async function createPrice(
+// === PRIzE ===
+export async function createPrize(
 	profileId: string,
 	title: string,
 	domaine: string,
 	order: number,
 	icon?: string | null,
 ) {
-	return prismaTest.price.create({
+	return prismaTest.prize.create({
 		data: { profileId, title, domaine, icon: icon ?? null, order },
 	});
 }
@@ -706,7 +722,12 @@ export async function createProject(
 			location: location ?? null,
 			end: end ?? null,
 			technology: technology ?? null,
-			missions: { create: missions.map((m) => ({ content: m })) },
+			missions: {
+				create: missions.map((m, index) => ({
+					content: m,
+					order: index + 1,
+				})),
+			},
 			order,
 		},
 	});

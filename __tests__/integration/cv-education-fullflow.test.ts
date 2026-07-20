@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { prismaTest } from "../../lib/prismaTest";
 import * as utils from "../utils/create-test-cv-full-flow";
+import { CvTimelineStatus } from "../../generated/prisma/enums";
 
 describe("CV Fullflow Integration with education", () => {
 	it("should create a CV with education", async () => {
@@ -16,7 +17,7 @@ describe("CV Fullflow Integration with education", () => {
 			start,
 			end,
 			"Paris",
-			true,
+			CvTimelineStatus.COMPLETED,
 			1,
 		);
 		expect(education.cvId).toBe(cv.id);
@@ -26,7 +27,7 @@ describe("CV Fullflow Integration with education", () => {
 		expect(education.start).toEqual(start);
 		expect(education.end).toEqual(end);
 		expect(education.city).toBe("Paris");
-		expect(education.obtained).toBe(true);
+		expect(education.obtained).toBe(CvTimelineStatus.COMPLETED);
 		expect(education.order).toBe(1);
 	});
 
@@ -41,7 +42,7 @@ describe("CV Fullflow Integration with education", () => {
 			new Date(),
 			new Date(),
 			"Paris",
-			true,
+			CvTimelineStatus.COMPLETED,
 			1,
 		);
 		await prismaTest.cV.delete({ where: { id: cv.id } });

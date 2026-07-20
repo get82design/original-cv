@@ -2,9 +2,9 @@ import { describe, expect, it } from "vitest";
 import { createTestCV } from "../utils/create-test-cv";
 import { prismaTest } from "../../lib/prismaTest";
 
-describe("CvPrice model", () => {
-	//? 4 tests pour le model CvPrice => 4 tests ok
-	// model CvPrice {
+describe("CvPrize model", () => {
+	//? 4 tests pour le model CvPrize => 4 tests ok
+	// model CvPrize {
 	//   id          String @id @default(cuid())
 	//   title       String
 	//   domaine     String
@@ -16,7 +16,7 @@ describe("CvPrice model", () => {
 
 	it("should create price for CV", async () => {
 		const { cv } = await createTestCV();
-		const price = await prismaTest.cvPrice.create({
+		const price = await prismaTest.cvPrize.create({
 			data: { title: "Price 1", domaine: "Domaine 1", order: 1, cvId: cv.id },
 		});
 		expect(price.title).toBe("Price 1");
@@ -25,11 +25,11 @@ describe("CvPrice model", () => {
 
 	it("should not allow duplicate order in same CV", async () => {
 		const { cv } = await createTestCV();
-		await prismaTest.cvPrice.create({
+		await prismaTest.cvPrize.create({
 			data: { title: "Price 1", domaine: "Domaine 1", order: 1, cvId: cv.id },
 		});
 		await expect(
-			prismaTest.cvPrice.create({
+			prismaTest.cvPrize.create({
 				data: { title: "Price 2", domaine: "Domaine 2", order: 1, cvId: cv.id },
 			}),
 		).rejects.toThrow();
@@ -38,23 +38,23 @@ describe("CvPrice model", () => {
 	it("should allow same order in different CVs", async () => {
 		const { cv: cv1 } = await createTestCV();
 		const { cv: cv2 } = await createTestCV();
-		await prismaTest.cvPrice.create({
+		await prismaTest.cvPrize.create({
 			data: { title: "Price 1", domaine: "Domaine 1", order: 1, cvId: cv1.id },
 		});
-		await prismaTest.cvPrice.create({
+		await prismaTest.cvPrize.create({
 			data: { title: "Price 1", domaine: "Domaine 1", order: 1, cvId: cv2.id },
 		});
-		const all = await prismaTest.cvPrice.findMany();
+		const all = await prismaTest.cvPrize.findMany();
 		expect(all.length).toBe(2);
 	});
 
 	it("should delete expertises when CV is deleted", async () => {
 		const { cv } = await createTestCV();
-		await prismaTest.cvPrice.create({
+		await prismaTest.cvPrize.create({
 			data: { title: "Price 1", domaine: "Domaine 1", order: 1, cvId: cv.id },
 		});
 		await prismaTest.cV.delete({ where: { id: cv.id } });
-		const remaining = await prismaTest.cvPrice.findMany({
+		const remaining = await prismaTest.cvPrize.findMany({
 			where: { cvId: cv.id },
 		});
 		expect(remaining.length).toBe(0);

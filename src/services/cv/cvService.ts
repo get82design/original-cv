@@ -1,6 +1,5 @@
 import { prisma } from "../../../lib/prisma";
-import type { CreateCvDto } from "../dto/CreateCvDto";
-import type { UpdateCvDto } from "../dto/UpdateCvDto";
+import type { CreateCvDto, UpdateCvDto } from "../dto/CvDto";
 import { ForbiddenError, NotFoundError } from "../errors";
 import { AppError } from "../errors/AppError";
 
@@ -81,7 +80,7 @@ export class CvService {
 				socialMedias: true,
 				philosophy: true,
 				expertises: true,
-				prices: true,
+				prizes: true,
 				certifications: true,
 				formations: true,
 			},

@@ -1,6 +1,5 @@
 import { prisma } from "../../../lib/prisma";
-import type { CreateProfileDto } from "../dto/CreateProfileDto";
-import type { UpdateProfileDto } from "../dto/UpdateProfileDto";
+import type { CreateProfileDto, UpdateProfileDto } from "../dto/ProfileDto";
 import { ConflictError, NotFoundError } from "../errors";
 
 export class ProfileService {
@@ -80,7 +79,7 @@ export class ProfileService {
 				socialMedias: true,
 				philosophy: true,
 				expertises: true,
-				prices: true,
+				prizes: true,
 				certifications: true,
 				formations: true,
 				competences: {

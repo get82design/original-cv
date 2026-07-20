@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { cvTemplateService } from "../../../src/services/cv/cvTemplateSevice";
+import { cvTemplateService } from "../../../src/services/cv/cvTemplateService";
 import { ConflictError, NotFoundError } from "../../../src/services/errors";
 
 describe("CvTemplateService.create", () => {

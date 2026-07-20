@@ -81,10 +81,10 @@ describe("CvCompetence models", () => {
 			});
 
 			await prismaTest.cvCompetence.create({
-				data: { groupId: group.id, competenceId: c1.id },
+				data: { groupId: group.id, competenceId: c1.id, order: 1 },
 			});
 			await prismaTest.cvCompetence.create({
-				data: { groupId: group.id, competenceId: c2.id },
+				data: { groupId: group.id, competenceId: c2.id, order: 2 },
 			});
 
 			const competences = await prismaTest.cvCompetence.findMany({

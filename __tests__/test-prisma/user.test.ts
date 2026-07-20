@@ -2,6 +2,7 @@ import { describe, it, expect } from "vitest";
 import { prismaTest } from "../../lib/prismaTest";
 import { createTestUserWithCvs } from "../utils/create-test-user-with-cvs";
 import { createTestUserWithProfile } from "../utils/create-test-user-with-profile";
+import { PlanRole } from "../../generated/prisma/enums";
 
 describe("User model", () => {
 	//? 18 tests pour le model User => 18 tests ok
@@ -53,6 +54,14 @@ describe("User model", () => {
 			expect(user.email).toBe("marc@test.com");
 			expect(user.emailVerified).toBeInstanceOf(Date);
 			expect(user.image).toBe("https://example.com/image.jpg");
+			expect(user.plan).toBe(PlanRole.FREE);
+			expect(user.downloadCredits).toBe(0);
+			expect(user.maxCvs).toBe(1);
+			expect(user.iaRequestsUsed).toBe(0);
+			expect(user.isActive).toBe(true);
+			expect(user.createdAt).toBeInstanceOf(Date);
+			expect(user.updatedAt).toBeInstanceOf(Date);
+			expect(user.lastIaReset).toBeInstanceOf(Date);
 		});
 
 		// 1-3: peut créer un user avec un profile
@@ -98,27 +107,23 @@ describe("User model", () => {
 			).rejects.toThrow();
 		});
 
-		// 2-2: ne peut pas créer un user sans password
-		it("should reject creation without password", async () => {
-			await expect(
-				prismaTest.user.create({
-					// on veut volontairement passer un objet invalide pour tester l'erreur
-					// @ts-expect-error
-					data: { name: "NoPassword", email: "nopass@test.com" },
-				}),
-			).rejects.toThrow();
-		});
+		// // 2-2: ne peut pas créer un user sans password
+		// it("should reject creation without password", async () => { //! Plus d'actualité
+		// 	await expect(
+		// 		prismaTest.user.create({
+		// 			data: { name: "NoPassword", email: "nopass@test.com" },
+		// 		}),
+		// 	).rejects.toThrow();
+		// });
 
-		// 2-3: ne peut pas créer un user sans name
-		it("should reject creation without name", async () => {
-			await expect(
-				prismaTest.user.create({
-					// on veut volontairement passer un objet invalide pour tester l’erreur
-					// @ts-expect-error
-					data: { password: "NoPassword", email: "nopass@test.com" },
-				}),
-			).rejects.toThrow();
-		});
+		// // 2-3: ne peut pas créer un user sans name
+		// it("should reject creation without name", async () => { //! Plus d'actualité
+		// 	await expect(
+		// 		prismaTest.user.create({
+		// 			data: { password: "NoPassword", email: "nopass@test.com" },
+		// 		}),
+		// 	).rejects.toThrow();
+		// });
 
 		// 2-4: ne peut pas créer un user avec un email déjà existant
 		it("should reject duplicate emails", async () => {

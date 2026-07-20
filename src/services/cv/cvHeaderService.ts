@@ -1,6 +1,5 @@
 import { prisma } from "../../../lib/prisma";
-import type { CreateCvHeaderDto } from "../dto/CreateCvHeaderDto";
-import type { UpdateCvHeaderDto } from "../dto/UpdateCvHeaderDto";
+import type { CreateCvHeaderDto, UpdateCvHeaderDto } from "../dto/CvHeaderDto";
 import { ConflictError, NotFoundError } from "../errors";
 
 export class CvHeaderService {

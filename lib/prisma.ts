@@ -9,4 +9,22 @@ import { PrismaClient } from "../generated/prisma/client";
 
 // export { prisma };
 
-export const prisma = new PrismaClient();
+// export const prisma = new PrismaClient();
+
+function resolveDatabaseUrl(): string {
+	const isTest =
+		process.env.VITEST === "true" || process.env.NODE_ENV === "test";
+	if (isTest) {
+		if (!process.env.DATABASE_TEST_URL) {
+			throw new Error("DATABASE_TEST_URL is not defined");
+		}
+		return process.env.DATABASE_TEST_URL;
+	}
+	if (!process.env.DATABASE_URL) {
+		throw new Error("DATABASE_URL is not defined");
+	}
+	return process.env.DATABASE_URL;
+}
+export const prisma = new PrismaClient({
+	datasources: { db: { url: resolveDatabaseUrl() } },
+});

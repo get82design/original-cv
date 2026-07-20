@@ -44,7 +44,7 @@ describe("Competence model", () => {
 					{
 						title: "Langages",
 						order: 1,
-						competences: [{ name: "TypeScript" }],
+						competences: [{ name: "TypeScript", order: 1 }],
 					},
 				],
 			});
@@ -74,7 +74,7 @@ describe("Competence model", () => {
 					{
 						title: "Langages",
 						order: 1,
-						competences: [{ name: "typescript" }],
+						competences: [{ name: "typescript", order: 1 }],
 					},
 				],
 			});
@@ -84,7 +84,7 @@ describe("Competence model", () => {
 					{
 						title: "Frontend",
 						order: 1,
-						competences: [{ name: "typescript" }],
+						competences: [{ name: "typescript", order: 1 }],
 					},
 				],
 			});
@@ -153,7 +153,7 @@ describe("Competence model", () => {
 					{
 						title: "Langages",
 						order: 1,
-						competences: [{ name: "TypeScript" }],
+						competences: [{ name: "TypeScript", order: 1 }],
 					},
 				],
 			});
@@ -195,7 +195,7 @@ describe("Competence model", () => {
 					{
 						title: "Langages",
 						order: 1,
-						competences: [{ name: "TypeScript" }],
+						competences: [{ name: "TypeScript", order: 1 }],
 					},
 				],
 			});
@@ -219,7 +219,7 @@ describe("Competence model", () => {
 					{
 						title: "Langages",
 						order: 1,
-						competences: [{ name: "TypeScript" }],
+						competences: [{ name: "TypeScript", order: 1 }],
 					},
 				],
 			});
@@ -240,7 +240,10 @@ describe("Competence model", () => {
 					{
 						title: "Langages",
 						order: 1,
-						competences: [{ name: "TypeScript" }, { name: "React" }],
+						competences: [
+							{ name: "TypeScript", order: 1 },
+							{ name: "React", order: 2 },
+						],
 					},
 				],
 			});
@@ -267,7 +270,7 @@ describe("Competence model", () => {
 					{
 						title: "Langages",
 						order: 1,
-						competences: [{ name: "TypeScript" }],
+						competences: [{ name: "TypeScript", order: 1 }],
 					},
 				],
 			});
@@ -292,7 +295,7 @@ describe("Competence model", () => {
 					{
 						title: "Langages",
 						order: 1,
-						competences: [{ name: "TypeScript" }],
+						competences: [{ name: "TypeScript", order: 1 }],
 					},
 				],
 			});

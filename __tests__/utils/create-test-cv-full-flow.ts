@@ -3,7 +3,7 @@ import type {
 	CVModuleItemType,
 	CVModuleType,
 } from "../../generated/prisma/client";
-import { Level } from "../../generated/prisma/enums";
+import { CvTimelineStatus, Level } from "../../generated/prisma/enums";
 import { prismaTest } from "../../lib/prismaTest";
 import { createTestTemplate } from "./create-test-template";
 import { createTestUser } from "./create-test-user";
@@ -134,7 +134,7 @@ export async function createEducation(
 	start: Date,
 	end: Date,
 	city: string,
-	obtained: boolean,
+	obtained: CvTimelineStatus | null,
 	order: number,
 ) {
 	return prismaTest.cvEducation.create({
@@ -276,15 +276,15 @@ export async function createPhilosophy(
 	});
 }
 
-// === PRICES ===
-export async function createPrice(
+// === PRIzES ===
+export async function createPrize(
 	cvId: string,
 	title: string,
 	domaine: string,
 	order: number,
 	icon?: string | null,
 ) {
-	return prismaTest.cvPrice.create({
+	return prismaTest.cvPrize.create({
 		data: { cvId, title, domaine, icon: icon ?? null, order },
 	});
 }
@@ -449,7 +449,7 @@ export async function buildCvComplete(
 	await createLanguage(cvId, "Mon Language", Level.Intermédiaire, 1);
 	await createPassion(cvId, "Mon Passion", "Mon Icon", 1);
 	await createPhilosophy(cvId, "Mon Citation", "Mon Auteur");
-	await createPrice(cvId, "Mon Price", "Mon Domaine", 1, "Mon Icon");
+	await createPrize(cvId, "Mon Prize", "Mon Domaine", 1, "Mon Icon");
 	const project = await createProject(
 		cvId,
 		"Mon Project",
@@ -518,7 +518,7 @@ export async function buildCvComplete(
 		dateStart,
 		dateEnd,
 		"Mon City",
-		true,
+		CvTimelineStatus.COMPLETED,
 		1,
 	);
 }

@@ -29,10 +29,12 @@ describe("Skill model", () => {
 	//   level        Level
 	//   skill        Skill  @relation(fields: [skillId], references: [id])
 	//   skillId      String
+	//   order        Int @default(0)
 	//   group        ProfileSkillGroup @relation(fields: [groupId], references: [id], onDelete: Cascade)
 	//   groupId      String
 
 	//   @@unique([groupId, skillId]) // pas de doublon dans un groupe
+	//   @@unique([groupId, order])
 	// }
 
 	//! 1- CREATE TESTS
@@ -45,14 +47,14 @@ describe("Skill model", () => {
 						title: "Langages",
 						order: 1,
 						skills: [
-							{ name: "TypeScript", level: Level.Junior },
-							{ name: "Prisma", level: Level.Intermédiaire },
+							{ name: "TypeScript", level: Level.Junior, order: 1 },
+							{ name: "Prisma", level: Level.Intermédiaire, order: 2 },
 						],
 					},
 					{
 						title: "Frameworks",
 						order: 2,
-						skills: [{ name: "React", level: Level.Senior }],
+						skills: [{ name: "React", level: Level.Senior, order: 1 }],
 					},
 				],
 			});
@@ -75,7 +77,7 @@ describe("Skill model", () => {
 					{
 						title: "Langages",
 						order: 1,
-						skills: [{ name: "TypeScript", level: Level.Junior }],
+						skills: [{ name: "TypeScript", level: Level.Junior, order: 1 }],
 					},
 				],
 			});
@@ -84,7 +86,7 @@ describe("Skill model", () => {
 					{
 						title: "Langages",
 						order: 1,
-						skills: [{ name: "TypeScript", level: Level.Junior }],
+						skills: [{ name: "TypeScript", level: Level.Junior, order: 2 }],
 					},
 				],
 			});
@@ -142,7 +144,7 @@ describe("Skill model", () => {
 					{
 						title: "Langages",
 						order: 1,
-						skills: [{ name: "TypeScript", level: Level.Junior }],
+						skills: [{ name: "TypeScript", level: Level.Junior, order: 1 }],
 					},
 				],
 			});
@@ -157,6 +159,7 @@ describe("Skill model", () => {
 					},
 					level: Level.Senior,
 					group: { connect: { id: skillGroups[0]!.id } },
+					order: 2,
 				},
 			});
 			const updatedProfile = await prismaTest.profile.findUnique({
@@ -180,7 +183,7 @@ describe("Skill model", () => {
 					{
 						title: "Langages",
 						order: 1,
-						skills: [{ name: "TypeScript", level: Level.Junior }],
+						skills: [{ name: "TypeScript", level: Level.Junior, order: 1 }],
 					},
 				],
 			});
@@ -205,7 +208,7 @@ describe("Skill model", () => {
 					{
 						title: "Langages",
 						order: 1,
-						skills: [{ name: "TypeScript", level: Level.Junior }],
+						skills: [{ name: "TypeScript", level: Level.Junior, order: 1 }],
 					},
 				],
 			});
@@ -251,14 +254,14 @@ describe("Skill model", () => {
 						title: "Langages",
 						order: 1,
 						skills: [
-							{ name: "TypeScript", level: Level.Junior },
-							{ name: "Prisma", level: Level.Intermédiaire },
+							{ name: "TypeScript", level: Level.Junior, order: 1 },
+							{ name: "Prisma", level: Level.Intermédiaire, order: 2 },
 						],
 					},
 					{
 						title: "Frameworks",
 						order: 2,
-						skills: [{ name: "React", level: Level.Senior }],
+						skills: [{ name: "React", level: Level.Senior, order: 1 }],
 					},
 				],
 			});
@@ -296,14 +299,14 @@ describe("Skill model", () => {
 						title: "Langages",
 						order: 1,
 						skills: [
-							{ name: "TypeScript", level: Level.Junior },
-							{ name: "Prisma", level: Level.Intermédiaire },
+							{ name: "TypeScript", level: Level.Junior, order: 1 },
+							{ name: "Prisma", level: Level.Intermédiaire, order: 2 },
 						],
 					},
 					{
 						title: "Frameworks",
 						order: 2,
-						skills: [{ name: "React", level: Level.Senior }],
+						skills: [{ name: "React", level: Level.Senior, order: 1 }],
 					},
 				],
 			});
@@ -346,14 +349,14 @@ describe("Skill model", () => {
 						title: "Langages",
 						order: 1,
 						skills: [
-							{ name: "TypeScript", level: Level.Junior },
-							{ name: "Prisma", level: Level.Intermédiaire },
+							{ name: "TypeScript", level: Level.Junior, order: 1 },
+							{ name: "Prisma", level: Level.Intermédiaire, order: 2 },
 						],
 					},
 					{
 						title: "Frameworks",
 						order: 2,
-						skills: [{ name: "React", level: Level.Senior }],
+						skills: [{ name: "React", level: Level.Senior, order: 1 }],
 					},
 				],
 			});

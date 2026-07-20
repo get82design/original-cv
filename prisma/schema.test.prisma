@@ -46,18 +46,58 @@ model Session {
   @@index([userId])
 }
 
-model User {
-  id            String    @id @default(cuid())
-  email         String    @unique      // email unique
-  name          String
-  password      String                      // mot de passe hashé
-  emailVerified DateTime?
-  image         String?
+// === Les Rôles pour gérer les accès aux abonnements ===
+enum PlanRole {
+  FREE
+  STANDARD
+  PREMIUM
+  PREMIUM_PLUS_IA
+}
 
-  accounts      Account[]                   // NextAuth relation
-  sessions      Session[]
-  profile       Profile?                    // relation 1:1 avec le profil détaillé
-  cvs           CV[]                        // relation 1:N avec les CVs
+model User {
+  id                String    @id @default(cuid())
+  email             String    @unique      // email unique
+  name              String?
+  password          String?                      // mot de passe hashé
+  emailVerified     DateTime?
+  image             String?
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+  isActive          Boolean @default(true) // si l'utilisateur est actif
+  lastLoginAt       DateTime?             // date de la dernière connexion
+
+  // --- Gestion des Abonnements ---
+  plan              PlanRole          @default(FREE)
+  customerId        String?           @unique // ID Client Stripe (utile pour le portail de facturation)
+  subscriptionEnd   DateTime?                 // Date d'expiration du forfait (gère le 1 mois, 3 mois, 1 an)
+
+  // --- Gestion du "Pay-per-use" (Consommables) ---
+  downloadCredits   Int               @default(0)  // +3 quand il paye 5€, -1 au téléchargement
+  maxCvs            Int @default(1)    // Nombre de CVs que l'utilisateur peut créer
+
+  // --- Quotas Mensuels (IA) ---
+  iaRequestsUsed    Int               @default(0)  // Compteur de requêtes IA ce mois-ci
+  lastIaReset       DateTime          @default(now()) // Pour réinitialiser le compteur tous les mois
+
+  // --- Relations ---
+  accounts          Account[]                   // NextAuth relation
+  sessions          Session[]
+  profile           Profile?                    // relation 1:1 avec le profil détaillé
+  cvs               CV[]                        // relation 1:N avec les CVs
+  unlockedTemplates UnlockedTemplate[]
+}
+
+// === La Table de Liaison : Pour savoir quel utilisateur a acheté quel Template Premium ===
+model UnlockedTemplate {
+  id         String   @id @default(cuid())
+  templateId String   // ID du template (ex: "minimalist-dark-2026")
+  template   CVTemplate @relation(fields: [templateId], references: [id], onDelete: Cascade)
+  unlockedAt DateTime @default(now())
+
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, templateId]) // Un utilisateur ne peut pas acheter 2 fois le même template
 }
 
 // === Profil utilisateur ===
@@ -84,7 +124,7 @@ model Profile {
   socialMedias SocialMedia[]
   philosophy Philosophy?
   expertises Expertise[]
-  prices Price[]
+  prizes Prize[]
   certifications Certification[]
   formations Formation[]
   competences ProfileCompetenceGroup[]
@@ -96,6 +136,12 @@ enum Level {
   Intermédiaire
   Senior
   Expert
+}
+
+enum CvTimelineStatus {
+  COMPLETED
+  ABANDONED
+  INTERRUPTED
 }
 
 model CvHeader {
@@ -156,10 +202,12 @@ model ProfileSkill {
   level        Level
   skill        Skill  @relation(fields: [skillId], references: [id])
   skillId      String
+  order        Int @default(0)
   group        ProfileSkillGroup @relation(fields: [groupId], references: [id], onDelete: Cascade)
   groupId      String
 
   @@unique([groupId, skillId]) // pas de doublon dans un groupe
+  @@unique([groupId, order])
 }
 
 model CvSkillGroup {
@@ -177,9 +225,11 @@ model CvSkill {
   level   Level
   skill   Skill  @relation(fields: [skillId], references: [id])
   skillId String
+  order   Int @default(0)
   group   CvSkillGroup @relation(fields: [groupId], references: [id], onDelete: Cascade)
   groupId String
   @@unique([groupId, skillId])
+  @@unique([groupId, order])
 }
 
 // === Compétence ===
@@ -204,9 +254,11 @@ model ProfileCompetence {
   id           String @id @default(cuid())
   competence        Competence  @relation(fields: [competenceId], references: [id])
   competenceId      String
+  order        Int @default(0)
   group        ProfileCompetenceGroup @relation(fields: [groupId], references: [id], onDelete: Cascade)
   groupId      String
   @@unique([groupId, competenceId]) // pas de doublon dans un groupe
+  @@unique([groupId, order])
 }
 
 model CvCompetenceGroup {
@@ -223,9 +275,11 @@ model CvCompetence {
   id      String @id @default(cuid())
   competence   Competence  @relation(fields: [competenceId], references: [id])
   competenceId String
+  order        Int @default(0)
   group   CvCompetenceGroup @relation(fields: [groupId], references: [id], onDelete: Cascade)
   groupId String
   @@unique([groupId, competenceId])
+  @@unique([groupId, order])
 }
 
 // === Expériences professionnelles ===
@@ -252,10 +306,12 @@ model MissionExperience {
   id          String      @id @default(cuid())
   content     String
 
+  order       Int @default(0)
   experience  Experience  @relation(fields: [experienceId], references: [id], onDelete: Cascade)
   experienceId String
 
   @@index([experienceId])
+  @@unique([experienceId, order])
 }
 
 model CvExperience {
@@ -280,11 +336,13 @@ model CvExperience {
 model CvMissionExperience {
   id          String      @id @default(cuid())
   content     String
-
+  
+  order       Int @default(0)
   cvExperience  CvExperience  @relation(fields: [cvExperienceId], references: [id], onDelete: Cascade)
   cvExperienceId String
 
   @@index([cvExperienceId])
+  @@unique([cvExperienceId, order])
 }
 
 // === Diplomes ===
@@ -296,7 +354,7 @@ model Education {
   degree    String
   start     DateTime
   end       DateTime?
-  obtained  Boolean @default(false)
+  obtained  CvTimelineStatus?
 
   order     Int @default(0) 
   profile   Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
@@ -315,7 +373,7 @@ model CvEducation {
   degree    String
   start     DateTime
   end       DateTime?
-  obtained  Boolean @default(false)
+  obtained  CvTimelineStatus?
 
   order     Int @default(0) 
   cv          CV @relation(fields: [cvId], references: [id], onDelete: Cascade)
@@ -412,10 +470,12 @@ model MissionVolunteering {
   id          String      @id @default(cuid())
   content     String
 
+  order       Int @default(0)
   volunteering  Volunteering  @relation(fields: [volunteeringId], references: [id], onDelete: Cascade)
   volunteeringId String
 
   @@index([volunteeringId])
+  @@unique([volunteeringId, order])
 }
 
 model CvVolunteering {
@@ -441,10 +501,12 @@ model CvMissionVolunteering {
   id          String      @id @default(cuid())
   content     String
 
+  order       Int @default(0)
   cvVolunteering  CvVolunteering  @relation(fields: [cvVolunteeringId], references: [id], onDelete: Cascade)
   cvVolunteeringId String
 
   @@index([cvVolunteeringId])
+  @@unique([cvVolunteeringId, order])
 }
 
 // === Projet ===
@@ -457,6 +519,7 @@ model Project {
   end         DateTime?
   technology  String?
   missions    MissionProject[]
+  status CvTimelineStatus?
 
   order       Int @default(0)  
   profile     Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
@@ -471,10 +534,12 @@ model MissionProject {
   id          String      @id @default(cuid())
   content     String
 
+  order       Int @default(0)
   project  Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
   projectId String
 
   @@index([projectId])
+  @@unique([projectId, order])
 }
 
 model CvProject {
@@ -486,6 +551,7 @@ model CvProject {
   end         DateTime?
   technology  String?
   cvMissions    CvMissionProject[]
+  status CvTimelineStatus?
 
   order       Int @default(0)  
   cv          CV @relation(fields: [cvId], references: [id], onDelete: Cascade)
@@ -500,10 +566,12 @@ model CvMissionProject {
   id          String      @id @default(cuid())
   content     String
 
+  order       Int @default(0)
   cvProject  CvProject  @relation(fields: [cvProjectId], references: [id], onDelete: Cascade)
   cvProjectId String
 
   @@index([cvProjectId])
+  @@unique([cvProjectId, order])
 }
 
 // === Publication ===
@@ -679,7 +747,7 @@ model CvExpertise {
 }
 
 // === Prix ===
-model Price {
+model Prize {
   id          String @id @default(cuid())
   title       String
   domaine     String
@@ -694,7 +762,7 @@ model Price {
   @@index([profileId])
 }
 
-model CvPrice {
+model CvPrize {
   id          String @id @default(cuid())
   title       String
   domaine     String
@@ -745,6 +813,7 @@ model Formation {
   organismeFormation String?
   start       DateTime
   end         DateTime?
+  status      CvTimelineStatus?
   
   order       Int @default(0)    
   profile     Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
@@ -761,8 +830,9 @@ model CvFormation {
   organismeFormation String?
   start       DateTime
   end         DateTime?
+  status      CvTimelineStatus?
 
-  order       Int @default(0)    
+  order       Int @default(0)
   cv          CV @relation(fields: [cvId], references: [id], onDelete: Cascade)
   cvId        String
 
@@ -798,7 +868,7 @@ model CV {
   socialMedias CvSocialMedia[]
   philosophy CvPhilosophy?
   expertises CvExpertise[]
-  prices CvPrice[]
+  prizes CvPrize[]
   certifications CvCertification[]
   formations CvFormation[]
   description CvDescription?
@@ -832,6 +902,7 @@ model CVTemplate {
   structure    Json                            // structure du template (zones, sections)
   defaultStyles Json                           // styles par défaut (fontSize, color, align, show, etc.)
   cvs           CV[]                           // CVs utilisant ce template
+  unlockedTemplates UnlockedTemplate[]         // Table de liaison pour savoir quel utilisateur a acheté quel Template Premium
 }
 
 // === Item d'un module ===
@@ -842,9 +913,12 @@ model CVModuleItem {
 
   itemType   CVModuleItemType
   itemId     String   // id du cvSkill / Experience / Education
+  order    Int @default(0)
 
+  @@unique([moduleId, order])
   @@index([moduleId])
   @@index([itemType, itemId])
+  @@unique([moduleId, itemType, itemId])
 }
 
 enum CVModuleItemType {
@@ -858,11 +932,12 @@ enum CVModuleItemType {
   cvExpertise
   cvFormation
   cvCertification
-  cvPrice
+  cvPrize
   cvLanguage
   cvPassion
   cvCompetenceGroup
   cvDescription
+  cvPhilosophy
 }
 
 // === Module d'un CV ===
@@ -891,9 +966,10 @@ enum CVModuleType {
   expertise
   formation
   certification
-  price
+  prize
   language
   passion
   competence
   description
+  philosophy
 }

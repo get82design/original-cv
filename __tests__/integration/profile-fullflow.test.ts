@@ -1,8 +1,9 @@
 import { describe, it, expect } from "vitest";
 import { prismaTest } from "../../lib/prismaTest";
 import * as utils from "../utils/create-test-user-with-profile";
+import { CvTimelineStatus } from "../../generated/prisma/enums";
 
-describe("CV Fullflow Integration with strength", () => {
+describe("Profile Fullflow Integration", () => {
 	describe("Profile Full Flow", () => {
 		it("should create a full profile with all sections", async () => {
 			const user = await utils.createTestUserWithProfile();
@@ -27,7 +28,7 @@ describe("CV Fullflow Integration with strength", () => {
 			expect(profile.socialMedias).toBeDefined();
 			expect(profile.philosophy).toBeDefined();
 			expect(profile.expertises).toBeDefined();
-			expect(profile.prices).toBeDefined();
+			expect(profile.prizes).toBeDefined();
 			expect(profile.certifications).toBeDefined();
 			expect(profile.formations).toBeDefined();
 			expect(profile.competences).toBeDefined();
@@ -123,8 +124,8 @@ describe("CV Fullflow Integration with strength", () => {
 				"Degree 1",
 				start,
 				end,
-				true,
 				1,
+				CvTimelineStatus.COMPLETED,
 			);
 			const upProfileEducation = await prismaTest.profile.findUnique({
 				where: { id: profile.id },
@@ -137,7 +138,9 @@ describe("CV Fullflow Integration with strength", () => {
 			expect(upProfileEducation?.educations?.[0]?.degree).toBe("Degree 1");
 			expect(upProfileEducation?.educations?.[0]?.start).toEqual(start);
 			expect(upProfileEducation?.educations?.[0]?.end).toEqual(end);
-			expect(upProfileEducation?.educations?.[0]?.obtained).toBe(true);
+			expect(upProfileEducation?.educations?.[0]?.obtained).toBe(
+				CvTimelineStatus.COMPLETED,
+			);
 			expect(upProfileEducation?.educations?.[0]?.order).toBe(1);
 			// create experiences
 			await utils.createExperience(
@@ -237,18 +240,18 @@ describe("CV Fullflow Integration with strength", () => {
 			expect(upProfilePhilosophy?.philosophy).toBeDefined();
 			expect(upProfilePhilosophy?.philosophy?.citation).toBe("Philosophy 1");
 			expect(upProfilePhilosophy?.philosophy?.author).toBe("Author 1");
-			// create prices
-			await utils.createPrice(profile.id, "Price 1", "Domaine 1", 1, "💰");
-			const upProfilePrice = await prismaTest.profile.findUnique({
+			// create prizes
+			await utils.createPrize(profile.id, "Prize 1", "Domaine 1", 1, "💰");
+			const upProfilePrize = await prismaTest.profile.findUnique({
 				where: { id: profile.id },
-				include: { prices: true },
+				include: { prizes: true },
 			});
-			expect(upProfilePrice?.prices).toBeDefined();
-			expect(upProfilePrice?.prices?.length).toBe(1);
-			expect(upProfilePrice?.prices?.[0]?.title).toBe("Price 1");
-			expect(upProfilePrice?.prices?.[0]?.domaine).toBe("Domaine 1");
-			expect(upProfilePrice?.prices?.[0]?.icon).toBe("💰");
-			expect(upProfilePrice?.prices?.[0]?.order).toBe(1);
+			expect(upProfilePrize?.prizes).toBeDefined();
+			expect(upProfilePrize?.prizes?.length).toBe(1);
+			expect(upProfilePrize?.prizes?.[0]?.title).toBe("Prize 1");
+			expect(upProfilePrize?.prizes?.[0]?.domaine).toBe("Domaine 1");
+			expect(upProfilePrize?.prizes?.[0]?.icon).toBe("💰");
+			expect(upProfilePrize?.prizes?.[0]?.order).toBe(1);
 			// create projects
 			await utils.createProject(
 				profile.id,
@@ -440,8 +443,8 @@ describe("CV Fullflow Integration with strength", () => {
 				"Degree 1",
 				start,
 				end,
-				true,
 				1,
+				CvTimelineStatus.COMPLETED,
 			);
 			await utils.createExperience(
 				profile.id,
@@ -466,7 +469,7 @@ describe("CV Fullflow Integration with strength", () => {
 			await utils.createLanguage(profile.id, "Language 1", "Expert", 1);
 			await utils.createPassion(profile.id, "Passion 1", "🎵", 1);
 			await utils.createPhilosophy(profile.id, "Philosophy 1", "Author 1");
-			await utils.createPrice(profile.id, "Price 1", "Domaine 1", 1, "💰");
+			await utils.createPrize(profile.id, "Prize 1", "Domaine 1", 1, "💰");
 			await utils.createProject(
 				profile.id,
 				"Project 1",
@@ -569,11 +572,11 @@ describe("CV Fullflow Integration with strength", () => {
 				include: { philosophy: true },
 			});
 			expect(upProfilePhilosophy?.philosophy).toBeUndefined();
-			const upProfilePrice = await prismaTest.profile.findUnique({
+			const upProfilePrize = await prismaTest.profile.findUnique({
 				where: { id: profile.id },
-				include: { prices: true },
+				include: { prizes: true },
 			});
-			expect(upProfilePrice?.prices).toBeUndefined();
+			expect(upProfilePrize?.prizes).toBeUndefined();
 			const upProfileProject = await prismaTest.profile.findUnique({
 				where: { id: profile.id },
 				include: { projects: true },

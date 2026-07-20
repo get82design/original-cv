@@ -17,7 +17,8 @@
 		"db:test:reset": "prisma migrate reset --schema=prisma/schema.test.prisma --force --skip-seed",
 		"db:studio": "prisma studio --schema=prisma/schema.prisma",
 		"db:test:studio": "prisma studio --schema=prisma/schema.test.prisma",
-		"test:db": "npm run db:test:push && vitest run"
+		"test:db": "npm run db:test:push && vitest run",
+		"test:coverage": "vitest run --coverage"
 	},
 	"keywords": [],
 	"author": "",
@@ -27,6 +28,7 @@
 		"@types/node": "^25.2.2",
 		"@types/pg": "^8.16.0",
 		"@types/react": "^19.2.13",
+		"@vitest/coverage-v8": "^4.1.10",
 		"prisma": "^6.16.2",
 		"tsx": "^4.21.0",
 		"typescript": "^5.9.3",

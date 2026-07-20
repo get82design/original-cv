@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { createTestUserWithProfile } from "../utils/create-test-user-with-profile";
 import { prismaTest } from "../../lib/prismaTest";
+import { CvTimelineStatus } from "../../generated/prisma/enums";
 
 describe("Education model", () => {
 	//? 15 tests pour le model Education => 15 tests ok
@@ -12,7 +13,7 @@ describe("Education model", () => {
 	//   degree    String
 	//   start     DateTime
 	//   end       DateTime?
-	//   obtained  Boolean @default(false)
+	//   obtained  CvTimelineStatus?
 
 	//   order     Int @default(0)
 	//   profile   Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
@@ -35,7 +36,7 @@ describe("Education model", () => {
 						degree: "Baccalauréat",
 						start: new Date("2020-01-01"),
 						end: new Date("2020-12-31"),
-						obtained: true,
+						obtained: CvTimelineStatus.COMPLETED ?? null,
 						order: 1,
 					},
 				],
@@ -59,7 +60,7 @@ describe("Education model", () => {
 						degree: "Baccalauréat",
 						start: new Date("2020-01-01"),
 						end: new Date("2020-12-31"),
-						obtained: true,
+						obtained: CvTimelineStatus.COMPLETED ?? null,
 						order: 1,
 						profile: { connect: { id: "non-existing-id" } },
 					},
@@ -78,7 +79,7 @@ describe("Education model", () => {
 						school: "Lycée de Paris",
 						start: new Date("2020-01-01"),
 						end: new Date("2020-12-31"),
-						obtained: true,
+						obtained: CvTimelineStatus.COMPLETED ?? null,
 						order: 1,
 						profile: { connect: { id: user.profile.id } },
 					},
@@ -133,7 +134,7 @@ describe("Education model", () => {
 						start: new Date(),
 						order: 1,
 						end: new Date(),
-						obtained: true,
+						obtained: CvTimelineStatus.COMPLETED ?? null,
 					},
 				],
 			});
@@ -163,7 +164,7 @@ describe("Education model", () => {
 						start: new Date(),
 						order: 1,
 						end: new Date(),
-						obtained: true,
+						obtained: CvTimelineStatus.COMPLETED ?? null,
 					},
 				],
 			});
@@ -195,7 +196,7 @@ describe("Education model", () => {
 						degree: "Baccalauréat",
 						start: new Date("2020-01-01"),
 						end: new Date("2020-12-31"),
-						obtained: true,
+						obtained: CvTimelineStatus.COMPLETED ?? null,
 						order: 1,
 					},
 				],
@@ -222,7 +223,7 @@ describe("Education model", () => {
 						start: new Date(),
 						order: 1,
 						end: new Date(),
-						obtained: true,
+						obtained: CvTimelineStatus.COMPLETED ?? null,
 					},
 					{
 						title: "Licence",
@@ -231,7 +232,7 @@ describe("Education model", () => {
 						start: new Date(),
 						order: 2,
 						end: new Date(),
-						obtained: true,
+						obtained: CvTimelineStatus.COMPLETED ?? null,
 					},
 				],
 			});
@@ -255,7 +256,7 @@ describe("Education model", () => {
 						start: new Date(),
 						order: 1,
 						end: new Date(),
-						obtained: true,
+						obtained: CvTimelineStatus.COMPLETED ?? null,
 					},
 					{
 						title: "Licence",
@@ -264,7 +265,7 @@ describe("Education model", () => {
 						start: new Date(),
 						order: 2,
 						end: new Date(),
-						obtained: true,
+						obtained: CvTimelineStatus.COMPLETED ?? null,
 					},
 				],
 			});
@@ -290,7 +291,7 @@ describe("Education model", () => {
 						degree: "Baccalauréat",
 						start: new Date("2020-01-01"),
 						end: new Date("2020-12-31"),
-						obtained: true,
+						obtained: CvTimelineStatus.COMPLETED ?? null,
 						order: 1,
 					},
 				],
@@ -314,7 +315,7 @@ describe("Education model", () => {
 						degree: "Baccalauréat",
 						start: new Date("2020-01-01"),
 						end: new Date("2020-12-31"),
-						obtained: true,
+						obtained: CvTimelineStatus.COMPLETED ?? null,
 						order: 1,
 					},
 				],
@@ -340,7 +341,7 @@ describe("Education model", () => {
 						degree: "Baccalauréat",
 						start: new Date("2020-01-01"),
 						end: new Date("2020-12-31"),
-						obtained: true,
+						obtained: CvTimelineStatus.COMPLETED ?? null,
 						order: 2,
 					},
 					{
@@ -349,7 +350,7 @@ describe("Education model", () => {
 						degree: "Baccalauréat",
 						start: new Date("2020-01-01"),
 						end: new Date("2020-12-31"),
-						obtained: true,
+						obtained: CvTimelineStatus.COMPLETED ?? null,
 						order: 1,
 					},
 				],
@@ -367,7 +368,6 @@ describe("Education model", () => {
 		it("should set obtained to false by default", async () => {
 			const user = await createTestUserWithProfile({
 				educations: [
-					// @ts-expect-error - obtained is required
 					{
 						title: "Test",
 						school: "Test",
@@ -379,7 +379,7 @@ describe("Education model", () => {
 			});
 
 			const education = user.profile.educations![0];
-			expect(education!.obtained).toBe(false);
+			expect(education!.obtained).toBeNull();
 		});
 	});
 
@@ -394,7 +394,7 @@ describe("Education model", () => {
 					start: new Date(),
 					order: 1,
 					end: new Date(),
-					obtained: true,
+					obtained: CvTimelineStatus.COMPLETED ?? null,
 				},
 			],
 		});

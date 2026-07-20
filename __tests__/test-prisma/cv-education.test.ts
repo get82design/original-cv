@@ -3,6 +3,7 @@ import { prismaTest } from "../../lib/prismaTest";
 import { createTestUser } from "../utils/create-test-user";
 import { createTestTemplate } from "../utils/create-test-template";
 import { createTestCV } from "../utils/create-test-cv";
+import { CvTimelineStatus } from "../../generated/prisma/enums";
 
 describe("CvEducation model", () => {
 	//? 5 tests pour le model CvEducation => 5 tests ok
@@ -49,7 +50,7 @@ describe("CvEducation model", () => {
 			expect(education.school).toBe("Sorbonne");
 			expect(education.degree).toBe("Master");
 			expect(education.cvId).toBe(cv.id);
-			expect(education.obtained).toBe(false); // default value
+			expect(education.obtained).toBe(null); // default value
 		});
 	});
 
@@ -146,12 +147,12 @@ describe("CvEducation model", () => {
 			const updated = await prismaTest.cvEducation.update({
 				where: { id: education.id },
 				data: {
-					obtained: true,
+					obtained: CvTimelineStatus.COMPLETED,
 					city: "Paris",
 				},
 			});
 
-			expect(updated.obtained).toBe(true);
+			expect(updated.obtained).toBe(CvTimelineStatus.COMPLETED);
 			expect(updated.city).toBe("Paris");
 		});
 	});
