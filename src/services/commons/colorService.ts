@@ -1,9 +1,9 @@
 import { prisma } from "../../../lib/prisma";
-import type { CreateColorDto, UpdateColorDto } from "../dto/ColorDto";
+import type { CreateColorInput, UpdateColorInput } from "../schemas/color.schema";
 import { ConflictError, NotFoundError } from "../errors";
 
 export class ColorService {
-	async create(data: CreateColorDto) {
+	async create(data: CreateColorInput) {
 		const existing = await prisma.color.findUnique({
 			where: {
 				name: data.name.trim().toLowerCase(),
@@ -52,7 +52,7 @@ export class ColorService {
 		});
 	}
 
-	async update(id: string, data: UpdateColorDto) {
+	async update(id: string, data: UpdateColorInput) {
 		const color = await prisma.color.findUnique({
 			where: {
 				id,

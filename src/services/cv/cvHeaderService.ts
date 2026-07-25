@@ -1,9 +1,12 @@
 import { prisma } from "../../../lib/prisma";
-import type { CreateCvHeaderDto, UpdateCvHeaderDto } from "../dto/CvHeaderDto";
 import { ConflictError, NotFoundError } from "../errors";
+import type {
+	CreateCvHeaderInput,
+	UpdateCvHeaderInput,
+} from "../schemas/cvHeader.schema";
 
 export class CvHeaderService {
-	async create(cvId: string, data: CreateCvHeaderDto) {
+	async create(cvId: string, data: CreateCvHeaderInput) {
 		// Vérifie que le CV existe
 		const cv = await prisma.cV.findUnique({
 			where: { id: cvId },
@@ -57,7 +60,7 @@ export class CvHeaderService {
 	}
 
 	// UPDATE
-	async update(cvId: string, data: UpdateCvHeaderDto) {
+	async update(cvId: string, data: UpdateCvHeaderInput) {
 		const header = await prisma.cvHeader.findUnique({
 			where: {
 				cvId,
@@ -70,7 +73,16 @@ export class CvHeaderService {
 			where: {
 				cvId,
 			},
-			data,
+			data: {
+				...(data.title !== undefined ? { title: data.title } : {}),
+				...(data.subtitle !== undefined ? { subtitle: data.subtitle } : {}),
+				...(data.phone !== undefined ? { phone: data.phone } : {}),
+				...(data.email !== undefined ? { email: data.email } : {}),
+				...(data.location !== undefined ? { location: data.location } : {}),
+				...(data.portfolio !== undefined ? { portfolio: data.portfolio } : {}),
+				...(data.nom !== undefined ? { nom: data.nom } : {}),
+				...(data.prenom !== undefined ? { prenom: data.prenom } : {}),
+			},
 		});
 	}
 

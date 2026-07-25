@@ -10,6 +10,7 @@ import {
 	AppError,
 	ForbiddenError,
 	NotFoundError,
+	ValidationError,
 } from "../../../src/services/errors";
 import { CvTimelineStatus, Level } from "../../../generated/prisma/client";
 import { prismaTest } from "../../../lib/prismaTest";
@@ -80,6 +81,10 @@ describe("CvService.create", () => {
 	it("throws if CV already exists", async () => {
 		const user = await createTestUser();
 		const template = await createTestTemplate();
+		await prismaTest.user.update({
+			where: { id: user.id },
+			data: { maxCvs: 2 },
+		});
 		const cv = await createCV(user.id, template.id);
 		await expect(
 			cvService.create({
@@ -88,6 +93,42 @@ describe("CvService.create", () => {
 				title: "Fullflow CV",
 			}),
 		).rejects.toThrow(AppError);
+	});
+
+	it("throws ValidationError when CV quota is reached", async () => {
+		const user = await createTestUser(); // maxCvs = 1 par défaut
+		const template = await createTestTemplate();
+		await cvService.create({
+			userId: user.id,
+			templateId: template.id,
+			title: "Premier CV",
+		});
+		await expect(
+			cvService.create({
+				userId: user.id,
+				templateId: template.id,
+				title: "Deuxième CV",
+			}),
+		).rejects.toThrow(ValidationError);
+	});
+	it("allows create when maxCvs is increased", async () => {
+		const user = await createTestUser();
+		const template = await createTestTemplate();
+		await cvService.create({
+			userId: user.id,
+			templateId: template.id,
+			title: "CV 1",
+		});
+		await prismaTest.user.update({
+			where: { id: user.id },
+			data: { maxCvs: 2 },
+		});
+		const cv2 = await cvService.create({
+			userId: user.id,
+			templateId: template.id,
+			title: "CV 2",
+		});
+		expect(cv2.title).toBe("CV 2");
 	});
 });
 
@@ -519,5 +560,26 @@ describe("CvService.delete", () => {
 		});
 
 		expect(dbCV).not.toBeNull();
+	});
+});
+
+describe("CvService.findAllByUser", () => {
+	it("returns only the user's CVs", async () => {
+		const userA = await createTestUser();
+		const userB = await createTestUser();
+		const template = await createTestTemplate();
+		const cvA1 = await createCV(userA.id, template.id, "CV A1");
+		const cvA2 = await createCV(userA.id, template.id, "CV A2");
+		await createCV(userB.id, template.id, "CV B");
+		const list = await cvService.findAllByUser(userA.id);
+		expect(list).toHaveLength(2);
+		expect(list.map((cv) => cv.id).sort()).toEqual(
+			[cvA1.id, cvA2.id].sort(),
+		);
+	});
+	it("returns an empty array when user has no CVs", async () => {
+		const user = await createTestUser();
+		const list = await cvService.findAllByUser(user.id);
+		expect(list).toEqual([]);
 	});
 });

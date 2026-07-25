@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { cvCompetenceGroupService } from "../../../src/services/cv/cvCompetenceGroupService";
 import { cvCompetenceService } from "../../../src/services/cv/cvCompetenceService";
 import { createCV } from "../../utils/create-test-cv-full-flow";
-import { competenceService } from "../../../src/services/cv/competenceService";
+import { competenceService } from "../../../src/services/commons/competenceService";
 import { createTestTemplate } from "../../utils/create-test-template";
 import { createTestUser } from "../../utils/create-test-user";
 import { Level } from "../../../generated/prisma/enums";

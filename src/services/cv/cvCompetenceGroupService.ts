@@ -1,14 +1,14 @@
 import { prisma } from "../../../lib/prisma";
 import { compactOrder } from "../../utils/compactOrder";
 import { reorderItems } from "../../utils/reorderCvItems";
-import type {
-	CreateCvCompetenceGroupDto,
-	UpdateCvCompetenceGroupDto,
-} from "../dto/CvCompetenceGroupDto";
 import { ConflictError, NotFoundError, ValidationError } from "../errors";
+import type {
+	CreateCompetenceGroupInput,
+	UpdateCompetenceGroupInput,
+} from "../schemas/competenceGroup.schema";
 
 export class CvCompetenceGroupService {
-	async create(cvId: string, data: CreateCvCompetenceGroupDto) {
+	async create(cvId: string, data: CreateCompetenceGroupInput) {
 		const existingCv = await prisma.cV.findUnique({
 			where: {
 				id: cvId,
@@ -55,7 +55,8 @@ export class CvCompetenceGroupService {
 			data: {
 				title: data.title,
 				order: data.order,
-				cvId: cvId,
+				cvId: cvId,	
+				settings: data.settings ?? {},
 			},
 		});
 	}
@@ -65,13 +66,20 @@ export class CvCompetenceGroupService {
 			where: {
 				cvId: cvId,
 			},
+			include: {
+				cvCompetences: {
+					include: {
+						competence: true,
+					},
+				},
+			},
 			orderBy: {
 				order: "asc",
 			},
 		});
 	}
 
-	async update(id: string, data: UpdateCvCompetenceGroupDto) {
+	async update(id: string, data: UpdateCompetenceGroupInput) {
 		const existing = await prisma.cvCompetenceGroup.findUnique({
 			where: {
 				id,
@@ -107,6 +115,7 @@ export class CvCompetenceGroupService {
 			},
 			data: {
 				title: data.title ?? existing.title,
+				...(data.settings !== undefined ? { settings: data.settings } : {}),
 			},
 		});
 	}

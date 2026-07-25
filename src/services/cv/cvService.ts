@@ -1,11 +1,12 @@
 import { prisma } from "../../../lib/prisma";
-import type { CreateCvDto, UpdateCvDto } from "../dto/CvDto";
-import { ForbiddenError, NotFoundError } from "../errors";
+import { ForbiddenError, NotFoundError, ValidationError } from "../errors";
 import { AppError } from "../errors/AppError";
+import type { CreateCvInput, UpdateCvInput } from "../schemas/cv.schema";
+import { userService } from "../user/userService";
 
 export class CvService {
 	// CREATE
-	async create(data: CreateCvDto) {
+	async create(data: CreateCvInput) {
 		const user = await prisma.user.findUnique({
 			where: {
 				id: data.userId,
@@ -14,6 +15,14 @@ export class CvService {
 
 		if (!user) {
 			throw new NotFoundError("User");
+		}
+
+		
+		const canCreate = await userService.canCreateCv(data.userId);
+		if (!canCreate) {
+			throw new ValidationError(
+				`Limite de CV atteinte (${user.maxCvs})`,
+			);
 		}
 
 		const template = await prisma.cVTemplate.findUnique({
@@ -83,6 +92,7 @@ export class CvService {
 				prizes: true,
 				certifications: true,
 				formations: true,
+				modules: { orderBy: { order: "asc" } },
 			},
 		});
 
@@ -94,7 +104,7 @@ export class CvService {
 	}
 
 	// UPDATE
-	async update(cvId: string, userId: string, data: UpdateCvDto) {
+	async update(cvId: string, userId: string, data: UpdateCvInput) {
 		const cv = await prisma.cV.findUnique({
 			where: {
 				id: cvId,
@@ -117,7 +127,12 @@ export class CvService {
 			where: {
 				id: cvId,
 			},
-			data,
+			data: {
+				...(data.templateId !== undefined
+					? { templateId: data.templateId }
+					: {}),
+				...(data.title !== undefined ? { title: data.title } : {}),
+			},
 		});
 	}
 
@@ -144,6 +159,22 @@ export class CvService {
 		return prisma.cV.delete({
 			where: {
 				id: cvId,
+			},
+		});
+	}
+
+	async findAllByUser(userId: string) {
+		return prisma.cV.findMany({
+			where: { userId },
+			orderBy: { updatedAt: "desc" },
+			select: {
+				id: true,
+				title: true,
+				photo: true,
+				templateId: true,
+				userId: true,
+				createdAt: true,
+				updatedAt: true,
 			},
 		});
 	}

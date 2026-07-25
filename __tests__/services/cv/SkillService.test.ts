@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { skillService } from "../../../src/services/cv/skillService";
+import { skillService } from "../../../src/services/commons/skillService";
 import { ConflictError, NotFoundError } from "../../../src/services/errors";
 import { cvService } from "../../../src/services/cv/cvService";
 import { createTestUser } from "../../utils/create-test-user";

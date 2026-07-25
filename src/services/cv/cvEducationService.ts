@@ -2,14 +2,14 @@ import { prisma } from "../../../lib/prisma";
 import { compactOrder } from "../../utils/compactOrder";
 import { reorderItems } from "../../utils/reorderCvItems";
 import { validateTimeline } from "../../utils/validateTimeline";
-import type {
-	CreateCvEducationDto,
-	UpdateCvEducationDto,
-} from "../dto/CvEducationDto";
 import { ConflictError, NotFoundError } from "../errors";
+import type {
+	CreateEducationInput,
+	UpdateEducationInput,
+} from "../schemas/education.schema";
 
 export class CvEducationService {
-	async create(cvId: string, data: CreateCvEducationDto) {
+	async create(cvId: string, data: CreateEducationInput) {
 		const cv = await prisma.cV.findUnique({
 			where: {
 				id: cvId,
@@ -68,6 +68,7 @@ export class CvEducationService {
 				school: data.school,
 				city: data.city ?? null,
 				degree: data.degree,
+				settings: data.settings ?? {},
 			},
 		});
 	}
@@ -83,7 +84,7 @@ export class CvEducationService {
 		});
 	}
 
-	async update(id: string, data: UpdateCvEducationDto) {
+	async update(id: string, data: UpdateEducationInput) {
 		const existing = await prisma.cvEducation.findUnique({
 			where: {
 				id,
@@ -127,6 +128,7 @@ export class CvEducationService {
 			degree: data.degree ?? existing.degree,
 			school: data.school ?? existing.school,
 			city: data.city ?? existing.city,
+			settings: data.settings ?? existing.settings ?? {},
 		};
 
 		return prisma.cvEducation.update({

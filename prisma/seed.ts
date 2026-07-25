@@ -1,18 +1,23 @@
 import { prisma } from "../lib/prisma";
 import users from "./seedDatas/seed.users.json";
 import colors from "./seedDatas/seed.colors.json";
+import templates from "./seedDatas/seed.templates.json"
 import "dotenv/config";
+import { hash } from "bcrypt";
 
 async function main() {
 	console.log("🌱 Démarrage des seeds...");
 
 	await deleteUsers();
+	await deleteTemplates();
 	await deleteColors();
 
 	const usersResult = await buildUsers();
 	console.info("^^usersResult", usersResult);
 	const colors = await buildColors();
 	console.info("^^colors", colors);
+	const templates = await buildTemplates();
+	console.info("^^templates", templates);
 
 	// === Users ===
 	//   const user = await prisma.user.upsert({
@@ -131,6 +136,10 @@ async function deleteUsers() {
 	await prisma.user.deleteMany();
 }
 
+async function deleteTemplates() {
+	await prisma.cVTemplate.deleteMany();
+}
+
 async function deleteColors() {
 	await prisma.color.deleteMany();
 }
@@ -138,14 +147,39 @@ async function deleteColors() {
 /**
  * buildUsers
  *
- * @returns {*}
  */
 async function buildUsers() {
 	const userPromises = users.map(async (el) => {
-		const data = { ...el };
-		return prisma.user.create({ data });
+		const hashedPassword = await hash(el.password, 12);
+		return prisma.user.create({
+			data: {
+				...el,
+				password: hashedPassword,
+				emailVerified: el.emailVerified
+					? new Date(el.emailVerified)
+					: null,
+			},
+		});
 	});
 	return await Promise.all(userPromises);
+}
+
+/**
+ * buildTemplates
+ *
+ */
+async function buildTemplates() {
+	return Promise.all(
+		templates.map((el) =>
+			prisma.cVTemplate.create({
+				data: {
+					name: el.name,
+					structure: el.structure,
+					defaultStyles: el.defaultStyles,
+				},
+			}),
+		),
+	);
 }
 
 /**

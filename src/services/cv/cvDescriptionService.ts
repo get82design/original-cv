@@ -1,12 +1,12 @@
 import { prisma } from "../../../lib/prisma";
-import type {
-	CreateCvDescriptionDto,
-	UpdateCvDescriptionDto,
-} from "../dto/CvDescriptionDto";
 import { ConflictError, NotFoundError } from "../errors";
+import type {
+	CreateDescriptionInput,
+	UpdateDescriptionInput,
+} from "../schemas/description.schema";
 
 export class CvDescriptionService {
-	async create(cvId: string, data: CreateCvDescriptionDto) {
+	async create(cvId: string, data: CreateDescriptionInput) {
 		const cv = await prisma.cV.findUnique({
 			where: {
 				id: cvId,
@@ -57,7 +57,7 @@ export class CvDescriptionService {
 	}
 
 	// UPDATE
-	async update(cvId: string, data: UpdateCvDescriptionDto) {
+	async update(cvId: string, data: UpdateDescriptionInput) {
 		const existing = await prisma.cvDescription.findUnique({
 			where: {
 				cvId,
@@ -72,7 +72,11 @@ export class CvDescriptionService {
 			where: {
 				cvId,
 			},
-			data,
+			data: {
+				...(data.description !== undefined
+					? { description: data.description }
+					: {}),
+			},
 		});
 	}
 

@@ -2,14 +2,14 @@ import { prisma } from "../../../lib/prisma";
 import { compactOrder } from "../../utils/compactOrder";
 import { reorderItems } from "../../utils/reorderCvItems";
 import { validateTimeline } from "../../utils/validateTimeline";
-import type {
-	CreateCvPublicationDto,
-	UpdateCvPublicationDto,
-} from "../dto/CvPublicationDto";
 import { ConflictError, NotFoundError } from "../errors";
+import type {
+	CreatePublicationInput,
+	UpdatePublicationInput,
+} from "../schemas/publication.schema";
 
 export class CvPublicationService {
-	async create(cvId: string, data: CreateCvPublicationDto) {
+	async create(cvId: string, data: CreatePublicationInput) {
 		const cv = await prisma.cV.findUnique({
 			where: {
 				id: cvId,
@@ -67,6 +67,7 @@ export class CvPublicationService {
 				description: data.description ?? null,
 				journalName: data.journalName ?? null,
 				url: data.url ?? null,
+				settings: data.settings ?? {},
 			},
 		});
 	}
@@ -82,7 +83,7 @@ export class CvPublicationService {
 		});
 	}
 
-	async update(id: string, data: UpdateCvPublicationDto) {
+	async update(id: string, data: UpdatePublicationInput) {
 		const existing = await prisma.cvPublication.findUnique({
 			where: {
 				id,
@@ -125,6 +126,7 @@ export class CvPublicationService {
 			url: data.url ?? existing.url,
 			start: data.start ?? existing.start,
 			end: data.end !== undefined ? data.end : existing.end,
+			settings: data.settings ?? existing.settings ?? {},
 		};
 
 		return prisma.cvPublication.update({

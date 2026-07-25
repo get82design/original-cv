@@ -1,13 +1,16 @@
 import { prisma } from "../../../lib/prisma";
 import { compactOrder } from "../../utils/compactOrder";
 import { reorderItems } from "../../utils/reorderCvItems";
-import type { CreateCvModuleDto, UpdateCvModuleDto } from "../dto/CvModuleDto";
 import { ValidationError } from "../errors";
 import { ConflictError } from "../errors/ConflictError";
 import { NotFoundError } from "../errors/NotFoundError";
+import type {
+	CreateCvModuleInput,
+	UpdateCvModuleInput,
+} from "../schemas/cvModule.schema";
 
 export class CvModuleService {
-	async create(cvId: string, data: CreateCvModuleDto) {
+	async create(cvId: string, data: CreateCvModuleInput) {
 		const existingCv = await prisma.cV.findUnique({
 			where: {
 				id: cvId,
@@ -19,6 +22,20 @@ export class CvModuleService {
 
 		if (!existingCv) {
 			throw new NotFoundError("CV", cvId);
+		}
+
+		const existingModule = await prisma.cVModule.findFirst({
+			where: {
+				cvId,
+				type: data.type,
+			},
+		});
+
+		if (existingModule) {
+			throw new ConflictError(
+				"CV_MODULE_TYPE_ALREADY_EXISTS",
+				"This type is already used for this CV.",
+			);
 		}
 
 		const orderModule = await prisma.cVModule.findUnique({
@@ -47,6 +64,7 @@ export class CvModuleService {
 				order: data.order,
 				title: data.title ?? "",
 				settings: data.settings ?? {},
+				isActive: data.isActive,
 			},
 		});
 	}
@@ -65,7 +83,7 @@ export class CvModuleService {
 		});
 	}
 
-	async update(id: string, data: UpdateCvModuleDto) {
+	async update(id: string, data: UpdateCvModuleInput) {
 		const existingModule = await prisma.cVModule.findUnique({
 			where: {
 				id,
@@ -99,8 +117,9 @@ export class CvModuleService {
 			where: { id },
 			data: {
 				title: data.title ?? existingModule.title,
-				settings: data.settings ?? existingModule.settings,
+				settings: data.settings ?? existingModule.settings ?? {},
 				type: data.type ?? existingModule.type,
+				isActive: data.isActive ?? existingModule.isActive,
 			},
 		});
 	}

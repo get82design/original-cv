@@ -1,14 +1,14 @@
 import { prisma } from "../../../lib/prisma";
 import { reorderItems } from "../../utils/reorderCvItems";
-import type {
-	CreateCvStrengthDto,
-	UpdateCvStrengthDto,
-} from "../dto/CvStrengthDto";
 import { ConflictError, NotFoundError } from "../errors";
 import { compactOrder } from "../../utils/compactOrder";
+import type {
+	CreateStrengthInput,
+	UpdateStrengthInput,
+} from "../schemas/strength.schema";
 
 export class CvStrengthService {
-	async create(cvId: string, data: CreateCvStrengthDto) {
+	async create(cvId: string, data: CreateStrengthInput) {
 		const cv = await prisma.cV.findUnique({
 			where: {
 				id: cvId,
@@ -60,6 +60,7 @@ export class CvStrengthService {
 				title: data.title,
 				icon: data.icon ?? null,
 				order: data.order ?? 0,
+				settings: data.settings ?? {},
 			},
 		});
 	}
@@ -75,7 +76,7 @@ export class CvStrengthService {
 		});
 	}
 
-	async update(id: string, data: UpdateCvStrengthDto) {
+	async update(id: string, data: UpdateStrengthInput) {
 		const existing = await prisma.cvStrength.findUnique({
 			where: {
 				id,
@@ -109,7 +110,11 @@ export class CvStrengthService {
 			where: {
 				id,
 			},
-			data,
+			data: {
+				...(data.title !== undefined ? { title: data.title } : {}),
+				...(data.icon !== undefined ? { icon: data.icon } : {}),
+				...(data.settings !== undefined ? { settings: data.settings } : {}),
+			},
 		});
 	}
 

@@ -1,11 +1,30 @@
 import { describe, expect, it } from "vitest";
 import { createTestUser } from "../../utils/create-test-user";
-import { userService } from "../../../src/services/commons/userService";
-import { NotFoundError, ValidationError } from "../../../src/services/errors";
+import { userService } from "../../../src/services/user/userService";
+import { ConflictError, NotFoundError, ValidationError } from "../../../src/services/errors";
 import { createTestTemplate } from "../../utils/create-test-template";
 import { createCV } from "../../utils/create-test-cv-full-flow";
 import { PlanRole } from "../../../generated/prisma/enums";
 import { prisma } from "../../../lib/prisma";
+import { compare } from "bcrypt";
+
+describe("UserService.findAll", () => {
+	it("returns all users", async () => {
+		await createTestUser();
+
+		await createTestUser();
+
+		const users = await userService.findAll();
+
+		expect(users).toHaveLength(2);
+	});
+
+	it("returns an empty array if there are no users", async () => {
+		const users = await userService.findAll();
+
+		expect(users).toEqual([]);
+	});
+});
 
 describe("UserService.findById", () => {
 	it("returns a user by id", async () => {
@@ -322,5 +341,60 @@ describe("UserService.updatePlan", () => {
 		await expect(
 			userService.updatePlan("123", PlanRole.PREMIUM),
 		).rejects.toThrow(NotFoundError);
+	});
+});
+
+describe("UserService.register", () => {
+	it("creates a user with a hashed password", async () => {
+		const created = await userService.register({
+			email: "new@test.com",
+			password: "password123",
+			name: "Alice",
+		});
+		expect(created.email).toBe("new@test.com");
+		expect(created.name).toBe("Alice");
+		expect(created).not.toHaveProperty("password");
+		const inDb = await prisma.user.findUnique({
+			where: { email: "new@test.com" },
+		});
+		expect(inDb?.password).toBeTruthy();
+		expect(inDb?.password).not.toBe("password123");
+		expect(await compare("password123", inDb!.password!)).toBe(true);
+	});
+	it("throws ConflictError if email already exists", async () => {
+		await userService.register({
+			email: "dup@test.com",
+			password: "password123",
+		});
+		await expect(
+			userService.register({
+				email: "dup@test.com",
+				password: "password123",
+			}),
+		).rejects.toBeInstanceOf(ConflictError);
+	});
+});
+// Équivalent « login » côté logique credentials
+describe("credentials password check (login logic)", () => {
+	it("accepts the correct password", async () => {
+		await userService.register({
+			email: "login@test.com",
+			password: "password123",
+		});
+		const user = await userService.findByEmail("login@test.com");
+		expect(user?.password).toBeTruthy();
+		expect(await compare("password123", user!.password!)).toBe(true);
+	});
+	it("rejects a wrong password", async () => {
+		await userService.register({
+			email: "login2@test.com",
+			password: "password123",
+		});
+		const user = await userService.findByEmail("login2@test.com");
+		expect(await compare("wrong-password", user!.password!)).toBe(false);
+	});
+	it("returns null for unknown email", async () => {
+		const user = await userService.findByEmail("unknown@test.com");
+		expect(user).toBeNull();
 	});
 });

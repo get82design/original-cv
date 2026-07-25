@@ -214,6 +214,7 @@ model CvSkillGroup {
   id    String @id @default(cuid())
   title String?
   order  Int @default(0)
+  settings Json?
   skills CvSkill[]
   cv    CV @relation(fields: [cvId], references: [id], onDelete: Cascade)
   cvId  String
@@ -266,6 +267,7 @@ model CvCompetenceGroup {
   id    String @id @default(cuid())
   title String?
   order  Int @default(0)
+  settings Json?
   cv    CV @relation(fields: [cvId], references: [id], onDelete: Cascade)
   cvId  String
   cvCompetences CvCompetence[]
@@ -324,6 +326,7 @@ model CvExperience {
   location    String?
   description String?
   cvMissions  CvMissionExperience[]
+  settings    Json?
 
   order       Int @default(0)     
   cv          CV @relation(fields: [cvId], references: [id], onDelete: Cascade)
@@ -375,6 +378,7 @@ model CvEducation {
   start     DateTime
   end       DateTime?
   obtained  CvTimelineStatus?
+  settings    Json?
 
   order     Int @default(0) 
   cv          CV @relation(fields: [cvId], references: [id], onDelete: Cascade)
@@ -408,6 +412,7 @@ model CvAchievement {
   description   String?
   year          Int?
   technology    String?
+  settings      Json?
 
   order         Int @default(0)     
   cv            CV @relation(fields: [cvId], references: [id], onDelete: Cascade)
@@ -437,6 +442,7 @@ model CvStrength {
   id          String @id @default(cuid())
   title       String
   icon        String?
+  settings    Json?
 
   order       Int @default(0)
   cv          CV @relation(fields: [cvId], references: [id], onDelete: Cascade)
@@ -488,6 +494,7 @@ model CvVolunteering {
   end         DateTime?
   location    String?
   cvMissions    CvMissionVolunteering[]
+  settings    Json?
 
   order       Int @default(0)
   cv          CV @relation(fields: [cvId], references: [id], onDelete: Cascade)
@@ -553,6 +560,7 @@ model CvProject {
   technology  String?
   cvMissions    CvMissionProject[]
   status CvTimelineStatus?
+  settings    Json?
 
   order       Int @default(0)  
   cv          CV @relation(fields: [cvId], references: [id], onDelete: Cascade)
@@ -602,6 +610,7 @@ model CvPublication {
   start       DateTime
   end         DateTime?
   url         String?
+  settings    Json?
 
   order       Int @default(0)    
   cv          CV @relation(fields: [cvId], references: [id], onDelete: Cascade)
@@ -631,6 +640,7 @@ model CvLanguage {
   id          String @id @default(cuid())
   name        String   
   level       Level
+  settings    Json?
 
   order       Int @default(0)    
   cv          CV @relation(fields: [cvId], references: [id], onDelete: Cascade)
@@ -660,6 +670,7 @@ model CvPassion {
   id          String @id @default(cuid())
   title       String
   icon        String
+  settings    Json?
   
   order       Int @default(0)    
   cv          CV @relation(fields: [cvId], references: [id], onDelete: Cascade)
@@ -689,6 +700,7 @@ model CvSocialMedia {
   id            String @id @default(cuid())
   socialNetwork String
   username      String
+  settings    Json?
 
   order         Int @default(0)   
   cv            CV @relation(fields: [cvId], references: [id], onDelete: Cascade)
@@ -713,6 +725,7 @@ model CvPhilosophy {
   id          String @id @default(cuid())
   citation    String
   author      String?
+  settings    Json?
 
   cv          CV @relation(fields: [cvId], references: [id], onDelete: Cascade)
   cvId        String @unique
@@ -737,6 +750,7 @@ model CvExpertise {
   id          String @id @default(cuid())
   title       String
   level       Level
+  settings    Json?
 
   order       Int @default(0)  
   cv          CV @relation(fields: [cvId], references: [id], onDelete: Cascade)
@@ -768,6 +782,7 @@ model CvPrize {
   title       String
   domaine     String
   icon        String?
+  settings    Json?
 
   order       Int @default(0)   
   cv          CV @relation(fields: [cvId], references: [id], onDelete: Cascade)
@@ -797,6 +812,7 @@ model CvCertification {
   id          String @id @default(cuid())
   title       String
   organismeCertification String?
+  settings    Json?
 
   order       Int @default(0)   
   cv          CV @relation(fields: [cvId], references: [id], onDelete: Cascade)
@@ -832,6 +848,7 @@ model CvFormation {
   start       DateTime
   end         DateTime?
   status      CvTimelineStatus?
+  settings    Json?
 
   order       Int @default(0)
   cv          CV @relation(fields: [cvId], references: [id], onDelete: Cascade)
@@ -854,6 +871,7 @@ model CV {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   modules  CVModule[]                           // modules qui composent le CV (Skills, Experiences, Education)
+  layoutGeneral Json? // layout general du CV
   // Le reste passera par modules mais ça peut me permettre de faire des appels pour récupérer les données
   headerCv CvHeader?
   skillGroups CvSkillGroup[]
@@ -949,10 +967,13 @@ model CVModule {
   order    Int @default(0)  // position dans le CV
   cvId     String
   cv       CV               @relation(fields: [cvId], references: [id], onDelete: Cascade)
+
+  isActive Boolean @default(true)  // true = itemsUse, false = itemsNoUse
   items    CVModuleItem[]   // items liés au module
   settings Json?            // personnalisations spécifiques : fontSize, color, align, show, etc.
 
   @@unique([cvId, order]) // pas de doublon dans un cv
+  @@unique([cvId, type]) // 1 module de chaque type par CV
   @@index([cvId])
 }
 
@@ -973,4 +994,6 @@ enum CVModuleType {
   competence
   description
   philosophy
+  strength   
+  socialMedia      
 }

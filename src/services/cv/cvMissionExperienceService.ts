@@ -1,12 +1,12 @@
 import { prisma } from "../../../lib/prisma";
-import type {
-	UpdateCvMissionExperienceDto,
-	CreateCvMissionExperienceDto,
-} from "../dto/CvMissionExperienceDto";
 import { ConflictError, NotFoundError } from "../errors";
+import type {
+	CreateMissionInput,
+	UpdateMissionInput,
+} from "../schemas/mission.schema";
 
 export class CvMissionExperienceService {
-	async create(cvExperienceId: string, data: CreateCvMissionExperienceDto) {
+	async create(cvExperienceId: string, data: CreateMissionInput) {
 		const experience = await prisma.cvExperience.findUnique({
 			where: {
 				id: cvExperienceId,
@@ -56,7 +56,7 @@ export class CvMissionExperienceService {
 		});
 	}
 
-	async update(id: string, data: UpdateCvMissionExperienceDto) {
+	async update(id: string, data: UpdateMissionInput) {
 		const existing = await prisma.cvMissionExperience.findUnique({
 			where: {
 				id,

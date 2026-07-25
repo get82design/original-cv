@@ -2,13 +2,13 @@ import { prisma } from "../../../lib/prisma";
 import { compactOrder } from "../../utils/compactOrder";
 import { reorderItems } from "../../utils/reorderCvItems";
 import type {
-	CreateCvCompetenceDto,
-	UpdateCvCompetenceDto,
-} from "../dto/CvCompetenceDto";
+	CreateCompetenceInput,
+	UpdateCompetenceInput,
+} from "../schemas/competence.schema";
 import { ConflictError, NotFoundError, ValidationError } from "../errors";
 
 export class ProfileCompetenceService {
-	async create(groupId: string, data: CreateCvCompetenceDto) {
+	async create(groupId: string, data: CreateCompetenceInput) {
 		const group = await prisma.profileCompetenceGroup.findUnique({
 			where: {
 				id: groupId,
@@ -79,7 +79,7 @@ export class ProfileCompetenceService {
 		});
 	}
 
-	async update(id: string, data: UpdateCvCompetenceDto) {
+	async update(id: string, data: UpdateCompetenceInput) {
 		const existing = await prisma.profileCompetence.findUnique({
 			where: {
 				id,

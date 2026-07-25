@@ -2,14 +2,14 @@ import { prisma } from "../../../lib/prisma";
 import { compactOrder } from "../../utils/compactOrder";
 import { reorderItems } from "../../utils/reorderCvItems";
 import { validateTimeline } from "../../utils/validateTimeline";
-import type {
-	CreateCvVolunteeringDto,
-	UpdateCvVolunteeringDto,
-} from "../dto/CvVolunteeringDto";
 import { ConflictError, NotFoundError } from "../errors";
+import type {
+	CreateVolunteeringInput,
+	UpdateVolunteeringInput,
+} from "../schemas/volunteering.schema";
 
 export class ProfileVolunteeringService {
-	async create(profileId: string, data: CreateCvVolunteeringDto) {
+	async create(profileId: string, data: CreateVolunteeringInput) {
 		const profile = await prisma.profile.findUnique({
 			where: {
 				id: profileId,
@@ -82,7 +82,7 @@ export class ProfileVolunteeringService {
 		});
 	}
 
-	async update(id: string, data: UpdateCvVolunteeringDto) {
+	async update(id: string, data: UpdateVolunteeringInput) {
 		const existing = await prisma.volunteering.findUnique({
 			where: {
 				id,

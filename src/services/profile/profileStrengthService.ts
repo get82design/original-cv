@@ -1,14 +1,14 @@
 import { prisma } from "../../../lib/prisma";
 import { reorderItems } from "../../utils/reorderCvItems";
-import type {
-	CreateCvStrengthDto,
-	UpdateCvStrengthDto,
-} from "../dto/CvStrengthDto";
 import { ConflictError, NotFoundError } from "../errors";
 import { compactOrder } from "../../utils/compactOrder";
+import type {
+	CreateStrengthInput,
+	UpdateStrengthInput,
+} from "../schemas/strength.schema";
 
 export class ProfileStrengthService {
-	async create(profileId: string, data: CreateCvStrengthDto) {
+	async create(profileId: string, data: CreateStrengthInput) {
 		const profile = await prisma.profile.findUnique({
 			where: {
 				id: profileId,
@@ -72,7 +72,7 @@ export class ProfileStrengthService {
 		});
 	}
 
-	async update(id: string, data: UpdateCvStrengthDto) {
+	async update(id: string, data: UpdateStrengthInput) {
 		const existing = await prisma.strength.findUnique({
 			where: {
 				id,
@@ -106,7 +106,10 @@ export class ProfileStrengthService {
 			where: {
 				id,
 			},
-			data,
+			data: {
+				...(data.title !== undefined ? { title: data.title } : {}),
+				...(data.icon !== undefined ? { icon: data.icon } : {}),
+			},
 		});
 	}
 

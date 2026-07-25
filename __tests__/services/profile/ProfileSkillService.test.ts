@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { skillService } from "../../../src/services/cv/skillService";
+import { skillService } from "../../../src/services/commons/skillService";
 import { createTestUser } from "../../utils/create-test-user";
 import { Level } from "../../../generated/prisma/enums";
 import { ConflictError, NotFoundError } from "../../../src/services/errors";

@@ -1,13 +1,12 @@
 import { prisma } from "../../../lib/prisma";
-import type { UpdateCvMissionVolunteeringDto } from "../dto/CvMissionVolunteeringDto";
-import type { CreateCvMissionVolunteeringDto } from "../dto/CvVolunteeringDto";
 import { ConflictError, NotFoundError } from "../errors";
+import type {
+	CreateMissionInput,
+	UpdateMissionInput,
+} from "../schemas/mission.schema";
 
 export class ProfileMissionVolunteeringService {
-	async create(
-		profileVolunteeringId: string,
-		data: CreateCvMissionVolunteeringDto,
-	) {
+	async create(profileVolunteeringId: string, data: CreateMissionInput) {
 		const volunteering = await prisma.volunteering.findUnique({
 			where: {
 				id: profileVolunteeringId,
@@ -57,7 +56,7 @@ export class ProfileMissionVolunteeringService {
 		});
 	}
 
-	async update(id: string, data: UpdateCvMissionVolunteeringDto) {
+	async update(id: string, data: UpdateMissionInput) {
 		const existing = await prisma.missionVolunteering.findUnique({
 			where: {
 				id,

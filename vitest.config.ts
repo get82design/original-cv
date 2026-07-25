@@ -11,7 +11,7 @@ export default defineConfig({
 		coverage: {
 			provider: "v8",
 			reporter: ["text", "html", "json-summary"],
-			include: ["src/**/*.ts"],
+			include: ["src/**/*.ts", "server/api/**/*.ts"],
 			exclude: [
 				"src/**/*.d.ts",
 				"src/**/dto/**", // optionnel : exclure les DTOs

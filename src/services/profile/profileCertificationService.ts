@@ -1,14 +1,14 @@
 import { prisma } from "../../../lib/prisma";
 import { reorderItems } from "../../utils/reorderCvItems";
-import type {
-	CreateCvCertificationDto,
-	UpdateCvCertificationDto,
-} from "../dto/CvCertificationDto";
 import { ConflictError, NotFoundError } from "../errors";
 import { compactOrder } from "../../utils/compactOrder";
+import type {
+	CreateCertificationInput,
+	UpdateCertificationInput,
+} from "../schemas/certification.schema";
 
 export class ProfileCertificationService {
-	async create(profileId: string, data: CreateCvCertificationDto) {
+	async create(profileId: string, data: CreateCertificationInput) {
 		const profile = await prisma.profile.findUnique({
 			where: {
 				id: profileId,
@@ -72,7 +72,7 @@ export class ProfileCertificationService {
 		});
 	}
 
-	async update(id: string, data: UpdateCvCertificationDto) {
+	async update(id: string, data: UpdateCertificationInput) {
 		const existing = await prisma.certification.findUnique({
 			where: {
 				id,
@@ -106,7 +106,12 @@ export class ProfileCertificationService {
 			where: {
 				id,
 			},
-			data,
+			data: {
+				...(data.title !== undefined ? { title: data.title } : {}),
+				...(data.organismeCertification !== undefined
+					? { organismeCertification: data.organismeCertification }
+					: {}),
+			},
 		});
 	}
 

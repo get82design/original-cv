@@ -4,7 +4,7 @@ import { createTestUser } from "../../utils/create-test-user";
 import { ConflictError, NotFoundError } from "../../../src/services/errors";
 import { createTestProfile } from "../../utils/create-test-profile";
 import { prismaTest } from "../../../lib/prismaTest";
-import { competenceService } from "../../../src/services/cv/competenceService";
+import { competenceService } from "../../../src/services/commons/competenceService";
 import { profileCompetenceService } from "../../../src/services/profile/profileCompetenceService";
 import { expectMoveNoOp } from "../../utils/move-noop";
 

@@ -1,13 +1,13 @@
 import { prisma } from "../../../lib/prisma";
-import type {
-	CreateCvPhilosophyDto,
-	UpdateCvPhilosophyDto,
-} from "../dto/CvPhilosophyDto";
 import { ConflictError, NotFoundError } from "../errors";
+import type {
+	CreatePhilosophyInput,
+	UpdatePhilosophyInput,
+} from "../schemas/philosophy.schema";
 
 export class CvPhilosophyService {
 	// CRÉATION
-	async create(cvId: string, data: CreateCvPhilosophyDto) {
+	async create(cvId: string, data: CreatePhilosophyInput) {
 		const cv = await prisma.cV.findUnique({
 			where: {
 				id: cvId,
@@ -39,6 +39,7 @@ export class CvPhilosophyService {
 				cvId,
 				citation: data.citation,
 				author: data.author ?? null,
+				settings: data.settings ?? {},
 			},
 		});
 	}
@@ -59,7 +60,7 @@ export class CvPhilosophyService {
 	}
 
 	// MISE À JOUR
-	async update(cvId: string, data: UpdateCvPhilosophyDto) {
+	async update(cvId: string, data: UpdatePhilosophyInput) {
 		const philosophy = await prisma.cvPhilosophy.findUnique({
 			where: {
 				cvId,
@@ -74,7 +75,11 @@ export class CvPhilosophyService {
 			where: {
 				cvId,
 			},
-			data,
+			data: {
+				...(data.citation !== undefined ? { citation: data.citation } : {}),
+				...(data.author !== undefined ? { author: data.author } : {}),
+				...(data.settings !== undefined ? { settings: data.settings } : {}),
+			},
 		});
 	}
 

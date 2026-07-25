@@ -2,14 +2,14 @@ import { prisma } from "../../../lib/prisma";
 import { compactOrder } from "../../utils/compactOrder";
 import { reorderItems } from "../../utils/reorderCvItems";
 import { validateTimeline } from "../../utils/validateTimeline";
-import type {
-	CreateCvFormationDto,
-	UpdateCvFormationDto,
-} from "../dto/CvFormationDto";
 import { ConflictError, NotFoundError } from "../errors";
+import type {
+	CreateFormationInput,
+	UpdateFormationInput,
+} from "../schemas/formation.schema";
 
 export class CvFormationService {
-	async create(cvId: string, data: CreateCvFormationDto) {
+	async create(cvId: string, data: CreateFormationInput) {
 		const cv = await prisma.cV.findUnique({
 			where: {
 				id: cvId,
@@ -66,6 +66,7 @@ export class CvFormationService {
 				status: data.status ?? null,
 				order: data.order,
 				organismeFormation: data.organismeFormation ?? null,
+				settings: data.settings ?? {},
 			},
 		});
 	}
@@ -81,7 +82,7 @@ export class CvFormationService {
 		});
 	}
 
-	async update(id: string, data: UpdateCvFormationDto) {
+	async update(id: string, data: UpdateFormationInput) {
 		const existing = await prisma.cvFormation.findUnique({
 			where: {
 				id,
@@ -124,6 +125,7 @@ export class CvFormationService {
 			start: data.start ?? existing.start,
 			end: data.end !== undefined ? data.end : existing.end,
 			status: data.status !== undefined ? data.status : existing.status,
+			settings: data.settings ?? existing.settings ?? {},
 		};
 
 		return prisma.cvFormation.update({

@@ -6,7 +6,7 @@ import { createCV } from "../../utils/create-test-cv-full-flow";
 import { ConflictError, NotFoundError } from "../../../src/services/errors";
 import { cvCompetenceService } from "../../../src/services/cv/cvCompetenceService";
 import { prismaTest } from "../../../lib/prismaTest";
-import { competenceService } from "../../../src/services/cv/competenceService";
+import { competenceService } from "../../../src/services/commons/competenceService";
 import { expectMoveNoOp } from "../../utils/move-noop";
 
 describe("CvCompetenceGroupService.create", () => {

@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { profileCompetenceGroupService } from "../../../src/services/profile/profileCompetenceGroupService";
 import { profileCompetenceService } from "../../../src/services/profile/profileCompetenceService";
-import { competenceService } from "../../../src/services/cv/competenceService";
+import { competenceService } from "../../../src/services/commons/competenceService";
 import { createTestUser } from "../../utils/create-test-user";
 import { ConflictError, NotFoundError } from "../../../src/services/errors";
 import { createTestProfile } from "../../utils/create-test-profile";

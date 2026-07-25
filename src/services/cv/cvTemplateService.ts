@@ -1,10 +1,10 @@
 import { prisma } from "../../../lib/prisma";
-import type { CreateCvTemplateDto } from "../dto/CvTemplateDto";
 import { ConflictError, NotFoundError } from "../errors";
+import type { CreateCvTemplateInput } from "../schemas/cvTemplate.schema";
 
 export class CvTemplateService {
 	// CREATE
-	async create(data: CreateCvTemplateDto) {
+	async create(data: CreateCvTemplateInput) {
 		const existing = await prisma.cVTemplate.findUnique({
 			where: {
 				name: data.name,
@@ -16,7 +16,11 @@ export class CvTemplateService {
 		}
 
 		return prisma.cVTemplate.create({
-			data,
+			data: {
+				name: data.name,
+				structure: data.structure,
+				defaultStyles: data.defaultStyles,
+			},
 		});
 	}
 
@@ -25,6 +29,12 @@ export class CvTemplateService {
 		const template = await prisma.cVTemplate.findUnique({
 			where: {
 				id,
+			},
+			select: {
+				id: true,
+				name: true,
+				structure: true,
+				defaultStyles: true,
 			},
 		});
 
@@ -40,6 +50,12 @@ export class CvTemplateService {
 		return prisma.cVTemplate.findMany({
 			orderBy: {
 				name: "asc",
+			},
+			select: {
+				id: true,
+				name: true,
+				structure: true,
+				defaultStyles: true,
 			},
 		});
 	}

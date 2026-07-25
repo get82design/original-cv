@@ -1,14 +1,14 @@
 import { prisma } from "../../../lib/prisma";
 import { reorderItems } from "../../utils/reorderCvItems";
-import type {
-	CreateCvExpertiseDto,
-	UpdateCvExpertiseDto,
-} from "../dto/CvExpertiseDto";
 import { ConflictError, NotFoundError } from "../errors";
 import { compactOrder } from "../../utils/compactOrder";
+import type {
+	CreateExpertiseInput,
+	UpdateExpertiseInput,
+} from "../schemas/expertise.schema";
 
 export class CvExpertiseService {
-	async create(cvId: string, data: CreateCvExpertiseDto) {
+	async create(cvId: string, data: CreateExpertiseInput) {
 		const cv = await prisma.cV.findUnique({
 			where: {
 				id: cvId,
@@ -60,6 +60,7 @@ export class CvExpertiseService {
 				title: data.title,
 				level: data.level,
 				order: data.order ?? 0,
+				settings: data.settings ?? {},
 			},
 		});
 	}
@@ -75,7 +76,7 @@ export class CvExpertiseService {
 		});
 	}
 
-	async update(id: string, data: UpdateCvExpertiseDto) {
+	async update(id: string, data: UpdateExpertiseInput) {
 		const existing = await prisma.cvExpertise.findUnique({
 			where: {
 				id,
@@ -109,7 +110,11 @@ export class CvExpertiseService {
 			where: {
 				id,
 			},
-			data,
+			data: {
+				...(data.title !== undefined ? { title: data.title } : {}),
+				...(data.level !== undefined ? { level: data.level } : {}),
+				...(data.settings !== undefined ? { settings: data.settings } : {}),
+			},
 		});
 	}
 

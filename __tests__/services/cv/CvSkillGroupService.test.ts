@@ -4,7 +4,7 @@ import { createTestUser } from "../../utils/create-test-user";
 import { createTestTemplate } from "../../utils/create-test-template";
 import { createCV } from "../../utils/create-test-cv-full-flow";
 import { ConflictError, NotFoundError } from "../../../src/services/errors";
-import { skillService } from "../../../src/services/cv/skillService";
+import { skillService } from "../../../src/services/commons/skillService";
 import { cvSkillService } from "../../../src/services/cv/cvSkillService";
 import { Level } from "../../../generated/prisma/client";
 import { prismaTest } from "../../../lib/prismaTest";

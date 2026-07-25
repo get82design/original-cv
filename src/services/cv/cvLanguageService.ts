@@ -3,12 +3,12 @@ import { reorderItems } from "../../utils/reorderCvItems";
 import { ConflictError, NotFoundError } from "../errors";
 import { compactOrder } from "../../utils/compactOrder";
 import type {
-	CreateCvLanguageDto,
-	UpdateCvLanguageDto,
-} from "../dto/CvLanguageDto";
+	CreateLanguageInput,
+	UpdateLanguageInput,
+} from "../schemas/language.schema";
 
 export class CvLanguageService {
-	async create(cvId: string, data: CreateCvLanguageDto) {
+	async create(cvId: string, data: CreateLanguageInput) {
 		const cv = await prisma.cV.findUnique({
 			where: {
 				id: cvId,
@@ -60,6 +60,7 @@ export class CvLanguageService {
 				name: data.name,
 				level: data.level,
 				order: data.order ?? 0,
+				settings: data.settings ?? {},
 			},
 		});
 	}
@@ -75,7 +76,7 @@ export class CvLanguageService {
 		});
 	}
 
-	async update(id: string, data: UpdateCvLanguageDto) {
+	async update(id: string, data: UpdateLanguageInput) {
 		const existing = await prisma.cvLanguage.findUnique({
 			where: {
 				id,
@@ -109,7 +110,11 @@ export class CvLanguageService {
 			where: {
 				id,
 			},
-			data,
+			data: {
+				...(data.name !== undefined ? { name: data.name } : {}),
+				...(data.level !== undefined ? { level: data.level } : {}),
+				...(data.settings !== undefined ? { settings: data.settings } : {}),
+			},
 		});
 	}
 

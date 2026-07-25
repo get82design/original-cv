@@ -195,6 +195,7 @@ describe("CvModuleItemService.create", () => {
 			title: "Description",
 			order: 1,
 			settings: {},
+			isActive: true,
 		});
 		const description = await cvDescriptionService.create(cv.id, {
 			description: "Description",
@@ -229,6 +230,7 @@ describe("CvModuleItemService.create", () => {
 			title: "Description",
 			order: 1,
 			settings: {},
+			isActive: true,
 		});
 		await expect(
 			cvModuleItemService.create(module.id, {
@@ -248,6 +250,7 @@ describe("CvModuleItemService.create", () => {
 			title: "Description",
 			order: 1,
 			settings: {},
+			isActive: true,
 		});
 		const description = await cvDescriptionService.create(cv.id, {
 			description: "Description",
@@ -276,6 +279,7 @@ describe("CvModuleItemService.create", () => {
 			title: "Description",
 			order: 1,
 			settings: {},
+			isActive: true,
 		});
 		const description = await cvDescriptionService.create(cv.id, {
 			description: "Description",
@@ -309,6 +313,7 @@ describe("CvModuleItemService.create", () => {
 			title: "Module",
 			order: 1,
 			settings: {},
+			isActive: true,
 		});
 		const item = await createItem(cv.id);
 		const moduleItem = await cvModuleItemService.create(module.id, {
@@ -331,6 +336,7 @@ describe("CvModuleItemService.findAllByModuleId", () => {
 			title: "Description",
 			order: 1,
 			settings: {},
+			isActive: true,
 		});
 		const description = await cvDescriptionService.create(cv.id, {
 			description: "Description",
@@ -357,6 +363,7 @@ describe("CvModuleItemService.findAllByModuleId", () => {
 			title: "Description",
 			order: 1,
 			settings: {},
+			isActive: true,
 		});
 		const items = await cvModuleItemService.findAllByModuleId(module.id);
 		expect(items.length).toBe(0);
@@ -372,12 +379,14 @@ describe("CvModuleItemService.findAllByModuleId", () => {
 			title: "Description",
 			order: 1,
 			settings: {},
+			isActive: true,
 		});
 		const module2 = await cvModuleService.create(cv.id, {
-			type: CVModuleType.description,
-			title: "Description 2",
+			type: CVModuleType.philosophy,
+			title: "Philosophy 2",
 			order: 2,
 			settings: {},
+			isActive: true,
 		});
 		const description = await cvDescriptionService.create(cv.id, {
 			description: "Description",
@@ -406,6 +415,7 @@ describe("CvModuleItemService.move", () => {
 			title: "Description",
 			order: 1,
 			settings: {},
+			isActive: true,
 		});
 		const description = await cvDescriptionService.create(cv.id, {
 			description: "Description",
@@ -451,6 +461,7 @@ describe("CvModuleItemService.move", () => {
 			title: "Description",
 			order: 1,
 			settings: {},
+			isActive: true,
 		});
 		const description = await cvDescriptionService.create(cv.id, {
 			description: "Description",
@@ -474,6 +485,7 @@ describe("CvModuleItemService.move", () => {
 			title: "Description",
 			order: 1,
 			settings: {},
+			isActive: true,
 		});
 		const description = await cvDescriptionService.create(cv.id, {
 			description: "Description",
@@ -502,6 +514,7 @@ describe("CvModuleItemService.delete", () => {
 			title: "Description",
 			order: 1,
 			settings: {},
+			isActive: true,
 		});
 		const description = await cvDescriptionService.create(cv.id, {
 			description: "Description",
@@ -531,6 +544,7 @@ describe("CvModuleItemService.delete", () => {
 			title: "Description",
 			order: 1,
 			settings: {},
+			isActive: true,
 		});
 		const description = await cvDescriptionService.create(cv.id, {
 			description: "Description",

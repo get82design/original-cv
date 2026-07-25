@@ -1,14 +1,14 @@
 import { prisma } from "../../../lib/prisma";
 import { reorderItems } from "../../utils/reorderCvItems";
-import type {
-	CreateCvPassionDto,
-	UpdateCvPassionDto,
-} from "../dto/CvPassionDto";
 import { ConflictError, NotFoundError } from "../errors";
 import { compactOrder } from "../../utils/compactOrder";
+import type {
+	CreatePassionInput,
+	UpdatePassionInput,
+} from "../schemas/passion.schema";
 
 export class CvPassionService {
-	async create(cvId: string, data: CreateCvPassionDto) {
+	async create(cvId: string, data: CreatePassionInput) {
 		const cv = await prisma.cV.findUnique({
 			where: {
 				id: cvId,
@@ -60,6 +60,7 @@ export class CvPassionService {
 				title: data.title,
 				icon: data.icon,
 				order: data.order ?? 0,
+				settings: data.settings ?? {},
 			},
 		});
 	}
@@ -75,7 +76,7 @@ export class CvPassionService {
 		});
 	}
 
-	async update(id: string, data: UpdateCvPassionDto) {
+	async update(id: string, data: UpdatePassionInput) {
 		const passion = await prisma.cvPassion.findUnique({
 			where: {
 				id,
@@ -109,7 +110,11 @@ export class CvPassionService {
 			where: {
 				id,
 			},
-			data,
+			data: {
+				...(data.title !== undefined ? { title: data.title } : {}),
+				...(data.icon !== undefined ? { icon: data.icon } : {}),
+				...(data.settings !== undefined ? { settings: data.settings } : {}),
+			},
 		});
 	}
 

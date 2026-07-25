@@ -2,14 +2,14 @@ import { prisma } from "../../../lib/prisma";
 import { compactOrder } from "../../utils/compactOrder";
 import { reorderItems } from "../../utils/reorderCvItems";
 import { validateTimeline } from "../../utils/validateTimeline";
-import type {
-	CreateCvExperienceDto,
-	UpdateCvExperienceDto,
-} from "../dto/CvExperienceDto";
 import { ConflictError, NotFoundError } from "../errors";
+import type {
+	CreateExperienceInput,
+	UpdateExperienceInput,
+} from "../schemas/experience.schema";
 
 export class CvExperienceService {
-	async create(cvId: string, data: CreateCvExperienceDto) {
+	async create(cvId: string, data: CreateExperienceInput) {
 		const cv = await prisma.cV.findUnique({
 			where: {
 				id: cvId,
@@ -67,6 +67,7 @@ export class CvExperienceService {
 				start: data.start,
 				end: data.end ?? null,
 				order: data.order,
+				settings: data.settings ?? {},
 			},
 		});
 	}
@@ -82,7 +83,7 @@ export class CvExperienceService {
 		});
 	}
 
-	async update(id: string, data: UpdateCvExperienceDto) {
+	async update(id: string, data: UpdateExperienceInput) {
 		const existing = await prisma.cvExperience.findUnique({
 			where: {
 				id,
@@ -124,6 +125,7 @@ export class CvExperienceService {
 			start: data.start ?? existing.start,
 			end: data.end !== undefined ? data.end : existing.end,
 			company: data.company ?? existing.company,
+			settings: data.settings ?? {},
 		};
 
 		return prisma.cvExperience.update({

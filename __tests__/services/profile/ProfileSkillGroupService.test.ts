@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { createTestUser } from "../../utils/create-test-user";
 import { ConflictError, NotFoundError } from "../../../src/services/errors";
-import { skillService } from "../../../src/services/cv/skillService";
+import { skillService } from "../../../src/services/commons/skillService";
 import { Level } from "../../../generated/prisma/client";
 import { prismaTest } from "../../../lib/prismaTest";
 import { createTestProfile } from "../../utils/create-test-profile";

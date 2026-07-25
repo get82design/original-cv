@@ -43,6 +43,6 @@
     "incremental": true,
     "resolveJsonModule": true
   },
-  "include": ["next-env.d.ts", "**/*.mts", "**/*.ts", "**/*.tsx", "jest.config.cjs"],
+  "include": ["next-env.d.ts", "**/*.mts", "**/*.ts", "**/*.tsx", "jest.config.cjs", "types/**/*.d.ts"],
   "exclude": ["node_modules"]
 }

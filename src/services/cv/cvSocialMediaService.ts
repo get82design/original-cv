@@ -1,14 +1,14 @@
 import { prisma } from "../../../lib/prisma";
 import { reorderItems } from "../../utils/reorderCvItems";
-import type {
-	CreateCvSocialMediaDto,
-	UpdateCvSocialMediaDto,
-} from "../dto/CvSocialMediaDto";
 import { ConflictError, NotFoundError } from "../errors";
 import { compactOrder } from "../../utils/compactOrder";
+import type {
+	CreateSocialMediaInput,
+	UpdateSocialMediaInput,
+} from "../schemas/socialMedia.schema";
 
 export class CvSocialMediaService {
-	async create(cvId: string, data: CreateCvSocialMediaDto) {
+	async create(cvId: string, data: CreateSocialMediaInput) {
 		const cv = await prisma.cV.findUnique({
 			where: {
 				id: cvId,
@@ -60,6 +60,7 @@ export class CvSocialMediaService {
 				socialNetwork: data.socialNetwork,
 				username: data.username,
 				order: data.order ?? 0,
+				settings: data.settings ?? {},
 			},
 		});
 	}
@@ -75,7 +76,7 @@ export class CvSocialMediaService {
 		});
 	}
 
-	async update(id: string, data: UpdateCvSocialMediaDto) {
+	async update(id: string, data: UpdateSocialMediaInput) {
 		const existing = await prisma.cvSocialMedia.findUnique({
 			where: {
 				id,
@@ -109,7 +110,13 @@ export class CvSocialMediaService {
 			where: {
 				id,
 			},
-			data,
+			data: {
+				...(data.socialNetwork !== undefined
+					? { socialNetwork: data.socialNetwork }
+					: {}),
+				...(data.username !== undefined ? { username: data.username } : {}),
+				...(data.settings !== undefined ? { settings: data.settings } : {}),
+			},
 		});
 	}
 

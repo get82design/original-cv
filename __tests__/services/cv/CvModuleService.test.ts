@@ -21,6 +21,7 @@ describe("CvModuleService.create", () => {
 			type: CVModuleType.description,
 			order: 1,
 			settings: {},
+			isActive: true,
 		});
 
 		expect(module.cvId).toBe(cv.id);
@@ -34,6 +35,7 @@ describe("CvModuleService.create", () => {
 				type: CVModuleType.description,
 				order: 1,
 				settings: {},
+				isActive: true,
 			}),
 		).rejects.toThrow(NotFoundError);
 	});
@@ -46,12 +48,14 @@ describe("CvModuleService.create", () => {
 			type: CVModuleType.description,
 			order: 1,
 			settings: {},
+			isActive: true,
 		});
 		await expect(
 			cvModuleService.create(cv.id, {
 				type: CVModuleType.description,
 				order: 1,
 				settings: {},
+				isActive: true,
 			}),
 		).rejects.toThrow(ConflictError);
 	});
@@ -64,14 +68,64 @@ describe("CvModuleService.create", () => {
 			type: CVModuleType.description,
 			order: 1,
 			settings: {},
+			isActive: true,
 		});
 		const module2 = await cvModuleService.create(cv.id, {
-			type: CVModuleType.description,
+			type: CVModuleType.philosophy,
 			order: 2,
 			settings: {},
+			isActive: true,
 		});
 		expect(module2.order).toBe(2);
 	});
+
+	it("defaults isActive to true", async () => {
+		const user = await createTestUser();
+		const template = await createTestTemplate();
+		const cv = await createCV(user.id, template.id);
+
+		// @ts-expect-error
+		const module = await cvModuleService.create(cv.id, {
+		  type: CVModuleType.description,
+		  order: 1,
+		  settings: {},
+		  // pas d'isActive → Prisma default / zod
+		});
+		expect(module.isActive).toBe(true);
+	  });
+
+	  it("creates an inactive module (itemsNoUse)", async () => {
+		const user = await createTestUser();
+		const template = await createTestTemplate();
+		const cv = await createCV(user.id, template.id);
+		const module = await cvModuleService.create(cv.id, {
+		  type: CVModuleType.experience,
+		  order: 1,
+		  settings: {},
+		  isActive: false,
+		});
+		expect(module.isActive).toBe(false);
+	  });
+
+	  it("throws if type already exists on CV", async () => {
+		const user = await createTestUser();
+		const template = await createTestTemplate();
+		const cv = await createCV(user.id, template.id);
+		await cvModuleService.create(cv.id, {
+		  type: CVModuleType.description,
+		  order: 1,
+		  settings: {},
+		  isActive: true,
+		});
+		await expect(
+		  cvModuleService.create(cv.id, {
+			type: CVModuleType.description,
+			order: 2,
+			settings: {},
+			isActive: true,
+		  }),
+		).rejects.toThrow(ConflictError);
+	  });
 });
 
 describe("CvModuleService.findAllByCvId", () => {
@@ -83,6 +137,7 @@ describe("CvModuleService.findAllByCvId", () => {
 			type: CVModuleType.description,
 			order: 1,
 			settings: {},
+			isActive: true,
 		});
 		const modules = await cvModuleService.findAllByCvId(cv.id);
 		expect(modules.length).toBe(1);
@@ -110,12 +165,14 @@ describe("CvModuleService.findAllByCvId", () => {
 			title: "Description",
 			order: 1,
 			settings: {},
+			isActive: true,
 		});
 		await cvModuleService.create(cv2.id, {
 			type: CVModuleType.description,
 			title: "Description 2",
 			order: 1,
 			settings: {},
+			isActive: true,
 		});
 		const modules = await cvModuleService.findAllByCvId(cv.id);
 		expect(modules.length).toBe(1);
@@ -142,6 +199,7 @@ describe("CvModuleService.update", () => {
 			settings: {
 				title: "Description",
 			},
+			isActive: true,
 		});
 		const updatedModule = await cvModuleService.update(module.id, {
 			type: CVModuleType.description,
@@ -170,21 +228,38 @@ describe("CvModuleService.update", () => {
 			title: "Description",
 			order: 1,
 			settings: {},
+			isActive: true,
 		});
 		const module2 = await cvModuleService.create(cv.id, {
-			type: CVModuleType.description,
-			title: "Description2",
+			type: CVModuleType.philosophy,
+			title: "Philosophy",
 			order: 2,
 			settings: {},
+			isActive: true,
 		});
 		await expect(
 			cvModuleService.update(module.id, {
 				type: CVModuleType.description,
-				title: "Description2",
+				title: "Philosophy",
 				settings: {},
 			}),
 		).rejects.toThrow(ConflictError);
 	});
+
+	it("updates isActive", async () => {
+		const user = await createTestUser();
+		const template = await createTestTemplate();
+		const cv = await createCV(user.id, template.id);
+		const module = await cvModuleService.create(cv.id, {
+			type: CVModuleType.description,
+			title: "Description",
+			order: 1,
+			settings: {},
+			isActive: true,
+		});
+		const updated = await cvModuleService.update(module.id, { isActive: false });
+		expect(updated.isActive).toBe(false);
+	  });
 });
 
 describe("CvModuleService.move", () => {
@@ -197,12 +272,14 @@ describe("CvModuleService.move", () => {
 			title: "Description",
 			order: 1,
 			settings: {},
+			isActive: true,
 		});
 		const module2 = await cvModuleService.create(cv.id, {
-			type: CVModuleType.description,
-			title: "Description2",
+			type: CVModuleType.philosophy,
+			title: "Philosophy",
 			order: 2,
 			settings: {},
+			isActive: true,
 		});
 		await cvModuleService.move(module2.id, 1);
 		const result = await cvModuleService.findAllByCvId(cv.id);
@@ -225,6 +302,7 @@ describe("CvModuleService.move", () => {
 			title: "Description",
 			order: 1,
 			settings: {},
+			isActive: true,
 		});
 		await expect(cvModuleService.move(module.id, -1)).rejects.toThrow(
 			ValidationError,
@@ -242,6 +320,7 @@ describe("CvModuleService.move", () => {
 					title: "Description",
 					order: 1,
 					settings: {},
+					isActive: true,
 				});
 				return { id: module.id, order: module.order };
 			},
@@ -260,6 +339,7 @@ describe("CvModuleService.delete", () => {
 			title: "Description",
 			order: 1,
 			settings: {},
+			isActive: true,
 		});
 		await cvModuleService.delete(module.id);
 		const result = await cvModuleService.findAllByCvId(cv.id);
@@ -281,12 +361,14 @@ describe("CvModuleService.delete", () => {
 			title: "Description",
 			order: 1,
 			settings: {},
+			isActive: true,
 		});
 		const module2 = await cvModuleService.create(cv.id, {
-			type: CVModuleType.description,
-			title: "Description2",
+			type: CVModuleType.philosophy,
+			title: "Philosophy",
 			order: 2,
 			settings: {},
+			isActive: true,
 		});
 		await cvModuleService.delete(module.id);
 		const result = await cvModuleService.findAllByCvId(cv.id);
@@ -303,6 +385,7 @@ describe("CvModuleService.delete", () => {
 			title: "Description",
 			order: 1,
 			settings: {},
+			isActive: true,
 		});
 		await cvModuleService.delete(module.id);
 		const result = await cvModuleService.findAllByCvId(cv.id);

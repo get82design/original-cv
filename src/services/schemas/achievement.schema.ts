@@ -1,0 +1,16 @@
+import z from "zod";
+
+export const achievementSettingsSchema = z.record(z.string(), z.boolean()).optional();
+
+export const createAchievementSchema = z.object({
+	title: z.string().min(1),
+	description: z.string().optional(),
+	year: z.number().optional(),
+	technology: z.string().optional(),
+	order: z.number().min(1),
+	settings: achievementSettingsSchema.optional(),
+});
+
+export const updateAchievementSchema = createAchievementSchema.partial();
+export type CreateAchievementInput = z.infer<typeof createAchievementSchema>;
+export type UpdateAchievementInput = z.infer<typeof updateAchievementSchema>;

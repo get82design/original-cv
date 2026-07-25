@@ -1,14 +1,14 @@
 import { prisma } from "../../../lib/prisma";
 import { reorderItems } from "../../utils/reorderCvItems";
-import type {
-	CreateCvCertificationDto,
-	UpdateCvCertificationDto,
-} from "../dto/CvCertificationDto";
 import { ConflictError, NotFoundError } from "../errors";
 import { compactOrder } from "../../utils/compactOrder";
+import type {
+	CreateCertificationInput,
+	UpdateCertificationInput,
+} from "../schemas/certification.schema";
 
 export class CvCertificationService {
-	async create(cvId: string, data: CreateCvCertificationDto) {
+	async create(cvId: string, data: CreateCertificationInput) {
 		const cv = await prisma.cV.findUnique({
 			where: {
 				id: cvId,
@@ -59,6 +59,7 @@ export class CvCertificationService {
 				cvId,
 				title: data.title,
 				organismeCertification: data.organismeCertification,
+				settings: data.settings ?? {},
 				order: data.order ?? 0,
 			},
 		});
@@ -75,7 +76,7 @@ export class CvCertificationService {
 		});
 	}
 
-	async update(id: string, data: UpdateCvCertificationDto) {
+	async update(id: string, data: UpdateCertificationInput) {
 		const existing = await prisma.cvCertification.findUnique({
 			where: {
 				id,
@@ -109,7 +110,13 @@ export class CvCertificationService {
 			where: {
 				id,
 			},
-			data,
+			data: {
+				...(data.title !== undefined ? { title: data.title } : {}),
+				...(data.organismeCertification !== undefined
+					? { organismeCertification: data.organismeCertification }
+					: {}),
+				...(data.settings !== undefined ? { settings: data.settings } : {}),
+			},
 		});
 	}
 

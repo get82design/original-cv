@@ -3,12 +3,12 @@ import { reorderItems } from "../../utils/reorderCvItems";
 import { ConflictError, NotFoundError } from "../errors";
 import { compactOrder } from "../../utils/compactOrder";
 import type {
-	CreateCvLanguageDto,
-	UpdateCvLanguageDto,
-} from "../dto/CvLanguageDto";
+	CreateLanguageInput,
+	UpdateLanguageInput,
+} from "../schemas/language.schema";
 
 export class ProfileLanguageService {
-	async create(profileId: string, data: CreateCvLanguageDto) {
+	async create(profileId: string, data: CreateLanguageInput) {
 		const profile = await prisma.profile.findUnique({
 			where: {
 				id: profileId,
@@ -75,7 +75,7 @@ export class ProfileLanguageService {
 		});
 	}
 
-	async update(id: string, data: UpdateCvLanguageDto) {
+	async update(id: string, data: UpdateLanguageInput) {
 		const existing = await prisma.language.findUnique({
 			where: {
 				id,
@@ -109,7 +109,10 @@ export class ProfileLanguageService {
 			where: {
 				id,
 			},
-			data,
+			data: {
+				...(data.name !== undefined ? { name: data.name } : {}),
+				...(data.level !== undefined ? { level: data.level } : {}),
+			},
 		});
 	}
 

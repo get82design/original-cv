@@ -2,13 +2,13 @@ import { CVModuleItemType } from "../../../generated/prisma/enums";
 import { prisma } from "../../../lib/prisma";
 import { compactOrder } from "../../utils/compactOrder";
 import { reorderItems } from "../../utils/reorderCvItems";
-import type { CreateCvModuleItemDto } from "../dto/CvModuleItemDto";
 import { ValidationError } from "../errors";
 import { ConflictError } from "../errors/ConflictError";
 import { NotFoundError } from "../errors/NotFoundError";
+import type { CvModuleItemInput } from "../schemas/cvModuleItem.schema";
 
 export class CvModuleItemService {
-	async create(moduleId: string, data: CreateCvModuleItemDto) {
+	async create(moduleId: string, data: CvModuleItemInput) {
 		const module = await prisma.cVModule.findUnique({
 			where: {
 				id: moduleId,

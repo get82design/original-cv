@@ -1,12 +1,12 @@
 import { prisma } from "../../../lib/prisma";
-import type {
-	CreateCvMissionProjectDto,
-	UpdateCvMissionProjectDto,
-} from "../dto/CvMissionProjectDto";
 import { ConflictError, NotFoundError } from "../errors";
+import type {
+	CreateMissionInput,
+	UpdateMissionInput,
+} from "../schemas/mission.schema";
 
 export class ProfileMissionProjectService {
-	async create(profileProjectId: string, data: CreateCvMissionProjectDto) {
+	async create(profileProjectId: string, data: CreateMissionInput) {
 		const project = await prisma.project.findUnique({
 			where: {
 				id: profileProjectId,
@@ -56,7 +56,7 @@ export class ProfileMissionProjectService {
 		});
 	}
 
-	async update(id: string, data: UpdateCvMissionProjectDto) {
+	async update(id: string, data: UpdateMissionInput) {
 		const existing = await prisma.missionProject.findUnique({
 			where: {
 				id,

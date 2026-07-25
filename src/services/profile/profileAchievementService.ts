@@ -1,15 +1,15 @@
 import { prisma } from "../../../lib/prisma";
 import { compactOrder } from "../../utils/compactOrder";
 import { reorderItems } from "../../utils/reorderCvItems";
-import type {
-	CreateCvAchievementDto,
-	UpdateCvAchievementDto,
-} from "../dto/CvAchievementDto";
 import { ConflictError } from "../errors/ConflictError";
 import { NotFoundError } from "../errors/NotFoundError";
+import type {
+	CreateAchievementInput,
+	UpdateAchievementInput,
+} from "../schemas/achievement.schema";
 
 export class ProfileAchievementService {
-	async create(profileId: string, data: CreateCvAchievementDto) {
+	async create(profileId: string, data: CreateAchievementInput) {
 		const profile = await prisma.profile.findUnique({
 			where: {
 				id: profileId,
@@ -78,7 +78,7 @@ export class ProfileAchievementService {
 		});
 	}
 
-	async update(id: string, data: UpdateCvAchievementDto) {
+	async update(id: string, data: UpdateAchievementInput) {
 		const existing = await prisma.achievement.findUnique({
 			where: {
 				id,
@@ -112,7 +112,16 @@ export class ProfileAchievementService {
 			where: {
 				id,
 			},
-			data,
+			data: {
+				...(data.title !== undefined ? { title: data.title } : {}),
+				...(data.description !== undefined
+					? { description: data.description }
+					: {}),
+				...(data.year !== undefined ? { year: data.year } : {}),
+				...(data.technology !== undefined
+					? { technology: data.technology }
+					: {}),
+			},
 		});
 	}
 

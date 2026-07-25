@@ -1,10 +1,13 @@
 import { prisma } from "../../../lib/prisma";
-import type { CreateProfileDto, UpdateProfileDto } from "../dto/ProfileDto";
+import type {
+	CreateProfileInput,
+	UpdateProfileInput,
+} from "../schemas/profile.schema";
 import { ConflictError, NotFoundError } from "../errors";
 
 export class ProfileService {
 	// CREATE
-	async create(userId: string, data: CreateProfileDto) {
+	async create(userId: string, data: CreateProfileInput) {
 		const user = await prisma.user.findUnique({
 			where: {
 				id: userId,
@@ -28,7 +31,10 @@ export class ProfileService {
 		return prisma.profile.create({
 			data: {
 				userId,
-				...data,
+				firstName: data.firstName,
+				lastName: data.lastName,
+				...(data.phone !== undefined ? { phone: data.phone } : {}),
+				...(data.location !== undefined ? { location: data.location } : {}),
 			},
 		});
 	}
@@ -92,7 +98,7 @@ export class ProfileService {
 	}
 
 	// UPDATE
-	async update(userId: string, data: UpdateProfileDto) {
+	async update(userId: string, data: UpdateProfileInput) {
 		const profile = await prisma.profile.findUnique({
 			where: {
 				userId,
@@ -107,7 +113,12 @@ export class ProfileService {
 			where: {
 				userId,
 			},
-			data,
+			data: {
+				...(data.firstName !== undefined ? { firstName: data.firstName } : {}),
+				...(data.lastName !== undefined ? { lastName: data.lastName } : {}),
+				...(data.phone !== undefined ? { phone: data.phone } : {}),
+				...(data.location !== undefined ? { location: data.location } : {}),
+			},
 		});
 	}
 

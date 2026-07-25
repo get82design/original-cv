@@ -1,12 +1,15 @@
-import { createTRPCReact, httpBatchLink } from '@trpc/react-query';
-import type { AppRouter } from '../pages/api/trpc/[trpc]';
+import { createTRPCReact, httpBatchLink } from "@trpc/react-query";
+import type { AppRouter } from "../server/api/root";
+import superjson from "superjson";
 
-export const trpc: ReturnType<typeof createTRPCReact<AppRouter>> = createTRPCReact<AppRouter>();
+export const trpc: ReturnType<typeof createTRPCReact<AppRouter>> =
+	createTRPCReact<AppRouter>();
 
 export const trpcClient = trpc.createClient({
-  links: [
-    httpBatchLink({
-      url: '/api/trpc', // URL de ton endpoint tRPC dans Next.js
-    }),
-  ],
+	links: [
+		httpBatchLink({
+			url: "/api/trpc",
+			transformer: superjson,
+		}),
+	],
 });

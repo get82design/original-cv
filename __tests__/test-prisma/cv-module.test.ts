@@ -56,6 +56,15 @@ describe("CvModule model", () => {
 			expect(module.title).toBeNull();
 			expect(module.order).toBe(0);
 		});
+
+		// 1-3: créer un module default isActive
+		it("should create module with default isActive", async () => {
+			const { cv } = await createTestCV();
+			const module = await prismaTest.cVModule.create({
+				data: { type: "skill", cvId: cv.id },
+			});
+			expect(module.isActive).toBe(true);
+		});
 	});
 
 	//! 2- CREATE ERROR TESTS
@@ -87,6 +96,15 @@ describe("CvModule model", () => {
 				}),
 			).rejects.toThrow();
 		});
+
+		// 2-3: ne pas pouvoir créer un module avec un type duplicate pour le même CV
+		it("should not allow duplicate type for same CV", async () => {
+			const { cv } = await createTestCV();
+			await prismaTest.cVModule.create({
+				data: { type: "skill", order: 1, cvId: cv.id },
+			});
+			await expect(prismaTest.cVModule.create({ data: { type: "skill", order: 2, cvId: cv.id } })).rejects.toThrow();
+		});
 	});
 
 	//! 3- UPDATE TESTS
@@ -99,16 +117,6 @@ describe("CvModule model", () => {
 				data: { order: 3 },
 			});
 			expect(updated.order).toBe(3);
-		});
-
-		// 3-2: mettre à jour un module avec un type différent
-		it("should update module with different type", async () => {
-			const { module1 } = await createCVWithModules();
-			const updated = await prismaTest.cVModule.update({
-				where: { id: module1.id },
-				data: { type: "experience" },
-			});
-			expect(updated.type).toBe("experience");
 		});
 
 		// 3-3: mettre à jour un module avec un settings différent
@@ -154,6 +162,15 @@ describe("CvModule model", () => {
 					data: { order: 1 },
 				}),
 			).rejects.toThrow();
+		});
+
+		// 3-2: ne pas pouvoir mettre à jour un module avec un type différent
+		it("should not update module with different type", async () => {
+			const { module1 } = await createCVWithModules();
+			await expect(prismaTest.cVModule.update({
+				where: { id: module1.id },
+				data: { type: "experience" },
+			})).rejects.toThrow();
 		});
 	});
 

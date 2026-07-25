@@ -2,14 +2,14 @@ import { prisma } from "../../../lib/prisma";
 import { compactOrder } from "../../utils/compactOrder";
 import { reorderItems } from "../../utils/reorderCvItems";
 import { validateTimeline } from "../../utils/validateTimeline";
-import type {
-	CreateCvExperienceDto,
-	UpdateCvExperienceDto,
-} from "../dto/CvExperienceDto";
 import { ConflictError, NotFoundError } from "../errors";
+import type {
+	CreateExperienceInput,
+	UpdateExperienceInput,
+} from "../schemas/experience.schema";
 
 export class ProfileExperienceService {
-	async create(profileId: string, data: CreateCvExperienceDto) {
+	async create(profileId: string, data: CreateExperienceInput) {
 		const profile = await prisma.profile.findUnique({
 			where: {
 				id: profileId,
@@ -82,7 +82,7 @@ export class ProfileExperienceService {
 		});
 	}
 
-	async update(id: string, data: UpdateCvExperienceDto) {
+	async update(id: string, data: UpdateExperienceInput) {
 		const existing = await prisma.experience.findUnique({
 			where: {
 				id,

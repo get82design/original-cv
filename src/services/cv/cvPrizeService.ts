@@ -1,11 +1,14 @@
 import { prisma } from "../../../lib/prisma";
 import { reorderItems } from "../../utils/reorderCvItems";
-import type { CreateCvPrizeDto, UpdateCvPrizeDto } from "../dto/CvPrizeDto";
 import { ConflictError, NotFoundError } from "../errors";
 import { compactOrder } from "../../utils/compactOrder";
+import type {
+	CreatePrizeInput,
+	UpdatePrizeInput,
+} from "../schemas/prize.schema";
 
 export class CvPrizeService {
-	async create(cvId: string, data: CreateCvPrizeDto) {
+	async create(cvId: string, data: CreatePrizeInput) {
 		const cv = await prisma.cV.findUnique({
 			where: {
 				id: cvId,
@@ -57,6 +60,7 @@ export class CvPrizeService {
 				title: data.title,
 				domaine: data.domaine,
 				order: data.order ?? 0,
+				settings: data.settings ?? {},
 			},
 		});
 	}
@@ -72,7 +76,7 @@ export class CvPrizeService {
 		});
 	}
 
-	async update(id: string, data: UpdateCvPrizeDto) {
+	async update(id: string, data: UpdatePrizeInput) {
 		const existing = await prisma.cvPrize.findUnique({
 			where: {
 				id,
@@ -106,7 +110,11 @@ export class CvPrizeService {
 			where: {
 				id,
 			},
-			data,
+			data: {
+				...(data.title !== undefined ? { title: data.title } : {}),
+				...(data.domaine !== undefined ? { domaine: data.domaine } : {}),
+				...(data.settings !== undefined ? { settings: data.settings } : {}),
+			},
 		});
 	}
 

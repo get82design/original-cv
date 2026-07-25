@@ -2,14 +2,14 @@ import { prisma } from "../../../lib/prisma";
 import { compactOrder } from "../../utils/compactOrder";
 import { reorderItems } from "../../utils/reorderCvItems";
 import { validateTimeline } from "../../utils/validateTimeline";
-import type {
-	CreateCvVolunteeringDto,
-	UpdateCvVolunteeringDto,
-} from "../dto/CvVolunteeringDto";
 import { ConflictError, NotFoundError } from "../errors";
+import type {
+	CreateVolunteeringInput,
+	UpdateVolunteeringInput,
+} from "../schemas/volunteering.schema";
 
 export class CvVolunteeringService {
-	async create(cvId: string, data: CreateCvVolunteeringDto) {
+	async create(cvId: string, data: CreateVolunteeringInput) {
 		const cv = await prisma.cV.findUnique({
 			where: {
 				id: cvId,
@@ -67,6 +67,7 @@ export class CvVolunteeringService {
 				start: data.start,
 				end: data.end ?? null,
 				order: data.order,
+				settings: data.settings ?? {},
 			},
 		});
 	}
@@ -82,7 +83,7 @@ export class CvVolunteeringService {
 		});
 	}
 
-	async update(id: string, data: UpdateCvVolunteeringDto) {
+	async update(id: string, data: UpdateVolunteeringInput) {
 		const existing = await prisma.cvVolunteering.findUnique({
 			where: {
 				id,
@@ -124,6 +125,7 @@ export class CvVolunteeringService {
 			start: data.start ?? existing.start,
 			end: data.end !== undefined ? data.end : existing.end,
 			organisation: data.organisation ?? existing.organisation,
+			settings: data.settings ?? existing.settings ?? {},
 		};
 
 		return prisma.cvVolunteering.update({
