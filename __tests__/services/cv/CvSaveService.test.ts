@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { CVModuleType, CvTimelineStatus, Level } from "../../../generated/prisma/client";
 import { prismaTest } from "../../../lib/prismaTest";
 import { cvSaveService } from "../../../src/services/cv/cvSaveService";
-import type { CvSaveInput } from "../../../src/services/schemas/cvSave.schema";
+import { cvSaveSchema, type CvSaveInput } from "../../../src/services/schemas/cvSave.schema";
 import {
 	ForbiddenError,
 	NotFoundError,
@@ -11,6 +11,8 @@ import {
 import { createCV } from "../../utils/create-test-cv-full-flow";
 import { createTestTemplate } from "../../utils/create-test-template";
 import { createTestUser } from "../../utils/create-test-user";
+import { mapCvToSaveInput } from "../../../src/features/cv-editor/mapCvToSaveInput";
+import { cvService } from "../../../src/services/cv/cvService";
 
 async function createCatalogSkill(name = `skill-${Date.now()}`) {
 	return prismaTest.skill.create({ data: { name } });
@@ -2577,5 +2579,198 @@ describe("CvSaveService.save", () => {
         expect(updated.educations[0]?.title).toBe("Education 1");
         expect(updated.skillGroups).toHaveLength(1);
         expect(updated.skillGroups[0]?.title).toBe("Skill Group 1");
+	});
+
+	it("roundtrips findById → mapCvToSaveInput → save", async () => {
+		const user = await createTestUser();
+		const template = await createTestTemplate();
+		const created = await cvSaveService.save(user.id, buildSaveInput(template.id));
+		const full = await cvService.findById(created.id);
+		const mapped = mapCvToSaveInput(full);
+		expect(cvSaveSchema.safeParse(mapped).success).toBe(true);
+		const saved = await cvSaveService.save(user.id, {
+			...mapped,
+			cvId: created.id,
+		});
+		expect(saved.id).toBe(created.id);
+	});
+
+	it("updates existing project missions and deletes unlisted ones", async () => {
+		const user = await createTestUser();
+		const template = await createTestTemplate();
+		const created = await cvSaveService.save(
+			user.id,
+			buildSaveInput(template.id, {
+				datas: {
+					header: { title: "John Doe" },
+					project: {
+						content: [
+							{
+								clientKey: "project-1",
+								order: 1,
+								content: {
+									title: "App",
+									start: new Date("2020-01-01"),
+									end: new Date("2022-01-01"),
+									status: CvTimelineStatus.COMPLETED,
+									technology: "React",
+									missions: [
+										{
+											clientKey: "m1",
+											content: { content: "Mission A" },
+										},
+										{
+											clientKey: "m2",
+											content: { content: "Mission B" },
+										},
+									],
+								},
+							},
+						],
+					},
+				},
+				modules: [],
+			}),
+		);
+		const projectId = created.projects[0]?.id!;
+		const keepMissionId = created.projects[0]?.cvMissions.find(
+			(m) => m.content === "Mission A",
+		)?.id!;
+		expect(keepMissionId).toBeDefined();
+		const updated = await cvSaveService.save(
+			user.id,
+			buildSaveInput(template.id, {
+				cvId: created.id,
+				datas: {
+					project: {
+						content: [
+							{
+								id: projectId,
+								clientKey: "project-1",
+								order: 1,
+								content: {
+									title: "App",
+									start: new Date("2020-01-01"),
+									end: new Date("2022-01-01"),
+									status: CvTimelineStatus.COMPLETED,
+									technology: "React",
+									missions: [
+										{
+											id: keepMissionId,
+											clientKey: "m1",
+											order: 1,
+											content: { content: "Mission A updated" },
+										},
+									],
+								},
+							},
+						],
+					},
+				},
+				modules: [],
+			}),
+		);
+		expect(updated.projects[0]?.cvMissions).toHaveLength(1);
+		expect(updated.projects[0]?.cvMissions[0]?.id).toBe(keepMissionId);
+		expect(updated.projects[0]?.cvMissions[0]?.content).toBe(
+			"Mission A updated",
+		);
+	});
+	
+	it("updates existing volunteering missions and deletes unlisted ones", async () => {
+		const user = await createTestUser();
+		const template = await createTestTemplate();
+		const created = await cvSaveService.save(
+			user.id,
+			buildSaveInput(template.id, {
+				datas: {
+					header: { title: "John Doe" },
+					volunteering: {
+						content: [
+							{
+								clientKey: "vol-1",
+								order: 1,
+								content: {
+									title: "Asso",
+									organisation: "Org",
+									start: new Date("2020-01-01"),
+									end: new Date("2022-01-01"),
+									missions: [
+										{
+											clientKey: "m1",
+											content: { content: "Aide A" },
+										},
+										{
+											clientKey: "m2",
+											content: { content: "Aide B" },
+										},
+									],
+								},
+							},
+						],
+					},
+				},
+				modules: [],
+			}),
+		);
+		const volunteeringId = created.volunteerings[0]?.id!;
+		const keepMissionId = created.volunteerings[0]?.cvMissions.find(
+			(m) => m.content === "Aide A",
+		)?.id!;
+		expect(keepMissionId).toBeDefined();
+		const updated = await cvSaveService.save(
+			user.id,
+			buildSaveInput(template.id, {
+				cvId: created.id,
+				datas: {
+					volunteering: {
+						content: [
+							{
+								id: volunteeringId,
+								clientKey: "vol-1",
+								order: 1,
+								content: {
+									title: "Asso",
+									organisation: "Org",
+									start: new Date("2020-01-01"),
+									end: new Date("2022-01-01"),
+									missions: [
+										{
+											id: keepMissionId,
+											clientKey: "m1",
+											order: 1,
+											content: { content: "Aide A updated" },
+										},
+									],
+								},
+							},
+						],
+					},
+				},
+				modules: [],
+			}),
+		);
+		expect(updated.volunteerings[0]?.cvMissions).toHaveLength(1);
+		expect(updated.volunteerings[0]?.cvMissions[0]?.id).toBe(keepMissionId);
+		expect(updated.volunteerings[0]?.cvMissions[0]?.content).toBe(
+			"Aide A updated",
+		);
+	});
+
+	it("roundtrips findById → mapCvToSaveInput → save", async () => {
+		const user = await createTestUser();
+		const template = await createTestTemplate();
+		const created = await cvSaveService.save(
+			user.id,
+			buildSaveInput(template.id),
+		);
+		const full = await cvService.findById(created.id);
+		const mapped = mapCvToSaveInput(full);
+		expect(cvSaveSchema.safeParse(mapped).success).toBe(true);
+		const saved = await cvSaveService.save(user.id, {
+			...mapped,
+			cvId: created.id,
+		});
+		expect(saved.id).toBe(created.id);
 	});
 });

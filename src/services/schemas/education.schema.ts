@@ -4,7 +4,7 @@ import { CvTimelineStatus } from "../../../generated/prisma/enums";
 export const educationSettingsSchema = z.record(z.string(), z.boolean()).optional();
 
 export const createEducationSchema = z.object({
-	title: z.string().min(1),
+	title: z.string(),
 	school: z.string().min(1),
 	degree: z.string(),
 	start: z.date(),

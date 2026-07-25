@@ -4,7 +4,7 @@ export const prizeSettingsSchema = z.record(z.string(), z.boolean()).optional();
 
 export const createPrizeSchema = z.object({
 	title: z.string().min(1),
-	domaine: z.string().min(1),
+	domaine: z.string(),
 	order: z.number().optional(),
 	settings: prizeSettingsSchema.optional(),
 });
