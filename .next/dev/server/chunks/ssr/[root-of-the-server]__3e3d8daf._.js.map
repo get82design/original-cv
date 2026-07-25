@@ -1,6 +1,0 @@
-{
-  "version": 3,
-  "sources": [],
-  "sections": [
-    {"offset": {"line": 12, "column": 0}, "map": {"version":3,"sources":["file:///C:/www/Perso/original-cv/pages/_app.tsx"],"sourcesContent":["// import { trpc, trpcClient } from '../utils/trpc';\r\nimport { QueryClient, QueryClientProvider } from '@tanstack/react-query';\r\nimport type { AppProps, AppType } from 'next/app';\r\n\r\nconst queryClient = new QueryClient();\r\n\r\nconst App: AppType = ({ Component, pageProps }: AppProps) => {\r\n  return (\r\n    // <trpc.Provider client={trpcClient} queryClient={queryClient}>\r\n    <QueryClientProvider client={queryClient}>\r\n      <Component {...pageProps} />\r\n    </QueryClientProvider>\r\n    // </trpc.Provider>\r\n  );\r\n};\r\n\r\n// export default trpc.withTRPC(App);\r\nexport default App;\r\n"],"names":[],"mappings":";;;;;AAAA,oDAAoD;AACpD;;;;;;;AAGA,MAAM,cAAc,IAAI,0OAAW;AAEnC,MAAM,MAAe,CAAC,EAAE,SAAS,EAAE,SAAS,EAAY;IACtD,OACE,gEAAgE;kBAChE,qKAAC,kPAAmB;QAAC,QAAQ;kBAC3B,cAAA,qKAAC;YAAW,GAAG,SAAS;;;;;;;;;;;AAI9B;uCAGe"}}]
-}

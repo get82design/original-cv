@@ -1,6 +1,0 @@
-{
-  "version": 3,
-  "sources": [],
-  "sections": [
-    {"offset": {"line": 6, "column": 0}, "map": {"version":3,"sources":["file:///C:/www/Perso/original-cv/pages/index.tsx"],"sourcesContent":["import { trpc } from '../utils/trpc';\r\n\r\nexport default function Home() {\r\n  //   const { data, isLoading } = trpc.example.hello.useQuery();\r\n\r\n  //   if (isLoading) return <div>Loading...</div>;\r\n\r\n  //   return <div>{data}</div>;\r\n\r\n  const { data: users, isLoading } = trpc.example.getUsers.useQuery();\r\n\r\n  if (isLoading) return <div>Loading...</div>;\r\n\r\n  return (\r\n    <div>\r\n      <h1>Users</h1>\r\n      <ul>\r\n        {users?.map((user) => (\r\n          <li key={user.id}>\r\n            {user.name} ({user.email})\r\n          </li>\r\n        ))}\r\n      </ul>\r\n    </div>\r\n  );\r\n}\r\n"],"names":[],"mappings":";;;;;AAAA;;;;;;;AAEe,SAAS;IACtB,+DAA+D;IAE/D,iDAAiD;IAEjD,8BAA8B;IAE9B,MAAM,EAAE,MAAM,KAAK,EAAE,SAAS,EAAE,GAAG,8GAAI,CAAC,OAAO,CAAC,QAAQ,CAAC,QAAQ;IAEjE,IAAI,WAAW,qBAAO,qKAAC;kBAAI;;;;;;IAE3B,qBACE,qKAAC;;0BACC,qKAAC;0BAAG;;;;;;0BACJ,qKAAC;0BACE,OAAO,IAAI,CAAC,qBACX,qKAAC;;4BACE,KAAK,IAAI;4BAAC;4BAAG,KAAK,KAAK;4BAAC;;uBADlB,KAAK,EAAE;;;;;;;;;;;;;;;;AAO1B"}}]
-}
