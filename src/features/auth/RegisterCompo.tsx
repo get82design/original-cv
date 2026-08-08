@@ -1,0 +1,118 @@
+import { Button } from "primereact/button"
+import { AppCard } from "../../components/card/AppCard"
+import { Divider } from "primereact/divider"
+import { FaFacebook, FaGithub, FaGoogle } from "react-icons/fa"
+import { FloatLabel } from "primereact/floatlabel"
+import { InputText } from "primereact/inputtext"
+import { useState } from "react"
+import Link from "next/link"
+
+export const RegisterCompo = () => {
+    const [form, setForm] = useState({
+        name: '',
+        email: '',
+        password: '',
+        confirmPassword: '',
+    })
+    const [error, setError] = useState<string | null>(null);
+
+    const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        //
+    }
+
+    return (
+        <div className='flex flex-col items-center justify-center' style={{ height: 'calc(100vh - 58px)' }}>
+           <AppCard className='w-1/2 flex flex-col gap-3 p-8'>
+                <h1 className='font-light text-4xl text-center mt-4'>Original
+                    <span className='text-primary dark:text-primary-dark font-bold'>CV</span>
+                </h1>
+                <p className='text-center text-xl font-semibold text-gray-400 dark:text-gray-600'>
+                    Créer un compte
+                </p>
+                <div className='flex justify-around gap-4 my-4'>
+                    {/* //! pas encore mis en place */}
+                    <Button outlined color='light' className='w-full text-black dark:text-white flex justify-center items-center gap-2'>
+                        <FaGoogle />
+                        Google
+                    </Button>
+                    <Button outlined color='light' className='w-full text-black dark:text-white flex justify-center items-center gap-2'>
+                        <FaFacebook />
+                        Facebook
+                    </Button>
+                    <Button outlined color='light' className='w-full text-black dark:text-white flex justify-center items-center gap-2'>
+                        <FaGithub />
+                        Github
+                    </Button>
+                </div>
+                <Divider align="center">
+                    <span className="bg-white dark:bg-black p-2">Ou</span>
+                </Divider>
+                <form onSubmit={onSubmit}>
+                    <div className='w-full flex flex-col gap-3 mt-4'>
+                    <FloatLabel>
+                            <InputText 
+                                id="name" 
+                                name="name" 
+                                type="text"
+                                value={form.name} 
+                                onChange={(e) => setForm({ ...form, name: e.target.value })} 
+                                className='w-full rounded-md' 
+                                required 
+                            />
+                            <label htmlFor="name">Nom</label>
+                            {error && <p className='text-red-500'>{error}</p>}
+                        </FloatLabel>
+                        <FloatLabel>
+                            <InputText 
+                                id="email" 
+                                name="email" 
+                                type="email"
+                                value={form.email} 
+                                onChange={(e) => setForm({ ...form, email: e.target.value })} 
+                                className='w-full rounded-md' 
+                                required 
+                            />
+                            <label htmlFor="email">Email</label>
+                            {error && <p className='text-red-500'>{error}</p>}
+                        </FloatLabel>
+                        <FloatLabel>
+                            <InputText 
+                                id="password" 
+                                name="password" 
+                                type="password"
+                                value={form.password} 
+                                onChange={(e) => setForm({ ...form, password: e.target.value })} 
+                                className='w-full rounded-md' 
+                                required 
+                            />
+                            <label htmlFor="password">Mot de passe</label>
+                            {error && <p className='text-red-500'>{error}</p>}
+                        </FloatLabel>
+                        <FloatLabel>
+                            <InputText 
+                                id="confirmPassword" 
+                                name="confirmPassword" 
+                                type="password"
+                                value={form.confirmPassword} 
+                                onChange={(e) => setForm({ ...form, confirmPassword: e.target.value })} 
+                                className='w-full rounded-md' 
+                                required 
+                            />
+                            <label htmlFor="confirmPassword">Confirmation du mot de passe</label>
+                            {error && <p className='text-red-500'>{error}</p>}
+                        </FloatLabel>
+                        <Button type="submit" className='w-full bg-primary hover:bg-primary-dark font-semibold uppercase flex justify-center dark:bg-primary-dark hover:dark:bg-primary text-white dark:text-black rounded-md'>
+                            Créer un compte
+                        </Button>
+                    </div>
+                    <p className='text-center text-sm text-gray-400 dark:text-gray-600 mt-3'>
+                        Vous avez déjà un compte ?{' '} 
+                        <Link href="/login" className='text-primary hover:text-primary-dark dark:text-primary-dark hover:dark:text-primary hover:underline'>
+                            Se connecter
+                        </Link>
+                    </p>
+                </form>
+            </AppCard>
+        </div>
+    )
+}

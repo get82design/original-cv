@@ -1,0 +1,73 @@
+.p-breadcrumb {
+	background: $breadcrumbBg;
+	border: $breadcrumbBorder;
+	border-radius: $borderRadius;
+	padding: $breadcrumbPadding;
+
+	.p-breadcrumb-list {
+		li {
+			.p-menuitem-link {
+				transition: $listItemTransition;
+				border-radius: $borderRadius;
+
+				&:focus-visible {
+					@include focused();
+				}
+
+				.p-menuitem-text {
+					color: $breadcrumbItemTextColor;
+				}
+
+				.p-menuitem-icon {
+					color: $breadcrumbItemIconColor;
+				}
+			}
+
+			&.p-menuitem-separator {
+				margin: 0 $inlineSpacing 0 $inlineSpacing;
+				color: $breadcrumbSeparatorColor;
+			}
+
+			&:last-child {
+				.p-menuitem-text {
+					color: $breadcrumbLastItemTextColor;
+				}
+
+				.p-menuitem-icon {
+					color: $breadcrumbLastItemIconColor;
+				}
+			}
+		}
+	}
+}
+
+html.dark .p-breadcrumb {
+	background: $breadcrumbBgDark;
+	border: $breadcrumbBorderDark;
+
+	.p-breadcrumb-list li {
+		.p-menuitem-link {
+			.p-menuitem-text {
+				color: $breadcrumbItemTextColorDark;
+			}
+
+			.p-menuitem-icon {
+				color: $breadcrumbItemIconColorDark;
+			}
+		}
+
+		&.p-menuitem-separator {
+			color: $breadcrumbSeparatorColorDark;
+		}
+
+		&:last-child {
+			.p-menuitem-text {
+				color: $breadcrumbLastItemTextColorDark;
+			}
+
+			.p-menuitem-icon {
+				color: $breadcrumbLastItemIconColorDark;
+			}
+		}
+	}
+}

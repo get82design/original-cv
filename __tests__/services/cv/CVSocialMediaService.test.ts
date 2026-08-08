@@ -15,6 +15,7 @@ describe("CvSocialMediaService.create", () => {
 		const socialMedia = await cvSocialMediaService.create(cv.id, {
 			socialNetwork: "LinkedIn",
 			username: "john",
+			icon: "faLinkedin",
 			order: 1,
 		});
 
@@ -30,6 +31,8 @@ describe("CvSocialMediaService.create", () => {
 			cvSocialMediaService.create("unknown-cv", {
 				socialNetwork: "LinkedIn",
 				username: "john",
+				icon: "faLinkedin",
+				order: 1,
 			}),
 		).rejects.toThrow(NotFoundError);
 	});
@@ -42,11 +45,13 @@ describe("CvSocialMediaService.create", () => {
 		await cvSocialMediaService.create(cv.id, {
 			socialNetwork: "LinkedIn",
 			username: "john",
+			icon: "faLinkedin",
 		});
 		await expect(
 			cvSocialMediaService.create(cv.id, {
 				socialNetwork: "LinkedIn",
 				username: "another-user",
+				icon: "faLinkedin",
 			}),
 		).rejects.toThrow(ConflictError);
 	});
@@ -59,6 +64,7 @@ describe("CvSocialMediaService.create", () => {
 		await cvSocialMediaService.create(cv.id, {
 			socialNetwork: "LinkedIn",
 			username: "john",
+			icon: "faLinkedin",
 			order: 1,
 		});
 
@@ -66,6 +72,7 @@ describe("CvSocialMediaService.create", () => {
 			cvSocialMediaService.create(cv.id, {
 				socialNetwork: "Github",
 				username: "john-dev",
+				icon: "faGithub",
 				order: 1,
 			}),
 		).rejects.toThrow(ConflictError);
@@ -81,12 +88,14 @@ describe("CvSocialMediaService.findAllByCvId", () => {
 		await cvSocialMediaService.create(cv.id, {
 			socialNetwork: "LinkedIn",
 			username: "john",
+			icon: "faLinkedin",
 			order: 1,
 		});
 
 		await cvSocialMediaService.create(cv.id, {
 			socialNetwork: "Github",
 			username: "john-dev",
+			icon: "faGithub",
 			order: 2,
 		});
 
@@ -118,10 +127,12 @@ describe("CvSocialMediaService.findAllByCvId", () => {
 		await cvSocialMediaService.create(cvA.id, {
 			socialNetwork: "LinkedIn",
 			username: "user-a",
+			icon: "faLinkedin",
 		});
 		await cvSocialMediaService.create(cvB.id, {
 			socialNetwork: "Github",
 			username: "user-b",
+			icon: "faGithub",
 		});
 		const result = await cvSocialMediaService.findAllByCvId(cvA.id);
 
@@ -139,6 +150,7 @@ describe("CvSocialMediaService.update", () => {
 		const socialMedia = await cvSocialMediaService.create(cv.id, {
 			socialNetwork: "LinkedIn",
 			username: "old-user",
+			icon: "faLinkedin",
 			order: 1,
 		});
 		const updated = await cvSocialMediaService.update(socialMedia.id, {
@@ -166,11 +178,13 @@ describe("CvSocialMediaService.update", () => {
 		await cvSocialMediaService.create(cv.id, {
 			socialNetwork: "LinkedIn",
 			username: "john",
+			icon: "faLinkedin",
 			order: 1,
 		});
 		const github = await cvSocialMediaService.create(cv.id, {
 			socialNetwork: "Github",
 			username: "john-dev",
+			icon: "faGithub",
 			order: 2,
 		});
 		await expect(
@@ -189,12 +203,14 @@ describe("CvSocialMediaService.move", () => {
 		const cv = await createCV(user.id, template.id);
 		const linkedin = await cvSocialMediaService.create(cv.id, {
 			socialNetwork: "LinkedIn",
-			username: "john",
+			username: "john",	
+			icon: "faLinkedin",
 			order: 1,
 		});
 		const github = await cvSocialMediaService.create(cv.id, {
 			socialNetwork: "Github",
 			username: "dev",
+			icon: "faGithub",
 			order: 2,
 		});
 		await cvSocialMediaService.move(github.id, 1);
@@ -219,6 +235,7 @@ describe("CvSocialMediaService.move", () => {
 		const social = await cvSocialMediaService.create(cv.id, {
 			socialNetwork: "LinkedIn",
 			username: "john",
+			icon: "faLinkedin",
 		});
 		await expect(cvSocialMediaService.move(social.id, 0)).rejects.toThrow();
 	});
@@ -232,6 +249,7 @@ describe("CvSocialMediaService.move", () => {
 				const social = await cvSocialMediaService.create(cv.id, {
 					socialNetwork: "LinkedIn",
 					username: "john",
+					icon: "faLinkedin",
 					order: 1,
 				});
 				return { id: social.id, order: social.order };
@@ -250,6 +268,7 @@ describe("CvSocialMediaService.delete", () => {
 		const socialMedia = await cvSocialMediaService.create(cv.id, {
 			socialNetwork: "LinkedIn",
 			username: "john",
+			icon: "faLinkedin",
 			order: 1,
 		});
 		await cvSocialMediaService.delete(socialMedia.id);
@@ -273,16 +292,19 @@ describe("CvSocialMediaService.delete", () => {
 		await cvSocialMediaService.create(cv.id, {
 			socialNetwork: "LinkedIn",
 			username: "john",
+			icon: "faLinkedin",
 			order: 1,
 		});
 		const github = await cvSocialMediaService.create(cv.id, {
 			socialNetwork: "Github",
 			username: "dev",
+			icon: "faGithub",
 			order: 2,
 		});
 		await cvSocialMediaService.create(cv.id, {
 			socialNetwork: "Twitter",
 			username: "twitter",
+			icon: "faTwitter",
 			order: 3,
 		});
 		await cvSocialMediaService.delete(github.id);

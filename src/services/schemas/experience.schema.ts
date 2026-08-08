@@ -1,11 +1,12 @@
 import z from "zod";
+import { experienceContentSchema } from "./cvTemplate.schema";
 
 export const createMissionExperienceSchema = z.object({
 	content: z.string().min(1),
 	order: z.number(),
 });
 
-export const experienceSettingsSchema = z.record(z.string(), z.boolean()).optional();
+// export const experienceSettingsSchema = z.record(z.string(), z.boolean()).optional();
 
 export const createExperienceSchema = z.object({
 	title: z.string().min(1),
@@ -16,7 +17,7 @@ export const createExperienceSchema = z.object({
 	location: z.string().optional(),
 	missions: z.array(createMissionExperienceSchema),
 	order: z.number(),
-	settings: experienceSettingsSchema.optional(),
+	settings: experienceContentSchema.optional(),
 });
 
 export const updateExperienceSchema = createExperienceSchema.partial();

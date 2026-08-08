@@ -14,10 +14,13 @@ export default withAuth(
 	{
 		callbacks: {
 			authorized: ({ token, req }) => {
-				const isAuthPage =
-					req.nextUrl.pathname.startsWith("/login") ||
-					req.nextUrl.pathname.startsWith("/register");
-				if (isAuthPage) return true; // pages publiques
+				const { pathname } = req.nextUrl;
+				const isPublic =
+					pathname === "/" ||
+					pathname.startsWith("/login") ||
+					pathname.startsWith("/register") ||
+					pathname.startsWith("/cv/0");
+				if (isPublic) return true;
 				return !!token; // le reste exige un JWT
 			},
 		},

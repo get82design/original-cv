@@ -27,6 +27,7 @@ describe("SocialMedia model", () => {
 					{
 						socialNetwork: "facebook",
 						username: "username",
+						icon: "faGlobe",
 						order: 1,
 					},
 				],
@@ -47,6 +48,7 @@ describe("SocialMedia model", () => {
 					data: {
 						socialNetwork: "facebook",
 						username: "username",
+						icon: "faGlobe",
 						order: 1,
 						profile: { connect: { id: "non-existing-id" } },
 					},
@@ -54,19 +56,22 @@ describe("SocialMedia model", () => {
 			).rejects.toThrow();
 		});
 
-		// 2-2: ne peut pas créer une socialMedia sans un socialNetwork
-		it("should not create an socialMedia without a socialNetwork", async () => {
+		// 2-2: peut créer une socialMedia sans un socialNetwork
+		it("should create an socialMedia without a socialNetwork", async () => {
 			const user = await createTestUserWithProfile();
-			await expect(
-				prismaTest.socialMedia.create({
-					// @ts-expect-error - title is required
+			const socialMedia = await prismaTest.socialMedia.create({
 					data: {
 						username: "username",
+						icon: "faGlobe",
 						order: 1,
 						profile: { connect: { id: user.profile.id } },
 					},
-				}),
-			).rejects.toThrow();
+				})
+			
+			expect(socialMedia.username).toBe("username");
+			expect(socialMedia.icon).toBe("faGlobe");
+			expect(socialMedia.order).toBe(1);
+			expect(socialMedia.socialNetwork).toBeNull();
 		});
 
 		// 2-3: ne peut pas créer une socialMedia sans un username
@@ -77,6 +82,23 @@ describe("SocialMedia model", () => {
 					// @ts-expect-error - title is required
 					data: {
 						socialNetwork: "facebook",
+						icon: "faGlobe",
+						order: 1,
+						profile: { connect: { id: user.profile.id } },
+					},
+				}),
+			).rejects.toThrow();
+		});
+
+		// 2-3: ne peut pas créer une socialMedia sans un icon
+		it("should not create an socialMedia without a icon", async () => {
+			const user = await createTestUserWithProfile();
+			await expect(
+				prismaTest.socialMedia.create({
+					// @ts-expect-error - icon is required
+					data: {
+						socialNetwork: "facebook",
+						username: "username",
 						order: 1,
 						profile: { connect: { id: user.profile.id } },
 					},
@@ -91,6 +113,7 @@ describe("SocialMedia model", () => {
 					{
 						socialNetwork: "facebook",
 						username: "username",
+						icon: "faGlobe",
 						order: 1,
 					},
 				],
@@ -101,6 +124,7 @@ describe("SocialMedia model", () => {
 					data: {
 						socialNetwork: "instagram",
 						username: "username 2",
+						icon: "faGlobe",
 						order: 1,
 						profile: { connect: { id: user.profile.id } },
 					},
@@ -115,6 +139,7 @@ describe("SocialMedia model", () => {
 					{
 						socialNetwork: "facebook",
 						username: "username",
+						icon: "faGlobe",
 						order: 1,
 					},
 				],
@@ -125,6 +150,7 @@ describe("SocialMedia model", () => {
 					data: {
 						socialNetwork: "facebook",
 						username: "username 2",
+						icon: "faGlobe",
 						order: 2,
 						profile: { connect: { id: user.profile.id } },
 					},
@@ -142,6 +168,7 @@ describe("SocialMedia model", () => {
 					{
 						socialNetwork: "facebook",
 						username: "username",
+						icon: "faGlobe",
 						order: 1,
 					},
 				],
@@ -160,6 +187,7 @@ describe("SocialMedia model", () => {
 					{
 						socialNetwork: "facebook",
 						username: "username",
+						icon: "faGlobe",
 						order: 1,
 					},
 				],
@@ -188,11 +216,13 @@ describe("SocialMedia model", () => {
 					{
 						socialNetwork: "facebook",
 						username: "username",
+						icon: "faGlobe",
 						order: 1,
 					},
 					{
 						socialNetwork: "instagram",
 						username: "username 2",
+						icon: "faGlobe",
 						order: 2,
 					},
 				],
@@ -213,11 +243,13 @@ describe("SocialMedia model", () => {
 					{
 						socialNetwork: "facebook",
 						username: "username",
+						icon: "faGlobe",
 						order: 1,
 					},
 					{
 						socialNetwork: "instagram",
 						username: "username 2",
+						icon: "faGlobe",
 						order: 2,
 					},
 				],
@@ -241,6 +273,7 @@ describe("SocialMedia model", () => {
 					{
 						socialNetwork: "facebook",
 						username: "username",
+						icon: "faGlobe",
 						order: 1,
 					},
 				],
@@ -265,6 +298,7 @@ describe("SocialMedia model", () => {
 					{
 						socialNetwork: "facebook",
 						username: "username",
+						icon: "faGlobe",
 						order: 1,
 					},
 				],
@@ -281,7 +315,7 @@ describe("SocialMedia model", () => {
 		it("should delete socialMedias when user is deleted", async () => {
 			const user = await createTestUserWithProfile({
 				socialMedias: [
-					{ socialNetwork: "linkedin", username: "user", order: 1 },
+					{ socialNetwork: "linkedin", username: "user", icon: "faGlobe", order: 1 },
 				],
 			});
 
@@ -303,11 +337,13 @@ describe("SocialMedia model", () => {
 					{
 						socialNetwork: "facebook",
 						username: "username",
+						icon: "faGlobe",
 						order: 1,
 					},
 					{
 						socialNetwork: "instagram",
 						username: "username 2",
+						icon: "faGlobe",
 						order: 2,
 					},
 				],
@@ -327,6 +363,7 @@ describe("SocialMedia model", () => {
 					{
 						socialNetwork: "facebook",
 						username: "username",
+						icon: "faGlobe",
 						order: 1,
 					},
 				],
@@ -346,6 +383,7 @@ describe("SocialMedia model", () => {
 					{
 						socialNetwork: "facebook",
 						username: "username",
+						icon: "faGlobe",
 						order: 1,
 					},
 				],
@@ -356,6 +394,7 @@ describe("SocialMedia model", () => {
 					{
 						socialNetwork: "facebook",
 						username: "username 2",
+						icon: "faGlobe",
 						order: 1,
 					},
 				],
@@ -370,7 +409,7 @@ describe("SocialMedia model", () => {
 			const user = await createTestUserWithProfile({
 				socialMedias: [
 					// @ts-expect-error - order is required
-					{ socialNetwork: "twitter", username: "user" },
+					{ socialNetwork: "twitter", username: "user", icon: "faGlobe" },
 				],
 			});
 
@@ -384,6 +423,7 @@ describe("SocialMedia model", () => {
 				socialMedias: Array.from({ length: 5 }, (_, i) => ({
 					socialNetwork: `network${i + 1}`,
 					username: `user${i + 1}`,
+					icon: "faGlobe",
 					order: i + 1,
 				})),
 			});

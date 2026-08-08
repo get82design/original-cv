@@ -1,13 +1,12 @@
 import z from "zod";
 import { createSkillSchema } from "./skill.schema";
-
-export const skillGroupSettingsSchema = z.record(z.string(), z.boolean()).optional();
+import { skillContentSchema } from "./cvTemplate.schema";
 
 export const createSkillGroupSchema = z.object({
 	title: z.string().min(1),
 	order: z.number().min(1),
 	skills: z.array(createSkillSchema),
-	settings: skillGroupSettingsSchema.optional(),
+	settings: skillContentSchema.optional(),
 });
 
 export const updateSkillGroupSchema = createSkillGroupSchema.partial();

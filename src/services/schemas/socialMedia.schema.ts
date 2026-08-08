@@ -1,12 +1,12 @@
 import z from "zod";
-
-export const socialMediaSettingsSchema = z.record(z.string(), z.boolean()).optional();
+import { socialMediaContentSchema } from "./cvTemplate.schema";
 
 export const createSocialMediaSchema = z.object({
-	socialNetwork: z.string(),
+	socialNetwork: z.string().optional(),
 	username: z.string(),
+	icon: z.string(),
 	order: z.number().optional(),
-	settings: socialMediaSettingsSchema.optional(),
+	settings: socialMediaContentSchema.optional(),
 });
 
 export const updateSocialMediaSchema = createSocialMediaSchema.partial();

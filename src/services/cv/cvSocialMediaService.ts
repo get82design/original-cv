@@ -59,6 +59,7 @@ export class CvSocialMediaService {
 				cvId,
 				socialNetwork: data.socialNetwork,
 				username: data.username,
+				icon: data.icon,
 				order: data.order ?? 0,
 				settings: data.settings ?? {},
 			},
@@ -115,6 +116,7 @@ export class CvSocialMediaService {
 					? { socialNetwork: data.socialNetwork }
 					: {}),
 				...(data.username !== undefined ? { username: data.username } : {}),
+				...(data.icon !== undefined ? { icon: data.icon } : {}),
 				...(data.settings !== undefined ? { settings: data.settings } : {}),
 			},
 		});

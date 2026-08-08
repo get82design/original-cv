@@ -1,4 +1,5 @@
 import z from "zod";
+import { templateHeaderSettingsSchema } from "./cvTemplate.schema";
 
 export const createCvHeaderSchema = z.object({
 	title: z.string(),
@@ -9,6 +10,7 @@ export const createCvHeaderSchema = z.object({
 	portfolio: z.string().optional(),
 	nom: z.string().optional(),
 	prenom: z.string().optional(),
+	settings: templateHeaderSettingsSchema.optional(),
 });
 export const updateCvHeaderSchema = createCvHeaderSchema.partial();
 export type CreateCvHeaderInput = z.infer<typeof createCvHeaderSchema>;

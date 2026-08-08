@@ -154,6 +154,7 @@ model CvHeader {
   portfolio   String?
   nom         String?
   prenom      String?
+  settings    Json?
 
   cv          CV @relation(fields: [cvId], references: [id], onDelete: Cascade)
   cvId        String @unique
@@ -683,8 +684,9 @@ model CvPassion {
 // === Social Media ===
 model SocialMedia {
   id            String @id @default(cuid())
-  socialNetwork String
+  socialNetwork String?
   username      String
+  icon          String
   
   order         Int @default(0)   
   profile       Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
@@ -697,8 +699,9 @@ model SocialMedia {
 
 model CvSocialMedia {
   id            String @id @default(cuid())
-  socialNetwork String
+  socialNetwork String?
   username      String
+  icon          String
   settings    Json?
 
   order         Int @default(0)   
@@ -915,8 +918,8 @@ enum CVStatus {
 
 // === Template de CV ===
 model CVTemplate {
-  id       String @id @default(cuid())
-  name String @unique                          // nom du template
+  id        String @id @default(cuid())
+  name      String @unique                          // nom du template
   structure    Json                            // structure du template (zones, sections)
   defaultStyles Json                           // styles par défaut (fontSize, color, align, show, etc.)
   cvs           CV[]                           // CVs utilisant ce template

@@ -9,5 +9,11 @@ export const createSkillSchema = z.object({
 
 export const updateSkillSchema = createSkillSchema.partial();
 
+export const skillInCvFormSchema = z.object({
+	name: z.string(),
+	skillId: z.string().min(1).optional(),
+	level: z.nativeEnum(Level),
+});
+
 export type CreateSkillInput = z.infer<typeof createSkillSchema>;
 export type UpdateSkillInput = z.infer<typeof updateSkillSchema>;

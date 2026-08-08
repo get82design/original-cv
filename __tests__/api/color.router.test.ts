@@ -74,14 +74,6 @@ describe("colorRouter", () => {
 		expect(list).toEqual([]);
 	});
 
-	it("findAll returns UNAUTHORIZED without session", async () => {
-		const caller = await createTestCaller();
-
-		await expect(caller.color.findAll()).rejects.toMatchObject({
-			code: "UNAUTHORIZED",
-		});
-	});
-
 	it("findById returns a color", async () => {
 		const user = await createTestUser();
 		const caller = await createTestCaller(createTestSession(user));

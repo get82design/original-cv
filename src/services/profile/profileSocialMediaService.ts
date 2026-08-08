@@ -22,20 +22,22 @@ export class ProfileSocialMediaService {
 			throw new NotFoundError("Profile", profileId);
 		}
 
-		const existingNetwork = await prisma.socialMedia.findUnique({
-			where: {
-				profileId_socialNetwork: {
-					profileId,
-					socialNetwork: data.socialNetwork,
+		if (data.socialNetwork) {
+			const existingNetwork = await prisma.socialMedia.findUnique({
+				where: {
+					profileId_socialNetwork: {
+						profileId,
+						socialNetwork: data.socialNetwork,
+					},
 				},
-			},
-		});
+			});
 
-		if (existingNetwork) {
-			throw new ConflictError(
-				"PROFILE_SOCIAL_MEDIA_ALREADY_EXISTS",
-				"This social network already exists for this Profile.",
-			);
+			if (existingNetwork) {
+				throw new ConflictError(
+					"PROFILE_SOCIAL_MEDIA_ALREADY_EXISTS",
+					"This social network already exists for this Profile.",
+				);
+			}
 		}
 
 		const existingOrder = await prisma.socialMedia.findUnique({
@@ -57,8 +59,9 @@ export class ProfileSocialMediaService {
 		return prisma.socialMedia.create({
 			data: {
 				profileId,
-				socialNetwork: data.socialNetwork,
+				socialNetwork: data.socialNetwork!,
 				username: data.username,
+				icon: data.icon,
 				order: data.order ?? 0,
 			},
 		});
@@ -114,6 +117,7 @@ export class ProfileSocialMediaService {
 					? { socialNetwork: data.socialNetwork }
 					: {}),
 				...(data.username !== undefined ? { username: data.username } : {}),
+				...(data.icon !== undefined ? { icon: data.icon } : {}),
 			},
 		});
 	}

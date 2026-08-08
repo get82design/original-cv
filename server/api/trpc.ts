@@ -28,7 +28,7 @@ function isAppError(error: unknown): error is AppError {
 	);
 }
 
-function toTrpcError(error: unknown): TRPCError {
+export function toTrpcError(error: unknown): TRPCError {
 	const original =
 		error instanceof TRPCError && error.cause != null ? error.cause : error;
 

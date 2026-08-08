@@ -4,7 +4,7 @@ import {
 	colorSchema,
 	updateColorSchema,
 } from "../../../src/services/schemas/color.schema";
-import { protectedProcedure, router } from "../trpc";
+import { protectedProcedure, publicProcedure, router } from "../trpc";
 
 export const colorRouter = router({
 	create: protectedProcedure
@@ -13,7 +13,7 @@ export const colorRouter = router({
 			return colorService.create(input);
 		}),
 
-	findAll: protectedProcedure.query(async () => {
+	findAll: publicProcedure.query(async () => {
 		return colorService.findAll();
 	}),
 

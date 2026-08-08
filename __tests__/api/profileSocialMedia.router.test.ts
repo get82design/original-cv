@@ -27,6 +27,7 @@ describe("profileSocialMediaRouter", () => {
 			caller.profileSocialMedia.create({
 				socialNetwork: "Social Network 1",
 				username: "username 1",
+				icon: "faGlobe",
 				order: 1,
 			}),
 		).rejects.toMatchObject({ code: "UNAUTHORIZED" });
@@ -39,6 +40,7 @@ describe("profileSocialMediaRouter", () => {
 		await expect(
 			caller.profileSocialMedia.create({
 				socialNetwork: "Social Network 1",
+				icon: "faGlobe",
 				username: "username 1",
 				order: 1,
 			}),
@@ -51,6 +53,7 @@ describe("profileSocialMediaRouter", () => {
 		const socialMedia = await caller.profileSocialMedia.create({
 			socialNetwork: "Social Network 1",
 			username: "username 1",
+			icon: "faGlobe",
 			order: 1,
 		});
 
@@ -76,6 +79,7 @@ describe("profileSocialMediaRouter", () => {
 		await caller.profileSocialMedia.create({
 			socialNetwork: "Same social network",
 			username: "username 1",
+			icon: "faGlobe",
 			order: 1,
 		});
 
@@ -83,6 +87,7 @@ describe("profileSocialMediaRouter", () => {
 			caller.profileSocialMedia.create({
 				socialNetwork: "Same social network",
 				username: "username 1",
+				icon: "faGlobe",
 				order: 2,
 			}),
 		).rejects.toMatchObject({ code: "CONFLICT" });
@@ -94,11 +99,13 @@ describe("profileSocialMediaRouter", () => {
 		await caller.profileSocialMedia.create({
 			socialNetwork: "Second",
 			username: "username 1",
+			icon: "faGlobe",
 			order: 2,
 		});
 		await caller.profileSocialMedia.create({
 			socialNetwork: "First",
 			username: "username 1",
+			icon: "faGlobe",
 			order: 1,
 		});
 
@@ -115,6 +122,7 @@ describe("profileSocialMediaRouter", () => {
 		const created = await caller.profileSocialMedia.create({
 			socialNetwork: "Old social network",
 			username: "username 1",
+			icon: "faGlobe",
 			order: 1,
 		});
 
@@ -134,6 +142,7 @@ describe("profileSocialMediaRouter", () => {
 		const created = await ownerCaller.profileSocialMedia.create({
 			socialNetwork: "Social Network 1",
 			username: "username 1",
+			icon: "faGlobe",
 			order: 1,
 		});
 
@@ -151,11 +160,13 @@ describe("profileSocialMediaRouter", () => {
 		const first = await caller.profileSocialMedia.create({
 			socialNetwork: "First",
 			username: "username 1",
+			icon: "faGlobe",
 			order: 1,
 		});
 		await caller.profileSocialMedia.create({
 			socialNetwork: "Second",
 			username: "username 1",
+			icon: "faGlobe",
 			order: 2,
 		});
 
@@ -173,6 +184,7 @@ describe("profileSocialMediaRouter", () => {
 		const created = await caller.profileSocialMedia.create({
 			socialNetwork: "To delete",
 			username: "username 1",
+			icon: "faGlobe",
 			order: 1,
 		});
 

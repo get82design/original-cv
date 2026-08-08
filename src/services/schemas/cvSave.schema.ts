@@ -7,7 +7,6 @@ import {
 import { createCvHeaderSchema } from "./cvHeader.schema";
 import {
 	createCvModuleSchema,
-	cvModuleSettingsSchema,
 } from "./cvModule.schema";
 import { createDescriptionSchema } from "./description.schema";
 import { createMissionProjectSchema, createProjectSchema } from "./project.schema";
@@ -25,9 +24,10 @@ import { createStrengthSchema } from "./strength.schema";
 import { createAchievementSchema } from "./achievement.schema";
 import { createEducationSchema } from "./education.schema";
 import { createSkillGroupSchema } from "./skillGroup.schema";
-import { createSkillSchema } from "./skill.schema";
+import { createSkillSchema, skillInCvFormSchema } from "./skill.schema";
 import { createCompetenceGroupSchema } from "./competenceGroup.schema";
 import { createCompetenceSchema } from "./competence.schema";
+import { baseSettingsSchema, templateDefaultStylesSchema, templateLayoutSchema } from "./cvTemplate.schema";
 
 /** Id local front (ex: "experience-1") */
 const clientKeySchema = z.string().min(1);
@@ -52,6 +52,10 @@ const descriptionSchema = z.object({
 	id: z.string().optional(),
 	title: z.string().optional(), // titre de section UI → plutôt module.title
 	content: createDescriptionSchema, // → CvDescription.description
+	settings: z.object({
+		title: baseSettingsSchema,
+        content: baseSettingsSchema,
+	}),
 });
 
 const experienceItemContentSchema = createExperienceSchema
@@ -67,6 +71,9 @@ const experienceItemContentSchema = createExperienceSchema
 const experienceSectionSchema = z.object({
 	title: z.string().optional(), // titre section UI
 	content: z.array(listItemSchema(experienceItemContentSchema)),
+	settings: z.object({
+		title: baseSettingsSchema,
+	}),
 });
 
 const projectItemContentSchema = createProjectSchema
@@ -82,6 +89,9 @@ const projectItemContentSchema = createProjectSchema
 const projectSectionSchema = z.object({
 	title: z.string().optional(), // titre section UI
 	content: z.array(listItemSchema(projectItemContentSchema)),
+	settings: z.object({
+		title: baseSettingsSchema,
+	}),
 });
 
 const volunteeringItemContentSchema = createVolunteeringSchema
@@ -146,6 +156,9 @@ const socialMediaItemContentSchema = createSocialMediaSchema
 const socialMediaSectionSchema = z.object({
     title: z.string().optional(), // titre section UI
     content: z.array(listItemSchema(socialMediaItemContentSchema)),
+    settings: z.object({
+		title: baseSettingsSchema,
+	}),
 });
 
 const passionItemContentSchema = createPassionInputSchema
@@ -162,6 +175,9 @@ const languageItemContentSchema = createLanguageSchema
 const languageSectionSchema = z.object({
     title: z.string().optional(), // titre section UI
     content: z.array(listItemSchema(languageItemContentSchema)),
+    settings: z.object({
+		title: baseSettingsSchema,
+	}),
 });
 
 const publicationItemContentSchema = createPublicationSchema
@@ -202,11 +218,12 @@ const educationItemContentSchema = createEducationSchema
 const educationSectionSchema = z.object({
 	title: z.string().optional(), // titre section UI
 	content: z.array(listItemSchema(educationItemContentSchema)),
+    settings: z.object({
+		title: baseSettingsSchema,
+	}),
 });
 
-const skillInGroupSchema = listItemSchema(
-    createSkillSchema.omit({ order: true }), // reste: skillId + level
-);
+const skillInGroupSchema = listItemSchema(skillInCvFormSchema);
 
 const skillGroupItemContentSchema = createSkillGroupSchema
     .omit({ order: true, skills: true })
@@ -217,6 +234,9 @@ const skillGroupItemContentSchema = createSkillGroupSchema
 const skillGroupSectionSchema = z.object({
     title: z.string().optional(), // titre section UI
     content: z.array(listItemSchema(skillGroupItemContentSchema)),
+    settings: z.object({
+		title: baseSettingsSchema,
+	}),
 });
 
 const competenceInGroupSchema = listItemSchema(
@@ -263,15 +283,32 @@ const moduleInSaveSchema = createCvModuleSchema.extend({
 	// isActive déjà présent avec default true
 });
 
+const cvLayoutGeneralSchema = z.object({
+    layout: templateLayoutSchema,
+    defaultStyles: templateDefaultStylesSchema,
+    // slugTemplate: z.string().min(1),
+    // components: z.object({
+    //     sectionHeader: z.enum(["HeaderOne", "HeaderTwo", "HeaderThree"]),
+    // }),
+  });
+
 // --- Root ---
 export const cvSaveSchema = z.object({
 	cvId: z.string().optional(),
 	templateId: z.string().min(1),
 	title: z.string().min(1),
 	photo: z.string().nullable().optional(),
-	layoutGeneral: cvModuleSettingsSchema.optional(), // tu as CV.layoutGeneral en Prisma
+	layoutGeneral: cvLayoutGeneralSchema.optional(), // tu as CV.layoutGeneral en Prisma
 	datas: datasSchema.default({}),
 	modules: z.array(moduleInSaveSchema).default([]),
 });
 
 export type CvSaveInput = z.infer<typeof cvSaveSchema>;
+export type EducationItemContentInput = z.infer<typeof educationItemContentSchema>;
+export type ExperienceItemContentInput = z.infer<typeof experienceItemContentSchema>;
+export type LanguageItemContentInput = z.infer<typeof languageItemContentSchema>;
+export type ProjectItemContentInput = z.infer<typeof projectItemContentSchema>;
+export type SkillGroupItemContentInput = z.infer<typeof skillGroupItemContentSchema>;
+export type SkillItemContentInput = z.infer<typeof skillInGroupSchema>;
+export type SocialMediaItemContentInput = z.infer<typeof socialMediaItemContentSchema>;
+export type CvModulesInput = z.infer<typeof moduleInSaveSchema>;

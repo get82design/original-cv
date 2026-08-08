@@ -13,6 +13,7 @@ describe("ProfileSocialMediaService.create", () => {
 		const socialMedia = await profileSocialMediaService.create(profile.id, {
 			socialNetwork: "LinkedIn",
 			username: "john",
+			icon: "faLinkedin",
 			order: 1,
 		});
 
@@ -28,6 +29,7 @@ describe("ProfileSocialMediaService.create", () => {
 			profileSocialMediaService.create("unknown-profile", {
 				socialNetwork: "LinkedIn",
 				username: "john",
+				icon: "faLinkedin",
 			}),
 		).rejects.toThrow(NotFoundError);
 	});
@@ -39,11 +41,13 @@ describe("ProfileSocialMediaService.create", () => {
 		await profileSocialMediaService.create(profile.id, {
 			socialNetwork: "LinkedIn",
 			username: "john",
+			icon: "faLinkedin",
 		});
 		await expect(
 			profileSocialMediaService.create(profile.id, {
 				socialNetwork: "LinkedIn",
 				username: "another-user",
+				icon: "faLinkedin",
 			}),
 		).rejects.toThrow(ConflictError);
 	});
@@ -55,6 +59,7 @@ describe("ProfileSocialMediaService.create", () => {
 		await profileSocialMediaService.create(profile.id, {
 			socialNetwork: "LinkedIn",
 			username: "john",
+			icon: "faLinkedin",
 			order: 1,
 		});
 
@@ -62,6 +67,7 @@ describe("ProfileSocialMediaService.create", () => {
 			profileSocialMediaService.create(profile.id, {
 				socialNetwork: "Github",
 				username: "john-dev",
+				icon: "faGithub",
 				order: 1,
 			}),
 		).rejects.toThrow(ConflictError);
@@ -76,12 +82,14 @@ describe("ProfileSocialMediaService.findAllByProfileId", () => {
 		await profileSocialMediaService.create(profile.id, {
 			socialNetwork: "LinkedIn",
 			username: "john",
+			icon: "faLinkedin",
 			order: 1,
 		});
 
 		await profileSocialMediaService.create(profile.id, {
 			socialNetwork: "Github",
 			username: "john-dev",
+			icon: "faGithub",
 			order: 2,
 		});
 
@@ -115,10 +123,12 @@ describe("ProfileSocialMediaService.findAllByProfileId", () => {
 		await profileSocialMediaService.create(profileA.id, {
 			socialNetwork: "LinkedIn",
 			username: "user-a",
+			icon: "faLinkedin",
 		});
 		await profileSocialMediaService.create(profileB.id, {
 			socialNetwork: "Github",
 			username: "user-b",
+			icon: "faGithub",
 		});
 		const result = await profileSocialMediaService.findAllByProfileId(
 			profileA.id,
@@ -137,6 +147,7 @@ describe("ProfileSocialMediaService.update", () => {
 		const socialMedia = await profileSocialMediaService.create(profile.id, {
 			socialNetwork: "LinkedIn",
 			username: "old-user",
+			icon: "faLinkedin",
 			order: 1,
 		});
 		const updated = await profileSocialMediaService.update(socialMedia.id, {
@@ -163,11 +174,13 @@ describe("ProfileSocialMediaService.update", () => {
 		await profileSocialMediaService.create(profile.id, {
 			socialNetwork: "LinkedIn",
 			username: "john",
+			icon: "faLinkedin",
 			order: 1,
 		});
 		const github = await profileSocialMediaService.create(profile.id, {
 			socialNetwork: "Github",
 			username: "john-dev",
+			icon: "faGithub",
 			order: 2,
 		});
 		await expect(
@@ -186,11 +199,13 @@ describe("ProfileSocialMediaService.move", () => {
 		const linkedin = await profileSocialMediaService.create(profile.id, {
 			socialNetwork: "LinkedIn",
 			username: "john",
+			icon: "faLinkedin",
 			order: 1,
 		});
 		const github = await profileSocialMediaService.create(profile.id, {
 			socialNetwork: "Github",
 			username: "dev",
+			icon: "faGithub",
 			order: 2,
 		});
 		await profileSocialMediaService.move(github.id, 1);
@@ -216,6 +231,7 @@ describe("ProfileSocialMediaService.move", () => {
 		const social = await profileSocialMediaService.create(profile.id, {
 			socialNetwork: "LinkedIn",
 			username: "john",
+			icon: "faLinkedin",
 		});
 		await expect(
 			profileSocialMediaService.move(social.id, 0),
@@ -230,6 +246,7 @@ describe("ProfileSocialMediaService.move", () => {
 				const socialMedia = await profileSocialMediaService.create(profile.id, {
 					socialNetwork: "LinkedIn",
 					username: "john",
+					icon: "faLinkedin",
 					order: 1,
 				});
 				return { id: socialMedia.id, order: socialMedia.order };
@@ -247,6 +264,7 @@ describe("ProfileSocialMediaService.delete", () => {
 		const socialMedia = await profileSocialMediaService.create(profile.id, {
 			socialNetwork: "LinkedIn",
 			username: "john",
+			icon: "faLinkedin",
 			order: 1,
 		});
 		await profileSocialMediaService.delete(socialMedia.id);
@@ -271,16 +289,19 @@ describe("ProfileSocialMediaService.delete", () => {
 		await profileSocialMediaService.create(profile.id, {
 			socialNetwork: "LinkedIn",
 			username: "john",
+			icon: "faLinkedin",
 			order: 1,
 		});
 		const github = await profileSocialMediaService.create(profile.id, {
 			socialNetwork: "Github",
 			username: "dev",
+			icon: "faGithub",
 			order: 2,
 		});
 		await profileSocialMediaService.create(profile.id, {
 			socialNetwork: "Twitter",
 			username: "twitter",
+			icon: "faTwitter",
 			order: 3,
 		});
 		await profileSocialMediaService.delete(github.id);

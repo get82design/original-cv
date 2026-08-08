@@ -1,39 +1,61 @@
-import Link from "next/link";
+// import Link from "next/link";
 import { useRouter } from "next/router";
-import { trpc } from "../../utils/trpc";
-import { useEffect, useState } from "react";
-import type { CvSaveInput } from "../../src/services/schemas/cvSave.schema";
-import { mapCvToSaveInput } from "../../src/features/cv-editor/mapCvToSaveInput";
+// import { trpc } from "../../utils/trpc";
+// import { useEffect, useState } from "react";
+// import type { CvSaveInput } from "../../src/services/schemas/cvSave.schema";
+// import { mapCvToSaveInput } from "../../src/features/cv-editor/mapCvToSaveInput";
+import { ModelAndColorProvider } from "../../src/features/cv-editor/component/context/ModelAndColorContext";
+import { FormCv } from "../../src/features/cv-editor/component/form/FormCv";
+import { CvEditor } from "../../src/features/cv-editor/CvEditor";
+import { CreateCvProvider } from "../../src/features/cv-editor/component/context/CreateCvContext";
 
 export default function CvPage() {
 	const router = useRouter();
-	const id = typeof router.query.id === "string" ? router.query.id : undefined;
+	const id = typeof router.query.id === "string" ? router.query.id : null;
+	const exemple =
+    typeof router.query.exemple === "string" ? router.query.exemple : null;
 
-	const { data: cv, isLoading, error } = trpc.cv.byId.useQuery(
-		{ id: id! },
-		{ enabled: !!id }, // attend que le router ait l'id
-	);
+	// optionnel : attendre que le router soit prêt
+	if (!router.isReady) return <div>Loading...</div>;
 
-    const utils = trpc.useUtils();
-    const [draft, setDraft] = useState<CvSaveInput | null>(null);
+	// const { data: cv, isLoading, error } = trpc.cv.byId.useQuery(
+	// 	{ id: id! },
+	// 	{ enabled: !!id }, // attend que le router ait l'id
+	// );
 
-    useEffect(() => {
-        if (cv) setDraft(mapCvToSaveInput(cv));
-    }, [cv]);
+    // const utils = trpc.useUtils();
+    // const [draft, setDraft] = useState<CvSaveInput | null>(null);
 
-    const save = trpc.cv.save.useMutation({
-        onSuccess: (saved) => {
-            setDraft(mapCvToSaveInput(saved)); // récupère les ids serveur
-            void utils.cv.byId.invalidate({ id: saved.id });
-            void utils.cv.allByUser.invalidate();
-        },
-    });
+    // useEffect(() => {
+    //     if (cv) setDraft(mapCvToSaveInput(cv));
+    // }, [cv]);
 
-	if (!id || isLoading) return <div>Loading...</div>;
-	if (error) return <div>Erreur : {error.message}</div>;
-	if (!cv) return <div>CV introuvable</div>;
+    // const save = trpc.cv.save.useMutation({
+    //     onSuccess: (saved) => {
+    //         setDraft(mapCvToSaveInput(saved)); // récupère les ids serveur
+    //         void utils.cv.byId.invalidate({ id: saved.id });
+    //         void utils.cv.allByUser.invalidate();
+    //     },
+    // });
+
+	// if (!id || isLoading) return <div>Loading...</div>;
+	// if (error) return <div>Erreur : {error.message}</div>;
+	// if (!cv) return <div>CV introuvable</div>;
 
 	return (
+		<main id="content" style={{ height: 'calc(100vh - 62px)' }}>
+			<div className={'w-full py-8 px-4 lg:px-3 xl:px-4'} style={{ /*...ClassikAppColor(),*/ minHeight: "calc(100vh - 62px)" }} >
+				<ModelAndColorProvider>
+					<FormCv idCv={id} exemple={exemple}>
+						<CreateCvProvider>
+							<CvEditor />
+						</CreateCvProvider>
+					</FormCv>
+				</ModelAndColorProvider>
+			</div>
+		</main>
+
+
 		// <div>
 		// 	<Link href="/">← Retour</Link>
 		// 	<h1>{cv.title}</h1>
@@ -70,53 +92,55 @@ export default function CvPage() {
         //             Sauver
         //     </button>
 		// </div>
-        <div>
-			<Link href="/">← Retour</Link>
-			<label>
-				Titre CV
-				<input
-					value={draft?.title ?? ""}
-					onChange={(e) =>
-						setDraft((d) => (d ? { ...d, title: e.target.value } : d))
-					}
-				/>
-			</label>
-			<h1>{draft?.title ?? ""}</h1>
-			<p>Template : {draft?.templateId ?? ""}</p>
-			<label>
-				Prénom
-				<input
-					value={draft?.datas.header?.prenom ?? ""}
-					onChange={(e) =>
-						setDraft((d) =>
-							d
-								? {
-										...d,
-										datas: {
-											...d.datas,
-											header: {
-												...d.datas.header,
-												title: d.datas.header?.title ?? d.title,
-												prenom: e.target.value,
-											},
-										},
-									}
-								: d,
-						)
-					}
-				/>
-			</label>
-			<button
-				type="button"
-				disabled={save.isPending}
-				onClick={() => draft && save.mutate(draft)}
-			>
-				{save.isPending ? "Enregistrement…" : "Sauver"}
-			</button>
-			{save.isSuccess && !save.isPending && <p>Enregistré</p>}
-			{save.error && <p>Erreur save : {save.error.message}</p>}
-			{/* debug : état local envoyé au save */}
-			<pre>{JSON.stringify(draft, null, 2)}</pre>
-		</div>
+
+
+        // <div>
+		// 	<Link href="/">← Retour</Link>
+		// 	<label>
+		// 		Titre CV
+		// 		<input
+		// 			value={draft?.title ?? ""}
+		// 			onChange={(e) =>
+		// 				setDraft((d) => (d ? { ...d, title: e.target.value } : d))
+		// 			}
+		// 		/>
+		// 	</label>
+		// 	<h1>{draft?.title ?? ""}</h1>
+		// 	<p>Template : {draft?.templateId ?? ""}</p>
+		// 	<label>
+		// 		Prénom
+		// 		<input
+		// 			value={draft?.datas.header?.prenom ?? ""}
+		// 			onChange={(e) =>
+		// 				setDraft((d) =>
+		// 					d
+		// 						? {
+		// 								...d,
+		// 								datas: {
+		// 									...d.datas,
+		// 									header: {
+		// 										...d.datas.header,
+		// 										title: d.datas.header?.title ?? d.title,
+		// 										prenom: e.target.value,
+		// 									},
+		// 								},
+		// 							}
+		// 						: d,
+		// 				)
+		// 			}
+		// 		/>
+		// 	</label>
+		// 	<button
+		// 		type="button"
+		// 		disabled={save.isPending}
+		// 		onClick={() => draft && save.mutate(draft)}
+		// 	>
+		// 		{save.isPending ? "Enregistrement…" : "Sauver"}
+		// 	</button>
+		// 	{save.isSuccess && !save.isPending && <p>Enregistré</p>}
+		// 	{save.error && <p>Erreur save : {save.error.message}</p>}
+		// 	{/* debug : état local envoyé au save */}
+		// 	<pre>{JSON.stringify(draft, null, 2)}</pre>
+		// </div>
 	);
 }

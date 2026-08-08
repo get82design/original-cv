@@ -22,6 +22,65 @@ async function createCatalogCompetence(name = `competence-${Date.now()}`) {
 	return prismaTest.competence.create({ data: { name } });
 }
 
+const baseTextSettings = {
+	sizeModel: "16px",
+	weightModel: 400,
+	colorSelect: "primaryColor" as const,
+	sizeSelect: "sm" as const,
+	weightSelect: "sm" as const,
+	withPrimaryColor: true,
+	textAlign: "left" as const,
+};
+
+const sectionTitleSettings = {
+	title: baseTextSettings,
+};
+
+const experienceItemSettings = {
+	title: baseTextSettings,
+	company: baseTextSettings,
+	periode: baseTextSettings,
+	location: baseTextSettings,
+	description: baseTextSettings,
+	missions: baseTextSettings,
+	withDescription: true,
+	withListMissions: true,
+	withTitle: true,
+	withCompany: true,
+	withPeriode: true,
+	withLocation: true,
+};
+
+const projectItemSettings = {
+	title: baseTextSettings,
+	description: baseTextSettings,
+	location: baseTextSettings,
+	periode: baseTextSettings,
+	technology: baseTextSettings,
+	missions: baseTextSettings,
+	withDescription: true,
+	withLocation: true,
+	withPeriode: true,
+	withTechnology: true,
+	withMissions: true,
+	withTitle: true,
+};
+
+const languageItemSettings = {
+	language: baseTextSettings,
+	design: "stars" as const,
+};
+
+const educationItemSettings = {
+	diplome: baseTextSettings,
+	etablissement: baseTextSettings,
+	year: baseTextSettings,
+	ville: baseTextSettings,
+	withYear: true,
+	withVille: true,
+	withEtablissement: true,
+};
+
 function buildSaveInput(
 	templateId: string,
 	overrides: Partial<CvSaveInput> = {},
@@ -39,6 +98,10 @@ function buildSaveInput(
 			},
 			description: {
 				content: { description: "À propos de moi" },
+				settings: {
+					title: baseTextSettings,
+					content: baseTextSettings,
+				},
 			},
 			experience: {
 				content: [
@@ -58,10 +121,11 @@ function buildSaveInput(
 									content: { content: "Développer des features" },
 								},
 							],
-							settings: { withDescription: true, withList: true },
+							settings: experienceItemSettings,
 						},
 					},
 				],
+				settings: sectionTitleSettings,
 			},
             project: {
                 content: [
@@ -80,10 +144,11 @@ function buildSaveInput(
                                     content: { content: "Développer des features" },
                                 },
                             ],
-                            settings: { withDescription: true, withList: true },
+                            settings: projectItemSettings,
                         },
                     },
                 ],
+				settings: sectionTitleSettings,
             },
             volunteering: {
                 content: [
@@ -184,13 +249,18 @@ function buildSaveInput(
                         content: {
                             socialNetwork: "Social Network 1",
                             username: "JohnDoe",
-                            settings: {
-                                withDescription: true,
-                                withList: true,
-                            },
+							icon: "🌐",
+                            settings: { 
+								socialNetwork: baseTextSettings,
+								username: baseTextSettings,
+								withIcon: true, 
+								withSocialNetwork: true, 
+								withUsername: true 
+							},
                         },
                     },
                 ],
+				settings: sectionTitleSettings,
             },
             passion: {
                 content: [
@@ -216,13 +286,11 @@ function buildSaveInput(
                         content: {
                             name: "Language 1",
                             level: Level.Débutant,
-                            settings: {
-                                withDescription: true,
-                                withList: true,
-                            },
+                            settings: languageItemSettings,
                         },
                     },
                 ],
+				settings: sectionTitleSettings,
             },
             publication: {
                 content: [
@@ -291,13 +359,11 @@ function buildSaveInput(
                             start: new Date("2020-01-01"),
                             end: new Date("2022-01-01"),
                             obtained: CvTimelineStatus.COMPLETED,
-                            settings: {
-                                withDescription: true,
-                                withList: true,
-                            },
+                            settings: educationItemSettings,
                         },
                     },
                 ],
+				settings: sectionTitleSettings,
             },
             skillGroup: opts?.skillId
                 ? {
@@ -312,6 +378,7 @@ function buildSaveInput(
                                     clientKey: "skill-1",
                                     order: 1,
                                     content: {
+										name: "Skill 1",
                                         skillId: opts.skillId,
                                         level: Level.Débutant,
                                     },
@@ -320,6 +387,7 @@ function buildSaveInput(
                             },
                         },
                     ],
+					settings: sectionTitleSettings,
                 }
                 : undefined, // ou {} si tu préfères toujours envoyer la section
             competenceGroup: opts?.competenceId
@@ -502,10 +570,7 @@ describe("CvSaveService.save", () => {
 		expect(result.experiences[0]?.cvMissions[0]?.content).toBe(
 			"Développer des features",
 		);
-        expect(result.experiences[0]?.settings).toEqual({
-            withDescription: true,
-            withList: true,
-        });
+        expect(result.experiences[0]?.settings).toEqual(experienceItemSettings);
 		expect(result.projects).toHaveLength(1);
 		expect(result.projects[0]?.title).toBe("Projet 1");
 		expect(result.projects[0]?.cvMissions).toHaveLength(1);
@@ -514,10 +579,7 @@ describe("CvSaveService.save", () => {
 		);
         expect(result.projects[0]?.technology).toBe("React");
         expect(result.projects[0]?.status).toBe(CvTimelineStatus.INTERRUPTED);
-        expect(result.projects[0]?.settings).toEqual({
-            withDescription: true,
-            withList: true,
-        });
+        expect(result.projects[0]?.settings).toEqual(projectItemSettings);
         expect(result.volunteerings).toHaveLength(1);
         expect(result.volunteerings[0]?.title).toBe("Volontariat 1");
         expect(result.volunteerings[0]?.cvMissions).toHaveLength(1);
@@ -568,9 +630,14 @@ describe("CvSaveService.save", () => {
         expect(result.socialMedias).toHaveLength(1);
         expect(result.socialMedias[0]?.socialNetwork).toBe("Social Network 1");
         expect(result.socialMedias[0]?.username).toBe("JohnDoe");
-        expect(result.socialMedias[0]?.settings).toEqual({
-            withDescription: true, withList: true,
-        });
+        expect(result.socialMedias[0]?.icon).toBe("🌐");
+		expect(result.socialMedias[0]?.settings).toEqual({
+			socialNetwork: baseTextSettings,
+			username: baseTextSettings,
+			withIcon: true,
+			withSocialNetwork: true,
+			withUsername: true,
+		});
         expect(result.passions).toHaveLength(1);
         expect(result.passions[0]?.title).toBe("Passion 1");
         expect(result.passions[0]?.icon).toBe("🎨");
@@ -580,9 +647,7 @@ describe("CvSaveService.save", () => {
         expect(result.languages).toHaveLength(1);
         expect(result.languages[0]?.name).toBe("Language 1");
         expect(result.languages[0]?.level).toBe(Level.Débutant);
-        expect(result.languages[0]?.settings).toEqual({
-            withDescription: true, withList: true,
-        });
+        expect(result.languages[0]?.settings).toEqual(languageItemSettings);
         expect(result.publications).toHaveLength(1);
         expect(result.publications[0]?.title).toBe("Publication 1");
         expect(result.publications[0]?.start).toStrictEqual(new Date("2020-01-01"));
@@ -615,9 +680,7 @@ describe("CvSaveService.save", () => {
         expect(result.educations[0]?.start).toStrictEqual(new Date("2020-01-01"));
         expect(result.educations[0]?.end).toStrictEqual(new Date("2022-01-01"));
         expect(result.educations[0]?.obtained).toBe(CvTimelineStatus.COMPLETED);
-        expect(result.educations[0]?.settings).toEqual({
-            withDescription: true, withList: true,
-        });
+        expect(result.educations[0]?.settings).toEqual(educationItemSettings);
         expect(result.skillGroups).toHaveLength(1);
         expect(result.skillGroups[0]?.title).toBe("Skill Group 1");
         expect(result.skillGroups[0]?.skills).toHaveLength(1);
@@ -679,6 +742,10 @@ describe("CvSaveService.save", () => {
 					},
 					description: {
 						content: { description: "Nouvelle description" },
+						settings: {
+							title: baseTextSettings,
+							content: baseTextSettings,
+						},
 					},
 				},
 				modules: [
@@ -787,7 +854,9 @@ describe("CvSaveService.save", () => {
 								},
 							},
 						],
-					},
+					
+					settings: sectionTitleSettings,
+				},
 				},
 				modules: [],
 			}),
@@ -820,7 +889,9 @@ describe("CvSaveService.save", () => {
 								},
 							},
 						],
-					},
+					
+					settings: sectionTitleSettings,
+				},
 				},
 				modules: [],
 			}),
@@ -871,7 +942,9 @@ describe("CvSaveService.save", () => {
 								},
 							},
 						],
-					},
+					
+					settings: sectionTitleSettings,
+				},
 				},
 				modules: [],
 			}),
@@ -897,10 +970,7 @@ describe("CvSaveService.save", () => {
 									end: new Date("2022-01-01"),
 									status: CvTimelineStatus.INTERRUPTED,
 									technology: "React",
-									settings: {
-										withDescription: true,
-										withList: true,
-									},
+									settings: projectItemSettings,
 									missions: [
 										{
 											clientKey: "m-new",
@@ -910,6 +980,7 @@ describe("CvSaveService.save", () => {
 								},
 							},
 						],
+					settings: sectionTitleSettings,
 					},
 				},
 				modules: [],
@@ -925,10 +996,7 @@ describe("CvSaveService.save", () => {
 		);
 		expect(updated.projects[0]?.technology).toBe("React");
 		expect(updated.projects[0]?.status).toBe(CvTimelineStatus.INTERRUPTED);
-		expect(updated.projects[0]?.settings).toEqual({
-			withDescription: true,
-			withList: true,
-		});
+		expect(updated.projects[0]?.settings).toEqual(projectItemSettings);
 	});
 
     it("replaces volunteerings: keeps listed ids and deletes others", async () => {
@@ -1354,6 +1422,14 @@ describe("CvSaveService.save", () => {
 								content: {
 									socialNetwork: "Twitter",
                                     username: "JohnDoe",
+									icon: "🌐",
+									settings: {
+										socialNetwork: baseTextSettings,
+										username: baseTextSettings,
+										withIcon: true,
+										withSocialNetwork: true,
+										withUsername: true,
+									},
 								},
 							},
 							{
@@ -1362,9 +1438,18 @@ describe("CvSaveService.save", () => {
 								content: {
 									socialNetwork: "LinkedIn",
 									username: "JohnDoe",
+									icon: "🌐",
+									settings: {
+										socialNetwork: baseTextSettings,
+										username: baseTextSettings,
+										withIcon: true,
+										withSocialNetwork: true,
+										withUsername: true,
+									},
 								},
 							},
 						],
+						settings: sectionTitleSettings,
 					},
 				},
 				modules: [],
@@ -1388,13 +1473,18 @@ describe("CvSaveService.save", () => {
 								content: {
 									socialNetwork: "Twitter updated",
 									username: "JohnDoe updated",
+									icon: "🌐 updated",
 									settings: {
-										withDescription: true,
+										socialNetwork: baseTextSettings,
+										username: baseTextSettings,
+										withIcon: true,
+										withSocialNetwork: true,
 										withUsername: true,
 									},
 								},
 							},
 						],
+						settings: sectionTitleSettings,
 					},
 				},
 				modules: [],
@@ -1405,8 +1495,12 @@ describe("CvSaveService.save", () => {
 		expect(updated.socialMedias[0]?.id).toBe(keepId);
 		expect(updated.socialMedias[0]?.socialNetwork).toBe("Twitter updated");
 		expect(updated.socialMedias[0]?.username).toBe("JohnDoe updated");
+		expect(updated.socialMedias[0]?.icon).toBe("🌐 updated");
 		expect(updated.socialMedias[0]?.settings).toEqual({
-			withDescription: true,
+			socialNetwork: baseTextSettings,
+			username: baseTextSettings,
+			withIcon: true,
+			withSocialNetwork: true,
 			withUsername: true,
 		});
 	});
@@ -1513,7 +1607,9 @@ describe("CvSaveService.save", () => {
 								},
 							},
 						],
-					},
+					
+					settings: sectionTitleSettings,
+				},
 				},
 				modules: [],
 			}),
@@ -1536,13 +1632,11 @@ describe("CvSaveService.save", () => {
 								content: {
 									name: "Language 1 updated",
 									level: Level.Débutant,
-									settings: {
-										withDescription: true,
-										withList: true,
-									},
+									settings: languageItemSettings,
 								},
 							},
 						],
+					settings: sectionTitleSettings,
 					},
 				},
 				modules: [],
@@ -1553,10 +1647,7 @@ describe("CvSaveService.save", () => {
 		expect(updated.languages[0]?.id).toBe(keepId);
 		expect(updated.languages[0]?.name).toBe("Language 1 updated");
 		expect(updated.languages[0]?.level).toBe(Level.Débutant);
-		expect(updated.languages[0]?.settings).toEqual({
-			withDescription: true,
-			withList: true,
-		});
+		expect(updated.languages[0]?.settings).toEqual(languageItemSettings);
 	});
 
     it("replaces publications: keeps listed ids and deletes others", async () => {
@@ -1827,10 +1918,7 @@ describe("CvSaveService.save", () => {
 									start: new Date("2020-01-01"),
 									end: new Date("2022-01-01"),
 									obtained: CvTimelineStatus.COMPLETED,
-									settings: {
-										withDescription: true,
-										withList: true,
-									},
+									settings: educationItemSettings,
 								},
 							},
 							{
@@ -1844,13 +1932,11 @@ describe("CvSaveService.save", () => {
 									start: new Date("2020-01-01"),
 									end: new Date("2022-01-01"),
 									obtained: CvTimelineStatus.COMPLETED,
-									settings: {
-										withDescription: true,
-										withList: true,
-									},
+									settings: educationItemSettings,
 								},
 							},
 						],
+					settings: sectionTitleSettings,
 					},
 				},
 				modules: [],
@@ -1879,13 +1965,11 @@ describe("CvSaveService.save", () => {
 									start: new Date("2020-01-01"),
 									end: new Date("2022-01-01"),
 									obtained: CvTimelineStatus.COMPLETED,
-									settings: {
-										withDescription: true,
-										withList: true,
-									},
+									settings: educationItemSettings,
 								},
 							},
 						],
+					settings: sectionTitleSettings,
 					},
 				},
 				modules: [],
@@ -1901,10 +1985,7 @@ describe("CvSaveService.save", () => {
 		expect(updated.educations[0]?.start).toStrictEqual(new Date("2020-01-01"));
 		expect(updated.educations[0]?.end).toStrictEqual(new Date("2022-01-01"));
 		expect(updated.educations[0]?.obtained).toBe(CvTimelineStatus.COMPLETED);
-		expect(updated.educations[0]?.settings).toEqual({
-			withDescription: true,
-			withList: true,
-		});
+		expect(updated.educations[0]?.settings).toEqual(educationItemSettings);
 	});
 
     it("replaces skillGroups: keeps listed ids and deletes others", async () => {
@@ -1930,6 +2011,7 @@ describe("CvSaveService.save", () => {
                                             clientKey: "s-a",
                                             order: 1,
                                             content: {
+												name: skillA.name,
                                                 skillId: skillA.id,
                                                 level: Level.Débutant,
                                             },
@@ -1938,6 +2020,7 @@ describe("CvSaveService.save", () => {
                                             clientKey: "s-b",
                                             order: 2,
                                             content: {
+												name: skillB.name,
                                                 skillId: skillB.id,
                                                 level: Level.Senior,
                                             },
@@ -1955,6 +2038,7 @@ describe("CvSaveService.save", () => {
                                             clientKey: "s-c",
                                             order: 1,
                                             content: {
+												name: skillC.name,
                                                 skillId: skillC.id,
                                                 level: Level.Expert,
                                             },
@@ -1963,7 +2047,9 @@ describe("CvSaveService.save", () => {
                                 },
                             },
                         ],
-                    },
+                    
+					settings: sectionTitleSettings,
+				},
                 },
                 modules: [],
             }),
@@ -1991,6 +2077,7 @@ describe("CvSaveService.save", () => {
                                             clientKey: "s-a",
                                             order: 1,
                                             content: {
+												name: skillA.name,
                                                 skillId: skillA.id,
                                                 level: Level.Expert, // level mis à jour
                                             },
@@ -2000,6 +2087,7 @@ describe("CvSaveService.save", () => {
                                             clientKey: "s-c-new",
                                             order: 2,
                                             content: {
+												name: skillC.name,
                                                 skillId: skillC.id,
                                                 level: Level.Débutant,
                                             },
@@ -2009,7 +2097,9 @@ describe("CvSaveService.save", () => {
                             },
                             // Second omis → groupe supprimé
                         ],
-                    },
+                    
+					settings: sectionTitleSettings,
+				},
                 },
                 modules: [],
             }),
@@ -2023,6 +2113,65 @@ describe("CvSaveService.save", () => {
         expect(skills.some((s) => s.skillId === skillB.id)).toBe(false);
         expect(skills.some((s) => s.skillId === skillC.id)).toBe(true);
     });
+
+	it("resolves skill by name when skillId is omitted (findFirst then create catalog)", async () => {
+		const user = await createTestUser();
+		const template = await createTestTemplate();
+		const existingName = `Existing-${Date.now()}`;
+		const existing = await createCatalogSkill(existingName);
+		const brandNewName = `BrandNew-${Date.now()}`;
+		const result = await cvSaveService.save(
+		  user.id,
+		  buildSaveInput(template.id, {
+			datas: {
+			  header: { title: "John Doe" },
+			  skillGroup: {
+				content: [
+				  {
+					clientKey: "sg-1",
+					order: 1,
+					content: {
+					  title: "Group",
+					  skills: [
+						{
+						  clientKey: "s-existing",
+						  order: 1,
+						  content: {
+							name: existingName, // pas de skillId → findFirst
+							level: Level.Débutant,
+						  },
+						},
+						{
+						  clientKey: "s-new",
+						  order: 2,
+						  content: {
+							name: brandNewName, // pas de skillId → create catalogue
+							level: Level.Senior,
+						  },
+						},
+					  ],
+					},
+				  },
+				],
+				settings: sectionTitleSettings,
+			  },
+			},
+			modules: [],
+		  }),
+		);
+		const group = result.skillGroups[0]!;
+		expect(group.skills).toHaveLength(2);
+		const linkedExisting = group.skills.find((s) => s.skill?.name === existingName);
+		expect(linkedExisting?.skillId).toBe(existing.id);
+		const linkedNew = group.skills.find((s) => s.skill?.name === brandNewName);
+		expect(linkedNew).toBeDefined();
+		expect(linkedNew!.skillId).not.toBe(existing.id);
+		const catalogNew = await prismaTest.skill.findFirst({
+		  where: { name: brandNewName },
+		});
+		expect(catalogNew).toBeTruthy();
+		expect(linkedNew!.skillId).toBe(catalogNew!.id);
+	});
 
     it("replaces competenceGroups: keeps listed ids and deletes others", async () => {
         const user = await createTestUser();
@@ -2136,6 +2285,72 @@ describe("CvSaveService.save", () => {
         expect(competences.some((c) => c.competenceId === competenceC.id)).toBe(true);
     });
 
+	it("clears all skills in a kept skillGroup when skills is empty", async () => {
+		const user = await createTestUser();
+		const template = await createTestTemplate();
+		const skill = await createCatalogSkill(`Clear-${Date.now()}`);
+		const created = await cvSaveService.save(
+		  user.id,
+		  buildSaveInput(template.id, {
+			datas: {
+			  header: { title: "John Doe" },
+			  skillGroup: {
+				content: [
+				  {
+					clientKey: "sg-1",
+					order: 1,
+					content: {
+					  title: "Keep me",
+					  skills: [
+						{
+						  clientKey: "s-1",
+						  order: 1,
+						  content: {
+							name: skill.name,
+							skillId: skill.id,
+							level: Level.Débutant,
+						  },
+						},
+					  ],
+					},
+				  },
+				],
+				settings: sectionTitleSettings,
+			  },
+			},
+			modules: [],
+		  }),
+		);
+		const groupId = created.skillGroups[0]!.id;
+		expect(created.skillGroups[0]!.skills).toHaveLength(1);
+		const updated = await cvSaveService.save(
+		  user.id,
+		  buildSaveInput(template.id, {
+			cvId: created.id,
+			datas: {
+			  skillGroup: {
+				content: [
+				  {
+					id: groupId,
+					clientKey: "sg-1",
+					order: 1,
+					content: {
+					  title: "Keep me",
+					  skills: [], // ← vide → deleteMany all skills of group
+					},
+				  },
+				],
+				settings: sectionTitleSettings,
+			  },
+			},
+			modules: [],
+		  }),
+		);
+		expect(updated.skillGroups).toHaveLength(1);
+		expect(updated.skillGroups[0]!.id).toBe(groupId);
+		expect(updated.skillGroups[0]!.skills).toHaveLength(0);
+	});
+
 	it("deletes all experiences when content is empty", async () => {
 		const user = await createTestUser();
 		const template = await createTestTemplate();
@@ -2150,7 +2365,7 @@ describe("CvSaveService.save", () => {
 			user.id,
 			buildSaveInput(template.id, {
 				cvId: created.id,
-				datas: { experience: { content: [] } },
+				datas: { experience: { content: [], settings: sectionTitleSettings } },
 				modules: [],
 			}),
 		);
@@ -2172,7 +2387,7 @@ describe("CvSaveService.save", () => {
 			user.id,
 			buildSaveInput(template.id, {
 				cvId: created.id,
-				datas: { project: { content: [] } },
+				datas: { project: { content: [], settings: sectionTitleSettings } },
 				modules: [],
 			}),
 		);
@@ -2304,7 +2519,7 @@ describe("CvSaveService.save", () => {
 			user.id,
 			buildSaveInput(template.id, {
 				cvId: created.id,
-				datas: { socialMedia: { content: [] } },
+				datas: { socialMedia: { content: [], settings: sectionTitleSettings } },
 				modules: [],
 			}),
 		);
@@ -2348,7 +2563,7 @@ describe("CvSaveService.save", () => {
 			user.id,
 			buildSaveInput(template.id, {
 				cvId: created.id,
-				datas: { language: { content: [] } },
+				datas: { language: { content: [], settings: sectionTitleSettings } },
 				modules: [],
 			}),
 		);
@@ -2436,7 +2651,7 @@ describe("CvSaveService.save", () => {
 			user.id,
 			buildSaveInput(template.id, {
 				cvId: created.id,
-				datas: { education: { content: [] } },
+				datas: { education: { content: [], settings: sectionTitleSettings } },
 				modules: [],
 			}),
 		);
@@ -2461,7 +2676,7 @@ describe("CvSaveService.save", () => {
             user.id,
             buildSaveInput(template.id, {
                 cvId: created.id,
-                datas: { skillGroup: { content: [] } },
+                datas: { skillGroup: { content: [], settings: sectionTitleSettings } },
                 modules: [],
             }),
         );
@@ -2627,7 +2842,9 @@ describe("CvSaveService.save", () => {
 								},
 							},
 						],
-					},
+					
+					settings: sectionTitleSettings,
+				},
 				},
 				modules: [],
 			}),
@@ -2665,7 +2882,9 @@ describe("CvSaveService.save", () => {
 								},
 							},
 						],
-					},
+					
+					settings: sectionTitleSettings,
+				},
 				},
 				modules: [],
 			}),

@@ -196,6 +196,26 @@ describe("cvRouter.save", () => {
 				header: { title: "John Doe", prenom: "John", nom: "Doe" },
 				description: {
 					content: { description: "Hello" },
+					settings: {
+						title: {
+							sizeModel: "16px",
+							weightModel: 400,
+							colorSelect: "primaryColor",
+							sizeSelect: "sm",
+							weightSelect: "sm",
+							withPrimaryColor: true,
+							textAlign: "left",
+						},
+						content: {
+							sizeModel: "16px",
+							weightModel: 400,
+							colorSelect: "primaryColor",
+							sizeSelect: "sm",
+							weightSelect: "sm",
+							withPrimaryColor: true,
+							textAlign: "left",
+						},
+					},
 				},
 			},
 			modules: [

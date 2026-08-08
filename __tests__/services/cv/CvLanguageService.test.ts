@@ -72,6 +72,19 @@ describe("CvLanguageService.create", () => {
 			}),
 		).rejects.toThrow(ConflictError);
 	});
+
+	it("defaults order to 0 when order is omitted", async () => {
+		const user = await createTestUser();
+		const template = await createTestTemplate();
+		const cv = await createCV(user.id, template.id);
+		const language = await cvLanguageService.create(cv.id, {
+			name: "Allemand",
+			level: Level.Débutant,
+			// pas de order → data.order ?? 0
+		});
+		expect(language.order).toBe(0);
+		expect(language.settings).toEqual({}); // bonus L63 : settings ?? {}
+	});
 });
 
 describe("CvLanguageService.findAllByCvId", () => {
@@ -197,6 +210,32 @@ describe("CvLanguageService.update", () => {
 			}),
 		).rejects.toThrow(NotFoundError);
 	});
+
+	it("updates settings when provided", async () => {
+		const user = await createTestUser();
+		const template = await createTestTemplate();
+		const cv = await createCV(user.id, template.id);
+		const language = await cvLanguageService.create(cv.id, {
+			name: "Italien",
+			level: Level.Intermédiaire,
+			order: 1,
+		});
+		const settings = {
+			language: {
+				sizeModel: "16px",
+				weightModel: 400,
+				colorSelect: "primaryColor" as const,
+				sizeSelect: "sm" as const,
+				weightSelect: "sm" as const,
+				withPrimaryColor: true,
+				textAlign: "left" as const,
+			},
+			design: "stars" as const,
+		};
+		const updated = await cvLanguageService.update(language.id, { settings });
+		expect(updated.settings).toEqual(settings);
+	});
+	
 });
 
 describe("CvLanguageService.move", () => {

@@ -130,6 +130,26 @@ describe("mapCvToSaveInput", () => {
 		expect(input.datas.description).toEqual({
 			id: "d1",
 			content: { description: "Bio" },
+			settings: {
+				title: {
+				  sizeModel: "18px",
+				  weightModel: 600,
+				  colorSelect: "black",
+				  sizeSelect: "md",
+				  weightSelect: "md",
+				  withPrimaryColor: false,
+				  textAlign: "left",
+				},
+				content: {
+				  sizeModel: "18px",
+				  weightModel: 600,
+				  colorSelect: "black",
+				  sizeSelect: "md",
+				  weightSelect: "md",
+				  withPrimaryColor: false,
+				  textAlign: "left",
+				},
+			},
 		});
 		expect(input.datas.philosophy).toEqual({
 			id: "p1",
@@ -192,7 +212,7 @@ describe("mapCvToSaveInput", () => {
 						location: "Lyon",
 						description: "Desc",
 						order: 1,
-						settings: { withList: true },
+						settings: null,
 						cvMissions: [],
 					},
 				],
@@ -222,7 +242,7 @@ describe("mapCvToSaveInput", () => {
 						technology: "TS",
 						status: CvTimelineStatus.INTERRUPTED,
 						order: 1,
-						settings: { withDescription: true },
+						settings: null,
 						cvMissions: [
 							{ id: "pm1", cvProjectId: "pr1", content: "ship", order: 1 },
                             { id: "pm2", cvProjectId: "pr1", content: "ship", order: 2 },
@@ -230,6 +250,22 @@ describe("mapCvToSaveInput", () => {
 					},
 				],
 				volunteerings: [
+					{
+						id: "v2",
+						cvId: "cv-1",
+						title: "V2",
+						organisation: "Org",
+						start,
+						end: null,
+						location: null,
+						description: null,
+						order: 2,
+						settings: null,
+						cvMissions: [
+							{ id: "vm1", cvVolunteeringId: "v1", content: "help", order: 1 },
+                            { id: "vm2", cvVolunteeringId: "v1", content: "help", order: 2 },
+						],
+					},
 					{
 						id: "v1",
 						cvId: "cv-1",
@@ -263,6 +299,12 @@ describe("mapCvToSaveInput", () => {
 		]);
 		expect(input.datas.volunteering?.content[0]?.content.missions[0]?.id).toBe(
 			"vm1",
+		);
+		expect(input.datas.volunteering?.content[1]?.content.missions[0]?.id).toBe(
+			"vm1",
+		);
+		expect(input.datas.volunteering?.content[1]?.content.missions[1]?.id).toBe(
+			"vm2",
 		);
 		expect(cvSaveSchema.safeParse(input).success).toBe(true);
 	});
@@ -354,16 +396,18 @@ describe("mapCvToSaveInput", () => {
 						cvId: "cv-1",
 						socialNetwork: "LinkedIn",
 						username: "john",
+						icon: "🌐",
 						order: 1,
-						settings: { visible: true },
+						settings: null,
 					},   
                     {
                         id: "sm2",
                         cvId: "cv-1",
                         socialNetwork: "LinkedIn",
                         username: "john",
+                        icon: "🌐",
                         order: 2,
-                        settings: { visible: true },
+                        settings: null,
                     },
 				],
 				passions: [
@@ -602,12 +646,11 @@ describe("mapCvToSaveInput", () => {
 		expect(input.datas.prize?.content[0]?.content.domaine).toBe("");
 		expect(input.datas.education?.content[0]?.content.title).toBe("");
 		expect(input.datas.strength?.content[0]?.content.icon).toBeUndefined();
-		expect(input.datas.skillGroup?.content[0]?.content.skills[0]?.content).toEqual(
-			{
-				skillId: "skill-0",
-				level: Level.Senior,
-			},
-		);
+		expect(input.datas.skillGroup?.content[0]?.content.skills[0]?.content).toEqual({
+			name: "TS",
+			skillId: "skill-0",
+			level: Level.Senior,
+		});
 		expect(
 			input.datas.competenceGroup?.content[0]?.content.competences[0]?.content,
 		).toEqual({ competenceId: "comp-0" });

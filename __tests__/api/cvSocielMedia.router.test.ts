@@ -30,6 +30,7 @@ describe("cvSocialMediaRouter", () => {
 				data: {
 					socialNetwork: "Passion 1",
 					username: "username 1",
+					icon: "faGlobe",
 					order: 1,
 				},
 			}),
@@ -44,6 +45,7 @@ describe("cvSocialMediaRouter", () => {
 			data: {
 				socialNetwork: "Social Network 1",
 				username: "username 1",
+				icon: "faGlobe",
 				order: 1,
 			},
 		});
@@ -51,6 +53,7 @@ describe("cvSocialMediaRouter", () => {
 		expect(socialMedia.cvId).toBe(cv.id);
 		expect(socialMedia.socialNetwork).toBe("Social Network 1");
 		expect(socialMedia.username).toBe("username 1");
+		expect(socialMedia.icon).toBe("faGlobe");
 		expect(socialMedia.order).toBe(1);
 	});
 
@@ -79,6 +82,7 @@ describe("cvSocialMediaRouter", () => {
 				data: {
 					socialNetwork: "Hack",
 					username: "username 1",
+					icon: "faGlobe",
 					order: 1,
 				},
 			}),
@@ -93,6 +97,7 @@ describe("cvSocialMediaRouter", () => {
 			data: {
 				socialNetwork: "Same social network",
 				username: "username 1",
+				icon: "faGlobe",
 				order: 1,
 			},
 		});
@@ -103,6 +108,7 @@ describe("cvSocialMediaRouter", () => {
 				data: {
 					socialNetwork: "Same social network",
 					username: "username 1",
+					icon: "faGlobe",
 					order: 2,
 				},
 			}),
@@ -114,7 +120,7 @@ describe("cvSocialMediaRouter", () => {
 
 		await caller.cvSocialMedia.create({
 			cvId: cv.id,
-			data: { socialNetwork: "First", username: "username 1", order: 1 },
+			data: { socialNetwork: "First", username: "username 1", icon: "faGlobe", order: 1 },
 		});
 
 		await caller.cvSocialMedia.create({
@@ -122,6 +128,7 @@ describe("cvSocialMediaRouter", () => {
 			data: {
 				socialNetwork: "Second",
 				username: "username 1",
+				icon: "faGlobe",
 				order: 2,
 			},
 		});
@@ -141,6 +148,7 @@ describe("cvSocialMediaRouter", () => {
 			data: {
 				socialNetwork: "Old social network",
 				username: "username 1",
+				icon: "faGlobe",
 				order: 1,
 			},
 		});
@@ -165,6 +173,7 @@ describe("cvSocialMediaRouter", () => {
 			data: {
 				socialNetwork: "Social Network 1",
 				username: "username 1",
+				icon: "faGlobe",
 				order: 1,
 			},
 		});
@@ -184,13 +193,14 @@ describe("cvSocialMediaRouter", () => {
 
 		const first = await caller.cvSocialMedia.create({
 			cvId: cv.id,
-			data: { socialNetwork: "First", username: "username 1", order: 1 },
+			data: { socialNetwork: "First", username: "username 1", icon: "faGlobe", order: 1 },
 		});
 		await caller.cvSocialMedia.create({
 			cvId: cv.id,
 			data: {
 				socialNetwork: "Second",
-				username: "username 1",
+				username: "username 1",	
+				icon: "faGlobe",
 				order: 2,
 			},
 		});
@@ -211,6 +221,7 @@ describe("cvSocialMediaRouter", () => {
 			data: {
 				socialNetwork: "To delete",
 				username: "username 1",
+				icon: "faGlobe",
 				order: 1,
 			},
 		});

@@ -1,7 +1,7 @@
 import { prisma } from "../lib/prisma";
 import users from "./seedDatas/seed.users.json";
 import colors from "./seedDatas/seed.colors.json";
-import templates from "./seedDatas/seed.templates.json"
+import { seedTemplates } from "./seedDatas/seed.templates";
 import "dotenv/config";
 import { hash } from "bcrypt";
 
@@ -170,7 +170,7 @@ async function buildUsers() {
  */
 async function buildTemplates() {
 	return Promise.all(
-		templates.map((el) =>
+		seedTemplates.map((el) =>
 			prisma.cVTemplate.create({
 				data: {
 					name: el.name,

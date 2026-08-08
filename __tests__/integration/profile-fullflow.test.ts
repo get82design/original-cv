@@ -341,6 +341,7 @@ describe("Profile Fullflow Integration", () => {
 				profile.id,
 				"Social Media 1",
 				"Username 1",
+				"faGlobe",
 				1,
 			);
 			const upProfileSocialMedia = await prismaTest.profile.findUnique({
@@ -501,6 +502,7 @@ describe("Profile Fullflow Integration", () => {
 				profile.id,
 				"Social Media 1",
 				"Username 1",
+				"faGlobe",
 				1,
 			);
 			await utils.createStrength(profile.id, "Strength 1", "💪", 1);

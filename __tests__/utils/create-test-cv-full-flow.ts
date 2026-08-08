@@ -351,10 +351,11 @@ export async function createSocialMedia(
 	cvId: string,
 	socialNetwork: string,
 	username: string,
+	icon: string,
 	order: number,
 ) {
 	return prismaTest.cvSocialMedia.create({
-		data: { cvId, socialNetwork, username, order },
+		data: { cvId, socialNetwork, username, icon, order },
 	});
 }
 
@@ -471,7 +472,7 @@ export async function buildCvComplete(
 		dateEnd,
 		"Mon Url",
 	);
-	await createSocialMedia(cvId, "Mon Social Media", "Mon Username", 1);
+	await createSocialMedia(cvId, "Mon Social Media", "Mon Username", "Mon Icon", 1);
 	await createStrength(cvId, "Mon Strength", 1, "Mon Icon");
 	const volunteering = await createVolunteering(
 		cvId,

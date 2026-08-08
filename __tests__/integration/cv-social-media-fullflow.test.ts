@@ -10,6 +10,7 @@ describe("CV Fullflow Integration with social media", () => {
 			cv.id,
 			"LinkedIn",
 			"https://linkedin.com/me",
+			"faGlobe",
 			1,
 		);
 		expect(socialMedia.cvId).toBe(cv.id);
@@ -25,6 +26,7 @@ describe("CV Fullflow Integration with social media", () => {
 			cv.id,
 			"LinkedIn",
 			"https://linkedin.com/me",
+			"faGlobe",
 			1,
 		);
 		await prismaTest.cvSocialMedia.delete({ where: { id: socialMedia.id } });

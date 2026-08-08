@@ -42,6 +42,7 @@ export class CvHeaderService {
 				portfolio: data?.portfolio ?? null,
 				location: data?.location ?? null,
 				subtitle: data?.subtitle ?? null,
+				settings: data?.settings ?? {},
 			},
 		});
 	}
@@ -82,6 +83,7 @@ export class CvHeaderService {
 				...(data.portfolio !== undefined ? { portfolio: data.portfolio } : {}),
 				...(data.nom !== undefined ? { nom: data.nom } : {}),
 				...(data.prenom !== undefined ? { prenom: data.prenom } : {}),
+				...(data.settings !== undefined ? { settings: data.settings } : {}),
 			},
 		});
 	}

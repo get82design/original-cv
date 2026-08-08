@@ -24,6 +24,7 @@ describe("CvSocialMedia model", () => {
 			data: {
 				socialNetwork: "LinkedIn",
 				username: "https://linkedin.com/me",
+				icon: "faGlobe",
 				order: 1,
 				cvId: cv.id,
 			},
@@ -35,13 +36,14 @@ describe("CvSocialMedia model", () => {
 	it("should not allow duplicate order in same CV", async () => {
 		const { cv } = await createTestCV();
 		await prismaTest.cvSocialMedia.create({
-			data: { socialNetwork: "LinkedIn", username: "a", order: 1, cvId: cv.id },
+			data: { socialNetwork: "LinkedIn", username: "a", icon: "faGlobe", order: 1, cvId: cv.id },
 		});
 		await expect(
 			prismaTest.cvSocialMedia.create({
 				data: {
 					socialNetwork: "Twitter",
 					username: "b",
+					icon: "faGlobe",
 					order: 1,
 					cvId: cv.id,
 				},
@@ -56,6 +58,7 @@ describe("CvSocialMedia model", () => {
 			data: {
 				socialNetwork: "LinkedIn",
 				username: "a",
+				icon: "faGlobe",
 				order: 1,
 				cvId: cv1.id,
 			},
@@ -64,6 +67,7 @@ describe("CvSocialMedia model", () => {
 			data: {
 				socialNetwork: "LinkedIn",
 				username: "b",
+				icon: "faGlobe",
 				order: 1,
 				cvId: cv2.id,
 			},
@@ -75,7 +79,7 @@ describe("CvSocialMedia model", () => {
 	it("should delete social medias when CV is deleted", async () => {
 		const { cv } = await createTestCV();
 		await prismaTest.cvSocialMedia.create({
-			data: { socialNetwork: "LinkedIn", username: "a", order: 1, cvId: cv.id },
+			data: { socialNetwork: "LinkedIn", username: "a", icon: "faGlobe", order: 1, cvId: cv.id },
 		});
 		await prismaTest.cV.delete({ where: { id: cv.id } });
 		const remaining = await prismaTest.cvSocialMedia.findMany({

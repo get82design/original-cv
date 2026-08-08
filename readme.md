@@ -387,3 +387,67 @@ Puisque tu utilises Next.js (App Router), c'est le moment idéal pour briller :
 Puisque tu voulais en faire une option payante pour valoriser tes abonnements, voici le découpage parfait :
 - Plan FREE : L'utilisateur peut activer l'URL publique pour tester, mais le design est ultra basique, il y a un gros bandeau "Créé avec [Nom de ton site]" en haut et en bas, et le QR code n'est pas personnalisable.
 - Plan STANDARD / PREMIUM : Pas de bandeau publicitaire. L'URL publique est personnalisable. Accès à des boutons d'action rapide sur le CV en ligne (ex: boutons "Appeler", "Ajouter sur LinkedIn", "Télécharger le PDF d'origine").
+
+
+
+Nom des templates
+
+1. Style Minimaliste & Épuré (Lignes fines, beaucoup d'espace blanc)
+- Kyoto
+- Oslo
+- Zurich
+- Helsinki
+- Stockholm
+- Geneva
+- Nara
+- Reykjavik
+- Krakow
+- Tallinn
+
+2. Style Modern Tech & Bold (Typo imposante, contrastes fort, profil dev/digital)
+- Berlin
+- Tokyo
+- Seoul
+- Austin
+- Seattle
+- Shenzhen
+- Eindhoven
+- Denver
+- Tel Aviv
+- Portland
+
+3. Style Exécutif & Corporate (Classique, élégant, structuré, pour la finance/droit/management)
+- Manhattan (ou juste New York)
+- London
+- Frankfurt
+- Boston
+- Chicago
+- Luxembourg
+- Toronto
+- Singapore
+- Oxford
+- Cambridge
+
+4. Style Créatif & Design (Couleurs pastel ou vives, layouts originaux, profil marketing/art)
+- Milan
+- Paris
+- Barcelona
+- Amsterdam
+- Melbourne
+- Montreal
+- Vienna
+- Copenhagen
+- Antwerp
+- Lisbon
+
+5. Style Chaleureux & Éditorial (Tons organiques, typographies à empatement/serif, profil littéraire/com)
+- Verona
+- Florence
+- Savannah
+- Valletta
+- Seville
+- Bruges
+- Kyiv
+- Porto
+- Bordeaux
+- Granada

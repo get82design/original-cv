@@ -3,22 +3,50 @@ import type { inferRouterOutputs } from "@trpc/server";
 import type { Prisma } from "../../../generated/prisma/client";
 import type { AppRouter } from "../../../server/api/root";
 import type { CvSaveInput } from "../../services/schemas/cvSave.schema";
+import {
+    educationContentSchema, 
+    experienceContentSchema, 
+    languageContentSchema, 
+    projectContentSchema,
+    socialMediaContentSchema,
+} from "../../services/schemas/cvTemplate.schema";
 
 type RouterOutputs = inferRouterOutputs<AppRouter>;
 export type CvFull = RouterOutputs["cv"]["byId"];
+type ExperienceSettings = NonNullable<CvSaveInput["datas"]["experience"]>["settings"]
+type EducationSettings = NonNullable<CvSaveInput["datas"]["education"]>["settings"]
+type SkillGroupSettings = NonNullable<CvSaveInput["datas"]["skillGroup"]>["settings"]
+type LanguageSettings = NonNullable<CvSaveInput["datas"]["language"]>["settings"]
+type ProjectSettings = NonNullable<CvSaveInput["datas"]["project"]>["settings"]
+type SocialMediaSettings = NonNullable<CvSaveInput["datas"]["socialMedia"]>["settings"]
+
+const defaultTitleSettings: ExperienceSettings["title"] = {
+    sizeModel: "18px",
+    weightModel: 600,
+    colorSelect: "black",
+    sizeSelect: "md",
+    weightSelect: "md",
+    withPrimaryColor: false,
+    textAlign: "left",
+  }
 
 export function mapCvToSaveInput(cv: CvFull): CvSaveInput {
+    const experienceModule = cv.modules.find((m) => m.type === "experience")
+    const descriptionModule = cv.modules.find((m) => m.type === "description")
+    const educationModule = cv.modules.find((m) => m.type === "education")
+    const skillModule = cv.modules.find((m) => m.type === "skill")
+    const languageModule = cv.modules.find((m) => m.type === "language")
+    const projectModule = cv.modules.find((m) => m.type === "project")
+    const socialMediaModule = cv.modules.find((m) => m.type === "socialMedia")
 	return {
 		cvId: cv.id,
 		templateId: cv.templateId,
 		title: cv.title,
 		...(cv.photo !== undefined ? { photo: cv.photo } : {}),
-		...(cv.layoutGeneral != null
-			? {
-					layoutGeneral:
-						cv.layoutGeneral as NonNullable<CvSaveInput["layoutGeneral"]>,
-				}
-			: {}),
+        ...(cv.layoutGeneral != null &&
+            Object.keys(cv.layoutGeneral as object).length > 0
+                ? { layoutGeneral: cv.layoutGeneral as NonNullable<CvSaveInput["layoutGeneral"]> }
+                : {}),
 		datas: {
 			...(cv.headerCv
 				? {
@@ -52,6 +80,12 @@ export function mapCvToSaveInput(cv: CvFull): CvSaveInput {
 						description: {
 							id: cv.description.id,
 							content: { description: cv.description.description },
+                            settings: {
+                                title:
+                                  (descriptionModule?.settings as { title?: typeof defaultTitleSettings } | null)
+                                    ?.title ?? defaultTitleSettings,
+                                content: defaultTitleSettings, // ou un default un peu plus "body"
+                            },
 						},
 					}
 				: {}),
@@ -73,7 +107,7 @@ export function mapCvToSaveInput(cv: CvFull): CvSaveInput {
 								: {}),
 							...(exp.settings != null
 								? {
-										settings: exp.settings as Record<string, boolean>,
+										settings: experienceContentSchema.parse(exp.settings),
 									}
 								: {}),
 							missions: [...exp.cvMissions]
@@ -86,6 +120,11 @@ export function mapCvToSaveInput(cv: CvFull): CvSaveInput {
 								})),
 						},
 					})),
+                settings: {
+                    title:
+                        (experienceModule?.settings as { title?: ExperienceSettings["title"] } | null)
+                        ?.title ?? defaultTitleSettings,
+                    },
 			},
             project: {
 				content: [...cv.projects]
@@ -104,11 +143,6 @@ export function mapCvToSaveInput(cv: CvFull): CvSaveInput {
 								: {}),
                             ...(project.technology != null ? { technology: project.technology } : {}),
                             ...(project.status != null ? { status: project.status } : {}),
-                            ...(project.settings != null
-                                ? {
-                                        settings: project.settings as Record<string, boolean>,
-                                    }
-                                : {}),
 							missions: [...project.cvMissions]
 								.sort((a, b) => a.order - b.order)
 								.map((m) => ({
@@ -117,8 +151,18 @@ export function mapCvToSaveInput(cv: CvFull): CvSaveInput {
 									order: m.order,
 									content: { content: m.content },
 								})),
+                            ...(project.settings != null
+                                ? {
+                                        settings: projectContentSchema.parse(project.settings),
+                                    }
+                                : {}),
 						},
 					})),
+                settings: {
+                    title:
+                        (projectModule?.settings as { title?: ProjectSettings["title"] } | null)
+                        ?.title ?? defaultTitleSettings,
+                    },
 			},
             volunteering: {
 				content: [...cv.volunteerings]
@@ -246,12 +290,20 @@ export function mapCvToSaveInput(cv: CvFull): CvSaveInput {
                         id: socialMedia.id,
                         clientKey: socialMedia.id,
                         order: socialMedia.order,
-                        content: { socialNetwork: socialMedia.socialNetwork, username: socialMedia.username,
+                        content: { 
+                            socialNetwork: socialMedia.socialNetwork ?? undefined, 
+                            username: socialMedia.username,
+                            icon: socialMedia.icon,
                             ...(socialMedia.settings != null
-                                ? { settings: socialMedia.settings as Record<string, boolean>,
+                                ? { settings: socialMediaContentSchema.parse(socialMedia.settings)
                                 }
                             : {})},
                     })),
+                settings: {
+                    title:
+                        (socialMediaModule?.settings as { title?: SocialMediaSettings["title"] } | null)
+                        ?.title ?? defaultTitleSettings,
+                    },
             },
             passion: {
                 content: [...cv.passions]
@@ -276,10 +328,15 @@ export function mapCvToSaveInput(cv: CvFull): CvSaveInput {
                         order: language.order,
                         content: { name: language.name, level: language.level,
                             ...(language.settings != null
-                                ? { settings: language.settings as Record<string, boolean>,
+                                ? { settings: languageContentSchema.parse(language.settings),
                                 }
                             : {})},
                     })),
+                settings: {
+                    title:
+                        (languageModule?.settings as { title?: LanguageSettings["title"] } | null)
+                        ?.title ?? defaultTitleSettings,
+                    },
             },
             publication: {
                 content: [...cv.publications]
@@ -345,10 +402,17 @@ export function mapCvToSaveInput(cv: CvFull): CvSaveInput {
                             end: education.end ?? undefined,
                             obtained: education.obtained ?? undefined,
                             ...(education.settings != null
-                                ? { settings: education.settings as Record<string, boolean>,
-                                }
-                            : {})},
+                                ? {
+                                    settings: educationContentSchema.parse(education.settings),
+                                  }
+                                : {}),
+                        },
                     })),
+                settings: {
+                    title:
+                        (educationModule?.settings as { title?: EducationSettings["title"] } | null)
+                        ?.title ?? defaultTitleSettings,
+                    },
             },
             skillGroup: {
                 content: [...cv.skillGroups]
@@ -366,12 +430,18 @@ export function mapCvToSaveInput(cv: CvFull): CvSaveInput {
                                 clientKey: s.id,
                                 order: s.order,
                                 content: {
+                                    name: s.skill.name,
                                     skillId: s.skillId,
                                     level: s.level,
                                 },
                             })),
                         },
                     })),
+                settings: {
+                    title:
+                        (skillModule?.settings as { title?: SkillGroupSettings["title"] } | null)
+                        ?.title ?? defaultTitleSettings,
+                    },
               },
             competenceGroup: {
                 content: [...cv.competences]

@@ -117,8 +117,9 @@ type TestUserOptions = {
 		order: number;
 	}[];
 	socialMedias?: {
-		socialNetwork: string;
+		socialNetwork?: string;
 		username: string;
+		icon: string;
 		order: number;
 	}[];
 	philosophy?: {
@@ -367,6 +368,7 @@ export async function createTestUserWithProfile(options?: TestUserOptions) {
 							create: options.socialMedias.map((s) => ({
 								socialNetwork: s.socialNetwork,
 								username: s.username,
+								icon: s.icon,
 								order: s.order,
 							})),
 						},
@@ -786,10 +788,11 @@ export async function createSocialMedia(
 	profileId: string,
 	socialNetwork: string,
 	username: string,
+	icon: string,
 	order: number,
 ) {
 	return prismaTest.socialMedia.create({
-		data: { profileId, socialNetwork, username, order },
+		data: { profileId, socialNetwork, username, icon, order },
 	});
 }
 

@@ -28,7 +28,7 @@ export class CvSaveService {
 						templateId: input.templateId,
 						...(input.layoutGeneral !== undefined
 							? { layoutGeneral: input.layoutGeneral }
-							: {}),
+							: null),
 					},
 				});
 			} else {
@@ -43,7 +43,9 @@ export class CvSaveService {
 						templateId: input.templateId,
 						title: input.title,
 						photo: input.photo ?? null,
-						layoutGeneral: input.layoutGeneral ?? {},
+						...(input.layoutGeneral !== undefined
+							? { layoutGeneral: input.layoutGeneral }
+							: null),
 					},
 				});
 				id = created.id;
@@ -606,8 +608,9 @@ export class CvSaveService {
                     let socialMediaId = item.id;
 
                     const socialMediaData = {
-                        socialNetwork: rest.socialNetwork,
+                        socialNetwork: rest.socialNetwork ?? null,
                         username: rest.username,
+                        icon: rest.icon,
                         order,
                         settings: settings ?? {},
                     };
@@ -938,28 +941,41 @@ export class CvSaveService {
                       skillGroupId = created.id;
                     }
                     // skills nested — ton bloc tx.cvSkill est déjà bon
-                    const skillKeepIds = skills
-                      .map((s) => s.id)
-                      .filter((skillId): skillId is string => !!skillId);
+                    const skillsToSave = skills.filter((s) => s.content.name.trim().length > 0)
+                    const skillKeepIds = skillsToSave
+                        .map((s) => s.id)
+                        .filter((id): id is string => !!id)
                     await tx.cvSkill.deleteMany({
                       where:
                         skillKeepIds.length === 0
                           ? { groupId: skillGroupId }
                           : { groupId: skillGroupId, id: { notIn: skillKeepIds } },
                     });
-                    for (const [sIndex, s] of skills.entries()) {
+                    for (const [sIndex, s] of skillsToSave.entries()) {
                       const sOrder = s.order ?? sIndex + 1;
+
+                      const catalog = s.content.skillId
+                        ? await tx.skill.findUniqueOrThrow({ where: { id: s.content.skillId } })
+                        : await tx.skill.findFirst({ where: { name: s.content.name.trim() } })
+                            ?? await tx.skill.create({ data: { name: s.content.name.trim() } })
+
                       const data = {
-                        skillId: s.content.skillId,
+                        skillId: catalog.id,
                         level: s.content.level,
                         order: sOrder,
                       };
                       if (s.id) {
                         await tx.cvSkill.update({ where: { id: s.id }, data });
                       } else {
+                        
                         await tx.cvSkill.create({
-                          data: { groupId: skillGroupId, ...data },
-                        });
+                            data: {
+                              groupId: skillGroupId,
+                              skillId: catalog.id,   // ← toujours un id réel
+                              level: s.content.level,
+                              order: sOrder,
+                            },
+                          })
                       }
                     }
                 }

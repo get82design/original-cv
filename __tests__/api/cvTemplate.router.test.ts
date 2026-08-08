@@ -6,17 +6,67 @@ import {
 	createTestCaller,
 	createTestSession,
 } from "./helpers/create-test-caller";
+import { createCvTemplateSchema } from "../../src/services/schemas/cvTemplate.schema";
 
+const baseSettings = {
+	sizeModel: "14px",
+	weightModel: 400,
+	colorSelect: "black" as const,
+	sizeSelect: "md" as const,
+	weightSelect: "md" as const,
+	withPrimaryColor: false,
+};
+const minimalStructure = {
+	layout: {
+		columns: 1,
+		marge: "md",
+		space: "md",
+		withPhoto: false,
+		stylePhoto: "flat",
+		titleSection: { textTransform: "capitalize" },
+	},
+	header: {
+		settings: {
+			title: baseSettings,
+			subTitle: baseSettings,
+			content: baseSettings,
+			nom: baseSettings,
+			prenom: baseSettings,
+		},
+	},
+	modules: [
+		{
+			type: "skill" as const,
+			order: 1,
+			isActive: true,
+			title: "Skills",
+			settings: {
+				title: baseSettings,
+				content: {
+					groupTitle: baseSettings,
+					skills: baseSettings,
+					design: "stars",
+					withGroupTitle: true,
+				},
+			}
+		},
+	],
+};
 const modernePayload = {
 	name: "Template Moderne",
-	structure: { sections: ["header", "skills"] },
-	defaultStyles: { color: "#000000" },
+	structure: minimalStructure,
+	defaultStyles: {
+		primaryColor: { name: "Noir" }, slugTemplate: "moderne",
+	},
 };
-
 const classiquePayload = {
 	name: "Template Classique",
-	structure: { sections: ["header", "experience"] },
-	defaultStyles: { color: "#FFFFFF" },
+	structure: {
+		...minimalStructure,
+	},
+	defaultStyles: {
+		primaryColor: { name: "Blanc" }, slugTemplate: "classique",
+	},
 };
 
 describe("cvTemplateRouter", () => {
@@ -24,6 +74,7 @@ describe("cvTemplateRouter", () => {
 		const caller = await createTestCaller();
 
 		await expect(
+			// @ts-expect-error — test de validation runtime
 			caller.cvTemplate.create(modernePayload),
 		).rejects.toMatchObject({ code: "UNAUTHORIZED" });
 	});
@@ -32,31 +83,65 @@ describe("cvTemplateRouter", () => {
 		const user = await createTestUser();
 		const caller = await createTestCaller(createTestSession(user));
 
+		// @ts-expect-error — test de validation runtime
 		const template = await caller.cvTemplate.create(modernePayload);
 
-		expect(template.name).toBe("Template Moderne");
-		expect(template.structure).toEqual({ sections: ["header", "skills"] });
-		expect(template.defaultStyles).toEqual({ color: "#000000" });
+		expect(template.name).toBe("Template Moderne");		
+		const parsed = createCvTemplateSchema.parse(modernePayload);
+		
+		expect(template.structure).toEqual(parsed.structure);
+		expect(template.defaultStyles).toEqual(parsed.defaultStyles);
+
 	});
 
 	it("create rejects invalid input (Zod)", async () => {
 		const user = await createTestUser();
 		const caller = await createTestCaller(createTestSession(user));
-
+		// name vide
 		await expect(
+			// @ts-expect-error — test de validation runtime
 			caller.cvTemplate.create({
+				...modernePayload,
 				name: "",
-				structure: { sections: [] },
-				defaultStyles: { color: "#000" },
 			}),
 		).rejects.toBeInstanceOf(TRPCError);
-
+		// structure invalide (ancienne forme / champs manquants)
 		await expect(
 			caller.cvTemplate.create({
 				name: "Bad",
 				// @ts-expect-error — test de validation runtime
-				structure: { sections: [1] },
-				defaultStyles: { color: "#000" },
+				structure: { sections: ["header"] },
+				defaultStyles: modernePayload.defaultStyles,
+			}),
+		).rejects.toBeInstanceOf(TRPCError);
+		// defaultStyles invalide
+		await expect(
+			caller.cvTemplate.create({
+				name: "Bad styles",
+				// @ts-expect-error — test de validation runtime
+				structure: modernePayload.structure,
+				// @ts-expect-error — test de validation runtime
+				defaultStyles: { color: "#000000" },
+			}),
+		).rejects.toBeInstanceOf(TRPCError);
+		// module experience incomplet (settings obligatoires)
+		await expect(
+			caller.cvTemplate.create({
+				name: "Bad module",
+				structure: {
+					...minimalStructure,
+					modules: [
+						// @ts-expect-error — test de validation runtime
+						{
+							type: "experience" as const,
+							order: 1,
+							isActive: true,
+							title: "Expérience",
+							// settings manquant → Zod doit rejeter
+						},
+					],
+				},
+				defaultStyles: modernePayload.defaultStyles,
 			}),
 		).rejects.toBeInstanceOf(TRPCError);
 	});
@@ -65,9 +150,11 @@ describe("cvTemplateRouter", () => {
 		const user = await createTestUser();
 		const caller = await createTestCaller(createTestSession(user));
 
+		// @ts-expect-error — test de validation runtime
 		await caller.cvTemplate.create(modernePayload);
 
 		await expect(
+			// @ts-expect-error — test de validation runtime
 			caller.cvTemplate.create(modernePayload),
 		).rejects.toMatchObject({ code: "CONFLICT" });
 	});
@@ -76,6 +163,7 @@ describe("cvTemplateRouter", () => {
 		const user = await createTestUser();
 		const caller = await createTestCaller(createTestSession(user));
 
+		// @ts-expect-error — test de validation runtime
 		const created = await caller.cvTemplate.create(modernePayload);
 		const found = await caller.cvTemplate.findById({ id: created.id });
 
@@ -104,7 +192,9 @@ describe("cvTemplateRouter", () => {
 		const user = await createTestUser();
 		const caller = await createTestCaller(createTestSession(user));
 
+		// @ts-expect-error — test de validation runtime
 		await caller.cvTemplate.create(modernePayload);
+		// @ts-expect-error — test de validation runtime
 		await caller.cvTemplate.create(classiquePayload);
 
 		const list = await caller.cvTemplate.findAll();
