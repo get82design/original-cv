@@ -1,6 +1,5 @@
 import z from "zod";
-
-export const publicationSettingsSchema = z.record(z.string(), z.boolean()).optional();
+import { publicationContentSchema } from "./cvTemplate.schema";
 
 export const createPublicationSchema = z.object({
 	title: z.string().min(1),
@@ -10,7 +9,7 @@ export const createPublicationSchema = z.object({
 	end: z.date().optional(),
 	url: z.string().optional(),
 	order: z.number().min(1),
-	settings: publicationSettingsSchema.optional(),
+	settings: publicationContentSchema.optional(),
 });
 
 export const updatePublicationSchema = createPublicationSchema.partial();

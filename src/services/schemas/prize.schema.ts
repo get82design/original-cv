@@ -1,12 +1,12 @@
 import z from "zod";
-
-export const prizeSettingsSchema = z.record(z.string(), z.boolean()).optional();
+import { prizeContentSchema } from "./cvTemplate.schema";
 
 export const createPrizeSchema = z.object({
 	title: z.string().min(1),
 	domaine: z.string(),
+	icon: z.string().optional(),
 	order: z.number().optional(),
-	settings: prizeSettingsSchema.optional(),
+	settings: prizeContentSchema.optional(),
 });
 export const updatePrizeSchema = createPrizeSchema.partial();
 

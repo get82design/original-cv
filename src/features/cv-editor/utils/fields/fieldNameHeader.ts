@@ -1,7 +1,7 @@
 export enum FieldNameHeader {
     header = 'datas.header',
     title = 'datas.header.title',
-    subTitle = 'datas.header.subTitle',
+    subTitle = 'datas.header.subtitle',
     content = 'datas.header.content',
     nom = 'datas.header.nom',
     prenom = 'datas.header.prenom',

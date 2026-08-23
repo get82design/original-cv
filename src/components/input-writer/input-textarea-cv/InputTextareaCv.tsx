@@ -71,6 +71,7 @@ interface DataInputProps {
                 boxShadow: 'none',
                 color: `var(--${color})`,
                 height: 'auto',
+                fontFamily: "inherit",
               }}
               onKeyDown={(e) => {
                 if (e.key === 'Enter' && !e.shiftKey) {

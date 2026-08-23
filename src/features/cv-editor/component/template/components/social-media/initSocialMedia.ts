@@ -25,6 +25,7 @@ const defaultSettings: SocialMediaContentSettings = {
     withSocialNetwork: true,
     withUsername: true,
     withIcon: true,
+    columns: 1
 }
 
 export function createInitSocialMedia(

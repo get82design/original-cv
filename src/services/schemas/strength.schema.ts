@@ -1,12 +1,12 @@
 import z from "zod";
-
-export const strengthSettingsSchema = z.record(z.string(), z.boolean()).optional();
+import { strengthContentSchema } from "./cvTemplate.schema";
 
 export const createStrengthSchema = z.object({
 	title: z.string().min(1),
 	icon: z.string().optional(),
+	description: z.string().optional(),
 	order: z.number(),
-	settings: strengthSettingsSchema.optional(),
+	settings: strengthContentSchema.optional(),
 });
 
 export const updateStrengthSchema = createStrengthSchema.partial();

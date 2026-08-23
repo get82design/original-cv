@@ -128,6 +128,7 @@ model Profile {
   certifications Certification[]
   formations Formation[]
   competences ProfileCompetenceGroup[]
+  tags ProfileTagGroup[]
 }
 
 enum Level {
@@ -285,6 +286,59 @@ model CvCompetence {
   @@unique([groupId, order])
 }
 
+// === Tags ===
+model Tag {
+  id   String @id @default(cuid())
+  name String @unique // tags globales
+  profileTags ProfileTag[]
+  cvTags      CvTag[]
+}
+
+model ProfileTagGroup {
+  id        String @id @default(cuid())
+  title     String?                     // titre du groupe, optionnel
+  order     Int @default(0)             // pour trier les groupes
+  tags      ProfileTag[]              // tags dans ce groupe
+  profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  profileId String
+
+  @@unique([profileId, order]) // pas de doublon dans un profile
+}
+
+model ProfileTag {
+  id           String @id @default(cuid())
+  tag        Tag  @relation(fields: [tagId], references: [id])
+  tagId      String
+  order        Int @default(0)
+  group        ProfileTagGroup @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  groupId      String
+
+  @@unique([groupId, tagId]) // pas de doublon dans un groupe
+  @@unique([groupId, order])
+}
+
+model CvTagGroup {
+  id    String @id @default(cuid())
+  title String?
+  order  Int @default(0)
+  settings Json?
+  tags CvTag[]
+  cv    CV @relation(fields: [cvId], references: [id], onDelete: Cascade)
+  cvId  String
+  @@unique([cvId, order]) // pas de doublon dans un cv
+}
+
+model CvTag {
+  id      String @id @default(cuid())
+  tag   Tag  @relation(fields: [tagId], references: [id])
+  tagId String
+  order   Int @default(0)
+  group   CvTagGroup @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  groupId String
+  @@unique([groupId, tagId])
+  @@unique([groupId, order])
+}
+
 // === Expériences professionnelles ===
 model Experience {
   id          String   @id @default(cuid())
@@ -428,6 +482,7 @@ model Strength {
   id          String @id @default(cuid())
   title       String
   icon        String?
+  description String?
   
   order       Int @default(0)
   profile     Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
@@ -442,6 +497,7 @@ model CvStrength {
   id          String @id @default(cuid())
   title       String
   icon        String?
+  description String?
   settings    Json?
 
   order       Int @default(0)
@@ -894,6 +950,7 @@ model CV {
   formations CvFormation[]
   description CvDescription?
   competences CvCompetenceGroup[]
+  tagGroups CvTagGroup[]
 
   status CVStatus @default(DRAFT) // statut du CV, brouillon, publié, archivé
   publishedAt DateTime?
@@ -959,6 +1016,7 @@ enum CVModuleItemType {
   cvCompetenceGroup
   cvDescription
   cvPhilosophy
+  cvTagGroup
 }
 
 // === Module d'un CV ===
@@ -966,6 +1024,7 @@ model CVModule {
   id       String @id @default(cuid())
   title    String?          // titre du module, optionnel
   type     CVModuleType     // type du module : "skill", "experience", "education"
+  column   Int @default(0)
   order    Int @default(0)  // position dans le CV
   cvId     String
   cv       CV               @relation(fields: [cvId], references: [id], onDelete: Cascade)
@@ -974,7 +1033,7 @@ model CVModule {
   items    CVModuleItem[]   // items liés au module
   settings Json?            // personnalisations spécifiques : fontSize, color, align, show, etc.
 
-  @@unique([cvId, order]) // pas de doublon dans un cv
+  @@unique([cvId, column, order]) // pas de doublon dans un cv
   @@unique([cvId, type]) // 1 module de chaque type par CV
   @@index([cvId])
 }
@@ -997,5 +1056,6 @@ enum CVModuleType {
   description
   philosophy
   strength   
-  socialMedia  
+  socialMedia 
+  tag
 }

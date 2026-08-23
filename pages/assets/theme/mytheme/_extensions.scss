@@ -1,1 +1,9 @@
 /* Customizations to the designer theme should be defined here */
+.general-photo {
+    .p-togglebutton {
+        height: 35px;
+        .p-togglebutton-input {
+            font-size: .75rem;
+        }
+    }
+}

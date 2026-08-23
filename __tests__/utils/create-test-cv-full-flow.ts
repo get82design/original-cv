@@ -92,6 +92,23 @@ export async function addCompetenceToGroup(
 	return prismaTest.cvCompetence.create({ data: { competenceId, groupId } });
 }
 
+// === TAGS ===
+export async function createTagGroup(
+	cvId: string,
+	title: string,
+	order: number,
+) {
+	return prismaTest.cvTagGroup.create({ data: { cvId, title, order } });
+}
+
+export async function createTag(tagName: string) {
+	return prismaTest.tag.create({ data: { name: tagName } });
+}
+
+export async function addTagToGroup(tagId: string, groupId: string) {
+	return prismaTest.cvTag.create({ data: { tagId, groupId } });
+}
+
 // === HEADER ===
 export async function createHeader(
 	cvId: string,
@@ -472,7 +489,13 @@ export async function buildCvComplete(
 		dateEnd,
 		"Mon Url",
 	);
-	await createSocialMedia(cvId, "Mon Social Media", "Mon Username", "Mon Icon", 1);
+	await createSocialMedia(
+		cvId,
+		"Mon Social Media",
+		"Mon Username",
+		"Mon Icon",
+		1,
+	);
 	await createStrength(cvId, "Mon Strength", 1, "Mon Icon");
 	const volunteering = await createVolunteering(
 		cvId,

@@ -1,7 +1,9 @@
 import { prisma } from "../lib/prisma";
 import users from "./seedDatas/seed.users.json";
 import colors from "./seedDatas/seed.colors.json";
-import { seedTemplates } from "./seedDatas/seed.templates";
+// import { seedTemplates } from "./seedDatas/seed.templates";
+import { seedTemplates } from "./seedDatas/cv-template";
+import { buildCvClaraDelorme } from "./seedDatas/seed.cvs";
 import "dotenv/config";
 import { hash } from "bcrypt";
 
@@ -18,6 +20,9 @@ async function main() {
 	console.info("^^colors", colors);
 	const templates = await buildTemplates();
 	console.info("^^templates", templates);
+
+	await buildCvClaraDelorme(usersResult[0]!.id, templates[0]!.id);
+	console.info("^^cv Clara Delorme créé");
 
 	// === Users ===
 	//   const user = await prisma.user.upsert({

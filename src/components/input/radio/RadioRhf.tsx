@@ -19,8 +19,12 @@ interface FormRadioProps extends RadioButtonProps {
               inputId={field.name}
               {...field}
               className={`${props.className}`}
-              checked={field.value === props.value}
               {...props}
+              onChange={(e) => {
+                props.onChange?.(e);
+                if (!props.onChange) field.onChange(e.value);
+              }}
+              checked={field.value === props.value}
             />
             {label && <label htmlFor={name}>{label}</label>}
           </div>

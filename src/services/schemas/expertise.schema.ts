@@ -1,13 +1,12 @@
 import z from "zod";
-import { Level } from "../../../generated/prisma/enums";
-
-export const expertiseSettingsSchema = z.record(z.string(), z.boolean()).optional();
+import { LevelSchema } from "./enums";
+import { expertiseContentSchema } from "./cvTemplate.schema";
 
 export const createExpertiseSchema = z.object({
 	title: z.string().min(1),
-	level: z.nativeEnum(Level),
+	level: LevelSchema,
 	order: z.number().optional(),
-	settings: expertiseSettingsSchema.optional(),
+	settings: expertiseContentSchema.optional(),
 });
 
 export const updateExpertiseSchema = createExpertiseSchema.partial();

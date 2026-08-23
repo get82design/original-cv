@@ -72,6 +72,22 @@ describe("CV FULL FLOW", () => {
 		});
 
 		// ========================
+		// TAGS
+		// ========================
+		const tag = await prismaTest.tag.create({
+			data: { name: "JavaScript" },
+		});
+		const tagGroup = await prismaTest.cvTagGroup.create({
+			data: { cvId: cv.id, title: "Tech", order: 1 },
+		});
+		await prismaTest.cvTag.create({
+			data: {
+				groupId: tagGroup.id,
+				tagId: tag.id,
+			},
+		});
+
+		// ========================
 		// EXPERIENCE
 		// ========================
 		const experience = await prismaTest.cvExperience.create({

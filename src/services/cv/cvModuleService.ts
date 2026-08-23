@@ -40,8 +40,9 @@ export class CvModuleService {
 
 		const orderModule = await prisma.cVModule.findUnique({
 			where: {
-				cvId_order: {
+				cvId_column_order: {
 					cvId,
+					column: data.column,
 					order: data.order,
 				},
 			},
@@ -61,6 +62,7 @@ export class CvModuleService {
 			data: {
 				cvId,
 				type: data.type,
+				column: data.column,
 				order: data.order,
 				title: data.title ?? "",
 				settings: data.settings ?? {},
@@ -74,9 +76,7 @@ export class CvModuleService {
 			where: {
 				cvId,
 			},
-			orderBy: {
-				order: "asc",
-			},
+			orderBy: [{ column: "asc" }, { order: "asc" }],
 			include: {
 				items: true,
 			},
@@ -147,6 +147,7 @@ export class CvModuleService {
 			const modules = await tx.cVModule.findMany({
 				where: {
 					cvId: module.cvId,
+					column: module.column,
 				},
 				orderBy: {
 					order: "asc",
@@ -206,6 +207,7 @@ export class CvModuleService {
 			const modules = await tx.cVModule.findMany({
 				where: {
 					cvId: module.cvId,
+					column: module.column,
 				},
 				orderBy: {
 					order: "asc",

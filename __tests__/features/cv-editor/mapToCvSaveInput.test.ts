@@ -32,6 +32,7 @@ function emptyLists() {
 		educations: [],
 		skillGroups: [],
 		competences: [],
+		tagGroups: [],
 		modules: [],
 	};
 }
@@ -111,7 +112,6 @@ describe("mapCvToSaveInput", () => {
 					cvId: "cv-1",
 					citation: "Cite",
 					author: "Auteur",
-					settings: { showAuthor: true },
 				},
 			}),
 		);
@@ -132,22 +132,22 @@ describe("mapCvToSaveInput", () => {
 			content: { description: "Bio" },
 			settings: {
 				title: {
-				  sizeModel: "18px",
-				  weightModel: 600,
-				  colorSelect: "black",
-				  sizeSelect: "md",
-				  weightSelect: "md",
-				  withPrimaryColor: false,
-				  textAlign: "left",
+					sizeModel: "18px",
+					weightModel: 600,
+					colorSelect: "black",
+					sizeSelect: "md",
+					weightSelect: "md",
+					withPrimaryColor: false,
+					textAlign: "left",
 				},
 				content: {
-				  sizeModel: "18px",
-				  weightModel: 600,
-				  colorSelect: "black",
-				  sizeSelect: "md",
-				  weightSelect: "md",
-				  withPrimaryColor: false,
-				  textAlign: "left",
+					sizeModel: "18px",
+					weightModel: 600,
+					colorSelect: "black",
+					sizeSelect: "md",
+					weightSelect: "md",
+					withPrimaryColor: false,
+					textAlign: "left",
 				},
 			},
 		});
@@ -156,7 +156,38 @@ describe("mapCvToSaveInput", () => {
 			content: {
 				citation: "Cite",
 				author: "Auteur",
-				settings: { showAuthor: true },
+			},
+			settings: {
+				title: {
+					sizeModel: "18px",
+					weightModel: 600,
+					colorSelect: "black",
+					sizeSelect: "md",
+					weightSelect: "md",
+					withPrimaryColor: false,
+					textAlign: "left",
+				},
+				content: {
+					citation: {
+						sizeModel: "18px",
+						weightModel: 600,
+						colorSelect: "black",
+						sizeSelect: "md",
+						weightSelect: "md",
+						withPrimaryColor: false,
+						textAlign: "left",
+					},
+					author: {
+						sizeModel: "18px",
+						weightModel: 600,
+						colorSelect: "black",
+						sizeSelect: "md",
+						weightSelect: "md",
+						withPrimaryColor: false,
+						textAlign: "left",
+					},
+					withAuthor: true,
+				},
 			},
 		});
 	});
@@ -245,7 +276,7 @@ describe("mapCvToSaveInput", () => {
 						settings: null,
 						cvMissions: [
 							{ id: "pm1", cvProjectId: "pr1", content: "ship", order: 1 },
-                            { id: "pm2", cvProjectId: "pr1", content: "ship", order: 2 },
+							{ id: "pm2", cvProjectId: "pr1", content: "ship", order: 2 },
 						],
 					},
 				],
@@ -263,7 +294,7 @@ describe("mapCvToSaveInput", () => {
 						settings: null,
 						cvMissions: [
 							{ id: "vm1", cvVolunteeringId: "v1", content: "help", order: 1 },
-                            { id: "vm2", cvVolunteeringId: "v1", content: "help", order: 2 },
+							{ id: "vm2", cvVolunteeringId: "v1", content: "help", order: 2 },
 						],
 					},
 					{
@@ -279,7 +310,7 @@ describe("mapCvToSaveInput", () => {
 						settings: null,
 						cvMissions: [
 							{ id: "vm1", cvVolunteeringId: "v1", content: "help", order: 1 },
-                            { id: "vm2", cvVolunteeringId: "v1", content: "help", order: 2 },
+							{ id: "vm2", cvVolunteeringId: "v1", content: "help", order: 2 },
 						],
 					},
 				],
@@ -322,19 +353,19 @@ describe("mapCvToSaveInput", () => {
 						organismeFormation: "OF",
 						status: CvTimelineStatus.COMPLETED,
 						order: 1,
-						settings: { x: true },
+						settings: null,
 					},
-                    {
-                        id: "f2",
-                        cvId: "cv-1",
-                        title: "Form",
-                        start,
-                        end,
-                        organismeFormation: "OF",
-                        status: CvTimelineStatus.COMPLETED,
-                        order: 2,
-                        settings: { x: true },
-                    },
+					{
+						id: "f2",
+						cvId: "cv-1",
+						title: "Form",
+						start,
+						end,
+						organismeFormation: "OF",
+						status: CvTimelineStatus.COMPLETED,
+						order: 2,
+						settings: null,
+					},
 				],
 				certifications: [
 					{
@@ -345,14 +376,14 @@ describe("mapCvToSaveInput", () => {
 						order: 1,
 						settings: null,
 					},
-                    {
-                        id: "c2",
-                        cvId: "cv-1",
-                        title: "Cert",
-                        organismeCertification: null,
-                        order: 2,
-                        settings: null,
-                    },
+					{
+						id: "c2",
+						cvId: "cv-1",
+						title: "Cert",
+						organismeCertification: null,
+						order: 2,
+						settings: null,
+					},
 				],
 				prizes: [
 					{
@@ -363,14 +394,14 @@ describe("mapCvToSaveInput", () => {
 						order: 1,
 						settings: null,
 					},
-                    {
-                        id: "z2",
-                        cvId: "cv-1",
-                        title: "Prize",
-                        domaine: null,
-                        order: 2,
-                        settings: null,
-                    },
+					{
+						id: "z2",
+						cvId: "cv-1",
+						title: "Prize",
+						domaine: null,
+						order: 2,
+						settings: null,
+					},
 				],
 				expertises: [
 					{
@@ -381,14 +412,14 @@ describe("mapCvToSaveInput", () => {
 						order: 1,
 						settings: null,
 					},
-                    {
-                        id: "x2",
-                        cvId: "cv-1",
-                        title: "Exp",
-                        level: Level.Senior,
-                        order: 2,
-                        settings: null,
-                    },
+					{
+						id: "x2",
+						cvId: "cv-1",
+						title: "Exp",
+						level: Level.Senior,
+						order: 2,
+						settings: null,
+					},
 				],
 				socialMedias: [
 					{
@@ -399,16 +430,16 @@ describe("mapCvToSaveInput", () => {
 						icon: "🌐",
 						order: 1,
 						settings: null,
-					},   
-                    {
-                        id: "sm2",
-                        cvId: "cv-1",
-                        socialNetwork: "LinkedIn",
-                        username: "john",
-                        icon: "🌐",
-                        order: 2,
-                        settings: null,
-                    },
+					},
+					{
+						id: "sm2",
+						cvId: "cv-1",
+						socialNetwork: "LinkedIn",
+						username: "john",
+						icon: "🌐",
+						order: 2,
+						settings: null,
+					},
 				],
 				passions: [
 					{
@@ -419,14 +450,14 @@ describe("mapCvToSaveInput", () => {
 						order: 1,
 						settings: null,
 					},
-                    {
-                        id: "pa2",
-                        cvId: "cv-1",
-                        title: "Ski",
-                        icon: "ski",
-                        order: 2,
-                        settings: null,
-                    },
+					{
+						id: "pa2",
+						cvId: "cv-1",
+						title: "Ski",
+						icon: "ski",
+						order: 2,
+						settings: null,
+					},
 				],
 				languages: [
 					{
@@ -437,14 +468,14 @@ describe("mapCvToSaveInput", () => {
 						order: 1,
 						settings: null,
 					},
-                    {
-                        id: "l2",
-                        cvId: "cv-1",
-                        name: "EN",
-                        level: Level.Expert,
-                        order: 2,
-                        settings: null,
-                    },
+					{
+						id: "l2",
+						cvId: "cv-1",
+						name: "EN",
+						level: Level.Expert,
+						order: 2,
+						settings: null,
+					},
 				],
 				publications: [
 					{
@@ -459,18 +490,18 @@ describe("mapCvToSaveInput", () => {
 						order: 1,
 						settings: null,
 					},
-                    {
-                        id: "pub2",
-                        cvId: "cv-1",
-                        title: "Paper",
-                        start,
-                        end: null,
-                        journalName: "Nature",
-                        description: null,
-                        url: "https://x",
-                        order: 2,
-                        settings: null,
-                    },
+					{
+						id: "pub2",
+						cvId: "cv-1",
+						title: "Paper",
+						start,
+						end: null,
+						journalName: "Nature",
+						description: null,
+						url: "https://x",
+						order: 2,
+						settings: null,
+					},
 				],
 				strengths: [
 					{
@@ -481,14 +512,14 @@ describe("mapCvToSaveInput", () => {
 						order: 1,
 						settings: null,
 					},
-                    {
-                        id: "st2",
-                        cvId: "cv-1",
-                        title: "Focus",
-                        icon: null,
-                        order: 2,
-                        settings: null,
-                    },
+					{
+						id: "st2",
+						cvId: "cv-1",
+						title: "Focus",
+						icon: null,
+						order: 2,
+						settings: null,
+					},
 				],
 				achievements: [
 					{
@@ -499,14 +530,14 @@ describe("mapCvToSaveInput", () => {
 						order: 1,
 						settings: null,
 					},
-                    {
-                        id: "a2",
-                        cvId: "cv-1",
-                        title: "Ship",
-                        description: null,
-                        order: 2,
-                        settings: null,
-                    },
+					{
+						id: "a2",
+						cvId: "cv-1",
+						title: "Ship",
+						description: null,
+						order: 2,
+						settings: null,
+					},
 				],
 				educations: [
 					{
@@ -522,106 +553,146 @@ describe("mapCvToSaveInput", () => {
 						order: 1,
 						settings: null,
 					},
-                    {
-                        id: "ed2",
-                        cvId: "cv-1",
-                        title: null,
-                        school: "Uni",
-                        degree: "Master",
-                        city: null,
-                        start,
-                        end: null,
-                        obtained: CvTimelineStatus.COMPLETED,
-                        order: 2,
-                        settings: null,
-                    },
+					{
+						id: "ed2",
+						cvId: "cv-1",
+						title: null,
+						school: "Uni",
+						degree: "Master",
+						city: null,
+						start,
+						end: null,
+						obtained: CvTimelineStatus.COMPLETED,
+						order: 2,
+						settings: null,
+					},
 				],
 				skillGroups: [
-                    {
-                      id: "sg2",
-                      cvId: "cv-1",
-                      title: "Soft skills",
-                      order: 2,
-                      skills: [
-                        {
-                          id: "s2",
-                          groupId: "sg2",
-                          skillId: "skill-2",
-                          level: Level.Junior,
-                          order: 2,
-                          skill: { id: "skill-2", name: "Vue" },
-                        },
-                        {
-                          id: "s1",
-                          groupId: "sg2",
-                          skillId: "skill-1",
-                          level: Level.Intermédiaire,
-                          order: 1,
-                          skill: { id: "skill-1", name: "React" },
-                        },
-                      ],
-                    },
-                    {
-                      id: "sg1",
-                      cvId: "cv-1",
-                      title: "Hard",
-                      order: 1,
-                      skills: [
-                        {
-                          id: "s0",
-                          groupId: "sg1",
-                          skillId: "skill-0",
-                          level: Level.Senior,
-                          order: 1,
-                          skill: { id: "skill-0", name: "TS" },
-                        },
-                      ],
-                    },
-                  ],
-                  competences: [
-                    {
-                      id: "cg2",
-                      cvId: "cv-1",
-                      title: "B",
-                      order: 2,
-                      cvCompetences: [
-                        {
-                          id: "cc2",
-                          groupId: "cg2",
-                          competenceId: "comp-2",
-                          order: 2,
-                          competence: { id: "comp-2", name: "B" },
-                        },
-                        {
-                          id: "cc1",
-                          groupId: "cg2",
-                          competenceId: "comp-1",
-                          order: 1,
-                          competence: { id: "comp-1", name: "A" },
-                        },
-                      ],
-                    },
-                    {
-                      id: "cg1",
-                      cvId: "cv-1",
-                      title: "Soft",
-                      order: 1,
-                      cvCompetences: [
-                        {
-                          id: "cc0",
-                          groupId: "cg1",
-                          competenceId: "comp-0",
-                          order: 1,
-                          competence: { id: "comp-0", name: "Com" },
-                        },
-                      ],
-                    },
-                ],
+					{
+						id: "sg2",
+						cvId: "cv-1",
+						title: "Soft skills",
+						order: 2,
+						skills: [
+							{
+								id: "s2",
+								groupId: "sg2",
+								skillId: "skill-2",
+								level: Level.Junior,
+								order: 2,
+								skill: { id: "skill-2", name: "Vue" },
+							},
+							{
+								id: "s1",
+								groupId: "sg2",
+								skillId: "skill-1",
+								level: Level.Intermédiaire,
+								order: 1,
+								skill: { id: "skill-1", name: "React" },
+							},
+						],
+					},
+					{
+						id: "sg1",
+						cvId: "cv-1",
+						title: "Hard",
+						order: 1,
+						skills: [
+							{
+								id: "s0",
+								groupId: "sg1",
+								skillId: "skill-0",
+								level: Level.Senior,
+								order: 1,
+								skill: { id: "skill-0", name: "TS" },
+							},
+						],
+					},
+				],
+				competences: [
+					{
+						id: "cg2",
+						cvId: "cv-1",
+						title: "B",
+						order: 2,
+						cvCompetences: [
+							{
+								id: "cc2",
+								groupId: "cg2",
+								competenceId: "comp-2",
+								order: 2,
+								competence: { id: "comp-2", name: "B" },
+							},
+							{
+								id: "cc1",
+								groupId: "cg2",
+								competenceId: "comp-1",
+								order: 1,
+								competence: { id: "comp-1", name: "A" },
+							},
+						],
+					},
+					{
+						id: "cg1",
+						cvId: "cv-1",
+						title: "Soft",
+						order: 1,
+						cvCompetences: [
+							{
+								id: "cc0",
+								groupId: "cg1",
+								competenceId: "comp-0",
+								order: 1,
+								competence: { id: "comp-0", name: "Com" },
+							},
+						],
+					},
+				],
+				tagGroups: [
+					{
+						id: "tg2",
+						cvId: "cv-1",
+						title: "Tags",
+						order: 2,
+						tags: [
+							{
+								id: "ct2",
+								groupId: "tg2",
+								tagId: "tag-2",
+								order: 2,
+								tag: { id: "tag-2", name: "B" },
+							},
+							{
+								id: "ct1",
+								groupId: "tg2",
+								tagId: "tag-1",
+								order: 1,
+								tag: { id: "tag-1", name: "A" },
+							},
+						],
+					},
+					{
+						id: "tg1",
+						cvId: "cv-1",
+						title: "Tags",
+						order: 1,
+						tags: [
+							{
+								id: "cc0",
+								groupId: "cg1",
+								tagId: "tag-0",
+								order: 1,
+								tag: { id: "tag-0", name: "Com" },
+							},
+						],
+					},
+				],
 				modules: [
 					{
 						id: "m2",
 						cvId: "cv-1",
 						type: CVModuleType.experience,
+						column: 0,
 						order: 2,
 						isActive: true,
 						title: null,
@@ -631,6 +702,7 @@ describe("mapCvToSaveInput", () => {
 						id: "m1",
 						cvId: "cv-1",
 						type: CVModuleType.description,
+						column: 0,
 						order: 1,
 						isActive: false,
 						title: "À propos",
@@ -640,13 +712,15 @@ describe("mapCvToSaveInput", () => {
 			}),
 		);
 
-		expect(input.datas.certification?.content[0]?.content.organismeCertification).toBe(
-			"",
-		);
+		expect(
+			input.datas.certification?.content[0]?.content.organismeCertification,
+		).toBe("");
 		expect(input.datas.prize?.content[0]?.content.domaine).toBe("");
 		expect(input.datas.education?.content[0]?.content.title).toBe("");
 		expect(input.datas.strength?.content[0]?.content.icon).toBeUndefined();
-		expect(input.datas.skillGroup?.content[0]?.content.skills[0]?.content).toEqual({
+		expect(
+			input.datas.skillGroup?.content[0]?.content.skills[0]?.content,
+		).toEqual({
 			name: "TS",
 			skillId: "skill-0",
 			level: Level.Senior,
@@ -654,6 +728,9 @@ describe("mapCvToSaveInput", () => {
 		expect(
 			input.datas.competenceGroup?.content[0]?.content.competences[0]?.content,
 		).toEqual({ competenceId: "comp-0" });
+		expect(input.datas.tagGroup?.content[0]?.content.tags[0]?.content).toEqual({
+			tagId: "tag-0",
+		});
 		expect(input.modules.map((m) => m.id)).toEqual(["m1", "m2"]);
 		expect(input.modules[0]).toMatchObject({
 			title: "À propos",
@@ -665,4 +742,3 @@ describe("mapCvToSaveInput", () => {
 		expect(cvSaveSchema.safeParse(input).success).toBe(true);
 	});
 });
-

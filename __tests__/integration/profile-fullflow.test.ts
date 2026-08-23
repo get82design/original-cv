@@ -32,6 +32,7 @@ describe("Profile Fullflow Integration", () => {
 			expect(profile.certifications).toBeDefined();
 			expect(profile.formations).toBeDefined();
 			expect(profile.competences).toBeDefined();
+			expect(profile.tags).toBeDefined();
 			// create achievement
 			await utils.createAchievement(
 				profile.id,
@@ -80,12 +81,12 @@ describe("Profile Fullflow Integration", () => {
 			expect(upProfileCertification?.certifications?.[0]?.order).toBe(1);
 			// create competence
 			const competence = await utils.createCompetence("Competence 1");
-			const group = await utils.createProfileCompetenceGroup(
+			const groupCompetence = await utils.createProfileCompetenceGroup(
 				profile.id,
 				"Competence Group 1",
 				1,
 			);
-			await utils.createProfileCompetence(competence.id, group.id);
+			await utils.createProfileCompetence(competence.id, groupCompetence.id);
 			const upProfileCompetence = await prismaTest.profile.findUnique({
 				where: { id: profile.id },
 				include: {
@@ -104,6 +105,27 @@ describe("Profile Fullflow Integration", () => {
 				upProfileCompetence?.competences?.[0]?.competences?.[0]?.competence
 					?.name,
 			).toBe("Competence 1");
+			// create tag
+			const tag = await utils.createTag("Tag 1");
+			const groupTag = await utils.createProfileTagGroup(
+				profile.id,
+				"Tag Group 1",
+				1,
+			);
+			await utils.createProfileTag(tag.id, groupTag.id);
+			const upProfileTag = await prismaTest.profile.findUnique({
+				where: { id: profile.id },
+				include: {
+					tags: {
+						include: { tags: { include: { tag: true } } },
+					},
+				},
+			});
+			expect(upProfileTag?.tags).toBeDefined();
+			expect(upProfileTag?.tags?.length).toBe(1);
+			expect(upProfileTag?.tags?.[0]?.title).toBe("Tag Group 1");
+			expect(upProfileTag?.tags?.[0]?.order).toBe(1);
+			expect(upProfileTag?.tags?.[0]?.tags?.[0]?.tag?.name).toBe("Tag 1");
 			// create description
 			await utils.createDescription(profile.id, "Description 1");
 			const upProfileDescription = await prismaTest.profile.findUnique({
@@ -428,12 +450,19 @@ describe("Profile Fullflow Integration", () => {
 				"Organisme 1",
 			);
 			const competence = await utils.createCompetence("Competence 1");
-			const group = await utils.createProfileCompetenceGroup(
+			const groupCompetence = await utils.createProfileCompetenceGroup(
 				profile.id,
 				"Competence Group 1",
 				1,
 			);
-			await utils.createProfileCompetence(competence.id, group.id);
+			await utils.createProfileCompetence(competence.id, groupCompetence.id);
+			const tag = await utils.createTag("Tag 1");
+			const groupTag = await utils.createProfileTagGroup(
+				profile.id,
+				"Tag Group 1",
+				1,
+			);
+			await utils.createProfileTag(tag.id, groupTag.id);
 			await utils.createDescription(profile.id, "Description 1");
 			const start = new Date();
 			const end = new Date();
@@ -534,6 +563,11 @@ describe("Profile Fullflow Integration", () => {
 				include: { competences: true },
 			});
 			expect(upProfileCompetence?.competences).toBeUndefined();
+			const upProfileTag = await prismaTest.profile.findUnique({
+				where: { id: profile.id },
+				include: { tags: true },
+			});
+			expect(upProfileTag?.tags).toBeUndefined();
 			const upProfileDescription = await prismaTest.profile.findUnique({
 				where: { id: profile.id },
 				include: { description: true },

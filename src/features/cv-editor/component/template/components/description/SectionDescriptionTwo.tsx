@@ -47,7 +47,7 @@ export const SectionDescriptionTwo = () => {
               <TextareaCv
                 name={FieldNameDescription.description}
                 onClick={() => {
-                  setSelectModifInput(FieldNameDescription.content)
+                  setSelectModifInput(FieldNameDescription.settingsContent)
                   setSelectInputForm('')
                 }}
                 placeholder="Laissez une petite description de vous ici"

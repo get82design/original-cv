@@ -1,6 +1,6 @@
 import z from "zod";
-import { CvTimelineStatus } from "../../../generated/prisma/enums";
 import { projectContentSchema } from "./cvTemplate.schema";
+import { CvTimelineStatusSchema } from "./enums";
 
 export const createMissionProjectSchema = z.object({
 	content: z.string().min(1),
@@ -16,7 +16,7 @@ export const createProjectSchema = z.object({
 	technology: z.string().optional(),
 	order: z.number().int().min(1),
 	missions: z.array(createMissionProjectSchema).optional(),
-	status: z.nativeEnum(CvTimelineStatus).optional(),
+	status: CvTimelineStatusSchema.optional(),
 	settings: projectContentSchema.optional(),
 });
 

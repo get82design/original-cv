@@ -19,6 +19,7 @@ describe("CvModuleService.create", () => {
 
 		const module = await cvModuleService.create(cv.id, {
 			type: CVModuleType.description,
+			column: 0,
 			order: 1,
 			settings: {},
 			isActive: true,
@@ -33,6 +34,7 @@ describe("CvModuleService.create", () => {
 		await expect(
 			cvModuleService.create("unknown-cv", {
 				type: CVModuleType.description,
+				column: 0,
 				order: 1,
 				settings: {},
 				isActive: true,
@@ -46,6 +48,7 @@ describe("CvModuleService.create", () => {
 		const cv = await createCV(user.id, template.id);
 		await cvModuleService.create(cv.id, {
 			type: CVModuleType.description,
+			column: 0,
 			order: 1,
 			settings: {},
 			isActive: true,
@@ -53,6 +56,7 @@ describe("CvModuleService.create", () => {
 		await expect(
 			cvModuleService.create(cv.id, {
 				type: CVModuleType.description,
+				column: 0,
 				order: 1,
 				settings: {},
 				isActive: true,
@@ -66,12 +70,14 @@ describe("CvModuleService.create", () => {
 		const cv = await createCV(user.id, template.id);
 		await cvModuleService.create(cv.id, {
 			type: CVModuleType.description,
+			column: 0,
 			order: 1,
 			settings: {},
 			isActive: true,
 		});
 		const module2 = await cvModuleService.create(cv.id, {
 			type: CVModuleType.philosophy,
+			column: 0,
 			order: 2,
 			settings: {},
 			isActive: true,
@@ -86,46 +92,50 @@ describe("CvModuleService.create", () => {
 
 		// @ts-expect-error
 		const module = await cvModuleService.create(cv.id, {
-		  type: CVModuleType.description,
-		  order: 1,
-		  settings: {},
-		  // pas d'isActive → Prisma default / zod
+			type: CVModuleType.description,
+			column: 0,
+			order: 1,
+			settings: {},
+			// pas d'isActive → Prisma default / zod
 		});
 		expect(module.isActive).toBe(true);
-	  });
+	});
 
-	  it("creates an inactive module (itemsNoUse)", async () => {
+	it("creates an inactive module (itemsNoUse)", async () => {
 		const user = await createTestUser();
 		const template = await createTestTemplate();
 		const cv = await createCV(user.id, template.id);
 		const module = await cvModuleService.create(cv.id, {
-		  type: CVModuleType.experience,
-		  order: 1,
-		  settings: {},
-		  isActive: false,
+			type: CVModuleType.experience,
+			column: 0,
+			order: 1,
+			settings: {},
+			isActive: false,
 		});
 		expect(module.isActive).toBe(false);
-	  });
+	});
 
-	  it("throws if type already exists on CV", async () => {
+	it("throws if type already exists on CV", async () => {
 		const user = await createTestUser();
 		const template = await createTestTemplate();
 		const cv = await createCV(user.id, template.id);
 		await cvModuleService.create(cv.id, {
-		  type: CVModuleType.description,
-		  order: 1,
-		  settings: {},
-		  isActive: true,
-		});
-		await expect(
-		  cvModuleService.create(cv.id, {
 			type: CVModuleType.description,
-			order: 2,
+			column: 0,
+			order: 1,
 			settings: {},
 			isActive: true,
-		  }),
+		});
+		await expect(
+			cvModuleService.create(cv.id, {
+				type: CVModuleType.description,
+				column: 0,
+				order: 2,
+				settings: {},
+				isActive: true,
+			}),
 		).rejects.toThrow(ConflictError);
-	  });
+	});
 });
 
 describe("CvModuleService.findAllByCvId", () => {
@@ -135,6 +145,7 @@ describe("CvModuleService.findAllByCvId", () => {
 		const cv = await createCV(user.id, template.id);
 		await cvModuleService.create(cv.id, {
 			type: CVModuleType.description,
+			column: 0,
 			order: 1,
 			settings: {},
 			isActive: true,
@@ -163,6 +174,7 @@ describe("CvModuleService.findAllByCvId", () => {
 		await cvModuleService.create(cv.id, {
 			type: CVModuleType.description,
 			title: "Description",
+			column: 0,
 			order: 1,
 			settings: {},
 			isActive: true,
@@ -170,6 +182,7 @@ describe("CvModuleService.findAllByCvId", () => {
 		await cvModuleService.create(cv2.id, {
 			type: CVModuleType.description,
 			title: "Description 2",
+			column: 0,
 			order: 1,
 			settings: {},
 			isActive: true,
@@ -195,6 +208,7 @@ describe("CvModuleService.update", () => {
 		const module = await cvModuleService.create(cv.id, {
 			type: CVModuleType.description,
 			title: "Description",
+			column: 0,
 			order: 1,
 			settings: {
 				title: "Description",
@@ -226,6 +240,7 @@ describe("CvModuleService.update", () => {
 		const module = await cvModuleService.create(cv.id, {
 			type: CVModuleType.description,
 			title: "Description",
+			column: 0,
 			order: 1,
 			settings: {},
 			isActive: true,
@@ -233,6 +248,7 @@ describe("CvModuleService.update", () => {
 		const module2 = await cvModuleService.create(cv.id, {
 			type: CVModuleType.philosophy,
 			title: "Philosophy",
+			column: 0,
 			order: 2,
 			settings: {},
 			isActive: true,
@@ -253,13 +269,16 @@ describe("CvModuleService.update", () => {
 		const module = await cvModuleService.create(cv.id, {
 			type: CVModuleType.description,
 			title: "Description",
+			column: 0,
 			order: 1,
 			settings: {},
 			isActive: true,
 		});
-		const updated = await cvModuleService.update(module.id, { isActive: false });
+		const updated = await cvModuleService.update(module.id, {
+			isActive: false,
+		});
 		expect(updated.isActive).toBe(false);
-	  });
+	});
 });
 
 describe("CvModuleService.move", () => {
@@ -270,6 +289,7 @@ describe("CvModuleService.move", () => {
 		const module = await cvModuleService.create(cv.id, {
 			type: CVModuleType.description,
 			title: "Description",
+			column: 0,
 			order: 1,
 			settings: {},
 			isActive: true,
@@ -277,6 +297,7 @@ describe("CvModuleService.move", () => {
 		const module2 = await cvModuleService.create(cv.id, {
 			type: CVModuleType.philosophy,
 			title: "Philosophy",
+			column: 0,
 			order: 2,
 			settings: {},
 			isActive: true,
@@ -300,6 +321,7 @@ describe("CvModuleService.move", () => {
 		const module = await cvModuleService.create(cv.id, {
 			type: CVModuleType.description,
 			title: "Description",
+			column: 0,
 			order: 1,
 			settings: {},
 			isActive: true,
@@ -318,6 +340,7 @@ describe("CvModuleService.move", () => {
 				const module = await cvModuleService.create(cv.id, {
 					type: CVModuleType.description,
 					title: "Description",
+					column: 0,
 					order: 1,
 					settings: {},
 					isActive: true,
@@ -337,6 +360,7 @@ describe("CvModuleService.delete", () => {
 		const module = await cvModuleService.create(cv.id, {
 			type: CVModuleType.description,
 			title: "Description",
+			column: 0,
 			order: 1,
 			settings: {},
 			isActive: true,
@@ -359,6 +383,7 @@ describe("CvModuleService.delete", () => {
 		const module = await cvModuleService.create(cv.id, {
 			type: CVModuleType.description,
 			title: "Description",
+			column: 0,
 			order: 1,
 			settings: {},
 			isActive: true,
@@ -366,6 +391,7 @@ describe("CvModuleService.delete", () => {
 		const module2 = await cvModuleService.create(cv.id, {
 			type: CVModuleType.philosophy,
 			title: "Philosophy",
+			column: 0,
 			order: 2,
 			settings: {},
 			isActive: true,
@@ -383,6 +409,7 @@ describe("CvModuleService.delete", () => {
 		const module = await cvModuleService.create(cv.id, {
 			type: CVModuleType.description,
 			title: "Description",
+			column: 0,
 			order: 1,
 			settings: {},
 			isActive: true,

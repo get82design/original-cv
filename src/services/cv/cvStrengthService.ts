@@ -58,6 +58,7 @@ export class CvStrengthService {
 			data: {
 				cvId,
 				title: data.title,
+				description: data.description ?? null,
 				icon: data.icon ?? null,
 				order: data.order ?? 0,
 				settings: data.settings ?? {},
@@ -113,6 +114,7 @@ export class CvStrengthService {
 			data: {
 				...(data.title !== undefined ? { title: data.title } : {}),
 				...(data.icon !== undefined ? { icon: data.icon } : {}),
+				...(data.description !== undefined ? { description: data.description } : {}),
 				...(data.settings !== undefined ? { settings: data.settings } : {}),
 			},
 		});

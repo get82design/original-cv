@@ -1,12 +1,11 @@
 import z from "zod";
-
-export const certificationSettingsSchema = z.record(z.string(), z.boolean()).optional();
+import { certificationContentSchema } from "./cvTemplate.schema";
 
 export const createCertificationSchema = z.object({
 	title: z.string().min(1),
 	organismeCertification: z.string(),
 	order: z.number().int().min(1).optional(),
-	settings: certificationSettingsSchema.optional(),
+	settings: certificationContentSchema.optional(),
 });
 
 export const updateCertificationSchema = createCertificationSchema.partial();

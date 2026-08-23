@@ -29,7 +29,8 @@ describe("cvStrengthRouter", () => {
 				cvId: cv.id,
 				data: {
 					title: "Strength 1",
-					icon: "💪",
+					icon: "FaThumbsUp",
+					description: "Description 1",
 					order: 1,
 				},
 			}),
@@ -43,14 +44,16 @@ describe("cvStrengthRouter", () => {
 			cvId: cv.id,
 			data: {
 				title: "Strength 1",
-				icon: "💪",
+				icon: "FaThumbsUp",
+				description: "Description 1",
 				order: 1,
 			},
 		});
 
 		expect(strength.cvId).toBe(cv.id);
 		expect(strength.title).toBe("Strength 1");
-		expect(strength.icon).toBe("💪");
+		expect(strength.icon).toBe("FaThumbsUp");
+		expect(strength.description).toBe("Description 1");
 		expect(strength.order).toBe(1);
 	});
 
@@ -78,7 +81,8 @@ describe("cvStrengthRouter", () => {
 				cvId: cv.id,
 				data: {
 					title: "Hack",
-					icon: "💪",
+					icon: "FaThumbsUp",
+					description: "Description 1",
 					order: 1,
 				},
 			}),
@@ -92,7 +96,8 @@ describe("cvStrengthRouter", () => {
 			cvId: cv.id,
 			data: {
 				title: "Same strength",
-				icon: "💪",
+				icon: "FaThumbsUp",
+				description: "Description 1",
 				order: 1,
 			},
 		});
@@ -102,7 +107,8 @@ describe("cvStrengthRouter", () => {
 				cvId: cv.id,
 				data: {
 					title: "Same strength",
-					icon: "💪",
+					icon: "FaThumbsUp",
+					description: "Description 1",
 					order: 2,
 				},
 			}),
@@ -114,14 +120,15 @@ describe("cvStrengthRouter", () => {
 
 		await caller.cvStrength.create({
 			cvId: cv.id,
-			data: { title: "First", icon: "💪", order: 1 },
+			data: { title: "First", icon: "FaThumbsUp", description: "Description 1", order: 1 },
 		});
 
 		await caller.cvStrength.create({
 			cvId: cv.id,
 			data: {
 				title: "Second",
-				icon: "💪",
+				icon: "FaThumbsUp",
+				description: "Description 1",
 				order: 2,
 			},
 		});
@@ -140,14 +147,15 @@ describe("cvStrengthRouter", () => {
 			cvId: cv.id,
 			data: {
 				title: "Old strength",
-				icon: "💪",
+				icon: "FaThumbsUp",
+				description: "Description 1",
 				order: 1,
 			},
 		});
 
 		const updated = await caller.cvStrength.update({
 			id: created.id,
-			data: { title: "New strength", icon: "💪" },
+			data: { title: "New strength", icon: "FaThumbsUp", description: "Description 1" },
 		});
 
 		expect(updated.title).toBe("New strength");
@@ -164,7 +172,8 @@ describe("cvStrengthRouter", () => {
 			cvId: cv.id,
 			data: {
 				title: "Strength 1",
-				icon: "💪",
+				icon: "FaThumbsUp",
+				description: "Description 1",
 				order: 1,
 			},
 		});
@@ -174,7 +183,7 @@ describe("cvStrengthRouter", () => {
 		await expect(
 			otherCaller.cvStrength.update({
 				id: created.id,
-				data: { title: "Hack", icon: "💪" },
+				data: { title: "Hack", icon: "FaThumbsUp", description: "Description 1" },
 			}),
 		).rejects.toMatchObject({ code: "FORBIDDEN" });
 	});
@@ -184,13 +193,14 @@ describe("cvStrengthRouter", () => {
 
 		const first = await caller.cvStrength.create({
 			cvId: cv.id,
-			data: { title: "First", icon: "💪", order: 1 },
+			data: { title: "First", icon: "FaThumbsUp", description: "Description 1", order: 1 },
 		});
 		await caller.cvStrength.create({
 			cvId: cv.id,
 			data: {
 				title: "Second",
-				icon: "💪",
+				icon: "FaThumbsUp",
+				description: "Description 1",
 				order: 2,
 			},
 		});
@@ -210,7 +220,8 @@ describe("cvStrengthRouter", () => {
 			cvId: cv.id,
 			data: {
 				title: "To delete",
-				icon: "💪",
+				icon: "FaThumbsUp",
+				description: "Description 1",
 				order: 1,
 			},
 		});

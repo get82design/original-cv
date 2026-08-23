@@ -5,7 +5,6 @@ import { ForbiddenError, NotFoundError, ValidationError } from "../errors";
 import type { CvSaveInput } from "../schemas/cvSave.schema";
 import { userService } from "../user/userService";
 import { cvService } from "./cvService";
-import { cvSkillGroupService } from "./cvSkillGroupService";
 
 export class CvSaveService {
 	async save(userId: string, input: CvSaveInput) {
@@ -54,55 +53,71 @@ export class CvSaveService {
 			const { datas, modules } = input;
 
 			// ——— 2. Header ———
-            if (datas.header) {
-                const { id: _headerId, ...headerData } = datas.header;
-                const headerUpdate = {
-                    ...(headerData.title !== undefined ? { title: headerData.title } : {}),
-                    ...(headerData.subtitle !== undefined
-                        ? { subtitle: headerData.subtitle }
-                        : {}),
-                    ...(headerData.phone !== undefined ? { phone: headerData.phone } : {}),
-                    ...(headerData.email !== undefined ? { email: headerData.email } : {}),
-                    ...(headerData.location !== undefined
-                        ? { location: headerData.location }
-                        : {}),
-                    ...(headerData.portfolio !== undefined
-                        ? { portfolio: headerData.portfolio }
-                        : {}),
-                    ...(headerData.nom !== undefined ? { nom: headerData.nom } : {}),
-                    ...(headerData.prenom !== undefined
-                        ? { prenom: headerData.prenom }
-                        : {}),
-                };
-                if (headerData.title === undefined) {
-                    throw new ValidationError(
-                        "Header title is required to create or upsert a CV header.",
-                    );
-                }
-                await tx.cvHeader.upsert({
-                    where: { cvId: id },
-                    create: {
-                        cvId: id,
-                        title: headerData.title,
-                        ...(headerData.subtitle !== undefined
-                            ? { subtitle: headerData.subtitle }
-                            : {}),
-                        ...(headerData.phone !== undefined ? { phone: headerData.phone } : {}),
-                        ...(headerData.email !== undefined ? { email: headerData.email } : {}),
-                        ...(headerData.location !== undefined
-                            ? { location: headerData.location }
-                            : {}),
-                        ...(headerData.portfolio !== undefined
-                            ? { portfolio: headerData.portfolio }
-                            : {}),
-                        ...(headerData.nom !== undefined ? { nom: headerData.nom } : {}),
-                        ...(headerData.prenom !== undefined
-                            ? { prenom: headerData.prenom }
-                            : {}),
-                    },
-                    update: headerUpdate,
-                });
-            }
+			if (datas.header) {
+				const { id: _headerId, ...headerData } = datas.header;
+				const headerUpdate = {
+					...(headerData.title !== undefined
+						? { title: headerData.title }
+						: {}),
+					...(headerData.subtitle !== undefined
+						? { subtitle: headerData.subtitle }
+						: {}),
+					...(headerData.phone !== undefined
+						? { phone: headerData.phone }
+						: {}),
+					...(headerData.email !== undefined
+						? { email: headerData.email }
+						: {}),
+					...(headerData.location !== undefined
+						? { location: headerData.location }
+						: {}),
+					...(headerData.portfolio !== undefined
+						? { portfolio: headerData.portfolio }
+						: {}),
+					...(headerData.nom !== undefined ? { nom: headerData.nom } : {}),
+					...(headerData.prenom !== undefined
+						? { prenom: headerData.prenom }
+						: {}),
+					...(headerData.settings != null
+						? { settings: headerData.settings }
+						: {}),
+				};
+				if (headerData.title === undefined) {
+					throw new ValidationError(
+						"Header title is required to create or upsert a CV header.",
+					);
+				}
+				await tx.cvHeader.upsert({
+					where: { cvId: id },
+					create: {
+						cvId: id,
+						title: headerData.title,
+						...(headerData.subtitle !== undefined
+							? { subtitle: headerData.subtitle }
+							: {}),
+						...(headerData.phone !== undefined
+							? { phone: headerData.phone }
+							: {}),
+						...(headerData.email !== undefined
+							? { email: headerData.email }
+							: {}),
+						...(headerData.location !== undefined
+							? { location: headerData.location }
+							: {}),
+						...(headerData.portfolio !== undefined
+							? { portfolio: headerData.portfolio }
+							: {}),
+						...(headerData.nom !== undefined ? { nom: headerData.nom } : {}),
+						...(headerData.prenom !== undefined
+							? { prenom: headerData.prenom }
+							: {}),
+						...(headerData.settings != null
+							? { settings: headerData.settings }
+							: {}),
+					},
+					update: headerUpdate,
+				});
+			}
 
 			// ——— 3. Description ———
 			if (datas.description) {
@@ -135,18 +150,18 @@ export class CvSaveService {
 
 					let experienceId = item.id;
 
-                    validateTimeline(rest.start, rest.end);
+					validateTimeline(rest.start, rest.end);
 
-                    const experienceData = {
-                        title: rest.title,
-                        company: rest.company,
-                        start: rest.start,
-                        end: rest.end ?? null,
-                        description: rest.description ?? null,
-                        location: rest.location ?? null,
-                        order,
-                        settings: settings ?? {},
-                    };
+					const experienceData = {
+						title: rest.title,
+						company: rest.company,
+						start: rest.start,
+						end: rest.end ?? null,
+						description: rest.description ?? null,
+						location: rest.location ?? null,
+						order,
+						settings: settings ?? {},
+					};
 
 					if (experienceId) {
 						await tx.cvExperience.update({
@@ -157,7 +172,7 @@ export class CvSaveService {
 						const created = await tx.cvExperience.create({
 							data: {
 								cvId: id,
-								...experienceData
+								...experienceData,
 							},
 						});
 						experienceId = created.id;
@@ -203,8 +218,8 @@ export class CvSaveService {
 				}
 			}
 
-            // ——— 5. Projects (replace) ———
-            if (datas.project) {
+			// ——— 5. Projects (replace) ———
+			if (datas.project) {
 				const items = datas.project.content;
 				const keepIds = items
 					.map((item) => item.id)
@@ -224,19 +239,19 @@ export class CvSaveService {
 
 					let projectId = item.id;
 
-                    validateTimeline(rest.start, rest.end, rest.status);
+					validateTimeline(rest.start, rest.end, rest.status);
 
-                    const projectData = {
-                        title: rest.title,
-                        start: rest.start,
-                        end: rest.end ?? null,
-                        description: rest.description ?? null,
-                        location: rest.location ?? null,
-                        technology: rest.technology ?? null,
-                        status: rest.status ?? null,
-                        order,
-                        settings: settings ?? {},
-                    };
+					const projectData = {
+						title: rest.title,
+						start: rest.start,
+						end: rest.end ?? null,
+						description: rest.description ?? null,
+						location: rest.location ?? null,
+						technology: rest.technology ?? null,
+						status: rest.status ?? null,
+						order,
+						settings: settings ?? {},
+					};
 
 					if (projectId) {
 						await tx.cvProject.update({
@@ -247,7 +262,7 @@ export class CvSaveService {
 						const created = await tx.cvProject.create({
 							data: {
 								cvId: id,
-								...projectData
+								...projectData,
 							},
 						});
 						projectId = created.id;
@@ -293,234 +308,238 @@ export class CvSaveService {
 				}
 			}
 
-            // ——— 6. Volunteering (replace) ———
-            if (datas.volunteering) {
-                const items = datas.volunteering.content;
-                const keepIds = items
-                    .map((item) => item.id)
-                    .filter((volunteeringId): volunteeringId is string => !!volunteeringId);
+			// ——— 6. Volunteering (replace) ———
+			if (datas.volunteering) {
+				const items = datas.volunteering.content;
+				const keepIds = items
+					.map((item) => item.id)
+					.filter(
+						(volunteeringId): volunteeringId is string => !!volunteeringId,
+					);
 
-                if (keepIds.length === 0) {
-                    await tx.cvVolunteering.deleteMany({ where: { cvId: id } });
-                } else {
-                    await tx.cvVolunteering.deleteMany({
-                        where: { cvId: id, id: { notIn: keepIds } },
-                    });
-                }
+				if (keepIds.length === 0) {
+					await tx.cvVolunteering.deleteMany({ where: { cvId: id } });
+				} else {
+					await tx.cvVolunteering.deleteMany({
+						where: { cvId: id, id: { notIn: keepIds } },
+					});
+				}
 
-                for (const [index, item] of items.entries()) {
-                    const order = item.order ?? index + 1;
-                    const { missions, settings, ...rest } = item.content;
+				for (const [index, item] of items.entries()) {
+					const order = item.order ?? index + 1;
+					const { missions, settings, ...rest } = item.content;
 
-                    let volunteeringId = item.id;
+					let volunteeringId = item.id;
 
-                    validateTimeline(rest.start, rest.end);
+					validateTimeline(rest.start, rest.end);
 
-                    const volunteeringData = {
-                        title: rest.title,
-                        start: rest.start,
-                        end: rest.end ?? null,
-                        organisation: rest.organisation,
-                        description: rest.description ?? null,
-                        location: rest.location ?? null,
-                        order,
-                        settings: settings ?? {},
-                    };
+					const volunteeringData = {
+						title: rest.title,
+						start: rest.start,
+						end: rest.end ?? null,
+						organisation: rest.organisation,
+						description: rest.description ?? null,
+						location: rest.location ?? null,
+						order,
+						settings: settings ?? {},
+					};
 
-                    if (volunteeringId) {
-                        await tx.cvVolunteering.update({
-                            where: { id: volunteeringId },
-                            data: volunteeringData,
-                        });
-                    } else {
-                        const created = await tx.cvVolunteering.create({
-                            data: {
-                                cvId: id,
-                                ...volunteeringData
-                            },
-                        });
-                        volunteeringId = created.id;
-                    }
+					if (volunteeringId) {
+						await tx.cvVolunteering.update({
+							where: { id: volunteeringId },
+							data: volunteeringData,
+						});
+					} else {
+						const created = await tx.cvVolunteering.create({
+							data: {
+								cvId: id,
+								...volunteeringData,
+							},
+						});
+						volunteeringId = created.id;
+					}
 
-                    // missions replace
-                    const missionKeepIds = missions
-                        .map((m) => m.id)
-                        .filter((missionId): missionId is string => !!missionId);
+					// missions replace
+					const missionKeepIds = missions
+						.map((m) => m.id)
+						.filter((missionId): missionId is string => !!missionId);
 
-                    if (missionKeepIds.length === 0) {
-                        await tx.cvMissionVolunteering.deleteMany({
-                            where: { cvVolunteeringId: volunteeringId },
-                        });
-                    } else {
-                        await tx.cvMissionVolunteering.deleteMany({
-                            where: {
-                                cvVolunteeringId: volunteeringId,
-                                id: { notIn: missionKeepIds },
-                            },
-                        });
-                    }
+					if (missionKeepIds.length === 0) {
+						await tx.cvMissionVolunteering.deleteMany({
+							where: { cvVolunteeringId: volunteeringId },
+						});
+					} else {
+						await tx.cvMissionVolunteering.deleteMany({
+							where: {
+								cvVolunteeringId: volunteeringId,
+								id: { notIn: missionKeepIds },
+							},
+						});
+					}
 
-                    for (const [mIndex, m] of missions.entries()) {
-                        const mOrder = m.order ?? mIndex + 1;
-                        const text = m.content.content;
+					for (const [mIndex, m] of missions.entries()) {
+						const mOrder = m.order ?? mIndex + 1;
+						const text = m.content.content;
 
-                        if (m.id) {
-                            await tx.cvMissionVolunteering.update({
-                                where: { id: m.id },
-                                data: { content: text, order: mOrder },
-                            });
-                        } else {
-                            await tx.cvMissionVolunteering.create({
-                                data: {
-                                    cvVolunteeringId: volunteeringId,
-                                    content: text,
-                                    order: mOrder,
-                                },
-                            });
-                        }
-                    }
-                }
-            }
+						if (m.id) {
+							await tx.cvMissionVolunteering.update({
+								where: { id: m.id },
+								data: { content: text, order: mOrder },
+							});
+						} else {
+							await tx.cvMissionVolunteering.create({
+								data: {
+									cvVolunteeringId: volunteeringId,
+									content: text,
+									order: mOrder,
+								},
+							});
+						}
+					}
+				}
+			}
 
-            // ——— 7. Formations (replace) ———
-            if (datas.formation) {
-                const items = datas.formation.content;
-                const keepIds = items
-                    .map((item) => item.id)
-                    .filter((formationId): formationId is string => !!formationId);
+			// ——— 7. Formations (replace) ———
+			if (datas.formation) {
+				const items = datas.formation.content;
+				const keepIds = items
+					.map((item) => item.id)
+					.filter((formationId): formationId is string => !!formationId);
 
-                if (keepIds.length === 0) {
-                    await tx.cvFormation.deleteMany({ where: { cvId: id } });
-                } else {
-                    await tx.cvFormation.deleteMany({
-                        where: { cvId: id, id: { notIn: keepIds } },
-                    });
-                }
+				if (keepIds.length === 0) {
+					await tx.cvFormation.deleteMany({ where: { cvId: id } });
+				} else {
+					await tx.cvFormation.deleteMany({
+						where: { cvId: id, id: { notIn: keepIds } },
+					});
+				}
 
-                for (const [index, item] of items.entries()) {
-                    const order = item.order ?? index + 1;
-                    const { settings, ...rest } = item.content;
+				for (const [index, item] of items.entries()) {
+					const order = item.order ?? index + 1;
+					const { settings, ...rest } = item.content;
 
-                    let formationId = item.id;
+					let formationId = item.id;
 
-                    validateTimeline(rest.start, rest.end, rest.status);
+					validateTimeline(rest.start, rest.end, rest.status);
 
-                    const formationData = {
-                        title: rest.title,
-                        start: rest.start,
-                        end: rest.end ?? null,
-                        status: rest.status ?? null,
-                        organismeFormation: rest.organismeFormation ?? null,
-                        order,
-                        settings: settings ?? {},
-                    };
+					const formationData = {
+						title: rest.title,
+						start: rest.start,
+						end: rest.end ?? null,
+						status: rest.status ?? null,
+						organismeFormation: rest.organismeFormation ?? null,
+						order,
+						settings: settings ?? {},
+					};
 
-                    if (formationId) {
-                        await tx.cvFormation.update({
-                            where: { id: formationId },
-                            data: formationData,
-                        });
-                    } else {
-                        const created = await tx.cvFormation.create({
-                            data: {
-                                cvId: id,
-                                ...formationData
-                            },
-                        });
-                        formationId = created.id;
-                    }
-                }
-            }
+					if (formationId) {
+						await tx.cvFormation.update({
+							where: { id: formationId },
+							data: formationData,
+						});
+					} else {
+						const created = await tx.cvFormation.create({
+							data: {
+								cvId: id,
+								...formationData,
+							},
+						});
+						formationId = created.id;
+					}
+				}
+			}
 
-            // ——— 8. Certifications (replace) ———
-            if (datas.certification) {
-                const items = datas.certification.content;
-                const keepIds = items
-                    .map((item) => item.id)
-                    .filter((certificationId): certificationId is string => !!certificationId);
+			// ——— 8. Certifications (replace) ———
+			if (datas.certification) {
+				const items = datas.certification.content;
+				const keepIds = items
+					.map((item) => item.id)
+					.filter(
+						(certificationId): certificationId is string => !!certificationId,
+					);
 
-                if (keepIds.length === 0) {
-                    await tx.cvCertification.deleteMany({ where: { cvId: id } });
-                } else {
-                    await tx.cvCertification.deleteMany({
-                        where: { cvId: id, id: { notIn: keepIds } },
-                    });
-                }
-                
-                for (const [index, item] of items.entries()) {
-                    const order = item.order ?? index + 1;
-                    const { settings, ...rest } = item.content;
+				if (keepIds.length === 0) {
+					await tx.cvCertification.deleteMany({ where: { cvId: id } });
+				} else {
+					await tx.cvCertification.deleteMany({
+						where: { cvId: id, id: { notIn: keepIds } },
+					});
+				}
 
-                    let certificationId = item.id;
+				for (const [index, item] of items.entries()) {
+					const order = item.order ?? index + 1;
+					const { settings, ...rest } = item.content;
 
-                    const certificationData = {
-                        title: rest.title,
-                        organismeCertification: rest.organismeCertification ?? null,
-                        order,
-                        settings: settings ?? {},
-                    };
+					let certificationId = item.id;
 
-                    if (certificationId) {
-                        await tx.cvCertification.update({
-                            where: { id: certificationId },
-                            data: certificationData,
-                        });
-                    } else {
-                        const created = await tx.cvCertification.create({
-                            data: {
-                                cvId: id,
-                                ...certificationData
-                            },
-                        });
-                        certificationId = created.id;
-                    }
-                }
-            }
+					const certificationData = {
+						title: rest.title,
+						organismeCertification: rest.organismeCertification ?? null,
+						order,
+						settings: settings ?? {},
+					};
 
-            // ——— 9. Prizes (replace) ———
-            if (datas.prize) {
-                const items = datas.prize.content;
-                const keepIds = items
-                    .map((item) => item.id)
-                    .filter((prizeId): prizeId is string => !!prizeId);
+					if (certificationId) {
+						await tx.cvCertification.update({
+							where: { id: certificationId },
+							data: certificationData,
+						});
+					} else {
+						const created = await tx.cvCertification.create({
+							data: {
+								cvId: id,
+								...certificationData,
+							},
+						});
+						certificationId = created.id;
+					}
+				}
+			}
 
-                if (keepIds.length === 0) {
-                    await tx.cvPrize.deleteMany({ where: { cvId: id } });
-                } else {
-                    await tx.cvPrize.deleteMany({
-                        where: { cvId: id, id: { notIn: keepIds } },
-                    });
-                }
+			// ——— 9. Prizes (replace) ———
+			if (datas.prize) {
+				const items = datas.prize.content;
+				const keepIds = items
+					.map((item) => item.id)
+					.filter((prizeId): prizeId is string => !!prizeId);
 
-                for (const [index, item] of items.entries()) {
-                    const order = item.order ?? index + 1;
-                    const { settings, ...rest } = item.content;
+				if (keepIds.length === 0) {
+					await tx.cvPrize.deleteMany({ where: { cvId: id } });
+				} else {
+					await tx.cvPrize.deleteMany({
+						where: { cvId: id, id: { notIn: keepIds } },
+					});
+				}
 
-                    let prizeId = item.id;
+				for (const [index, item] of items.entries()) {
+					const order = item.order ?? index + 1;
+					const { settings, ...rest } = item.content;
 
-                    const prizeData = {
-                        title: rest.title,
-                        domaine: rest.domaine,
-                        order,
-                        settings: settings ?? {},
-                    };
+					let prizeId = item.id;
 
-                    if (prizeId) {
-                        await tx.cvPrize.update({
-                            where: { id: prizeId },
-                            data: prizeData,
-                        });
-                    } else {
-                        const created = await tx.cvPrize.create({
-                            data: {
-                                cvId: id,
-                                ...prizeData
-                            },
-                        });
-                        prizeId = created.id;
-                    }
-                }
-            }
+					const prizeData = {
+						title: rest.title,
+						domaine: rest.domaine,
+						order,
+						settings: settings ?? {},
+					};
+
+					if (prizeId) {
+						await tx.cvPrize.update({
+							where: { id: prizeId },
+							data: prizeData,
+						});
+					} else {
+						const created = await tx.cvPrize.create({
+							data: {
+								cvId: id,
+								...prizeData,
+							},
+						});
+						prizeId = created.id;
+					}
+				}
+			}
 
 			// ——— 10. Expertises (replace) ———
 			if (datas.expertise) {
@@ -529,42 +548,42 @@ export class CvSaveService {
 					.map((item) => item.id)
 					.filter((expertiseId): expertiseId is string => !!expertiseId);
 
-                if (keepIds.length === 0) {
-                    await tx.cvExpertise.deleteMany({ where: { cvId: id } });
-                } else {
-                    await tx.cvExpertise.deleteMany({
-                        where: { cvId: id, id: { notIn: keepIds } },
-                    });
-                }
+				if (keepIds.length === 0) {
+					await tx.cvExpertise.deleteMany({ where: { cvId: id } });
+				} else {
+					await tx.cvExpertise.deleteMany({
+						where: { cvId: id, id: { notIn: keepIds } },
+					});
+				}
 
-                for (const [index, item] of items.entries()) {
-                    const order = item.order ?? index + 1;
-                    const { settings, ...rest } = item.content;
+				for (const [index, item] of items.entries()) {
+					const order = item.order ?? index + 1;
+					const { settings, ...rest } = item.content;
 
-                    let expertiseId = item.id;
+					let expertiseId = item.id;
 
-                    const expertiseData = {
-                        title: rest.title,
-                        level: rest.level,
-                        order,
-                        settings: settings ?? {},
-                    };
+					const expertiseData = {
+						title: rest.title,
+						level: rest.level,
+						order,
+						settings: settings ?? {},
+					};
 
-                    if (expertiseId) {
-                        await tx.cvExpertise.update({
-                            where: { id: expertiseId },
-                            data: expertiseData,
-                        });
-                    } else {
-                        const created = await tx.cvExpertise.create({
-                            data: {
-                                cvId: id,
-                                ...expertiseData
-                            },
-                        });
-                        expertiseId = created.id;
-                    }
-                }
+					if (expertiseId) {
+						await tx.cvExpertise.update({
+							where: { id: expertiseId },
+							data: expertiseData,
+						});
+					} else {
+						const created = await tx.cvExpertise.create({
+							data: {
+								cvId: id,
+								...expertiseData,
+							},
+						});
+						expertiseId = created.id;
+					}
+				}
 			}
 
 			// ——— 11. Philosophy (replace) ———
@@ -572,338 +591,339 @@ export class CvSaveService {
 				const { settings, ...rest } = datas.philosophy.content;
 				await tx.cvPhilosophy.upsert({
 					where: { cvId: id },
-					create: { 
-                        cvId: id, 
-                        citation: rest.citation, 
-                        author: rest.author ?? null, 
-                        settings: settings ?? {} 
-                    },
-					update: { 
-                        citation: rest.citation, 
-                        author: rest.author ?? null, 
-                        settings: settings ?? {} 
-                    },
+					create: {
+						cvId: id,
+						citation: rest.citation,
+						author: rest.author ?? null,
+						settings: settings ?? {},
+					},
+					update: {
+						citation: rest.citation,
+						author: rest.author ?? null,
+						settings: settings ?? {},
+					},
 				});
 			}
-            
-            // ——— 12. Social Media (replace) ———
+
+			// ——— 12. Social Media (replace) ———
 			if (datas.socialMedia) {
 				const items = datas.socialMedia.content;
 				const keepIds = items
 					.map((item) => item.id)
 					.filter((socialMediaId): socialMediaId is string => !!socialMediaId);
 
-                if (keepIds.length === 0) {
-                    await tx.cvSocialMedia.deleteMany({ where: { cvId: id } });
-                } else {
-                    await tx.cvSocialMedia.deleteMany({
-                        where: { cvId: id, id: { notIn: keepIds } },
-                    });
-                }
+				if (keepIds.length === 0) {
+					await tx.cvSocialMedia.deleteMany({ where: { cvId: id } });
+				} else {
+					await tx.cvSocialMedia.deleteMany({
+						where: { cvId: id, id: { notIn: keepIds } },
+					});
+				}
 
-                for (const [index, item] of items.entries()) {
-                    const order = item.order ?? index + 1;
-                    const { settings, ...rest } = item.content;
+				for (const [index, item] of items.entries()) {
+					const order = item.order ?? index + 1;
+					const { settings, ...rest } = item.content;
 
-                    let socialMediaId = item.id;
+					let socialMediaId = item.id;
 
-                    const socialMediaData = {
-                        socialNetwork: rest.socialNetwork ?? null,
-                        username: rest.username,
-                        icon: rest.icon,
-                        order,
-                        settings: settings ?? {},
-                    };
+					const socialMediaData = {
+						socialNetwork: rest.socialNetwork ?? null,
+						username: rest.username,
+						icon: rest.icon,
+						order,
+						settings: settings ?? {},
+					};
 
-                    if (socialMediaId) {
-                        await tx.cvSocialMedia.update({
-                            where: { id: socialMediaId },
-                            data: socialMediaData,
-                        });
-                    } else {
-                        const created = await tx.cvSocialMedia.create({
-                            data: {
-                                cvId: id,
-                                ...socialMediaData
-                            },
-                        });
-                        socialMediaId = created.id;
-                    }
-                }
+					if (socialMediaId) {
+						await tx.cvSocialMedia.update({
+							where: { id: socialMediaId },
+							data: socialMediaData,
+						});
+					} else {
+						const created = await tx.cvSocialMedia.create({
+							data: {
+								cvId: id,
+								...socialMediaData,
+							},
+						});
+						socialMediaId = created.id;
+					}
+				}
 			}
 
-            // ——— 13. Passion (replace) ———
+			// ——— 13. Passion (replace) ———
 			if (datas.passion) {
 				const items = datas.passion.content;
 				const keepIds = items
 					.map((item) => item.id)
 					.filter((passionId): passionId is string => !!passionId);
 
-                if (keepIds.length === 0) {
-                    await tx.cvPassion.deleteMany({ where: { cvId: id } });
-                } else {
-                    await tx.cvPassion.deleteMany({
-                        where: { cvId: id, id: { notIn: keepIds } },
-                    });
-                }
-                
-                for (const [index, item] of items.entries()) {
-                    const order = item.order ?? index + 1;
-                    const { settings, ...rest } = item.content;
+				if (keepIds.length === 0) {
+					await tx.cvPassion.deleteMany({ where: { cvId: id } });
+				} else {
+					await tx.cvPassion.deleteMany({
+						where: { cvId: id, id: { notIn: keepIds } },
+					});
+				}
 
-                    let passionId = item.id;
+				for (const [index, item] of items.entries()) {
+					const order = item.order ?? index + 1;
+					const { settings, ...rest } = item.content;
 
-                    const passionData = {
-                        title: rest.title,
-                        icon: rest.icon,
-                        order,
-                        settings: settings ?? {},
-                    };
+					let passionId = item.id;
 
-                    if (passionId) {
-                        await tx.cvPassion.update({
-                            where: { id: passionId },
-                            data: passionData,
-                        });
-                    } else {
-                        const created = await tx.cvPassion.create({
-                            data: { cvId: id, ...passionData },
-                        });
-                        passionId = created.id;
-                    }
-                }
+					const passionData = {
+						title: rest.title,
+						icon: rest.icon,
+						order,
+						settings: settings ?? {},
+					};
+
+					if (passionId) {
+						await tx.cvPassion.update({
+							where: { id: passionId },
+							data: passionData,
+						});
+					} else {
+						const created = await tx.cvPassion.create({
+							data: { cvId: id, ...passionData },
+						});
+						passionId = created.id;
+					}
+				}
 			}
 
-            // ——— 14. Language (replace) ———
+			// ——— 14. Language (replace) ———
 			if (datas.language) {
 				const items = datas.language.content;
 				const keepIds = items
 					.map((item) => item.id)
 					.filter((languageId): languageId is string => !!languageId);
 
-                if (keepIds.length === 0) {
-                    await tx.cvLanguage.deleteMany({ where: { cvId: id } });
-                } else {
-                    await tx.cvLanguage.deleteMany({
-                        where: { cvId: id, id: { notIn: keepIds } },
-                    });
-                }
-                
-                for (const [index, item] of items.entries()) {
-                    const order = item.order ?? index + 1;
-                    const { settings, ...rest } = item.content;
+				if (keepIds.length === 0) {
+					await tx.cvLanguage.deleteMany({ where: { cvId: id } });
+				} else {
+					await tx.cvLanguage.deleteMany({
+						where: { cvId: id, id: { notIn: keepIds } },
+					});
+				}
 
-                    let languageId = item.id;
+				for (const [index, item] of items.entries()) {
+					const order = item.order ?? index + 1;
+					const { settings, ...rest } = item.content;
 
-                    const languageData = {
-                        name: rest.name,
-                        level: rest.level,
-                        order,
-                        settings: settings ?? {},
-                    };
+					let languageId = item.id;
 
-                    if (languageId) {
-                        await tx.cvLanguage.update({
-                            where: { id: languageId },
-                            data: languageData,
-                        });
-                    } else {
-                        const created = await tx.cvLanguage.create({
-                            data: { cvId: id, ...languageData },
-                        });
-                        languageId = created.id;
-                    }
-                }
+					const languageData = {
+						name: rest.name,
+						level: rest.level,
+						order,
+						settings: settings ?? {},
+					};
+
+					if (languageId) {
+						await tx.cvLanguage.update({
+							where: { id: languageId },
+							data: languageData,
+						});
+					} else {
+						const created = await tx.cvLanguage.create({
+							data: { cvId: id, ...languageData },
+						});
+						languageId = created.id;
+					}
+				}
 			}
 
-            // ——— 15. Publication (replace) ———
-            if (datas.publication) {
-                const items = datas.publication.content;
-                const keepIds = items
-                    .map((item) => item.id)
-                    .filter((publicationId): publicationId is string => !!publicationId);
+			// ——— 15. Publication (replace) ———
+			if (datas.publication) {
+				const items = datas.publication.content;
+				const keepIds = items
+					.map((item) => item.id)
+					.filter((publicationId): publicationId is string => !!publicationId);
 
-                if (keepIds.length === 0) {
-                    await tx.cvPublication.deleteMany({ where: { cvId: id } });
-                } else {
-                    await tx.cvPublication.deleteMany({
-                        where: { cvId: id, id: { notIn: keepIds } },
-                    });
-                }
+				if (keepIds.length === 0) {
+					await tx.cvPublication.deleteMany({ where: { cvId: id } });
+				} else {
+					await tx.cvPublication.deleteMany({
+						where: { cvId: id, id: { notIn: keepIds } },
+					});
+				}
 
-                for (const [index, item] of items.entries()) {
-                    const order = item.order ?? index + 1;
-                    const { settings, ...rest } = item.content;
+				for (const [index, item] of items.entries()) {
+					const order = item.order ?? index + 1;
+					const { settings, ...rest } = item.content;
 
-                    let publicationId = item.id;
+					let publicationId = item.id;
 
-                    validateTimeline(rest.start, rest.end);
+					validateTimeline(rest.start, rest.end);
 
-                    const publicationData = {
-                        title: rest.title,
-                        start: rest.start,
-                        end: rest.end ?? null,
-                        journalName: rest.journalName ?? null,
-                        description: rest.description ?? null,
-                        url: rest.url ?? null,
-                        order,
-                        settings: settings ?? {},
-                    };
+					const publicationData = {
+						title: rest.title,
+						start: rest.start,
+						end: rest.end ?? null,
+						journalName: rest.journalName ?? null,
+						description: rest.description ?? null,
+						url: rest.url ?? null,
+						order,
+						settings: settings ?? {},
+					};
 
-                    if (publicationId) {
-                        await tx.cvPublication.update({
-                            where: { id: publicationId },
-                            data: publicationData,
-                        });
-                    } else {
-                        const created = await tx.cvPublication.create({
-                            data: {
-                                cvId: id,
-                                ...publicationData
-                            },
-                        });
-                        publicationId = created.id;
-                    }
-                }
-            }
+					if (publicationId) {
+						await tx.cvPublication.update({
+							where: { id: publicationId },
+							data: publicationData,
+						});
+					} else {
+						const created = await tx.cvPublication.create({
+							data: {
+								cvId: id,
+								...publicationData,
+							},
+						});
+						publicationId = created.id;
+					}
+				}
+			}
 
-            // ——— 16. Strength (replace) ———
-            if (datas.strength) {
+			// ——— 16. Strength (replace) ———
+			if (datas.strength) {
 				const items = datas.strength.content;
 				const keepIds = items
 					.map((item) => item.id)
 					.filter((strengthId): strengthId is string => !!strengthId);
 
-                if (keepIds.length === 0) {
-                    await tx.cvStrength.deleteMany({ where: { cvId: id } });
-                } else {
-                    await tx.cvStrength.deleteMany({
-                        where: { cvId: id, id: { notIn: keepIds } },
-                    });
-                }
-                
-                for (const [index, item] of items.entries()) {
-                    const order = item.order ?? index + 1;
-                    const { settings, ...rest } = item.content;
+				if (keepIds.length === 0) {
+					await tx.cvStrength.deleteMany({ where: { cvId: id } });
+				} else {
+					await tx.cvStrength.deleteMany({
+						where: { cvId: id, id: { notIn: keepIds } },
+					});
+				}
 
-                    let strengthId = item.id;
+				for (const [index, item] of items.entries()) {
+					const order = item.order ?? index + 1;
+					const { settings, ...rest } = item.content;
 
-                    const strengthData = {
-                        title: rest.title,
-                        icon: rest.icon ?? null,
-                        order,
-                        settings: settings ?? {},
-                    };
+					let strengthId = item.id;
 
-                    if (strengthId) {
-                        await tx.cvStrength.update({
-                            where: { id: strengthId },
-                            data: strengthData,
-                        });
-                    } else {
-                        const created = await tx.cvStrength.create({
-                            data: { cvId: id, ...strengthData },
-                        });
-                        strengthId = created.id;
-                    }
-                }
+					const strengthData = {
+						title: rest.title,
+						icon: rest.icon ?? null,
+						description: rest.description ?? null,
+						order,
+						settings: settings ?? {},
+					};
+
+					if (strengthId) {
+						await tx.cvStrength.update({
+							where: { id: strengthId },
+							data: strengthData,
+						});
+					} else {
+						const created = await tx.cvStrength.create({
+							data: { cvId: id, ...strengthData },
+						});
+						strengthId = created.id;
+					}
+				}
 			}
 
-            // ——— 17. Achievement (replace) ———
-            if (datas.achievement) {
+			// ——— 17. Achievement (replace) ———
+			if (datas.achievement) {
 				const items = datas.achievement.content;
 				const keepIds = items
 					.map((item) => item.id)
 					.filter((achievementId): achievementId is string => !!achievementId);
 
-                if (keepIds.length === 0) {
-                    await tx.cvAchievement.deleteMany({ where: { cvId: id } });
-                } else {
-                    await tx.cvAchievement.deleteMany({
-                        where: { cvId: id, id: { notIn: keepIds } },
-                    });
-                }
-                
-                for (const [index, item] of items.entries()) {
-                    const order = item.order ?? index + 1;
-                    const { settings, ...rest } = item.content;
+				if (keepIds.length === 0) {
+					await tx.cvAchievement.deleteMany({ where: { cvId: id } });
+				} else {
+					await tx.cvAchievement.deleteMany({
+						where: { cvId: id, id: { notIn: keepIds } },
+					});
+				}
 
-                    let achievementId = item.id;
+				for (const [index, item] of items.entries()) {
+					const order = item.order ?? index + 1;
+					const { settings, ...rest } = item.content;
 
-                    const achievementData = {
-                        title: rest.title,
-                        description: rest.description ?? null,
-                        year: rest.year ?? null,
-                        technology: rest.technology ?? null,
-                        order,
-                        settings: settings ?? {},
-                    };
+					let achievementId = item.id;
 
-                    if (achievementId) {
-                        await tx.cvAchievement.update({
-                            where: { id: achievementId },
-                            data: achievementData,
-                        });
-                    } else {
-                        const created = await tx.cvAchievement.create({
-                            data: { cvId: id, ...achievementData },
-                        });
-                        achievementId = created.id;
-                    }
-                }
+					const achievementData = {
+						title: rest.title,
+						description: rest.description ?? null,
+						year: rest.year ?? null,
+						technology: rest.technology ?? null,
+						order,
+						settings: settings ?? {},
+					};
+
+					if (achievementId) {
+						await tx.cvAchievement.update({
+							where: { id: achievementId },
+							data: achievementData,
+						});
+					} else {
+						const created = await tx.cvAchievement.create({
+							data: { cvId: id, ...achievementData },
+						});
+						achievementId = created.id;
+					}
+				}
 			}
 
-            // ——— 18. Education (replace) ———
-            if (datas.education) {
-                const items = datas.education.content;
-                const keepIds = items
-                    .map((item) => item.id)
-                    .filter((educationId): educationId is string => !!educationId);
+			// ——— 18. Education (replace) ———
+			if (datas.education) {
+				const items = datas.education.content;
+				const keepIds = items
+					.map((item) => item.id)
+					.filter((educationId): educationId is string => !!educationId);
 
-                if (keepIds.length === 0) {
-                    await tx.cvEducation.deleteMany({ where: { cvId: id } });
-                } else {
-                    await tx.cvEducation.deleteMany({
-                        where: { cvId: id, id: { notIn: keepIds } },
-                    });
-                }
+				if (keepIds.length === 0) {
+					await tx.cvEducation.deleteMany({ where: { cvId: id } });
+				} else {
+					await tx.cvEducation.deleteMany({
+						where: { cvId: id, id: { notIn: keepIds } },
+					});
+				}
 
-                for (const [index, item] of items.entries()) {
-                    const order = item.order ?? index + 1;
-                    const { settings, ...rest } = item.content;
+				for (const [index, item] of items.entries()) {
+					const order = item.order ?? index + 1;
+					const { settings, ...rest } = item.content;
 
-                    let educationId = item.id;
+					let educationId = item.id;
 
-                    validateTimeline(rest.start, rest.end, rest.obtained);
+					validateTimeline(rest.start, rest.end, rest.obtained);
 
-                    const educationData = {
-                        title: rest.title,
-                        school: rest.school,
-                        degree: rest.degree,
-                        city: rest.city ?? null,
-                        start: rest.start,
-                        end: rest.end ?? null,
-                        obtained: rest.obtained ?? null,
-                        order,
-                        settings: settings ?? {}
-                    };
+					const educationData = {
+						title: rest.title,
+						school: rest.school,
+						degree: rest.degree,
+						city: rest.city ?? null,
+						start: rest.start,
+						end: rest.end ?? null,
+						obtained: rest.obtained ?? null,
+						order,
+						settings: settings ?? {},
+					};
 
-                    if (educationId) {
-                        await tx.cvEducation.update({
-                            where: { id: educationId },
-                            data: educationData,
-                        });
-                    } else {
-                        const created = await tx.cvEducation.create({
-                            data: {
-                                cvId: id,
-                                ...educationData
-                            },
-                        });
-                        educationId = created.id;
-                    }
-                }
-            }
+					if (educationId) {
+						await tx.cvEducation.update({
+							where: { id: educationId },
+							data: educationData,
+						});
+					} else {
+						const created = await tx.cvEducation.create({
+							data: {
+								cvId: id,
+								...educationData,
+							},
+						});
+						educationId = created.id;
+					}
+				}
+			}
 
 			// ——— 19. Skill Group (replace) ———
 			if (datas.skillGroup) {
@@ -912,135 +932,213 @@ export class CvSaveService {
 					.map((item) => item.id)
 					.filter((skillGroupId): skillGroupId is string => !!skillGroupId);
 
-                if (keepIds.length === 0) {
-                    await tx.cvSkillGroup.deleteMany({ where: { cvId: id } });
-                } else {
-                    await tx.cvSkillGroup.deleteMany({
-                        where: { cvId: id, id: { notIn: keepIds } },
-                    });
-                }
-                
-                for (const [index, item] of items.entries()) {
-                    const order = item.order ?? index + 1;
-                    const { skills, settings, ...rest } = item.content;
-                    let skillGroupId = item.id;
-                    const skillGroupData = {
-                      title: rest.title ?? null,
-                      order,
-                      settings: settings ?? {},
-                    };
-                    if (skillGroupId) {
-                      await tx.cvSkillGroup.update({
-                        where: { id: skillGroupId },
-                        data: skillGroupData,
-                      });
-                    } else {
-                      const created = await tx.cvSkillGroup.create({
-                        data: { cvId: id, ...skillGroupData },
-                      });
-                      skillGroupId = created.id;
-                    }
-                    // skills nested — ton bloc tx.cvSkill est déjà bon
-                    const skillsToSave = skills.filter((s) => s.content.name.trim().length > 0)
-                    const skillKeepIds = skillsToSave
-                        .map((s) => s.id)
-                        .filter((id): id is string => !!id)
-                    await tx.cvSkill.deleteMany({
-                      where:
-                        skillKeepIds.length === 0
-                          ? { groupId: skillGroupId }
-                          : { groupId: skillGroupId, id: { notIn: skillKeepIds } },
-                    });
-                    for (const [sIndex, s] of skillsToSave.entries()) {
-                      const sOrder = s.order ?? sIndex + 1;
+				if (keepIds.length === 0) {
+					await tx.cvSkillGroup.deleteMany({ where: { cvId: id } });
+				} else {
+					await tx.cvSkillGroup.deleteMany({
+						where: { cvId: id, id: { notIn: keepIds } },
+					});
+				}
 
-                      const catalog = s.content.skillId
-                        ? await tx.skill.findUniqueOrThrow({ where: { id: s.content.skillId } })
-                        : await tx.skill.findFirst({ where: { name: s.content.name.trim() } })
-                            ?? await tx.skill.create({ data: { name: s.content.name.trim() } })
+				for (const [index, item] of items.entries()) {
+					const order = item.order ?? index + 1;
+					const { skills, settings, ...rest } = item.content;
+					let skillGroupId = item.id;
+					const skillGroupData = {
+						title: rest.title ?? null,
+						order,
+						settings: settings ?? {},
+					};
+					if (skillGroupId) {
+						await tx.cvSkillGroup.update({
+							where: { id: skillGroupId },
+							data: skillGroupData,
+						});
+					} else {
+						const created = await tx.cvSkillGroup.create({
+							data: { cvId: id, ...skillGroupData },
+						});
+						skillGroupId = created.id;
+					}
+					// skills nested — ton bloc tx.cvSkill est déjà bon
+					const skillsToSave = skills.filter(
+						(s) => s.content.name.trim().length > 0,
+					);
+					const skillKeepIds = skillsToSave
+						.map((s) => s.id)
+						.filter((id): id is string => !!id);
+					await tx.cvSkill.deleteMany({
+						where:
+							skillKeepIds.length === 0
+								? { groupId: skillGroupId }
+								: { groupId: skillGroupId, id: { notIn: skillKeepIds } },
+					});
+					for (const [sIndex, s] of skillsToSave.entries()) {
+						const sOrder = s.order ?? sIndex + 1;
 
-                      const data = {
-                        skillId: catalog.id,
-                        level: s.content.level,
-                        order: sOrder,
-                      };
-                      if (s.id) {
-                        await tx.cvSkill.update({ where: { id: s.id }, data });
-                      } else {
-                        
-                        await tx.cvSkill.create({
-                            data: {
-                              groupId: skillGroupId,
-                              skillId: catalog.id,   // ← toujours un id réel
-                              level: s.content.level,
-                              order: sOrder,
-                            },
-                          })
-                      }
-                    }
-                }
+						const catalog = s.content.skillId
+							? await tx.skill.findUniqueOrThrow({
+									where: { id: s.content.skillId },
+								})
+							: ((await tx.skill.findFirst({
+									where: { name: s.content.name.trim() },
+								})) ??
+								(await tx.skill.create({
+									data: { name: s.content.name.trim() },
+								})));
+
+						const data = {
+							skillId: catalog.id,
+							level: s.content.level,
+							order: sOrder,
+						};
+						if (s.id) {
+							await tx.cvSkill.update({ where: { id: s.id }, data });
+						} else {
+							await tx.cvSkill.create({
+								data: {
+									groupId: skillGroupId,
+									skillId: catalog.id, // ← toujours un id réel
+									level: s.content.level,
+									order: sOrder,
+								},
+							});
+						}
+					}
+				}
 			}
 
-            // ——— 20. Competence Group (replace) ———
+			// ——— 20. Competence Group (replace) ———
 			if (datas.competenceGroup) {
 				const items = datas.competenceGroup.content;
 				const keepIds = items
 					.map((item) => item.id)
-					.filter((competenceGroupId): competenceGroupId is string => !!competenceGroupId);
+					.filter(
+						(competenceGroupId): competenceGroupId is string =>
+							!!competenceGroupId,
+					);
 
-                if (keepIds.length === 0) {
-                    await tx.cvCompetenceGroup.deleteMany({ where: { cvId: id } });
-                } else {
-                    await tx.cvCompetenceGroup.deleteMany({
-                        where: { cvId: id, id: { notIn: keepIds } },
-                    });
-                }
-                
-                for (const [index, item] of items.entries()) {
-                    const order = item.order ?? index + 1;
-                    const { competences, settings, ...rest } = item.content;
-                    let competenceGroupId = item.id;
-                    const competenceGroupData = {
-                      title: rest.title ?? null,
-                      order,
-                      settings: settings ?? {},
-                    };
-                    if (competenceGroupId) {
-                      await tx.cvCompetenceGroup.update({
-                        where: { id: competenceGroupId },
-                        data: competenceGroupData,
-                      });
-                    } else {
-                      const created = await tx.cvCompetenceGroup.create({
-                        data: { cvId: id, ...competenceGroupData },
-                      });
-                      competenceGroupId = created.id;
-                    }
-                    // skills nested — ton bloc tx.cvSkill est déjà bon
-                    const competenceKeepIds = competences
-                      .map((c) => c.id)
-                      .filter((competenceId): competenceId is string => !!competenceId);
-                    await tx.cvCompetence.deleteMany({
-                      where:
-                        competenceKeepIds.length === 0
-                          ? { groupId: competenceGroupId }
-                          : { groupId: competenceGroupId, id: { notIn: competenceKeepIds } },
-                    });
-                    for (const [cIndex, c] of competences.entries()) {
-                      const cOrder = c.order ?? cIndex + 1;
-                      const data = {
-                        competenceId: c.content.competenceId,
-                        order: cOrder,
-                      };
-                      if (c.id) {
-                        await tx.cvCompetence.update({ where: { id: c.id }, data });
-                      } else {
-                        await tx.cvCompetence.create({
-                          data: { groupId: competenceGroupId, ...data },
-                        });
-                      }
-                    }
-                }
+				if (keepIds.length === 0) {
+					await tx.cvCompetenceGroup.deleteMany({ where: { cvId: id } });
+				} else {
+					await tx.cvCompetenceGroup.deleteMany({
+						where: { cvId: id, id: { notIn: keepIds } },
+					});
+				}
+
+				for (const [index, item] of items.entries()) {
+					const order = item.order ?? index + 1;
+					const { competences, settings, ...rest } = item.content;
+					let competenceGroupId = item.id;
+					const competenceGroupData = {
+						title: rest.title ?? null,
+						order,
+						settings: settings ?? {},
+					};
+					if (competenceGroupId) {
+						await tx.cvCompetenceGroup.update({
+							where: { id: competenceGroupId },
+							data: competenceGroupData,
+						});
+					} else {
+						const created = await tx.cvCompetenceGroup.create({
+							data: { cvId: id, ...competenceGroupData },
+						});
+						competenceGroupId = created.id;
+					}
+					// skills nested — ton bloc tx.cvSkill est déjà bon
+					const competenceKeepIds = competences
+						.map((c) => c.id)
+						.filter((competenceId): competenceId is string => !!competenceId);
+					await tx.cvCompetence.deleteMany({
+						where:
+							competenceKeepIds.length === 0
+								? { groupId: competenceGroupId }
+								: {
+										groupId: competenceGroupId,
+										id: { notIn: competenceKeepIds },
+									},
+					});
+					for (const [cIndex, c] of competences.entries()) {
+						const cOrder = c.order ?? cIndex + 1;
+						const data = {
+							competenceId: c.content.competenceId,
+							order: cOrder,
+						};
+						if (c.id) {
+							await tx.cvCompetence.update({ where: { id: c.id }, data });
+						} else {
+							await tx.cvCompetence.create({
+								data: { groupId: competenceGroupId, ...data },
+							});
+						}
+					}
+				}
+			}
+
+			// ——— 21. Tag Group (replace) ———
+			if (datas.tagGroup) {
+				const items = datas.tagGroup.content;
+				const keepIds = items
+					.map((item) => item.id)
+					.filter((tagGroupId): tagGroupId is string => !!tagGroupId);
+
+				if (keepIds.length === 0) {
+					await tx.cvTagGroup.deleteMany({ where: { cvId: id } });
+				} else {
+					await tx.cvTagGroup.deleteMany({
+						where: { cvId: id, id: { notIn: keepIds } },
+					});
+				}
+
+				for (const [index, item] of items.entries()) {
+					const order = item.order ?? index + 1;
+					const { tags, settings, ...rest } = item.content;
+					let tagGroupId = item.id;
+					const tagGroupData = {
+						title: rest.title ?? null,
+						order,
+						settings: settings ?? {},
+					};
+					if (tagGroupId) {
+						await tx.cvTagGroup.update({
+							where: { id: tagGroupId },
+							data: tagGroupData,
+						});
+					} else {
+						const created = await tx.cvTagGroup.create({
+							data: { cvId: id, ...tagGroupData },
+						});
+						tagGroupId = created.id;
+					}
+					// tags nested — ton bloc tx.cvTag est déjà bon
+					const tagKeepIds = tags
+						.map((t) => t.id)
+						.filter((tagId): tagId is string => !!tagId);
+					await tx.cvTag.deleteMany({
+						where:
+							tagKeepIds.length === 0
+								? { groupId: tagGroupId }
+								: {
+										groupId: tagGroupId,
+										id: { notIn: tagKeepIds },
+									},
+					});
+					for (const [tIndex, t] of tags.entries()) {
+						const tOrder = t.order ?? tIndex + 1;
+						const data = {
+							tagId: t.content.tagId,
+							order: tOrder,
+						};
+						if (t.id) {
+							await tx.cvTag.update({ where: { id: t.id }, data });
+						} else {
+							await tx.cvTag.create({
+								data: { groupId: tagGroupId, ...data },
+							});
+						}
+					}
+				}
 			}
 
 			// ——— 21. Modules (replace) ———
@@ -1052,6 +1150,7 @@ export class CvSaveService {
 						cvId: id,
 						type: mod.type,
 						title: mod.title ?? null,
+						column: mod.column ?? 0,
 						order: mod.order,
 						isActive: mod.isActive ?? true,
 						settings: mod.settings ?? {},
@@ -1062,7 +1161,7 @@ export class CvSaveService {
 			return id;
 		});
 
-		return cvService.findById(cvId);
+		return cvService.findById(cvId ?? "");
 	}
 }
 

@@ -1,6 +1,5 @@
 import z from "zod";
-
-export const achievementSettingsSchema = z.record(z.string(), z.boolean()).optional();
+import { achievementContentSchema } from "./cvTemplate.schema";
 
 export const createAchievementSchema = z.object({
 	title: z.string().min(1),
@@ -8,7 +7,7 @@ export const createAchievementSchema = z.object({
 	year: z.number().optional(),
 	technology: z.string().optional(),
 	order: z.number().min(1),
-	settings: achievementSettingsSchema.optional(),
+	settings: achievementContentSchema.optional(),
 });
 
 export const updateAchievementSchema = createAchievementSchema.partial();

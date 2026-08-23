@@ -1,11 +1,11 @@
 import z from "zod";
-import { Level } from "../../../generated/prisma/client";
 import { languageContentSchema } from "./cvTemplate.schema";
+import { LevelSchema } from "./enums";
 
 export const createLanguageSchema = z.object({
 	name: z.string(),
-	level: z.nativeEnum(Level),
-	order: z.number().optional(),	
+	level: LevelSchema,
+	order: z.number().optional(),
 	settings: languageContentSchema.optional(),
 });
 

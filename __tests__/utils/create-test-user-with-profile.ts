@@ -26,6 +26,9 @@ import type {
 	Certification,
 	Formation,
 	User,
+	ProfileTag,
+	ProfileTagGroup,
+	Tag,
 } from "../../generated/prisma/client";
 import type { CvTimelineStatus, Level } from "../../generated/prisma/enums";
 import { prismaTest } from "../../lib/prismaTest";
@@ -42,10 +45,17 @@ export type CompetenceGroupInput = {
 	competences: { name: string; order: number }[];
 };
 
+export type TagGroupInput = {
+	title: string;
+	order: number;
+	tags: { name: string; order: number }[];
+};
+
 type TestUserOptions = {
 	description?: string;
 	skillGroups?: SkillGroupInput[];
 	competenceGroups?: CompetenceGroupInput[];
+	tagGroups?: TagGroupInput[];
 	experiences?: {
 		title: string;
 		description: string;
@@ -209,6 +219,27 @@ export async function createTestUserWithProfile(options?: TestUserOptions) {
 											connectOrCreate: {
 												where: { name: c.name },
 												create: { name: c.name },
+											},
+										},
+									})),
+								},
+							})),
+						},
+					}),
+
+					// TAG GROUPS
+					...(options?.tagGroups && {
+						tags: {
+							create: options.tagGroups.map((group) => ({
+								title: group.title,
+								order: group.order,
+								tags: {
+									create: group.tags.map((t) => ({
+										order: t.order,
+										tag: {
+											connectOrCreate: {
+												where: { name: t.name },
+												create: { name: t.name },
 											},
 										},
 									})),
@@ -452,6 +483,13 @@ export async function createTestUserWithProfile(options?: TestUserOptions) {
 							},
 						},
 					},
+					tags: {
+						include: {
+							tags: {
+								include: { tag: true },
+							},
+						},
+					},
 					experiences: {
 						include: {
 							missions: true,
@@ -492,6 +530,9 @@ export async function createTestUserWithProfile(options?: TestUserOptions) {
 			})[];
 			competences: (ProfileCompetenceGroup & {
 				competences: (ProfileCompetence & { competence: Competence })[];
+			})[];
+			tags: (ProfileTagGroup & {
+				tags: (ProfileTag & { tag: Tag })[];
 			})[];
 			experiences: (Experience & {
 				missions: MissionExperience[];
@@ -577,6 +618,27 @@ export async function createProfileCompetence(
 ) {
 	return prismaTest.profileCompetence.create({
 		data: { competenceId, groupId },
+	});
+}
+
+// === TAG ===
+export async function createTag(name: string) {
+	return prismaTest.tag.create({ data: { name } });
+}
+
+export async function createProfileTagGroup(
+	profileId: string,
+	title: string,
+	order: number,
+) {
+	return prismaTest.profileTagGroup.create({
+		data: { profileId, title, order },
+	});
+}
+
+export async function createProfileTag(tagId: string, groupId: string) {
+	return prismaTest.profileTag.create({
+		data: { tagId, groupId },
 	});
 }
 

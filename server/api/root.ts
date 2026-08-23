@@ -56,6 +56,11 @@ import { cvModuleRouter } from "./routers/cvModule.router";
 import { cvModuleItemRouter } from "./routers/cvModuleItem.router";
 import { colorRouter } from "./routers/color.router";
 import { unlockedTemplateRouter } from "./routers/unlockedTemplate.router";
+import { tagBaseRouter } from "./routers/tagBase.router";
+import { cvTagRouter } from "./routers/cvTag.router";
+import { cvTagGroupRouter } from "./routers/cvTagGroup.router";
+import { profileTagRouter } from "./routers/profileTag.router";
+import { profileTagGroupRouter } from "./routers/profileTagGroup.router";
 
 export const appRouter = router({
 	user: userRouter,
@@ -64,6 +69,7 @@ export const appRouter = router({
 	color: colorRouter,
 	competenceBase: competenceBaseRouter,
 	skillBase: skillBaseRouter,
+	tagBase: tagBaseRouter,
 	cvHeader: cvHeaderRouter,
 	cvAchievement: cvAchievementRouter,
 	cvCertification: cvCertificationRouter,
@@ -85,6 +91,8 @@ export const appRouter = router({
 	cvPublication: cvPublicationRouter,
 	cvSkill: cvSkillRouter,
 	cvSkillGroup: cvSkillGroupRouter,
+	cvTag: cvTagRouter,
+	cvTagGroup: cvTagGroupRouter,
 	cvSocialMedia: cvSocialMediaRouter,
 	cvStrength: cvStrengthRouter,
 	cvVolunteering: cvVolunteeringRouter,
@@ -111,6 +119,8 @@ export const appRouter = router({
 	profilePublication: profilePublicationRouter,
 	profileSkill: profileSkillRouter,
 	profileSkillGroup: profileSkillGroupRouter,
+	profileTag: profileTagRouter,
+	profileTagGroup: profileTagGroupRouter,
 	profileSocialMedia: profileSocialMediaRouter,
 	profileStrength: profileStrengthRouter,
 	profileVolunteering: profileVolunteeringRouter,

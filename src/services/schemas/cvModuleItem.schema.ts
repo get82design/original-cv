@@ -1,8 +1,8 @@
 import z from "zod";
-import { CVModuleItemType } from "../../../generated/prisma/enums";
+import { CVModuleItemTypeSchema } from "./enums";
 
 export const cvModuleItemSchema = z.object({
-	itemType: z.nativeEnum(CVModuleItemType),
+	itemType: CVModuleItemTypeSchema,
 	itemId: z.string(),
 	order: z.number(),
 });

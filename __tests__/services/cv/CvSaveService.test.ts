@@ -1,8 +1,15 @@
 import { describe, expect, it } from "vitest";
-import { CVModuleType, CvTimelineStatus, Level } from "../../../generated/prisma/client";
+import {
+	CVModuleType,
+	CvTimelineStatus,
+	Level,
+} from "../../../generated/prisma/client";
 import { prismaTest } from "../../../lib/prismaTest";
 import { cvSaveService } from "../../../src/services/cv/cvSaveService";
-import { cvSaveSchema, type CvSaveInput } from "../../../src/services/schemas/cvSave.schema";
+import {
+	cvSaveSchema,
+	type CvSaveInput,
+} from "../../../src/services/schemas/cvSave.schema";
 import {
 	ForbiddenError,
 	NotFoundError,
@@ -20,6 +27,10 @@ async function createCatalogSkill(name = `skill-${Date.now()}`) {
 
 async function createCatalogCompetence(name = `competence-${Date.now()}`) {
 	return prismaTest.competence.create({ data: { name } });
+}
+
+async function createCatalogTag(name = `tag-${Date.now()}`) {
+	return prismaTest.tag.create({ data: { name } });
 }
 
 const baseTextSettings = {
@@ -71,6 +82,11 @@ const languageItemSettings = {
 	design: "stars" as const,
 };
 
+const expertiseItemSettings = {
+	title: baseTextSettings,
+	design: "stars" as const,
+};
+
 const educationItemSettings = {
 	diplome: baseTextSettings,
 	etablissement: baseTextSettings,
@@ -84,7 +100,7 @@ const educationItemSettings = {
 function buildSaveInput(
 	templateId: string,
 	overrides: Partial<CvSaveInput> = {},
-    opts: { skillId?: string, competenceId?: string } = {},
+	opts: { skillId?: string; competenceId?: string; tagId?: string } = {},
 ): CvSaveInput {
 	return {
 		templateId,
@@ -127,291 +143,382 @@ function buildSaveInput(
 				],
 				settings: sectionTitleSettings,
 			},
-            project: {
-                content: [
-                    {
-                        clientKey: "project-1",
-                        order: 1,
-                        content: { 
-                            title: "Projet 1", 
-                            start: new Date("2020-01-01"), 
-                            end: new Date("2022-01-01"), 
-                            status: CvTimelineStatus.INTERRUPTED,
-                            technology: "React",
-                            missions: [
-                                {
-                                    clientKey: "mission-1",
-                                    content: { content: "Développer des features" },
-                                },
-                            ],
-                            settings: projectItemSettings,
-                        },
-                    },
-                ],
+			project: {
+				content: [
+					{
+						clientKey: "project-1",
+						order: 1,
+						content: {
+							title: "Projet 1",
+							start: new Date("2020-01-01"),
+							end: new Date("2022-01-01"),
+							status: CvTimelineStatus.INTERRUPTED,
+							technology: "React",
+							missions: [
+								{
+									clientKey: "mission-1",
+									content: { content: "Développer des features" },
+								},
+							],
+							settings: projectItemSettings,
+						},
+					},
+				],
 				settings: sectionTitleSettings,
-            },
-            volunteering: {
-                content: [
-                    {
-                        clientKey: "volunteering-1",
-                        order: 1,
-                        content: {
-                            title: "Volontariat 1",
-                            organisation: "Organisation 1",
-                            start: new Date("2020-01-01"),
-                            end: new Date("2022-01-01"),
-                            location: "Paris",
-                            description: "Dev fullstack",
-                            missions: [
-                                { clientKey: "mission-1", content: { content: "Développer des features" } },
-                            ],
-                            settings: { withDescription: true, withList: true },
-                        },
-                    },
-                ],
-            },
-            formation: {
-                content: [
-                    {
-                        clientKey: "formation-1",
-                        order: 1,
-                        content: {
-                            title: "Formation 1",
-                            start: new Date("2020-01-01"),
-                            end: new Date("2022-01-01"),
-                            status: CvTimelineStatus.COMPLETED,
-                            organismeFormation: "Organisation 1",
-                            settings: { withDescription: true, withList: true },
-                        },
-                    },
-                ],
-            },
-            certification: {
-                content: [
-                    {
-                        clientKey: "certification-1",
-                        order: 1,
-                        content: {
-                            title: "Certification 1",
-                            organismeCertification: "Organisation 1",
-                            settings: { withDescription: true, withList: true },
-                        },
-                    },
-                ],
-            },
-            prize: {
-                content: [
-                    {
-                        clientKey: "prize-1",
-                        order: 1,
-                        content: { 
-                            title: "Prix 1", 
-                            domaine: "Domain 1", 
-                            settings: { 
-                                withDescription: true, 
-                                withList: true,
-                            },
-                        },
-                    },
-                ],
-            },
-            expertise: {
-                content: [
-                    {
-                        clientKey: "expertise-1",
-                        order: 1,
-                        content: {
-                            title: "Expertise 1",
-                            level: Level.Débutant,
-                            settings: {
-                                withDescription: true,
-                                withList: true,
-                            },
-                        },
-                    },
-                ],
-            },  
-            philosophy: {
-                content: {
-                    citation: "Philosophie 1",
-                    author: "Author 1",
-                    settings: {
-                        withDescription: true,
-                        withList: true,
-                    },
-                },
-            },
-            socialMedia: {
-                content: [
-                    {
-                        clientKey: "socialMedia-1",
-                        order: 1,
-                        content: {
-                            socialNetwork: "Social Network 1",
-                            username: "JohnDoe",
+			},
+			volunteering: {
+				content: [
+					{
+						clientKey: "volunteering-1",
+						order: 1,
+						content: {
+							title: "Volontariat 1",
+							organisation: "Organisation 1",
+							start: new Date("2020-01-01"),
+							end: new Date("2022-01-01"),
+							location: "Paris",
+							description: "Dev fullstack",
+							missions: [
+								{
+									clientKey: "mission-1",
+									content: { content: "Développer des features" },
+								},
+							],
+							settings: {
+								title: baseTextSettings,
+								organisation: baseTextSettings,
+								description: baseTextSettings,
+								periode: baseTextSettings,
+								location: baseTextSettings,
+								missions: baseTextSettings,
+								withTitle: true,
+								withOrganisation: true,
+								withDescription: true,
+								withPeriode: true,
+								withLocation: true,
+								withMissions: true,
+							},
+						},
+					},
+				],
+				settings: sectionTitleSettings,
+			},
+			formation: {
+				content: [
+					{
+						clientKey: "formation-1",
+						order: 1,
+						content: {
+							title: "Formation 1",
+							start: new Date("2020-01-01"),
+							end: new Date("2022-01-01"),
+							status: CvTimelineStatus.COMPLETED,
+							organismeFormation: "Organisation 1",
+							settings: {
+								title: baseTextSettings,
+								organismeFormation: baseTextSettings,
+								status: baseTextSettings,
+								periode: baseTextSettings,
+								withOrganismeFormation: true,
+								withTitle: true,
+								withStatus: true,
+								withPeriode: true,
+							},
+						},
+					},
+				],
+				settings: sectionTitleSettings,
+			},
+			certification: {
+				content: [
+					{
+						clientKey: "certification-1",
+						order: 1,
+						content: {
+							title: "Certification 1",
+							organismeCertification: "Organisation 1",
+							settings: {
+								title: baseTextSettings,
+								organismeCertification: baseTextSettings,
+								withTitle: true,
+								withOrganismeCertification: true,
+							},
+						},
+					},
+				],
+				settings: sectionTitleSettings,
+			},
+			prize: {
+				content: [
+					{
+						clientKey: "prize-1",
+						order: 1,
+						content: {
+							title: "Prix 1",
+							domaine: "Domain 1",
+							settings: {
+								title: baseTextSettings,
+								domaine: baseTextSettings,
+								withTitle: true,
+								withDomain: true,
+								withIcon: true,
+							},
+						},
+					},
+				],
+				settings: sectionTitleSettings,
+			},
+			expertise: {
+				content: [
+					{
+						clientKey: "expertise-1",
+						order: 1,
+						content: {
+							title: "Expertise 1",
+							level: Level.Débutant,
+							settings: {
+								title: baseTextSettings,
+								design: "stars" as const,
+							},
+						},
+					},
+				],
+				settings: sectionTitleSettings,
+			},
+			philosophy: {
+				content: {
+					citation: "Philosophie 1",
+					author: "Author 1",
+				},
+				settings: {
+					title: baseTextSettings,
+					content: {
+						citation: baseTextSettings,
+						author: baseTextSettings,
+						withAuthor: true,
+					},
+				},
+			},
+			socialMedia: {
+				content: [
+					{
+						clientKey: "socialMedia-1",
+						order: 1,
+						content: {
+							socialNetwork: "Social Network 1",
+							username: "JohnDoe",
 							icon: "🌐",
-                            settings: { 
+							settings: {
 								socialNetwork: baseTextSettings,
 								username: baseTextSettings,
-								withIcon: true, 
-								withSocialNetwork: true, 
-								withUsername: true 
+								withIcon: true,
+								withSocialNetwork: true,
+								withUsername: true,
 							},
-                        },
-                    },
-                ],
+						},
+					},
+				],
 				settings: sectionTitleSettings,
-            },
-            passion: {
-                content: [
-                    {
-                        clientKey: "passion-1",
-                        order: 1,
-                        content: {
-                            title: "Passion 1",
-                            icon: "🎨",
-                            settings: {
-                                withDescription: true,
-                                withList: true,
-                            },
-                        },
-                    },
-                ],
-            },
-            language: {
-                content: [
-                    {
-                        clientKey: "language-1",
-                        order: 1,
-                        content: {
-                            name: "Language 1",
-                            level: Level.Débutant,
-                            settings: languageItemSettings,
-                        },
-                    },
-                ],
+			},
+			passion: {
+				content: [
+					{
+						clientKey: "passion-1",
+						order: 1,
+						content: {
+							title: "Passion 1",
+							icon: "BsBalloonHeartFill",
+							settings: {
+								passion: baseTextSettings,
+								withPassion: true,
+								withIcon: true,
+								iconColor: "primaryColor" as const,
+							},
+						},
+					},
+				],
 				settings: sectionTitleSettings,
-            },
-            publication: {
-                content: [
-                    {
-                        clientKey: "publication-1",
-                        order: 1,
-                        content: {
-                            title: "Publication 1",
-                            start: new Date("2020-01-01"),
-                            end: new Date("2022-01-01"),
-                            journalName: "Journal 1",
-                            description: "Description 1",
-                            url: "https://www.google.com",
-                            settings: {
-                                withDescription: true,
-                                withList: true,
-                            },
-                        },
-                    },
-                ],
-            },
-            strength: {
-                content: [
-                    {
-                        clientKey: "strength-1",
-                        order: 1,
-                        content: {
-                            title: "Strength 1",
-                            icon: "💪",
-                            settings: {
-                                withDescription: true,
-                                withList: true,
-                            },
-                        },
-                    },
-                ],
-            },
-            achievement: {
-                content: [
-                    {
-                        clientKey: "achievement-1",
-                        order: 1,
-                        content: {
-                            title: "Achievement 1",
-                            description: "Description 1",
-                            year: 2021,
-                            technology: "Technology 1",
-                            settings: {
-                                withDescription: true,
-                                withList: true,
-                            },
-                        },
-                    },
-                ],
-            },
-            education: {
-                content: [
-                    {
-                        clientKey: "education-1",
-                        order: 1,
-                        content: {
-                            title: "Education 1",
-                            school: "School 1",
-                            degree: "Degree 1",
-                            city: "City 1",
-                            start: new Date("2020-01-01"),
-                            end: new Date("2022-01-01"),
-                            obtained: CvTimelineStatus.COMPLETED,
-                            settings: educationItemSettings,
-                        },
-                    },
-                ],
+			},
+			language: {
+				content: [
+					{
+						clientKey: "language-1",
+						order: 1,
+						content: {
+							name: "Language 1",
+							level: Level.Débutant,
+							settings: languageItemSettings,
+						},
+					},
+				],
 				settings: sectionTitleSettings,
-            },
-            skillGroup: opts?.skillId
-                ? {
-                    content: [
-                        {
-                            clientKey: "skillGroup-1",
-                            order: 1,
-                            content: {
-                            title: "Skill Group 1",
-                            skills: [
-                                {
-                                    clientKey: "skill-1",
-                                    order: 1,
-                                    content: {
-										name: "Skill 1",
-                                        skillId: opts.skillId,
-                                        level: Level.Débutant,
-                                    },
-                                },
-                            ],
-                            },
-                        },
-                    ],
-					settings: sectionTitleSettings,
-                }
-                : undefined, // ou {} si tu préfères toujours envoyer la section
-            competenceGroup: opts?.competenceId
-            ? {
-                content: [
-                    {
-                        clientKey: "competenceGroup-1",
-                        order: 1,
-                        content: {
-                        title: "Competence Group 1",
-                        competences: [
-                            {
-                                clientKey: "competence-1",
-                                order: 1,
-                                content: {
-                                    competenceId: opts.competenceId,
-                                },
-                            },
-                        ],
-                        },
-                    },
-                ],
-            }
-            : undefined, // ou {} si tu préfères toujours envoyer la section
+			},
+			publication: {
+				content: [
+					{
+						clientKey: "publication-1",
+						order: 1,
+						content: {
+							title: "Publication 1",
+							start: new Date("2020-01-01"),
+							end: new Date("2022-01-01"),
+							journalName: "Journal 1",
+							description: "Description 1",
+							url: "https://www.google.com",
+							settings: {
+								title: baseTextSettings,
+								periode: baseTextSettings,
+								journalName: baseTextSettings,
+								description: baseTextSettings,
+								url: baseTextSettings,
+								withTitle: true,
+								withDescription: true,
+								withJournalName: true,
+								withPeriode: true,
+								withUrl: true,
+							},
+						},
+					},
+				],
+				settings: sectionTitleSettings,
+			},
+			strength: {
+				content: [
+					{
+						clientKey: "strength-1",
+						order: 1,
+						content: {
+							title: "Strength 1",
+							description: "Description 1",
+							icon: "FaThumbsUp",
+							settings: {
+								withStrength: true,
+								withIcon: true,
+								withDescription: true,
+								iconColor: "primaryColor",
+								strength: baseTextSettings,
+								description: baseTextSettings,
+							},
+						},
+					},
+				],
+				settings: sectionTitleSettings,
+			},
+			achievement: {
+				content: [
+					{
+						clientKey: "achievement-1",
+						order: 1,
+						content: {
+							title: "Achievement 1",
+							description: "Description 1",
+							year: 2021,
+							technology: "Technology 1",
+							settings: {
+								title: baseTextSettings,
+								description: baseTextSettings,
+								year: baseTextSettings,
+								technology: baseTextSettings,
+								withTitle: true,
+								withDescription: true,
+								withYear: true,
+								withTechnology: true,
+							},
+						},
+					},
+				],
+				settings: sectionTitleSettings,
+			},
+			education: {
+				content: [
+					{
+						clientKey: "education-1",
+						order: 1,
+						content: {
+							title: "Education 1",
+							school: "School 1",
+							degree: "Degree 1",
+							city: "City 1",
+							start: new Date("2020-01-01"),
+							end: new Date("2022-01-01"),
+							obtained: CvTimelineStatus.COMPLETED,
+							settings: educationItemSettings,
+						},
+					},
+				],
+				settings: sectionTitleSettings,
+			},
+			skillGroup: opts?.skillId
+				? {
+						content: [
+							{
+								clientKey: "skillGroup-1",
+								order: 1,
+								content: {
+									title: "Skill Group 1",
+									skills: [
+										{
+											clientKey: "skill-1",
+											order: 1,
+											content: {
+												name: "Skill 1",
+												skillId: opts.skillId,
+												level: Level.Débutant,
+											},
+										},
+									],
+								},
+							},
+						],
+						settings: sectionTitleSettings,
+					}
+				: undefined, // ou {} si tu préfères toujours envoyer la section
+			competenceGroup: opts?.competenceId
+				? {
+						content: [
+							{
+								clientKey: "competenceGroup-1",
+								order: 1,
+								content: {
+									title: "Competence Group 1",
+									competences: [
+										{
+											clientKey: "competence-1",
+											order: 1,
+											content: {
+												competenceId: opts.competenceId,
+											},
+										},
+									],
+								},
+							},
+						],
+						settings: sectionTitleSettings,
+					}
+				: undefined, // ou {} si tu préfères toujours envoyer la section
+			tagGroup: opts?.tagId
+				? {
+						content: [
+							{
+								clientKey: "tagGroup-1",
+								order: 1,
+								content: {
+									title: "Tag Group 1",
+									tags: [
+										{
+											clientKey: "tag-1",
+											order: 1,
+											content: {
+												tagId: opts.tagId,
+											},
+										},
+									],
+								},
+							},
+						],
+						settings: sectionTitleSettings,
+					}
+				: undefined, // ou {} si tu préfères toujours envoyer la section
 		},
 		modules: [
 			{
@@ -427,118 +534,132 @@ function buildSaveInput(
 				title: "Expériences",
 				settings: {},
 			},
-            {
-                type: CVModuleType.project,
-                order: 3,
-                isActive: true,
-                title: "Projets",
-                settings: {},
-            },
-            {
-                type: CVModuleType.volunteering,
-                order: 4,
-                isActive: true,
-                title: "Volontariat",
-                settings: {},
-            },
-            {
-                type: CVModuleType.formation,
-                order: 5,
-                isActive: true,
-                title: "Formations",
-                settings: {},
-            },
-            {
-                type: CVModuleType.certification,
-                order: 6,
-                isActive: true,
-                title: "Certifications",
-                settings: {},
-            },
-            {
-                type: CVModuleType.prize,
-                order: 7,
-                isActive: true,
-                title: "Prix",
-                settings: {},
-            },
-            {
-                type: CVModuleType.expertise,
-                order: 8,
-                isActive: true,
-                title: "Expertises",
-                settings: {},
-            },
-            {
-                type: CVModuleType.philosophy,
-                order: 9,
-                isActive: true,
-                title: "Philosophie",
-                settings: {},
-            },
-            {
-                type: CVModuleType.socialMedia,
-                order: 10,
-                isActive: true,
-                title: "Réseaux sociaux",
-                settings: {},
-            },
-            {
-                type: CVModuleType.passion,
-                order: 11,
-                isActive: true,
-                title: "Passions",
-                settings: {},
-            },
-            {
-                type: CVModuleType.language,
-                order: 12,
-                isActive: true,
-                title: "Langues",
-                settings: {},
-            },
-            {
-                type: CVModuleType.publication,
-                order: 13,
-                isActive: true,
-                title: "Publications",
-                settings: {},
-            },
-            {
-                type: CVModuleType.strength,
-                order: 14,
-                isActive: true,
-                title: "Compétences",
-                settings: {},
-            },
-            {
-                type: CVModuleType.achievement,
-                order: 15,
-                isActive: true,
-                title: "Achievements",
-                settings: {},
-            },
-            {
-                type: CVModuleType.education,
-                order: 16,
-                isActive: true,
-                title: "Éducation",
-                settings: {},
-            },
-            {
-                type: CVModuleType.skill,
-                order: 17,
-                isActive: true,
-                title: "Skills",
-                settings: {},
-            },
-            {
-                type: CVModuleType.competence,
-                order: 18,
-                isActive: true,
-                title: "Competences",
-                settings: {},
-            },
+			{
+				type: CVModuleType.project,
+				order: 3,
+				isActive: true,
+				title: "Projets",
+				settings: {},
+			},
+			{
+				type: CVModuleType.volunteering,
+				order: 4,
+				isActive: true,
+				title: "Volontariat",
+				settings: {},
+			},
+			{
+				type: CVModuleType.formation,
+				order: 5,
+				isActive: true,
+				title: "Formations",
+				settings: {},
+			},
+			{
+				type: CVModuleType.certification,
+				order: 6,
+				isActive: true,
+				title: "Certifications",
+				settings: {},
+			},
+			{
+				type: CVModuleType.prize,
+				order: 7,
+				isActive: true,
+				title: "Prix",
+				settings: {},
+			},
+			{
+				type: CVModuleType.expertise,
+				order: 8,
+				isActive: true,
+				title: "Expertises",
+				settings: {},
+			},
+			{
+				type: CVModuleType.philosophy,
+				order: 9,
+				isActive: true,
+				title: "Philosophie",
+				settings: {
+					title: baseTextSettings,
+					content: {
+						citation: baseTextSettings,
+						author: baseTextSettings,
+						withAuthor: true,
+					},
+				},
+			},
+			{
+				type: CVModuleType.socialMedia,
+				order: 10,
+				isActive: true,
+				title: "Réseaux sociaux",
+				settings: {},
+			},
+			{
+				type: CVModuleType.passion,
+				order: 11,
+				isActive: true,
+				title: "Passions",
+				settings: {},
+			},
+			{
+				type: CVModuleType.language,
+				order: 12,
+				isActive: true,
+				title: "Langues",
+				settings: {},
+			},
+			{
+				type: CVModuleType.publication,
+				order: 13,
+				isActive: true,
+				title: "Publications",
+				settings: {},
+			},
+			{
+				type: CVModuleType.strength,
+				order: 14,
+				isActive: true,
+				title: "Atouts",
+				settings: {},
+			},
+			{
+				type: CVModuleType.achievement,
+				order: 15,
+				isActive: true,
+				title: "Achievements",
+				settings: {},
+			},
+			{
+				type: CVModuleType.education,
+				order: 16,
+				isActive: true,
+				title: "Éducation",
+				settings: {},
+			},
+			{
+				type: CVModuleType.skill,
+				order: 17,
+				isActive: true,
+				title: "Skills",
+				settings: {},
+			},
+			{
+				type: CVModuleType.competence,
+				order: 18,
+				isActive: true,
+				title: "Competences",
+				settings: {},
+			},
+			{
+				type: CVModuleType.tag,
+				order: 19,
+				isActive: true,
+				title: "Tags",
+				settings: {},
+			},
 		],
 		...overrides,
 	};
@@ -552,12 +673,22 @@ describe("CvSaveService.save", () => {
 		const catalogSkill = await prismaTest.skill.create({
 			data: { name: `skill-${Date.now()}` }, // name unique
 		});
-		const catalogCompetence = await createCatalogCompetence(`competence-${Date.now()}`);
+		const catalogCompetence = await createCatalogCompetence(
+			`competence-${Date.now()}`,
+		);
+		const catalogTag = await createCatalogTag(`tag-${Date.now()}`);
 		const result = await cvSaveService.save(
 			user.id,
-			buildSaveInput(template.id, {}, { skillId: catalogSkill.id, competenceId: catalogCompetence.id }),
+			buildSaveInput(
+				template.id,
+				{},
+				{
+					skillId: catalogSkill.id,
+					competenceId: catalogCompetence.id,
+					tagId: catalogTag.id,
+				},
+			),
 		);
-
 
 		expect(result.userId).toBe(user.id);
 		expect(result.title).toBe("CV Test");
@@ -570,67 +701,94 @@ describe("CvSaveService.save", () => {
 		expect(result.experiences[0]?.cvMissions[0]?.content).toBe(
 			"Développer des features",
 		);
-        expect(result.experiences[0]?.settings).toEqual(experienceItemSettings);
+		expect(result.experiences[0]?.settings).toEqual(experienceItemSettings);
 		expect(result.projects).toHaveLength(1);
 		expect(result.projects[0]?.title).toBe("Projet 1");
 		expect(result.projects[0]?.cvMissions).toHaveLength(1);
 		expect(result.projects[0]?.cvMissions[0]?.content).toBe(
 			"Développer des features",
 		);
-        expect(result.projects[0]?.technology).toBe("React");
-        expect(result.projects[0]?.status).toBe(CvTimelineStatus.INTERRUPTED);
-        expect(result.projects[0]?.settings).toEqual(projectItemSettings);
-        expect(result.volunteerings).toHaveLength(1);
-        expect(result.volunteerings[0]?.title).toBe("Volontariat 1");
-        expect(result.volunteerings[0]?.cvMissions).toHaveLength(1);
-        expect(result.volunteerings[0]?.cvMissions[0]?.content).toBe(
-            "Développer des features",
-        );
-        expect(result.volunteerings[0]?.settings).toEqual({
-            withDescription: true, withList: true,
-        });
-        expect(result.volunteerings[0]?.organisation).toBe("Organisation 1");
-        expect(result.volunteerings[0]?.start).toStrictEqual(new Date("2020-01-01"));
-        expect(result.volunteerings[0]?.end).toStrictEqual(new Date("2022-01-01"));
-        expect(result.volunteerings[0]?.location).toBe("Paris");
-        expect(result.volunteerings[0]?.description).toBe("Dev fullstack");
-        expect(result.formations).toHaveLength(1);
-        expect(result.formations[0]?.title).toBe("Formation 1");
-        expect(result.formations[0]?.settings).toEqual({
-            withDescription: true, withList: true,
-        });
-        expect(result.formations[0]?.organismeFormation).toBe("Organisation 1");
-        expect(result.formations[0]?.start).toStrictEqual(new Date("2020-01-01"));
-        expect(result.formations[0]?.end).toStrictEqual(new Date("2022-01-01"));
-        expect(result.formations[0]?.status).toBe(CvTimelineStatus.COMPLETED);
-        expect(result.certifications).toHaveLength(1);
-        expect(result.certifications[0]?.title).toBe("Certification 1");
-        expect(result.certifications[0]?.settings).toEqual({
-            withDescription: true, withList: true,
-        });
-        expect(result.certifications[0]?.organismeCertification).toBe("Organisation 1");
-        expect(result.prizes).toHaveLength(1);
-        expect(result.prizes[0]?.title).toBe("Prix 1");
-        expect(result.prizes[0]?.settings).toEqual({
-            withDescription: true, withList: true,
-        });
-        expect(result.prizes[0]?.domaine).toBe("Domain 1");
-        expect(result.expertises).toHaveLength(1);
-        expect(result.expertises[0]?.title).toBe("Expertise 1");
-        expect(result.expertises[0]?.level).toBe(Level.Débutant);
-        expect(result.expertises[0]?.settings).toEqual({
-            withDescription: true, withList: true,
-        });
-        expect(result.philosophy).not.toBeNull();
-        expect(result.philosophy?.citation).toBe("Philosophie 1");
-        expect(result.philosophy?.author).toBe("Author 1");
-        expect(result.philosophy?.settings).toEqual({
-            withDescription: true, withList: true,
-        });
-        expect(result.socialMedias).toHaveLength(1);
-        expect(result.socialMedias[0]?.socialNetwork).toBe("Social Network 1");
-        expect(result.socialMedias[0]?.username).toBe("JohnDoe");
-        expect(result.socialMedias[0]?.icon).toBe("🌐");
+		expect(result.projects[0]?.technology).toBe("React");
+		expect(result.projects[0]?.status).toBe(CvTimelineStatus.INTERRUPTED);
+		expect(result.projects[0]?.settings).toEqual(projectItemSettings);
+		expect(result.volunteerings).toHaveLength(1);
+		expect(result.volunteerings[0]?.title).toBe("Volontariat 1");
+		expect(result.volunteerings[0]?.cvMissions).toHaveLength(1);
+		expect(result.volunteerings[0]?.cvMissions[0]?.content).toBe(
+			"Développer des features",
+		);
+		expect(result.volunteerings[0]?.settings).toEqual({
+			title: baseTextSettings,
+			organisation: baseTextSettings,
+			description: baseTextSettings,
+			periode: baseTextSettings,
+			location: baseTextSettings,
+			missions: baseTextSettings,
+			withTitle: true,
+			withOrganisation: true,
+			withDescription: true,
+			withPeriode: true,
+			withLocation: true,
+			withMissions: true,
+		});
+		expect(result.volunteerings[0]?.organisation).toBe("Organisation 1");
+		expect(result.volunteerings[0]?.start).toStrictEqual(
+			new Date("2020-01-01"),
+		);
+		expect(result.volunteerings[0]?.end).toStrictEqual(new Date("2022-01-01"));
+		expect(result.volunteerings[0]?.location).toBe("Paris");
+		expect(result.volunteerings[0]?.description).toBe("Dev fullstack");
+		expect(result.formations).toHaveLength(1);
+		expect(result.formations[0]?.title).toBe("Formation 1");
+		expect(result.formations[0]?.settings).toEqual({
+			title: baseTextSettings,
+			organismeFormation: baseTextSettings,
+			status: baseTextSettings,
+			periode: baseTextSettings,
+			withOrganismeFormation: true,
+			withTitle: true,
+			withStatus: true,
+			withPeriode: true,
+		});
+		expect(result.formations[0]?.organismeFormation).toBe("Organisation 1");
+		expect(result.formations[0]?.start).toStrictEqual(new Date("2020-01-01"));
+		expect(result.formations[0]?.end).toStrictEqual(new Date("2022-01-01"));
+		expect(result.formations[0]?.status).toBe(CvTimelineStatus.COMPLETED);
+		expect(result.certifications).toHaveLength(1);
+		expect(result.certifications[0]?.title).toBe("Certification 1");
+		expect(result.certifications[0]?.settings).toEqual({
+			title: baseTextSettings,
+			organismeCertification: baseTextSettings,
+			withTitle: true,
+			withOrganismeCertification: true,
+		});
+		expect(result.certifications[0]?.organismeCertification).toBe(
+			"Organisation 1",
+		);
+		expect(result.prizes).toHaveLength(1);
+		expect(result.prizes[0]?.title).toBe("Prix 1");
+		expect(result.prizes[0]?.settings).toEqual({
+			title: baseTextSettings,
+			domaine: baseTextSettings,
+			withTitle: true,
+			withDomain: true,
+			withIcon: true,
+		});
+		expect(result.prizes[0]?.domaine).toBe("Domain 1");
+		expect(result.expertises).toHaveLength(1);
+		expect(result.expertises[0]?.title).toBe("Expertise 1");
+		expect(result.expertises[0]?.level).toBe(Level.Débutant);
+		expect(result.expertises[0]?.settings).toEqual({
+			title: baseTextSettings,
+			design: "stars" as const,
+		});
+		expect(result.philosophy).not.toBeNull();
+		expect(result.philosophy?.citation).toBe("Philosophie 1");
+		expect(result.philosophy?.author).toBe("Author 1");
+		expect(result.socialMedias).toHaveLength(1);
+		expect(result.socialMedias[0]?.socialNetwork).toBe("Social Network 1");
+		expect(result.socialMedias[0]?.username).toBe("JohnDoe");
+		expect(result.socialMedias[0]?.icon).toBe("🌐");
 		expect(result.socialMedias[0]?.settings).toEqual({
 			socialNetwork: baseTextSettings,
 			username: baseTextSettings,
@@ -638,68 +796,107 @@ describe("CvSaveService.save", () => {
 			withSocialNetwork: true,
 			withUsername: true,
 		});
-        expect(result.passions).toHaveLength(1);
-        expect(result.passions[0]?.title).toBe("Passion 1");
-        expect(result.passions[0]?.icon).toBe("🎨");
-        expect(result.passions[0]?.settings).toEqual({
-            withDescription: true, withList: true,
-        });
-        expect(result.languages).toHaveLength(1);
-        expect(result.languages[0]?.name).toBe("Language 1");
-        expect(result.languages[0]?.level).toBe(Level.Débutant);
-        expect(result.languages[0]?.settings).toEqual(languageItemSettings);
-        expect(result.publications).toHaveLength(1);
-        expect(result.publications[0]?.title).toBe("Publication 1");
-        expect(result.publications[0]?.start).toStrictEqual(new Date("2020-01-01"));
-        expect(result.publications[0]?.end).toStrictEqual(new Date("2022-01-01"));
-        expect(result.publications[0]?.journalName).toBe("Journal 1");
-        expect(result.publications[0]?.description).toBe("Description 1");
-        expect(result.publications[0]?.url).toBe("https://www.google.com");
-        expect(result.publications[0]?.settings).toEqual({
-            withDescription: true, withList: true,
-        });
-        expect(result.strengths).toHaveLength(1);
-        expect(result.strengths[0]?.title).toBe("Strength 1");
-        expect(result.strengths[0]?.icon).toBe("💪");
-        expect(result.strengths[0]?.settings).toEqual({
-            withDescription: true, withList: true,
-        });
-        expect(result.achievements).toHaveLength(1);
-        expect(result.achievements[0]?.title).toBe("Achievement 1");
-        expect(result.achievements[0]?.description).toBe("Description 1");
-        expect(result.achievements[0]?.year).toBe(2021);
-        expect(result.achievements[0]?.technology).toBe("Technology 1");
-        expect(result.achievements[0]?.settings).toEqual({
-            withDescription: true, withList: true,
-        });
-        expect(result.educations).toHaveLength(1);
-        expect(result.educations[0]?.title).toBe("Education 1");
-        expect(result.educations[0]?.school).toBe("School 1");
-        expect(result.educations[0]?.degree).toBe("Degree 1");
-        expect(result.educations[0]?.city).toBe("City 1");
-        expect(result.educations[0]?.start).toStrictEqual(new Date("2020-01-01"));
-        expect(result.educations[0]?.end).toStrictEqual(new Date("2022-01-01"));
-        expect(result.educations[0]?.obtained).toBe(CvTimelineStatus.COMPLETED);
-        expect(result.educations[0]?.settings).toEqual(educationItemSettings);
-        expect(result.skillGroups).toHaveLength(1);
-        expect(result.skillGroups[0]?.title).toBe("Skill Group 1");
-        expect(result.skillGroups[0]?.skills).toHaveLength(1);
-        expect(result.skillGroups[0]?.skills[0]?.skill?.name).toBe(catalogSkill.name);
-        expect(result.skillGroups[0]?.skills[0]?.level).toBe(Level.Débutant);
-        expect(result.skillGroups[0]?.skills[0]?.order).toBe(1);
-        expect(result.skillGroups[0]?.skills[0]?.groupId).toBe(result.skillGroups[0]?.id);
-        expect(result.competences).toHaveLength(1);
-        expect(result.competences[0]?.title).toBe("Competence Group 1");
-        expect(result.competences[0]?.cvCompetences).toHaveLength(1);
-        expect(result.competences[0]?.cvCompetences[0]?.competence?.name).toBe(catalogCompetence.name);
-        expect(result.competences[0]?.cvCompetences[0]?.order).toBe(1);
-        expect(result.competences[0]?.cvCompetences[0]?.groupId).toBe(result.competences[0]?.id);
+		expect(result.passions).toHaveLength(1);
+		expect(result.passions[0]?.title).toBe("Passion 1");
+		expect(result.passions[0]?.icon).toBe("BsBalloonHeartFill");
+		expect(result.passions[0]?.settings).toEqual({
+			passion: baseTextSettings,
+			withPassion: true,
+			withIcon: true,
+			iconColor: "primaryColor" as const,
+		});
+		expect(result.languages).toHaveLength(1);
+		expect(result.languages[0]?.name).toBe("Language 1");
+		expect(result.languages[0]?.level).toBe(Level.Débutant);
+		expect(result.languages[0]?.settings).toEqual(languageItemSettings);
+		expect(result.publications).toHaveLength(1);
+		expect(result.publications[0]?.title).toBe("Publication 1");
+		expect(result.publications[0]?.start).toStrictEqual(new Date("2020-01-01"));
+		expect(result.publications[0]?.end).toStrictEqual(new Date("2022-01-01"));
+		expect(result.publications[0]?.journalName).toBe("Journal 1");
+		expect(result.publications[0]?.description).toBe("Description 1");
+		expect(result.publications[0]?.url).toBe("https://www.google.com");
+		expect(result.publications[0]?.settings).toEqual({
+			title: baseTextSettings,
+			periode: baseTextSettings,
+			journalName: baseTextSettings,
+			description: baseTextSettings,
+			url: baseTextSettings,
+			withTitle: true,
+			withDescription: true,
+			withJournalName: true,
+			withPeriode: true,
+			withUrl: true,
+		});
+		expect(result.strengths).toHaveLength(1);
+		expect(result.strengths[0]?.title).toBe("Strength 1");
+		expect(result.strengths[0]?.description).toBe("Description 1");
+		expect(result.strengths[0]?.icon).toBe("FaThumbsUp");
+		expect(result.strengths[0]?.settings).toEqual({
+			withStrength: true,
+			withIcon: true,
+			withDescription: true,
+			iconColor: "primaryColor",
+			strength: baseTextSettings,
+			description: baseTextSettings,
+		});
+		expect(result.achievements).toHaveLength(1);
+		expect(result.achievements[0]?.title).toBe("Achievement 1");
+		expect(result.achievements[0]?.description).toBe("Description 1");
+		expect(result.achievements[0]?.year).toBe(2021);
+		expect(result.achievements[0]?.technology).toBe("Technology 1");
+		expect(result.achievements[0]?.settings).toEqual({
+			title: baseTextSettings,
+			description: baseTextSettings,
+			year: baseTextSettings,
+			technology: baseTextSettings,
+			withTitle: true,
+			withDescription: true,
+			withYear: true,
+			withTechnology: true,
+		});
+		expect(result.educations).toHaveLength(1);
+		expect(result.educations[0]?.title).toBe("Education 1");
+		expect(result.educations[0]?.school).toBe("School 1");
+		expect(result.educations[0]?.degree).toBe("Degree 1");
+		expect(result.educations[0]?.city).toBe("City 1");
+		expect(result.educations[0]?.start).toStrictEqual(new Date("2020-01-01"));
+		expect(result.educations[0]?.end).toStrictEqual(new Date("2022-01-01"));
+		expect(result.educations[0]?.obtained).toBe(CvTimelineStatus.COMPLETED);
+		expect(result.educations[0]?.settings).toEqual(educationItemSettings);
+		expect(result.skillGroups).toHaveLength(1);
+		expect(result.skillGroups[0]?.title).toBe("Skill Group 1");
+		expect(result.skillGroups[0]?.skills).toHaveLength(1);
+		expect(result.skillGroups[0]?.skills[0]?.skill?.name).toBe(
+			catalogSkill.name,
+		);
+		expect(result.skillGroups[0]?.skills[0]?.level).toBe(Level.Débutant);
+		expect(result.skillGroups[0]?.skills[0]?.order).toBe(1);
+		expect(result.skillGroups[0]?.skills[0]?.groupId).toBe(
+			result.skillGroups[0]?.id,
+		);
+		expect(result.competences).toHaveLength(1);
+		expect(result.competences[0]?.title).toBe("Competence Group 1");
+		expect(result.competences[0]?.cvCompetences).toHaveLength(1);
+		expect(result.competences[0]?.cvCompetences[0]?.competence?.name).toBe(
+			catalogCompetence.name,
+		);
+		expect(result.competences[0]?.cvCompetences[0]?.order).toBe(1);
+		expect(result.competences[0]?.cvCompetences[0]?.groupId).toBe(
+			result.competences[0]?.id,
+		);
+		expect(result.tagGroups).toHaveLength(1);
+		expect(result.tagGroups[0]?.title).toBe("Tag Group 1");
+		expect(result.tagGroups[0]?.tags).toHaveLength(1);
+		expect(result.tagGroups[0]?.tags[0]?.tag?.name).toBe(catalogTag.name);
+		expect(result.tagGroups[0]?.tags[0]?.order).toBe(1);
+		expect(result.tagGroups[0]?.tags[0]?.groupId).toBe(result.tagGroups[0]?.id);
 
 		const modules = await prismaTest.cVModule.findMany({
 			where: { cvId: result.id },
 			orderBy: { order: "asc" },
 		});
-		expect(modules).toHaveLength(18);       
+		expect(modules).toHaveLength(19);
 		expect(modules[0]?.type).toBe(CVModuleType.description);
 		expect(modules[1]?.type).toBe(CVModuleType.experience);
 		expect(modules[2]?.type).toBe(CVModuleType.project);
@@ -718,6 +915,7 @@ describe("CvSaveService.save", () => {
 		expect(modules[15]?.type).toBe(CVModuleType.education);
 		expect(modules[16]?.type).toBe(CVModuleType.skill);
 		expect(modules[17]?.type).toBe(CVModuleType.competence);
+		expect(modules[18]?.type).toBe(CVModuleType.tag);
 	});
 
 	it("updates an existing CV with cvId", async () => {
@@ -854,9 +1052,9 @@ describe("CvSaveService.save", () => {
 								},
 							},
 						],
-					
-					settings: sectionTitleSettings,
-				},
+
+						settings: sectionTitleSettings,
+					},
 				},
 				modules: [],
 			}),
@@ -889,9 +1087,9 @@ describe("CvSaveService.save", () => {
 								},
 							},
 						],
-					
-					settings: sectionTitleSettings,
-				},
+
+						settings: sectionTitleSettings,
+					},
 				},
 				modules: [],
 			}),
@@ -906,7 +1104,7 @@ describe("CvSaveService.save", () => {
 		);
 	});
 
-    it("replaces projects: keeps listed ids and deletes others", async () => {
+	it("replaces projects: keeps listed ids and deletes others", async () => {
 		const user = await createTestUser();
 		const template = await createTestTemplate();
 
@@ -942,9 +1140,9 @@ describe("CvSaveService.save", () => {
 								},
 							},
 						],
-					
-					settings: sectionTitleSettings,
-				},
+
+						settings: sectionTitleSettings,
+					},
 				},
 				modules: [],
 			}),
@@ -980,7 +1178,7 @@ describe("CvSaveService.save", () => {
 								},
 							},
 						],
-					settings: sectionTitleSettings,
+						settings: sectionTitleSettings,
 					},
 				},
 				modules: [],
@@ -999,7 +1197,7 @@ describe("CvSaveService.save", () => {
 		expect(updated.projects[0]?.settings).toEqual(projectItemSettings);
 	});
 
-    it("replaces volunteerings: keeps listed ids and deletes others", async () => {
+	it("replaces volunteerings: keeps listed ids and deletes others", async () => {
 		const user = await createTestUser();
 		const template = await createTestTemplate();
 
@@ -1017,9 +1215,9 @@ describe("CvSaveService.save", () => {
 									title: "First",
 									start: new Date("2020-01-01"),
 									end: new Date("2022-01-01"),
-                                    organisation: "Organisation 1",
-                                    location: "Paris",
-                                    description: "Dev fullstack",
+									organisation: "Organisation 1",
+									location: "Paris",
+									description: "Dev fullstack",
 									missions: [],
 								},
 							},
@@ -1037,6 +1235,7 @@ describe("CvSaveService.save", () => {
 								},
 							},
 						],
+						settings: sectionTitleSettings,
 					},
 				},
 				modules: [],
@@ -1065,8 +1264,18 @@ describe("CvSaveService.save", () => {
 									location: "Paris",
 									description: "Dev fullstack",
 									settings: {
+										title: baseTextSettings,
+										organisation: baseTextSettings,
+										description: baseTextSettings,
+										periode: baseTextSettings,
+										location: baseTextSettings,
+										missions: baseTextSettings,
+										withTitle: true,
+										withOrganisation: true,
 										withDescription: true,
-										withList: true,
+										withPeriode: true,
+										withLocation: true,
+										withMissions: true,
 									},
 									missions: [
 										{
@@ -1077,6 +1286,7 @@ describe("CvSaveService.save", () => {
 								},
 							},
 						],
+						settings: sectionTitleSettings,
 					},
 				},
 				modules: [],
@@ -1094,12 +1304,22 @@ describe("CvSaveService.save", () => {
 		expect(updated.volunteerings[0]?.location).toBe("Paris");
 		expect(updated.volunteerings[0]?.description).toBe("Dev fullstack");
 		expect(updated.volunteerings[0]?.settings).toEqual({
+			title: baseTextSettings,
+			organisation: baseTextSettings,
+			description: baseTextSettings,
+			periode: baseTextSettings,
+			location: baseTextSettings,
+			missions: baseTextSettings,
+			withTitle: true,
+			withOrganisation: true,
 			withDescription: true,
-			withList: true,
+			withPeriode: true,
+			withLocation: true,
+			withMissions: true,
 		});
 	});
 
-    it("replaces formations: keeps listed ids and deletes others", async () => {
+	it("replaces formations: keeps listed ids and deletes others", async () => {
 		const user = await createTestUser();
 		const template = await createTestTemplate();
 
@@ -1109,6 +1329,7 @@ describe("CvSaveService.save", () => {
 				datas: {
 					header: { title: "John Doe" },
 					formation: {
+						settings: sectionTitleSettings,
 						content: [
 							{
 								clientKey: "formation-1",
@@ -1117,8 +1338,8 @@ describe("CvSaveService.save", () => {
 									title: "First",
 									start: new Date("2020-01-01"),
 									end: new Date("2022-01-01"),
-                                    organismeFormation: "Organisation 1",
-                                    status: CvTimelineStatus.COMPLETED,
+									organismeFormation: "Organisation 1",
+									status: CvTimelineStatus.COMPLETED,
 								},
 							},
 							{
@@ -1160,12 +1381,19 @@ describe("CvSaveService.save", () => {
 									organismeFormation: "Organisation 1",
 									status: CvTimelineStatus.COMPLETED,
 									settings: {
-										withDescription: true,
-										withList: true,
+										title: baseTextSettings,
+										organismeFormation: baseTextSettings,
+										periode: baseTextSettings,
+										status: baseTextSettings,
+										withTitle: true,
+										withOrganismeFormation: true,
+										withPeriode: true,
+										withStatus: true,
 									},
 								},
 							},
 						],
+						settings: sectionTitleSettings,
 					},
 				},
 				modules: [],
@@ -1178,12 +1406,18 @@ describe("CvSaveService.save", () => {
 		expect(updated.formations[0]?.organismeFormation).toBe("Organisation 1");
 		expect(updated.formations[0]?.status).toBe(CvTimelineStatus.COMPLETED);
 		expect(updated.formations[0]?.settings).toEqual({
-			withDescription: true,
-			withList: true,
+			title: baseTextSettings,
+			organismeFormation: baseTextSettings,
+			periode: baseTextSettings,
+			status: baseTextSettings,
+			withTitle: true,
+			withOrganismeFormation: true,
+			withPeriode: true,
+			withStatus: true,
 		});
 	});
 
-    it("replaces certifications: keeps listed ids and deletes others", async () => {
+	it("replaces certifications: keeps listed ids and deletes others", async () => {
 		const user = await createTestUser();
 		const template = await createTestTemplate();
 
@@ -1199,7 +1433,7 @@ describe("CvSaveService.save", () => {
 								order: 1,
 								content: {
 									title: "First",
-                                    organismeCertification: "Organisation 1",
+									organismeCertification: "Organisation 1",
 								},
 							},
 							{
@@ -1211,6 +1445,7 @@ describe("CvSaveService.save", () => {
 								},
 							},
 						],
+						settings: sectionTitleSettings,
 					},
 				},
 				modules: [],
@@ -1235,12 +1470,15 @@ describe("CvSaveService.save", () => {
 									title: "First updated",
 									organismeCertification: "Organisation 1",
 									settings: {
-										withDescription: true,
-										withList: true,
+										title: baseTextSettings,
+										organismeCertification: baseTextSettings,
+										withTitle: true,
+										withOrganismeCertification: true,
 									},
 								},
 							},
 						],
+						settings: sectionTitleSettings,
 					},
 				},
 				modules: [],
@@ -1250,14 +1488,18 @@ describe("CvSaveService.save", () => {
 		expect(updated.certifications).toHaveLength(1);
 		expect(updated.certifications[0]?.id).toBe(keepId);
 		expect(updated.certifications[0]?.title).toBe("First updated");
-		expect(updated.certifications[0]?.organismeCertification).toBe("Organisation 1");
+		expect(updated.certifications[0]?.organismeCertification).toBe(
+			"Organisation 1",
+		);
 		expect(updated.certifications[0]?.settings).toEqual({
-			withDescription: true,
-			withList: true,
+			title: baseTextSettings,
+			organismeCertification: baseTextSettings,
+			withTitle: true,
+			withOrganismeCertification: true,
 		});
 	});
 
-    it("replaces prizes: keeps listed ids and deletes others", async () => {
+	it("replaces prizes: keeps listed ids and deletes others", async () => {
 		const user = await createTestUser();
 		const template = await createTestTemplate();
 
@@ -1273,7 +1515,7 @@ describe("CvSaveService.save", () => {
 								order: 1,
 								content: {
 									title: "First",
-                                    domaine: "Domain 1",
+									domaine: "Domain 1",
 								},
 							},
 							{
@@ -1285,6 +1527,7 @@ describe("CvSaveService.save", () => {
 								},
 							},
 						],
+						settings: sectionTitleSettings,
 					},
 				},
 				modules: [],
@@ -1309,12 +1552,16 @@ describe("CvSaveService.save", () => {
 									title: "First updated",
 									domaine: "Domain 1",
 									settings: {
-										withDescription: true,
-										withList: true,
+										title: baseTextSettings,
+										domaine: baseTextSettings,
+										withTitle: true,
+										withDomain: true,
+										withIcon: true,
 									},
 								},
 							},
 						],
+						settings: sectionTitleSettings,
 					},
 				},
 				modules: [],
@@ -1326,12 +1573,15 @@ describe("CvSaveService.save", () => {
 		expect(updated.prizes[0]?.title).toBe("First updated");
 		expect(updated.prizes[0]?.domaine).toBe("Domain 1");
 		expect(updated.prizes[0]?.settings).toEqual({
-			withDescription: true,
-			withList: true,
+			title: baseTextSettings,
+			domaine: baseTextSettings,
+			withTitle: true,
+			withDomain: true,
+			withIcon: true,
 		});
 	});
 
-    it("replaces expertises: keeps listed ids and deletes others", async () => {
+	it("replaces expertises: keeps listed ids and deletes others", async () => {
 		const user = await createTestUser();
 		const template = await createTestTemplate();
 
@@ -1347,7 +1597,7 @@ describe("CvSaveService.save", () => {
 								order: 1,
 								content: {
 									title: "First",
-                                    level: Level.Débutant,
+									level: Level.Débutant,
 								},
 							},
 							{
@@ -1359,6 +1609,7 @@ describe("CvSaveService.save", () => {
 								},
 							},
 						],
+						settings: sectionTitleSettings,
 					},
 				},
 				modules: [],
@@ -1382,13 +1633,10 @@ describe("CvSaveService.save", () => {
 								content: {
 									title: "First updated",
 									level: Level.Débutant,
-									settings: {
-										withDescription: true,
-										withList: true,
-									},
 								},
 							},
 						],
+						settings: sectionTitleSettings,
 					},
 				},
 				modules: [],
@@ -1399,13 +1647,9 @@ describe("CvSaveService.save", () => {
 		expect(updated.expertises[0]?.id).toBe(keepId);
 		expect(updated.expertises[0]?.title).toBe("First updated");
 		expect(updated.expertises[0]?.level).toBe(Level.Débutant);
-		expect(updated.expertises[0]?.settings).toEqual({
-			withDescription: true,
-			withList: true,
-		});
 	});
 
-    it("replaces social media: keeps listed ids and deletes others", async () => {
+	it("replaces social media: keeps listed ids and deletes others", async () => {
 		const user = await createTestUser();
 		const template = await createTestTemplate();
 
@@ -1421,7 +1665,7 @@ describe("CvSaveService.save", () => {
 								order: 1,
 								content: {
 									socialNetwork: "Twitter",
-                                    username: "JohnDoe",
+									username: "JohnDoe",
 									icon: "🌐",
 									settings: {
 										socialNetwork: baseTextSettings,
@@ -1456,7 +1700,9 @@ describe("CvSaveService.save", () => {
 			}),
 		);
 
-		const keepId = created.socialMedias.find((s) => s.socialNetwork === "Twitter")?.id;
+		const keepId = created.socialMedias.find(
+			(s) => s.socialNetwork === "Twitter",
+		)?.id;
 		expect(keepId).toBeDefined();
 
 		const updated = await cvSaveService.save(
@@ -1505,7 +1751,7 @@ describe("CvSaveService.save", () => {
 		});
 	});
 
-    it("replaces passions: keeps listed ids and deletes others", async () => {
+	it("replaces passions: keeps listed ids and deletes others", async () => {
 		const user = await createTestUser();
 		const template = await createTestTemplate();
 
@@ -1521,7 +1767,7 @@ describe("CvSaveService.save", () => {
 								order: 1,
 								content: {
 									title: "Passion 1",
-                                    icon: "🎨",
+									icon: "🎨",
 								},
 							},
 							{
@@ -1533,6 +1779,7 @@ describe("CvSaveService.save", () => {
 								},
 							},
 						],
+						settings: sectionTitleSettings,
 					},
 				},
 				modules: [],
@@ -1557,12 +1804,14 @@ describe("CvSaveService.save", () => {
 									title: "Passion 1 updated",
 									icon: "🎨 updated",
 									settings: {
-										withDescription: true,
+										passion: baseTextSettings,
+										withPassion: true,
 										withIcon: true,
 									},
 								},
 							},
 						],
+						settings: sectionTitleSettings,
 					},
 				},
 				modules: [],
@@ -1574,12 +1823,13 @@ describe("CvSaveService.save", () => {
 		expect(updated.passions[0]?.title).toBe("Passion 1 updated");
 		expect(updated.passions[0]?.icon).toBe("🎨 updated");
 		expect(updated.passions[0]?.settings).toEqual({
-			withDescription: true,
+			passion: baseTextSettings,
+			withPassion: true,
 			withIcon: true,
 		});
 	});
 
-    it("replaces languages: keeps listed ids and deletes others", async () => {
+	it("replaces languages: keeps listed ids and deletes others", async () => {
 		const user = await createTestUser();
 		const template = await createTestTemplate();
 
@@ -1595,7 +1845,7 @@ describe("CvSaveService.save", () => {
 								order: 1,
 								content: {
 									name: "Language 1",
-                                    level: Level.Débutant,
+									level: Level.Débutant,
 								},
 							},
 							{
@@ -1607,9 +1857,9 @@ describe("CvSaveService.save", () => {
 								},
 							},
 						],
-					
-					settings: sectionTitleSettings,
-				},
+
+						settings: sectionTitleSettings,
+					},
 				},
 				modules: [],
 			}),
@@ -1623,7 +1873,7 @@ describe("CvSaveService.save", () => {
 			buildSaveInput(template.id, {
 				cvId: created.id,
 				datas: {
-					    language: {
+					language: {
 						content: [
 							{
 								id: keepId,
@@ -1636,7 +1886,7 @@ describe("CvSaveService.save", () => {
 								},
 							},
 						],
-					settings: sectionTitleSettings,
+						settings: sectionTitleSettings,
 					},
 				},
 				modules: [],
@@ -1650,7 +1900,7 @@ describe("CvSaveService.save", () => {
 		expect(updated.languages[0]?.settings).toEqual(languageItemSettings);
 	});
 
-    it("replaces publications: keeps listed ids and deletes others", async () => {
+	it("replaces publications: keeps listed ids and deletes others", async () => {
 		const user = await createTestUser();
 		const template = await createTestTemplate();
 
@@ -1666,33 +1916,36 @@ describe("CvSaveService.save", () => {
 								order: 1,
 								content: {
 									title: "Publication 1",
-                                    start: new Date("2020-01-01"),
-                                    end: new Date("2022-01-01"),
-                                    journalName: "Journal 1",
-                                    description: "Description 1",
-                                    url: "https://www.google.com",
+									start: new Date("2020-01-01"),
+									end: new Date("2022-01-01"),
+									journalName: "Journal 1",
+									description: "Description 1",
+									url: "https://www.google.com",
 								},
 							},
 							{
-								    clientKey: "publication-2",
+								clientKey: "publication-2",
 								order: 2,
 								content: {
 									title: "Publication 2",
-                                    start: new Date("2020-01-01"),
-                                    end: new Date("2022-01-01"),
-                                    journalName: "Journal 2",
-                                    description: "Description 2",
-                                    url: "https://www.google.com",
+									start: new Date("2020-01-01"),
+									end: new Date("2022-01-01"),
+									journalName: "Journal 2",
+									description: "Description 2",
+									url: "https://www.google.com",
 								},
 							},
 						],
+						settings: sectionTitleSettings,
 					},
 				},
 				modules: [],
 			}),
 		);
 
-		const keepId = created.publications.find((p) => p.title === "Publication 1")?.id;
+		const keepId = created.publications.find(
+			(p) => p.title === "Publication 1",
+		)?.id;
 		expect(keepId).toBeDefined();
 
 		const updated = await cvSaveService.save(
@@ -1700,7 +1953,7 @@ describe("CvSaveService.save", () => {
 			buildSaveInput(template.id, {
 				cvId: created.id,
 				datas: {
-					    publication: {
+					publication: {
 						content: [
 							{
 								id: keepId,
@@ -1714,12 +1967,21 @@ describe("CvSaveService.save", () => {
 									description: "Description 1 updated",
 									url: "https://www.google.com updated",
 									settings: {
+										title: baseTextSettings,
+										journalName: baseTextSettings,
+										description: baseTextSettings,
+										url: baseTextSettings,
+										periode: baseTextSettings,
+										withTitle: true,
+										withJournalName: true,
 										withDescription: true,
-										withList: true,
+										withUrl: true,
+										withPeriode: true,
 									},
 								},
 							},
 						],
+						settings: sectionTitleSettings,
 					},
 				},
 				modules: [],
@@ -1729,18 +1991,28 @@ describe("CvSaveService.save", () => {
 		expect(updated.publications).toHaveLength(1);
 		expect(updated.publications[0]?.id).toBe(keepId);
 		expect(updated.publications[0]?.title).toBe("Publication 1 updated");
-		expect(updated.publications[0]?.start).toStrictEqual(new Date("2020-01-01"));
+		expect(updated.publications[0]?.start).toStrictEqual(
+			new Date("2020-01-01"),
+		);
 		expect(updated.publications[0]?.end).toStrictEqual(new Date("2022-01-01"));
 		expect(updated.publications[0]?.journalName).toBe("Journal 1 updated");
 		expect(updated.publications[0]?.description).toBe("Description 1 updated");
 		expect(updated.publications[0]?.url).toBe("https://www.google.com updated");
 		expect(updated.publications[0]?.settings).toEqual({
+			title: baseTextSettings,
+			journalName: baseTextSettings,
+			description: baseTextSettings,
+			url: baseTextSettings,
+			periode: baseTextSettings,
+			withTitle: true,
+			withJournalName: true,
 			withDescription: true,
-			withList: true,
+			withUrl: true,
+			withPeriode: true,
 		});
 	});
 
-    it("replaces strengths: keeps listed ids and deletes others", async () => {
+	it("replaces strengths: keeps listed ids and deletes others", async () => {
 		const user = await createTestUser();
 		const template = await createTestTemplate();
 
@@ -1756,7 +2028,16 @@ describe("CvSaveService.save", () => {
 								order: 1,
 								content: {
 									title: "Strength 1",
-                                    icon: "💪",
+									description: "Description 1",
+									icon: "FaThumbsUp",
+									settings: {
+										withStrength: true,
+										withIcon: true,
+										iconColor: "primaryColor",
+										strength: baseTextSettings,
+										description: baseTextSettings,
+										withDescription: true,
+									},
 								},
 							},
 							{
@@ -1764,10 +2045,20 @@ describe("CvSaveService.save", () => {
 								order: 2,
 								content: {
 									title: "Strength 2",
-									icon: "💪",
+									description: "Description 2",
+									icon: "FaThumbsUp",
+									settings: {
+										withStrength: true,
+										withIcon: true,
+										iconColor: "primaryColor",
+										strength: baseTextSettings,
+										description: baseTextSettings,
+										withDescription: true,
+									},
 								},
 							},
 						],
+						settings: sectionTitleSettings,
 					},
 				},
 				modules: [],
@@ -1782,7 +2073,7 @@ describe("CvSaveService.save", () => {
 			buildSaveInput(template.id, {
 				cvId: created.id,
 				datas: {
-					    strength: {
+					strength: {
 						content: [
 							{
 								id: keepId,
@@ -1790,14 +2081,20 @@ describe("CvSaveService.save", () => {
 								order: 1,
 								content: {
 									title: "Strength 1 updated",
-									icon: "💪 updated",
+									description: "Description 1 updated",
+									icon: "FaThumbsUp updated",
 									settings: {
+										withStrength: true,
+										withIcon: true,
+										iconColor: "primaryColor",
+										strength: baseTextSettings,
+										description: baseTextSettings,
 										withDescription: true,
-										withList: true,
 									},
 								},
 							},
 						],
+						settings: sectionTitleSettings,
 					},
 				},
 				modules: [],
@@ -1807,14 +2104,18 @@ describe("CvSaveService.save", () => {
 		expect(updated.strengths).toHaveLength(1);
 		expect(updated.strengths[0]?.id).toBe(keepId);
 		expect(updated.strengths[0]?.title).toBe("Strength 1 updated");
-		expect(updated.strengths[0]?.icon).toBe("💪 updated");
+		expect(updated.strengths[0]?.icon).toBe("FaThumbsUp updated");
 		expect(updated.strengths[0]?.settings).toEqual({
+			withStrength: true,
+			withIcon: true,
+			iconColor: "primaryColor",
+			strength: baseTextSettings,
+			description: baseTextSettings,
 			withDescription: true,
-			withList: true,
 		});
 	});
 
-    it("replaces achievements: keeps listed ids and deletes others", async () => {
+	it("replaces achievements: keeps listed ids and deletes others", async () => {
 		const user = await createTestUser();
 		const template = await createTestTemplate();
 
@@ -1846,13 +2147,16 @@ describe("CvSaveService.save", () => {
 								},
 							},
 						],
+						settings: sectionTitleSettings,
 					},
 				},
 				modules: [],
 			}),
 		);
 
-		const keepId = created.achievements.find((a) => a.title === "Achievement 1")?.id;
+		const keepId = created.achievements.find(
+			(a) => a.title === "Achievement 1",
+		)?.id;
 		expect(keepId).toBeDefined();
 
 		const updated = await cvSaveService.save(
@@ -1860,11 +2164,11 @@ describe("CvSaveService.save", () => {
 			buildSaveInput(template.id, {
 				cvId: created.id,
 				datas: {
-					    achievement: {
+					achievement: {
 						content: [
 							{
 								id: keepId,
-								    clientKey: "achievement-1",
+								clientKey: "achievement-1",
 								order: 1,
 								content: {
 									title: "Achievement 1 updated",
@@ -1872,12 +2176,19 @@ describe("CvSaveService.save", () => {
 									year: 2021,
 									technology: "Technology 1 updated",
 									settings: {
+										title: baseTextSettings,
+										description: baseTextSettings,
+										year: baseTextSettings,
+										technology: baseTextSettings,
+										withTitle: true,
 										withDescription: true,
-										withList: true,
+										withYear: true,
+										withTechnology: true,
 									},
 								},
 							},
 						],
+						settings: sectionTitleSettings,
 					},
 				},
 				modules: [],
@@ -1891,12 +2202,18 @@ describe("CvSaveService.save", () => {
 		expect(updated.achievements[0]?.year).toBe(2021);
 		expect(updated.achievements[0]?.technology).toBe("Technology 1 updated");
 		expect(updated.achievements[0]?.settings).toEqual({
+			title: baseTextSettings,
+			description: baseTextSettings,
+			year: baseTextSettings,
+			technology: baseTextSettings,
+			withTitle: true,
 			withDescription: true,
-			withList: true,
+			withYear: true,
+			withTechnology: true,
 		});
 	});
 
-    it("replaces educations: keeps listed ids and deletes others", async () => {
+	it("replaces educations: keeps listed ids and deletes others", async () => {
 		const user = await createTestUser();
 		const template = await createTestTemplate();
 
@@ -1936,14 +2253,16 @@ describe("CvSaveService.save", () => {
 								},
 							},
 						],
-					settings: sectionTitleSettings,
+						settings: sectionTitleSettings,
 					},
 				},
 				modules: [],
 			}),
 		);
 
-		const keepId = created.educations.find((e) => e.title === "Education 1")?.id;
+		const keepId = created.educations.find(
+			(e) => e.title === "Education 1",
+		)?.id;
 		expect(keepId).toBeDefined();
 
 		const updated = await cvSaveService.save(
@@ -1951,7 +2270,7 @@ describe("CvSaveService.save", () => {
 			buildSaveInput(template.id, {
 				cvId: created.id,
 				datas: {
-					    education: {
+					education: {
 						content: [
 							{
 								id: keepId,
@@ -1969,7 +2288,7 @@ describe("CvSaveService.save", () => {
 								},
 							},
 						],
-					settings: sectionTitleSettings,
+						settings: sectionTitleSettings,
 					},
 				},
 				modules: [],
@@ -1988,131 +2307,133 @@ describe("CvSaveService.save", () => {
 		expect(updated.educations[0]?.settings).toEqual(educationItemSettings);
 	});
 
-    it("replaces skillGroups: keeps listed ids and deletes others", async () => {
-        const user = await createTestUser();
-        const template = await createTestTemplate();
-        const skillA = await createCatalogSkill(`A-${Date.now()}`);
-        const skillB = await createCatalogSkill(`B-${Date.now()}`);
-        const skillC = await createCatalogSkill(`C-${Date.now()}`);
-        const created = await cvSaveService.save(
-            user.id,
-            buildSaveInput(template.id, {
-                datas: {
-                    header: { title: "John Doe" },
-                    skillGroup: {
-                        content: [
-                            {
-                                clientKey: "sg-1",
-                                order: 1,
-                                content: {
-                                    title: "First",
-                                    skills: [
-                                        {
-                                            clientKey: "s-a",
-                                            order: 1,
-                                            content: {
+	it("replaces skillGroups: keeps listed ids and deletes others", async () => {
+		const user = await createTestUser();
+		const template = await createTestTemplate();
+		const skillA = await createCatalogSkill(`A-${Date.now()}`);
+		const skillB = await createCatalogSkill(`B-${Date.now()}`);
+		const skillC = await createCatalogSkill(`C-${Date.now()}`);
+		const created = await cvSaveService.save(
+			user.id,
+			buildSaveInput(template.id, {
+				datas: {
+					header: { title: "John Doe" },
+					skillGroup: {
+						content: [
+							{
+								clientKey: "sg-1",
+								order: 1,
+								content: {
+									title: "First",
+									skills: [
+										{
+											clientKey: "s-a",
+											order: 1,
+											content: {
 												name: skillA.name,
-                                                skillId: skillA.id,
-                                                level: Level.Débutant,
-                                            },
-                                        },
-                                        {
-                                            clientKey: "s-b",
-                                            order: 2,
-                                            content: {
+												skillId: skillA.id,
+												level: Level.Débutant,
+											},
+										},
+										{
+											clientKey: "s-b",
+											order: 2,
+											content: {
 												name: skillB.name,
-                                                skillId: skillB.id,
-                                                level: Level.Senior,
-                                            },
-                                        },
-                                    ],
-                                },
-                            },
-                            {
-                                clientKey: "sg-2",
-                                order: 2,
-                                content: {
-                                    title: "Second",
-                                    skills: [
-                                        {
-                                            clientKey: "s-c",
-                                            order: 1,
-                                            content: {
+												skillId: skillB.id,
+												level: Level.Senior,
+											},
+										},
+									],
+								},
+							},
+							{
+								clientKey: "sg-2",
+								order: 2,
+								content: {
+									title: "Second",
+									skills: [
+										{
+											clientKey: "s-c",
+											order: 1,
+											content: {
 												name: skillC.name,
-                                                skillId: skillC.id,
-                                                level: Level.Expert,
-                                            },
-                                        },
-                                    ],
-                                },
-                            },
-                        ],
-                    
-					settings: sectionTitleSettings,
+												skillId: skillC.id,
+												level: Level.Expert,
+											},
+										},
+									],
+								},
+							},
+						],
+
+						settings: sectionTitleSettings,
+					},
 				},
-                },
-                modules: [],
-            }),
-        );
-        const keepGroup = created.skillGroups.find((g) => g.title === "First");
-        expect(keepGroup).toBeDefined();
-        const keepSkill = keepGroup!.skills.find((s) => s.skillId === skillA.id);
-        expect(keepSkill).toBeDefined();
-        const updated = await cvSaveService.save(
-            user.id,
-            buildSaveInput(template.id, {
-                cvId: created.id,
-                datas: {
-                    skillGroup: {
-                        content: [
-                            {
-                                id: keepGroup!.id,
-                                clientKey: "sg-1",
-                                order: 1,
-                                content: {
-                                    title: "First updated",
-                                    skills: [
-                                        {
-                                            id: keepSkill!.id,
-                                            clientKey: "s-a",
-                                            order: 1,
-                                            content: {
+				modules: [],
+			}),
+		);
+		const keepGroup = created.skillGroups.find((g) => g.title === "First");
+		expect(keepGroup).toBeDefined();
+		const keepSkill = keepGroup!.skills.find((s) => s.skillId === skillA.id);
+		expect(keepSkill).toBeDefined();
+		const updated = await cvSaveService.save(
+			user.id,
+			buildSaveInput(template.id, {
+				cvId: created.id,
+				datas: {
+					skillGroup: {
+						content: [
+							{
+								id: keepGroup!.id,
+								clientKey: "sg-1",
+								order: 1,
+								content: {
+									title: "First updated",
+									skills: [
+										{
+											id: keepSkill!.id,
+											clientKey: "s-a",
+											order: 1,
+											content: {
 												name: skillA.name,
-                                                skillId: skillA.id,
-                                                level: Level.Expert, // level mis à jour
-                                            },
-                                        },
-                                        // skillB omis → supprimé du groupe
-                                        {
-                                            clientKey: "s-c-new",
-                                            order: 2,
-                                            content: {
+												skillId: skillA.id,
+												level: Level.Expert, // level mis à jour
+											},
+										},
+										// skillB omis → supprimé du groupe
+										{
+											clientKey: "s-c-new",
+											order: 2,
+											content: {
 												name: skillC.name,
-                                                skillId: skillC.id,
-                                                level: Level.Débutant,
-                                            },
-                                        },
-                                    ],
-                                },
-                            },
-                            // Second omis → groupe supprimé
-                        ],
-                    
-					settings: sectionTitleSettings,
+												skillId: skillC.id,
+												level: Level.Débutant,
+											},
+										},
+									],
+								},
+							},
+							// Second omis → groupe supprimé
+						],
+
+						settings: sectionTitleSettings,
+					},
 				},
-                },
-                modules: [],
-            }),
-        );
-        expect(updated.skillGroups).toHaveLength(1);
-        expect(updated.skillGroups[0]?.id).toBe(keepGroup!.id);
-        expect(updated.skillGroups[0]?.title).toBe("First updated");
-        expect(updated.skillGroups[0]?.skills).toHaveLength(2);
-        const skills = updated.skillGroups[0]!.skills;
-        expect(skills.find((s) => s.id === keepSkill!.id)?.level).toBe(Level.Expert);
-        expect(skills.some((s) => s.skillId === skillB.id)).toBe(false);
-        expect(skills.some((s) => s.skillId === skillC.id)).toBe(true);
-    });
+				modules: [],
+			}),
+		);
+		expect(updated.skillGroups).toHaveLength(1);
+		expect(updated.skillGroups[0]?.id).toBe(keepGroup!.id);
+		expect(updated.skillGroups[0]?.title).toBe("First updated");
+		expect(updated.skillGroups[0]?.skills).toHaveLength(2);
+		const skills = updated.skillGroups[0]!.skills;
+		expect(skills.find((s) => s.id === keepSkill!.id)?.level).toBe(
+			Level.Expert,
+		);
+		expect(skills.some((s) => s.skillId === skillB.id)).toBe(false);
+		expect(skills.some((s) => s.skillId === skillC.id)).toBe(true);
+	});
 
 	it("resolves skill by name when skillId is omitted (findFirst then create catalog)", async () => {
 		const user = await createTestUser();
@@ -2121,230 +2442,356 @@ describe("CvSaveService.save", () => {
 		const existing = await createCatalogSkill(existingName);
 		const brandNewName = `BrandNew-${Date.now()}`;
 		const result = await cvSaveService.save(
-		  user.id,
-		  buildSaveInput(template.id, {
-			datas: {
-			  header: { title: "John Doe" },
-			  skillGroup: {
-				content: [
-				  {
-					clientKey: "sg-1",
-					order: 1,
-					content: {
-					  title: "Group",
-					  skills: [
-						{
-						  clientKey: "s-existing",
-						  order: 1,
-						  content: {
-							name: existingName, // pas de skillId → findFirst
-							level: Level.Débutant,
-						  },
-						},
-						{
-						  clientKey: "s-new",
-						  order: 2,
-						  content: {
-							name: brandNewName, // pas de skillId → create catalogue
-							level: Level.Senior,
-						  },
-						},
-					  ],
+			user.id,
+			buildSaveInput(template.id, {
+				datas: {
+					header: { title: "John Doe" },
+					skillGroup: {
+						content: [
+							{
+								clientKey: "sg-1",
+								order: 1,
+								content: {
+									title: "Group",
+									skills: [
+										{
+											clientKey: "s-existing",
+											order: 1,
+											content: {
+												name: existingName, // pas de skillId → findFirst
+												level: Level.Débutant,
+											},
+										},
+										{
+											clientKey: "s-new",
+											order: 2,
+											content: {
+												name: brandNewName, // pas de skillId → create catalogue
+												level: Level.Senior,
+											},
+										},
+									],
+								},
+							},
+						],
+						settings: sectionTitleSettings,
 					},
-				  },
-				],
-				settings: sectionTitleSettings,
-			  },
-			},
-			modules: [],
-		  }),
+				},
+				modules: [],
+			}),
 		);
 		const group = result.skillGroups[0]!;
 		expect(group.skills).toHaveLength(2);
-		const linkedExisting = group.skills.find((s) => s.skill?.name === existingName);
+		const linkedExisting = group.skills.find(
+			(s) => s.skill?.name === existingName,
+		);
 		expect(linkedExisting?.skillId).toBe(existing.id);
 		const linkedNew = group.skills.find((s) => s.skill?.name === brandNewName);
 		expect(linkedNew).toBeDefined();
 		expect(linkedNew!.skillId).not.toBe(existing.id);
 		const catalogNew = await prismaTest.skill.findFirst({
-		  where: { name: brandNewName },
+			where: { name: brandNewName },
 		});
 		expect(catalogNew).toBeTruthy();
 		expect(linkedNew!.skillId).toBe(catalogNew!.id);
 	});
 
-    it("replaces competenceGroups: keeps listed ids and deletes others", async () => {
-        const user = await createTestUser();
-        const template = await createTestTemplate();
-        const competenceA = await createCatalogCompetence(`A-${Date.now()}`);
-        const competenceB = await createCatalogCompetence(`B-${Date.now()}`);
-        const competenceC = await createCatalogCompetence(`C-${Date.now()}`);
-        const created = await cvSaveService.save(
-            user.id,
-            buildSaveInput(template.id, {
-                datas: {
-                    header: { title: "John Doe" },
-                    competenceGroup: {
-                        content: [
-                            {
-                                clientKey: "sg-1",
-                                order: 1,
-                                content: {
-                                    title: "First",
-                                    competences: [
-                                        {
-                                            clientKey: "s-a",
-                                            order: 1,
-                                            content: {
-                                                competenceId: competenceA.id,
-                                            },
-                                        },
-                                        {
-                                            clientKey: "s-b",
-                                            order: 2,
-                                            content: {
-                                                competenceId: competenceB.id,
-                                            },
-                                        },
-                                    ],
-                                },
-                            },
-                            {
-                                clientKey: "sg-2",
-                                order: 2,
-                                content: {
-                                    title: "Second",
-                                    competences: [
-                                        {
-                                            clientKey: "s-c",
-                                            order: 1,
-                                            content: {
-                                                competenceId: competenceC.id,
-                                            },
-                                        },
-                                    ],
-                                },
-                            },
-                        ],
-                    },
-                },
-                modules: [],
-            }),
-        );
-        const keepGroup = created.competences.find((g) => g.title === "First");
-        expect(keepGroup).toBeDefined();
-        const keepCompetence = keepGroup!.cvCompetences.find((c) => c.competenceId === competenceA.id);
-        expect(keepCompetence).toBeDefined();
-        const updated = await cvSaveService.save(
-            user.id,
-            buildSaveInput(template.id, {
-                cvId: created.id,
-                datas: {
-                    competenceGroup: {
-                        content: [
-                            {
-                                id: keepGroup!.id,
-                                clientKey: "sg-1",
-                                order: 1,
-                                content: {
-                                    title: "First updated",
-                                    competences: [
-                                        {
-                                            id: keepCompetence!.id,
-                                            clientKey: "s-a",
-                                            order: 1,
-                                            content: {
-                                                competenceId: competenceA.id,
-                                            },
-                                        },
-                                        // competenceB omis → supprimé du groupe
-                                        {
-                                            clientKey: "s-c-new",
-                                            order: 2,
-                                            content: {
-                                                competenceId: competenceC.id,
-                                            },
-                                        },
-                                    ],
-                                },
-                            },
-                            // Second omis → groupe supprimé
-                        ],
-                    },
-                },
-                modules: [],
-            }),
-        );
-        expect(updated.competences).toHaveLength(1);
-        expect(updated.competences[0]?.id).toBe(keepGroup!.id);
-        expect(updated.competences[0]?.title).toBe("First updated");
-        expect(updated.competences[0]?.cvCompetences).toHaveLength(2);
-        const competences = updated.competences[0]!.cvCompetences;
-        expect(competences.find((c) => c.id === keepCompetence!.id)?.competenceId).toBe(competenceA.id);
-        expect(competences.some((c) => c.competenceId === competenceB.id)).toBe(false);
-        expect(competences.some((c) => c.competenceId === competenceC.id)).toBe(true);
-    });
+	it("replaces competenceGroups: keeps listed ids and deletes others", async () => {
+		const user = await createTestUser();
+		const template = await createTestTemplate();
+		const competenceA = await createCatalogCompetence(`A-${Date.now()}`);
+		const competenceB = await createCatalogCompetence(`B-${Date.now()}`);
+		const competenceC = await createCatalogCompetence(`C-${Date.now()}`);
+		const created = await cvSaveService.save(
+			user.id,
+			buildSaveInput(template.id, {
+				datas: {
+					header: { title: "John Doe" },
+					competenceGroup: {
+						content: [
+							{
+								clientKey: "sg-1",
+								order: 1,
+								content: {
+									title: "First",
+									competences: [
+										{
+											clientKey: "s-a",
+											order: 1,
+											content: {
+												competenceId: competenceA.id,
+											},
+										},
+										{
+											clientKey: "s-b",
+											order: 2,
+											content: {
+												competenceId: competenceB.id,
+											},
+										},
+									],
+								},
+							},
+							{
+								clientKey: "sg-2",
+								order: 2,
+								content: {
+									title: "Second",
+									competences: [
+										{
+											clientKey: "s-c",
+											order: 1,
+											content: {
+												competenceId: competenceC.id,
+											},
+										},
+									],
+								},
+							},
+						],
+						settings: sectionTitleSettings,
+					},
+				},
+				modules: [],
+			}),
+		);
+		const keepGroup = created.competences.find((g) => g.title === "First");
+		expect(keepGroup).toBeDefined();
+		const keepCompetence = keepGroup!.cvCompetences.find(
+			(c) => c.competenceId === competenceA.id,
+		);
+		expect(keepCompetence).toBeDefined();
+		const updated = await cvSaveService.save(
+			user.id,
+			buildSaveInput(template.id, {
+				cvId: created.id,
+				datas: {
+					competenceGroup: {
+						content: [
+							{
+								id: keepGroup!.id,
+								clientKey: "sg-1",
+								order: 1,
+								content: {
+									title: "First updated",
+									competences: [
+										{
+											id: keepCompetence!.id,
+											clientKey: "s-a",
+											order: 1,
+											content: {
+												competenceId: competenceA.id,
+											},
+										},
+										// competenceB omis → supprimé du groupe
+										{
+											clientKey: "s-c-new",
+											order: 2,
+											content: {
+												competenceId: competenceC.id,
+											},
+										},
+									],
+								},
+							},
+							// Second omis → groupe supprimé
+						],
+						settings: sectionTitleSettings,
+					},
+				},
+				modules: [],
+			}),
+		);
+		expect(updated.competences).toHaveLength(1);
+		expect(updated.competences[0]?.id).toBe(keepGroup!.id);
+		expect(updated.competences[0]?.title).toBe("First updated");
+		expect(updated.competences[0]?.cvCompetences).toHaveLength(2);
+		const competences = updated.competences[0]!.cvCompetences;
+		expect(
+			competences.find((c) => c.id === keepCompetence!.id)?.competenceId,
+		).toBe(competenceA.id);
+		expect(competences.some((c) => c.competenceId === competenceB.id)).toBe(
+			false,
+		);
+		expect(competences.some((c) => c.competenceId === competenceC.id)).toBe(
+			true,
+		);
+	});
+
+	it("replaces tagGroups: keeps listed ids and deletes others", async () => {
+		const user = await createTestUser();
+		const template = await createTestTemplate();
+		const tagA = await createCatalogTag(`A-${Date.now()}`);
+		const tagB = await createCatalogTag(`B-${Date.now()}`);
+		const tagC = await createCatalogTag(`C-${Date.now()}`);
+		const created = await cvSaveService.save(
+			user.id,
+			buildSaveInput(template.id, {
+				datas: {
+					header: { title: "John Doe" },
+					tagGroup: {
+						content: [
+							{
+								clientKey: "sg-1",
+								order: 1,
+								content: {
+									title: "First",
+									tags: [
+										{
+											clientKey: "s-a",
+											order: 1,
+											content: {
+												tagId: tagA.id,
+											},
+										},
+										{
+											clientKey: "s-b",
+											order: 2,
+											content: {
+												tagId: tagB.id,
+											},
+										},
+									],
+								},
+							},
+							{
+								clientKey: "sg-2",
+								order: 2,
+								content: {
+									title: "Second",
+									tags: [
+										{
+											clientKey: "s-c",
+											order: 1,
+											content: {
+												tagId: tagC.id,
+											},
+										},
+									],
+								},
+							},
+						],
+						settings: sectionTitleSettings,
+					},
+				},
+				modules: [],
+			}),
+		);
+		const keepGroup = created.tagGroups.find((g) => g.title === "First");
+		expect(keepGroup).toBeDefined();
+		const keepTag = keepGroup!.tags.find((c) => c.tagId === tagA.id);
+		expect(keepTag).toBeDefined();
+		const updated = await cvSaveService.save(
+			user.id,
+			buildSaveInput(template.id, {
+				cvId: created.id,
+				datas: {
+					tagGroup: {
+						content: [
+							{
+								id: keepGroup!.id,
+								clientKey: "sg-1",
+								order: 1,
+								content: {
+									title: "First updated",
+									tags: [
+										{
+											id: keepTag!.id,
+											clientKey: "s-a",
+											order: 1,
+											content: {
+												tagId: tagA.id,
+											},
+										},
+										// tagB omis → supprimé du groupe
+										{
+											clientKey: "s-c-new",
+											order: 2,
+											content: {
+												tagId: tagC.id,
+											},
+										},
+									],
+								},
+							},
+							// tagGroup Second omis → groupe supprimé
+						],
+						settings: sectionTitleSettings,
+					},
+				},
+				modules: [],
+			}),
+		);
+		expect(updated.tagGroups).toHaveLength(1);
+		expect(updated.tagGroups[0]?.id).toBe(keepGroup!.id);
+		expect(updated.tagGroups[0]?.title).toBe("First updated");
+		expect(updated.tagGroups[0]?.tags).toHaveLength(2);
+		const tags = updated.tagGroups[0]!.tags;
+		expect(tags.find((t) => t.id === keepTag!.id)?.tagId).toBe(tagA.id);
+		expect(tags.some((t) => t.tagId === tagB.id)).toBe(false);
+		expect(tags.some((t) => t.tagId === tagC.id)).toBe(true);
+	});
 
 	it("clears all skills in a kept skillGroup when skills is empty", async () => {
 		const user = await createTestUser();
 		const template = await createTestTemplate();
 		const skill = await createCatalogSkill(`Clear-${Date.now()}`);
 		const created = await cvSaveService.save(
-		  user.id,
-		  buildSaveInput(template.id, {
-			datas: {
-			  header: { title: "John Doe" },
-			  skillGroup: {
-				content: [
-				  {
-					clientKey: "sg-1",
-					order: 1,
-					content: {
-					  title: "Keep me",
-					  skills: [
-						{
-						  clientKey: "s-1",
-						  order: 1,
-						  content: {
-							name: skill.name,
-							skillId: skill.id,
-							level: Level.Débutant,
-						  },
-						},
-					  ],
+			user.id,
+			buildSaveInput(template.id, {
+				datas: {
+					header: { title: "John Doe" },
+					skillGroup: {
+						content: [
+							{
+								clientKey: "sg-1",
+								order: 1,
+								content: {
+									title: "Keep me",
+									skills: [
+										{
+											clientKey: "s-1",
+											order: 1,
+											content: {
+												name: skill.name,
+												skillId: skill.id,
+												level: Level.Débutant,
+											},
+										},
+									],
+								},
+							},
+						],
+						settings: sectionTitleSettings,
 					},
-				  },
-				],
-				settings: sectionTitleSettings,
-			  },
-			},
-			modules: [],
-		  }),
+				},
+				modules: [],
+			}),
 		);
 		const groupId = created.skillGroups[0]!.id;
 		expect(created.skillGroups[0]!.skills).toHaveLength(1);
 		const updated = await cvSaveService.save(
-		  user.id,
-		  buildSaveInput(template.id, {
-			cvId: created.id,
-			datas: {
-			  skillGroup: {
-				content: [
-				  {
-					id: groupId,
-					clientKey: "sg-1",
-					order: 1,
-					content: {
-					  title: "Keep me",
-					  skills: [], // ← vide → deleteMany all skills of group
+			user.id,
+			buildSaveInput(template.id, {
+				cvId: created.id,
+				datas: {
+					skillGroup: {
+						content: [
+							{
+								id: groupId,
+								clientKey: "sg-1",
+								order: 1,
+								content: {
+									title: "Keep me",
+									skills: [], // ← vide → deleteMany all skills of group
+								},
+							},
+						],
+						settings: sectionTitleSettings,
 					},
-				  },
-				],
-				settings: sectionTitleSettings,
-			  },
-			},
-			modules: [],
-		  }),
+				},
+				modules: [],
+			}),
 		);
 		expect(updated.skillGroups).toHaveLength(1);
 		expect(updated.skillGroups[0]!.id).toBe(groupId);
@@ -2373,7 +2820,7 @@ describe("CvSaveService.save", () => {
 		expect(updated.experiences).toHaveLength(0);
 	});
 
-    it("deletes all projects when content is empty", async () => {
+	it("deletes all projects when content is empty", async () => {
 		const user = await createTestUser();
 		const template = await createTestTemplate();
 
@@ -2395,7 +2842,7 @@ describe("CvSaveService.save", () => {
 		expect(updated.projects).toHaveLength(0);
 	});
 
-    it("deletes all volunteerings when content is empty", async () => {
+	it("deletes all volunteerings when content is empty", async () => {
 		const user = await createTestUser();
 		const template = await createTestTemplate();
 
@@ -2409,7 +2856,9 @@ describe("CvSaveService.save", () => {
 			user.id,
 			buildSaveInput(template.id, {
 				cvId: created.id,
-				datas: { volunteering: { content: [] } },
+				datas: {
+					volunteering: { content: [], settings: sectionTitleSettings },
+				},
 				modules: [],
 			}),
 		);
@@ -2417,7 +2866,7 @@ describe("CvSaveService.save", () => {
 		expect(updated.volunteerings).toHaveLength(0);
 	});
 
-    it("deletes all formations when content is empty", async () => {
+	it("deletes all formations when content is empty", async () => {
 		const user = await createTestUser();
 		const template = await createTestTemplate();
 
@@ -2431,7 +2880,7 @@ describe("CvSaveService.save", () => {
 			user.id,
 			buildSaveInput(template.id, {
 				cvId: created.id,
-				datas: { formation: { content: [] } },
+				datas: { formation: { content: [], settings: sectionTitleSettings } },
 				modules: [],
 			}),
 		);
@@ -2439,7 +2888,7 @@ describe("CvSaveService.save", () => {
 		expect(updated.formations).toHaveLength(0);
 	});
 
-    it("deletes all certifications when content is empty", async () => {
+	it("deletes all certifications when content is empty", async () => {
 		const user = await createTestUser();
 		const template = await createTestTemplate();
 
@@ -2453,7 +2902,9 @@ describe("CvSaveService.save", () => {
 			user.id,
 			buildSaveInput(template.id, {
 				cvId: created.id,
-				datas: { certification: { content: [] } },
+				datas: {
+					certification: { content: [], settings: sectionTitleSettings },
+				},
 				modules: [],
 			}),
 		);
@@ -2461,7 +2912,7 @@ describe("CvSaveService.save", () => {
 		expect(updated.certifications).toHaveLength(0);
 	});
 
-    it("deletes all prizes when content is empty", async () => {
+	it("deletes all prizes when content is empty", async () => {
 		const user = await createTestUser();
 		const template = await createTestTemplate();
 
@@ -2475,7 +2926,7 @@ describe("CvSaveService.save", () => {
 			user.id,
 			buildSaveInput(template.id, {
 				cvId: created.id,
-				datas: { prize: { content: [] } },
+				datas: { prize: { content: [], settings: sectionTitleSettings } },
 				modules: [],
 			}),
 		);
@@ -2483,7 +2934,7 @@ describe("CvSaveService.save", () => {
 		expect(updated.prizes).toHaveLength(0);
 	});
 
-    it("deletes all expertises when content is empty", async () => {
+	it("deletes all expertises when content is empty", async () => {
 		const user = await createTestUser();
 		const template = await createTestTemplate();
 
@@ -2497,7 +2948,7 @@ describe("CvSaveService.save", () => {
 			user.id,
 			buildSaveInput(template.id, {
 				cvId: created.id,
-				datas: { expertise: { content: [] } },
+				datas: { expertise: { content: [], settings: sectionTitleSettings } },
 				modules: [],
 			}),
 		);
@@ -2505,7 +2956,7 @@ describe("CvSaveService.save", () => {
 		expect(updated.expertises).toHaveLength(0);
 	});
 
-    it("deletes all social media when content is empty", async () => {
+	it("deletes all social media when content is empty", async () => {
 		const user = await createTestUser();
 		const template = await createTestTemplate();
 
@@ -2527,7 +2978,7 @@ describe("CvSaveService.save", () => {
 		expect(updated.socialMedias).toHaveLength(0);
 	});
 
-    it("deletes all passions when content is empty", async () => {
+	it("deletes all passions when content is empty", async () => {
 		const user = await createTestUser();
 		const template = await createTestTemplate();
 
@@ -2541,7 +2992,7 @@ describe("CvSaveService.save", () => {
 			user.id,
 			buildSaveInput(template.id, {
 				cvId: created.id,
-				datas: { passion: { content: [] } },
+				datas: { passion: { content: [], settings: sectionTitleSettings } },
 				modules: [],
 			}),
 		);
@@ -2549,7 +3000,7 @@ describe("CvSaveService.save", () => {
 		expect(updated.passions).toHaveLength(0);
 	});
 
-    it("deletes all languages when content is empty", async () => {
+	it("deletes all languages when content is empty", async () => {
 		const user = await createTestUser();
 		const template = await createTestTemplate();
 
@@ -2571,7 +3022,7 @@ describe("CvSaveService.save", () => {
 		expect(updated.languages).toHaveLength(0);
 	});
 
-    it("deletes all publications when content is empty", async () => {
+	it("deletes all publications when content is empty", async () => {
 		const user = await createTestUser();
 		const template = await createTestTemplate();
 
@@ -2585,7 +3036,7 @@ describe("CvSaveService.save", () => {
 			user.id,
 			buildSaveInput(template.id, {
 				cvId: created.id,
-				datas: { publication: { content: [] } },
+				datas: { publication: { content: [], settings: sectionTitleSettings } },
 				modules: [],
 			}),
 		);
@@ -2593,7 +3044,7 @@ describe("CvSaveService.save", () => {
 		expect(updated.publications).toHaveLength(0);
 	});
 
-    it("deletes all strengths when content is empty", async () => {
+	it("deletes all strengths when content is empty", async () => {
 		const user = await createTestUser();
 		const template = await createTestTemplate();
 
@@ -2607,7 +3058,7 @@ describe("CvSaveService.save", () => {
 			user.id,
 			buildSaveInput(template.id, {
 				cvId: created.id,
-				datas: { strength: { content: [] } },
+				datas: { strength: { content: [], settings: sectionTitleSettings } },
 				modules: [],
 			}),
 		);
@@ -2615,7 +3066,7 @@ describe("CvSaveService.save", () => {
 		expect(updated.strengths).toHaveLength(0);
 	});
 
-    it("deletes all achievements when content is empty", async () => {
+	it("deletes all achievements when content is empty", async () => {
 		const user = await createTestUser();
 		const template = await createTestTemplate();
 
@@ -2629,7 +3080,7 @@ describe("CvSaveService.save", () => {
 			user.id,
 			buildSaveInput(template.id, {
 				cvId: created.id,
-				datas: { achievement: { content: [] } },
+				datas: { achievement: { content: [], settings: sectionTitleSettings } },
 				modules: [],
 			}),
 		);
@@ -2637,7 +3088,7 @@ describe("CvSaveService.save", () => {
 		expect(updated.achievements).toHaveLength(0);
 	});
 
-    it("deletes all educations when content is empty", async () => {
+	it("deletes all educations when content is empty", async () => {
 		const user = await createTestUser();
 		const template = await createTestTemplate();
 
@@ -2659,53 +3110,75 @@ describe("CvSaveService.save", () => {
 		expect(updated.educations).toHaveLength(0);
 	});
 
-    it("deletes all skillGroups when content is empty", async () => {
-        const user = await createTestUser();
-        const template = await createTestTemplate();
-        const catalogSkill = await createCatalogSkill();
-        const created = await cvSaveService.save(
-            user.id,
-            buildSaveInput(
-                template.id,
-                { modules: [] },
-                { skillId: catalogSkill.id },
-            ),
-        );
-        expect(created.skillGroups.length).toBeGreaterThan(0);
-        const updated = await cvSaveService.save(
-            user.id,
-            buildSaveInput(template.id, {
-                cvId: created.id,
-                datas: { skillGroup: { content: [], settings: sectionTitleSettings } },
-                modules: [],
-            }),
-        );
-        expect(updated.skillGroups).toHaveLength(0);
-    });
+	it("deletes all skillGroups when content is empty", async () => {
+		const user = await createTestUser();
+		const template = await createTestTemplate();
+		const catalogSkill = await createCatalogSkill();
+		const created = await cvSaveService.save(
+			user.id,
+			buildSaveInput(
+				template.id,
+				{ modules: [] },
+				{ skillId: catalogSkill.id },
+			),
+		);
+		expect(created.skillGroups.length).toBeGreaterThan(0);
+		const updated = await cvSaveService.save(
+			user.id,
+			buildSaveInput(template.id, {
+				cvId: created.id,
+				datas: { skillGroup: { content: [], settings: sectionTitleSettings } },
+				modules: [],
+			}),
+		);
+		expect(updated.skillGroups).toHaveLength(0);
+	});
 
-    it("deletes all competenceGroups when content is empty", async () => {
-        const user = await createTestUser();
-        const template = await createTestTemplate();
-        const catalogCompetence = await createCatalogCompetence();
-        const created = await cvSaveService.save(
-            user.id,
-            buildSaveInput(
-                template.id,
-                { modules: [] },
-                { competenceId: catalogCompetence.id },
-            ),
-        );
-        expect(created.competences.length).toBeGreaterThan(0);
-        const updated = await cvSaveService.save(
-            user.id,
-            buildSaveInput(template.id, {
-                cvId: created.id,
-                datas: { competenceGroup: { content: [] } },
-                modules: [],
-            }),
-        );
-        expect(updated.competences).toHaveLength(0);
-    });
+	it("deletes all competenceGroups when content is empty", async () => {
+		const user = await createTestUser();
+		const template = await createTestTemplate();
+		const catalogCompetence = await createCatalogCompetence();
+		const created = await cvSaveService.save(
+			user.id,
+			buildSaveInput(
+				template.id,
+				{ modules: [] },
+				{ competenceId: catalogCompetence.id },
+			),
+		);
+		expect(created.competences.length).toBeGreaterThan(0);
+		const updated = await cvSaveService.save(
+			user.id,
+			buildSaveInput(template.id, {
+				cvId: created.id,
+				datas: {
+					competenceGroup: { content: [], settings: sectionTitleSettings },
+				},
+				modules: [],
+			}),
+		);
+		expect(updated.competences).toHaveLength(0);
+	});
+
+	it("deletes all tagGroups when content is empty", async () => {
+		const user = await createTestUser();
+		const template = await createTestTemplate();
+		const catalogTag = await createCatalogTag();
+		const created = await cvSaveService.save(
+			user.id,
+			buildSaveInput(template.id, { modules: [] }, { tagId: catalogTag.id }),
+		);
+		expect(created.tagGroups.length).toBeGreaterThan(0);
+		const updated = await cvSaveService.save(
+			user.id,
+			buildSaveInput(template.id, {
+				cvId: created.id,
+				datas: { tagGroup: { content: [], settings: sectionTitleSettings } },
+				modules: [],
+			}),
+		);
+		expect(updated.tagGroups).toHaveLength(0);
+	});
 
 	it("replaces modules on each save", async () => {
 		const user = await createTestUser();
@@ -2745,10 +3218,14 @@ describe("CvSaveService.save", () => {
 		const template = await createTestTemplate();
 
 		const catalogSkill = await createCatalogSkill();
-        const created = await cvSaveService.save(
-            user.id,
-            buildSaveInput(template.id, { modules: [] }, { skillId: catalogSkill.id }),
-        );
+		const created = await cvSaveService.save(
+			user.id,
+			buildSaveInput(
+				template.id,
+				{ modules: [] },
+				{ skillId: catalogSkill.id },
+			),
+		);
 
 		const updated = await cvSaveService.save(
 			user.id,
@@ -2766,40 +3243,43 @@ describe("CvSaveService.save", () => {
 		expect(updated.headerCv?.title).toBe("Header only");
 		expect(updated.experiences).toHaveLength(1);
 		expect(updated.experiences[0]?.title).toBe("Développeur");
-        expect(updated.projects).toHaveLength(1);
-        expect(updated.projects[0]?.title).toBe("Projet 1");
-        expect(updated.volunteerings).toHaveLength(1);
-        expect(updated.volunteerings[0]?.title).toBe("Volontariat 1");
-        expect(updated.formations).toHaveLength(1);
-        expect(updated.formations[0]?.title).toBe("Formation 1");
-        expect(updated.certifications).toHaveLength(1);
-        expect(updated.certifications[0]?.title).toBe("Certification 1");
-        expect(updated.prizes).toHaveLength(1);
-        expect(updated.prizes[0]?.title).toBe("Prix 1");
-        expect(updated.expertises).toHaveLength(1);
-        expect(updated.expertises[0]?.title).toBe("Expertise 1");
-        expect(updated.socialMedias).toHaveLength(1);
-        expect(updated.socialMedias[0]?.socialNetwork).toBe("Social Network 1");
-        expect(updated.passions).toHaveLength(1);
-        expect(updated.passions[0]?.title).toBe("Passion 1");
-        expect(updated.languages).toHaveLength(1);
-        expect(updated.languages[0]?.name).toBe("Language 1");
-        expect(updated.publications).toHaveLength(1);
-        expect(updated.publications[0]?.title).toBe("Publication 1");
-        expect(updated.strengths).toHaveLength(1);
-        expect(updated.strengths[0]?.title).toBe("Strength 1");
-        expect(updated.achievements).toHaveLength(1);
-        expect(updated.achievements[0]?.title).toBe("Achievement 1");
-        expect(updated.educations).toHaveLength(1);
-        expect(updated.educations[0]?.title).toBe("Education 1");
-        expect(updated.skillGroups).toHaveLength(1);
-        expect(updated.skillGroups[0]?.title).toBe("Skill Group 1");
+		expect(updated.projects).toHaveLength(1);
+		expect(updated.projects[0]?.title).toBe("Projet 1");
+		expect(updated.volunteerings).toHaveLength(1);
+		expect(updated.volunteerings[0]?.title).toBe("Volontariat 1");
+		expect(updated.formations).toHaveLength(1);
+		expect(updated.formations[0]?.title).toBe("Formation 1");
+		expect(updated.certifications).toHaveLength(1);
+		expect(updated.certifications[0]?.title).toBe("Certification 1");
+		expect(updated.prizes).toHaveLength(1);
+		expect(updated.prizes[0]?.title).toBe("Prix 1");
+		expect(updated.expertises).toHaveLength(1);
+		expect(updated.expertises[0]?.title).toBe("Expertise 1");
+		expect(updated.socialMedias).toHaveLength(1);
+		expect(updated.socialMedias[0]?.socialNetwork).toBe("Social Network 1");
+		expect(updated.passions).toHaveLength(1);
+		expect(updated.passions[0]?.title).toBe("Passion 1");
+		expect(updated.languages).toHaveLength(1);
+		expect(updated.languages[0]?.name).toBe("Language 1");
+		expect(updated.publications).toHaveLength(1);
+		expect(updated.publications[0]?.title).toBe("Publication 1");
+		expect(updated.strengths).toHaveLength(1);
+		expect(updated.strengths[0]?.title).toBe("Strength 1");
+		expect(updated.achievements).toHaveLength(1);
+		expect(updated.achievements[0]?.title).toBe("Achievement 1");
+		expect(updated.educations).toHaveLength(1);
+		expect(updated.educations[0]?.title).toBe("Education 1");
+		expect(updated.skillGroups).toHaveLength(1);
+		expect(updated.skillGroups[0]?.title).toBe("Skill Group 1");
 	});
 
 	it("roundtrips findById → mapCvToSaveInput → save", async () => {
 		const user = await createTestUser();
 		const template = await createTestTemplate();
-		const created = await cvSaveService.save(user.id, buildSaveInput(template.id));
+		const created = await cvSaveService.save(
+			user.id,
+			buildSaveInput(template.id),
+		);
 		const full = await cvService.findById(created.id);
 		const mapped = mapCvToSaveInput(full);
 		expect(cvSaveSchema.safeParse(mapped).success).toBe(true);
@@ -2842,9 +3322,9 @@ describe("CvSaveService.save", () => {
 								},
 							},
 						],
-					
-					settings: sectionTitleSettings,
-				},
+
+						settings: sectionTitleSettings,
+					},
 				},
 				modules: [],
 			}),
@@ -2882,9 +3362,9 @@ describe("CvSaveService.save", () => {
 								},
 							},
 						],
-					
-					settings: sectionTitleSettings,
-				},
+
+						settings: sectionTitleSettings,
+					},
 				},
 				modules: [],
 			}),
@@ -2895,7 +3375,7 @@ describe("CvSaveService.save", () => {
 			"Mission A updated",
 		);
 	});
-	
+
 	it("updates existing volunteering missions and deletes unlisted ones", async () => {
 		const user = await createTestUser();
 		const template = await createTestTemplate();
@@ -2927,6 +3407,7 @@ describe("CvSaveService.save", () => {
 								},
 							},
 						],
+						settings: sectionTitleSettings,
 					},
 				},
 				modules: [],
@@ -2964,6 +3445,7 @@ describe("CvSaveService.save", () => {
 								},
 							},
 						],
+						settings: sectionTitleSettings,
 					},
 				},
 				modules: [],

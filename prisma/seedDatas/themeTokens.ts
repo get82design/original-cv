@@ -5,7 +5,7 @@ type TextStyle = {
     sizeSelect: "xs" | "sm" | "md" | "lg" | "xl";
     weightSelect: "xs" | "sm" | "md" | "lg" | "xl";
     withPrimaryColor: boolean;
-    textAlign?: "left" | "center" | "right" | "justify" | null;
+    textAlign?: "left" | "center" | "right" | "justify";
 };
 
 export type ThemeTokens = {
@@ -71,6 +71,7 @@ export const classiqueTokens: ThemeTokens = {
       sizeSelect: "lg", 
       weightSelect: "lg",
       withPrimaryColor: true,
+      textAlign: "left",
     },
     itemTitle: {
       sizeModel: "16px", 
@@ -150,3 +151,55 @@ export const minimalTokens: ThemeTokens = {
         sizeModel: "12px" 
     },
   };
+
+export const stockholmTokens: ThemeTokens = {
+    ...classiqueTokens,
+    headerTitle: { 
+        ...classiqueTokens.headerTitle, 
+        weightSelect: "lg",
+        textAlign: "center",
+    },
+    headerSubTitle: {
+        ...classiqueTokens.headerSubTitle,
+        weightSelect: "sm",
+        textAlign: "center",
+    },
+    sectionTitle:{
+      ...classiqueTokens.sectionTitle,
+      weightSelect: "sm",
+      textAlign: "center",
+      colorSelect: "black",
+    }
+}
+
+export const kyotoTokens: ThemeTokens = {
+  ...classiqueTokens,
+  headerTitle: { 
+      ...classiqueTokens.headerTitle, 
+      weightSelect: "lg",
+  },
+  headerSubTitle: {
+      ...classiqueTokens.headerSubTitle,
+      weightSelect: "sm",
+  },
+  sectionTitle:{
+    ...classiqueTokens.sectionTitle,
+    colorSelect: "black",
+  }
+}
+
+export const osloTokens: ThemeTokens = {
+  ...classiqueTokens,
+  headerTitle: {
+    ...classiqueTokens.headerTitle,
+    colorSelect: "primaryColor",
+    textAlign: "center",
+  },
+  headerSubTitle: {
+    ...classiqueTokens.headerSubTitle,
+    weightSelect: "lg",
+    sizeSelect: "lg",
+    colorSelect: "gray",
+    textAlign: "center",
+  },
+}

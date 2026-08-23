@@ -59,6 +59,7 @@ export class CvPrizeService {
 				cvId,
 				title: data.title,
 				domaine: data.domaine,
+				icon: data.icon ?? null,
 				order: data.order ?? 0,
 				settings: data.settings ?? {},
 			},
@@ -113,6 +114,7 @@ export class CvPrizeService {
 			data: {
 				...(data.title !== undefined ? { title: data.title } : {}),
 				...(data.domaine !== undefined ? { domaine: data.domaine } : {}),
+				...(data.icon !== undefined ? { icon: data.icon } : {}),
 				...(data.settings !== undefined ? { settings: data.settings } : {}),
 			},
 		});

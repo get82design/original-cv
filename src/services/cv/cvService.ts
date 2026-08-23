@@ -17,12 +17,9 @@ export class CvService {
 			throw new NotFoundError("User");
 		}
 
-		
 		const canCreate = await userService.canCreateCv(data.userId);
 		if (!canCreate) {
-			throw new ValidationError(
-				`Limite de CV atteinte (${user.maxCvs})`,
-			);
+			throw new ValidationError(`Limite de CV atteinte (${user.maxCvs})`);
 		}
 
 		const template = await prisma.cVTemplate.findUnique({
@@ -71,6 +68,11 @@ export class CvService {
 						cvCompetences: {
 							include: { competence: true },
 						},
+					},
+				},
+				tagGroups: {
+					include: {
+						tags: { include: { tag: true } },
 					},
 				},
 				experiences: {

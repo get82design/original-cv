@@ -24,6 +24,8 @@ const defaultSettings: SkillContentSettings = {
     },
     design: 'stars',
     withGroupTitle: false,
+    groupColumns: 1,
+    itemColumns: 3,
 }
 
 /** Crée une expérience neuve à chaque appel (clientKey unique). */

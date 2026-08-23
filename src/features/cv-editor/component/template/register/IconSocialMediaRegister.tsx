@@ -1,3 +1,4 @@
+import type { IconType } from "react-icons";
 import { 
     FaFacebook, 
     FaFacebookF, 
@@ -34,7 +35,7 @@ import {
     FaSoundcloud
 } from "react-icons/fa";
 
-export const socialIconsRegister: Record<string, React.ComponentType<{ style?: React.CSSProperties }>> = {
+export const socialIconsRegister: Record<string, IconType> = {
     faGlobe: FaGlobe,
     faFacebookSquare: FaFacebookSquare,
     faFacebook: FaFacebook,

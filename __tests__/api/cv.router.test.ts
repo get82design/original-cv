@@ -184,7 +184,7 @@ describe("cvRouter.save", () => {
 			}),
 		).rejects.toMatchObject({ code: "UNAUTHORIZED" });
 	});
-	
+
 	it("creates a CV via save", async () => {
 		const user = await createTestUser();
 		const caller = await createTestCaller(createTestSession(user));
@@ -221,6 +221,7 @@ describe("cvRouter.save", () => {
 			modules: [
 				{
 					type: CVModuleType.description,
+					column: 0,
 					order: 1,
 					isActive: true,
 					settings: {},
@@ -264,7 +265,7 @@ describe("cvRouter.save", () => {
 			}),
 		).rejects.toMatchObject({ code: "BAD_REQUEST" });
 	});
-	
+
 	it("rejects invalid payload (Zod)", async () => {
 		const user = await createTestUser();
 		const caller = await createTestCaller(createTestSession(user));

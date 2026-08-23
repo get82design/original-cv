@@ -96,6 +96,7 @@ export const PeriodeCv = ({
                   backgroundColor: 'transparent',
                   textAlign: textAlign,
                   color: `var(--${color})`,
+                  fontFamily: "inherit",
                 }}
                 onClick={(e) => {
                   op.current && op.current.toggle(e)

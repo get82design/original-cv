@@ -1,6 +1,6 @@
 import z from "zod";
-import { CvTimelineStatus } from "../../../generated/prisma/enums";
 import { educationContentSchema } from "./cvTemplate.schema";
+import { CvTimelineStatusSchema } from "./enums";
 
 export const createEducationSchema = z.object({
 	title: z.string(),
@@ -9,8 +9,8 @@ export const createEducationSchema = z.object({
 	start: z.date(),
 	end: z.date().optional().nullable(),
 	city: z.string().optional(),
-	obtained: z.enum(CvTimelineStatus).optional().nullable(),
-	order: z.number(),	
+	obtained: CvTimelineStatusSchema.optional().nullable(),
+	order: z.number(),
 	settings: educationContentSchema.optional(),
 });
 

@@ -1,12 +1,11 @@
 import z from "zod";
-
-export const passionSettingsSchema = z.record(z.string(), z.boolean()).optional();
+import { passionContentSchema } from "./cvTemplate.schema";
 
 export const createPassionInputSchema = z.object({
 	title: z.string().min(1),
 	icon: z.string().min(1),
 	order: z.number().optional(),
-	settings: passionSettingsSchema.optional(),
+	settings: passionContentSchema.optional(),
 });
 export const updatePassionInputSchema = createPassionInputSchema.partial();
 
