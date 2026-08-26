@@ -36,7 +36,7 @@ export const NavBar = () => {
                     </Link>
                     {/* <Button variant='ghost' icon={<MdSearch style={{ width: '32px', height: '32px' }} />} /> */}
                     <div className='flex flex-col items-center gap-2'>
-                        <Link /*href={`${appUrl}/dashboard`}*/ href='#' onClick={() => setVisible(false)} style={{ minHeight: '44px'}}>
+                        <Link href={`/profile`} onClick={() => setVisible(false)} style={{ minHeight: '44px'}}>
                             <Button
                                 text
                                 icon={<MdDashboard style={{ width: '26px', height: '26px' }} />}
@@ -46,7 +46,7 @@ export const NavBar = () => {
                         <div className='w-1'
                         ></div>
                         {breakpoint &&
-                            <Link /*href={`${appUrl}/cree-ton-cv?idCv=0`}*/ href='#' onClick={() => setVisible(false)} style={{ minHeight: '44px'}}>
+                            <Link href={`/cv/=0`} onClick={() => setVisible(false)} style={{ minHeight: '44px'}}>
                                 <Button
                                     text
                                     icon={

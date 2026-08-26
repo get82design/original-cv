@@ -43,6 +43,7 @@ const defaultSettings: EducationContentSettings = {
     withEtablissement: true,
     withYear: true,
     withVille: true,
+    columns: 1,
 };
 
 /** Crée une expérience neuve à chaque appel (clientKey unique). */

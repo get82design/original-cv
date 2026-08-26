@@ -26,7 +26,7 @@ import {
 	skillContentSchema,
 } from "../../services/schemas/cvTemplate.schema";
 import type { JsonValueType } from "@/services/schemas/cvModule.schema";
-import { dateToStringMonthYear } from "./utils/utilsCv/date";
+import { dateToStringMonthYear } from "../../utils/date";
 
 type RouterOutputs = inferRouterOutputs<AppRouter>;
 export type CvFull = RouterOutputs["cv"]["byId"];

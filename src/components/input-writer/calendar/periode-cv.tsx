@@ -1,6 +1,6 @@
 import { useCreateCvContext } from "@/features/cv-editor/component/context/CreateCvContext"
 import { useInputCvColor } from "@/features/cv-editor/utils/utilsCv/color"
-import { dateToStringMonthYear } from "@/features/cv-editor/utils/utilsCv/date"
+import { dateToStringMonthYear } from "@/utils/date"
 import { useChangeTextFormat } from "@/features/cv-editor/utils/utilsCv/font"
 import type { BaseTextSettings } from "@/services/schemas/cvTemplate.schema"
 import { Button } from "primereact/button"

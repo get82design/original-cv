@@ -36,13 +36,13 @@ export const SideBarMenu = forwardRef<HTMLDivElement | null, SidebarMenuProps>(
                 style={{ maxHeight: 'calc(100vh - 56px)', paddingTop: '1px' }}
             >
                 <div className='flex flex-col gap-4 mt-4'>
-                    <Link /*href={`${appUrl}/dashboard`}*/ href='#' onClick={() => setVisible(false)}>
+                    <Link href={`/profile`} onClick={() => setVisible(false)}>
                         <Button text color='light' className='w-full text-black dark:text-white' style={{ minHeight: '44px'}}>
                             Dashboard
                         </Button>
                     </Link>
                     {breakpoint &&
-                        <Link /*href={{ pathname: `${appUrl}/cree-ton-cv`, query: { idCv: 0 } }}*/ href='#' onClick={() => setVisible(false)}>
+                        <Link href={`/cv/0`} onClick={() => setVisible(false)}>
                             <Button text color='light' className='w-full text-black dark:text-white' style={{ minHeight: '44px'}}>
                                 Créer votre CV
                             </Button>

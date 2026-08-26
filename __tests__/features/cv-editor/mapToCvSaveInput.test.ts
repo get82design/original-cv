@@ -727,9 +727,10 @@ describe("mapCvToSaveInput", () => {
 		});
 		expect(
 			input.datas.competenceGroup?.content[0]?.content.competences[0]?.content,
-		).toEqual({ competenceId: "comp-0" });
+		).toEqual({ competenceId: "comp-0", name: 'Com' });
 		expect(input.datas.tagGroup?.content[0]?.content.tags[0]?.content).toEqual({
 			tagId: "tag-0",
+			name: 'Com',
 		});
 		expect(input.modules.map((m) => m.id)).toEqual(["m1", "m2"]);
 		expect(input.modules[0]).toMatchObject({

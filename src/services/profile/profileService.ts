@@ -58,8 +58,21 @@ export class ProfileService {
 				description: true,
 				skills: {
 					include: {
-						skills: true,
+						skills: {
+							include: { skill: true },
+							orderBy: { order: "asc" },
+						},
 					},
+					orderBy: { order: "asc" },
+				},
+				tags: {
+					include: {
+						tags: {
+							include: { tag: true },
+							orderBy: { order: "asc" },
+						},
+					},
+					orderBy: { order: "asc" },
 				},
 				experiences: {
 					include: {
@@ -90,8 +103,12 @@ export class ProfileService {
 				formations: true,
 				competences: {
 					include: {
-						competences: true,
+						competences: {
+							include: { competence: true },
+							orderBy: { order: "asc" },
+						},
 					},
+					orderBy: { order: "asc" },
 				},
 			},
 		});
