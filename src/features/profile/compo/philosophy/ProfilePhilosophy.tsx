@@ -61,7 +61,7 @@ export const ProfilePhilosophy = () => {
 							<div className="w-full flex justify-end">
 								<InputTextProfile
 									placeholder="Auteur"
-									name={"philosophy.auteur"}
+									name={"philosophy.author"}
 									fontSize={"16"}
 									weight={700}
 									textColor={"text-black dark:text-white"}

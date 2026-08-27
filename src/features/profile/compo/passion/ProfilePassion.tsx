@@ -113,7 +113,7 @@ export const ProfilePassion = () => {
 					{fields.map((field, idx: number) => {
 						return (
 							<div
-								className="w-full flex gap-1 items-center"
+								className="w-full flex gap-2 items-center"
 								key={field.clientKey}
 							>
 								{openDelete && (
@@ -125,23 +125,19 @@ export const ProfilePassion = () => {
 										}}
 									/>
 								)}
-								<div className="w-1/6 flex flex-col gap-1">
-									<SelectBasicIconProfile
-										icon={watch(`passions.${idx}.content.icon`) ?? ""}
-										setIcon={(data: string) =>
-											setValue(`passions.${idx}.content.icon`, data)
-										}
-									/>
-								</div>
-								<div className="w-4/6 flex flex-col gap-1">
-									<InputTextProfile
-										name={`passions.${idx}.content.title`}
-										fontSize={"16px"}
-										weight={400}
-										textColor={"text-black dark:text-white"}
-										placeholder="Nom de la passion"
-									/>
-								</div>
+								<SelectBasicIconProfile
+									icon={watch(`passions.${idx}.content.icon`) ?? ""}
+									setIcon={(data: string) =>
+										setValue(`passions.${idx}.content.icon`, data)
+									}
+								/>
+								<InputTextProfile
+									name={`passions.${idx}.content.title`}
+									fontSize={"16px"}
+									weight={400}
+									textColor={"text-black dark:text-white"}
+									placeholder="Nom de la passion"
+								/>
 							</div>
 						);
 					})}

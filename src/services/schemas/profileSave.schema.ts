@@ -45,6 +45,7 @@ const experienceContentSchema = createExperienceSchema
 		end: z.coerce.date().nullish(),
 		location: z.string().nullish(),
 		description: z.string().nullish(),
+		company: z.string().nullish(),
 		missions: z
 			.array(
 				listItemSchema(createMissionExperienceSchema.omit({ order: true })),
@@ -54,7 +55,7 @@ const experienceContentSchema = createExperienceSchema
 
 const strengthContentSchema = z.object({
 	id: z.string().optional(),
-	icon: z.string().min(1),
+	icon: z.string().nullish(),
 	title: z.string().min(1),
 	description: z.string().nullish(),
 });

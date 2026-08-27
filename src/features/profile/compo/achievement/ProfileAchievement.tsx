@@ -117,7 +117,7 @@ export const ProfileAchievement = () => {
 					{fields.map((field, idx: number) => {
 						return (
 							<div
-								className="flex gap-4 justify-between items-center"
+								className="flex gap-4 justify-between items-start"
 								key={field.clientKey}
 							>
 								<div className="w-3/4 flex flex-col gap-0">
@@ -146,13 +146,13 @@ export const ProfileAchievement = () => {
 										/>
 									</div>
 								</div>
-								<div className="w-1/4 flex flex-col gap-0">
+								<div className="w-1/4 flex flex-col gap-0 items-end">
 									<InputTextProfile
 										name={`achievements.${idx}.content.technology`}
 										fontSize={"14px"}
 										weight={300}
 										textAlign="right"
-										placeholder="Technologie de la réalisation"
+										placeholder="Technologie"
 										textColor={"text-black dark:text-white"}
 									/>
 									<InputTextProfile
@@ -161,7 +161,7 @@ export const ProfileAchievement = () => {
 										weight={300}
 										type="number"
 										textAlign="right"
-										placeholder="Année de la réalisation"
+										placeholder="Année"
 										textColor={"text-black dark:text-white"}
 									/>
 								</div>

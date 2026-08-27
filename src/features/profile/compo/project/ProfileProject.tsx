@@ -130,7 +130,7 @@ export const ProfileProject = () => {
 					{fields.map((field, idx: number) => {
 						return (
 							<div className="w-full flex flex-col gap-0" key={field.clientKey}>
-								<div className="flex gap-1 items-center">
+								<div className="flex gap-1 items-start">
 									{openDelete && (
 										<Checkbox
 											checked={toDelete.has(field.clientKey)}

@@ -21,7 +21,7 @@ export function createEmptyPrize(opts?: {
 		clientKey: `socialMedia-${uuid()}`,
 		order: opts?.order ?? 1,
 		content: {
-			icon: "",
+			icon: "faTrophy",
 			title: "",
 			domaine: "",
 		},
@@ -127,7 +127,7 @@ export const ProfilePrize = () => {
 										/>
 									)}
 									<SelectBasicIconProfile
-										icon={fields.content.icon}
+										icon={watch(`prizes.${idx}.content.icon`) ?? ""}
 										setIcon={(data: string) =>
 											setValue(`prizes.${idx}.content.icon`, data)
 										}

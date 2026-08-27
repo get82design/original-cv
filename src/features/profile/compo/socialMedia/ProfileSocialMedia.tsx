@@ -23,7 +23,7 @@ export function createEmptySocialMedia(opts?: {
 		clientKey: `socialMedia-${uuid()}`,
 		order: opts?.order ?? 1,
 		content: {
-			icon: "",
+			icon: "faGlobe",
 			socialNetwork: "",
 			username: "",
 		},

@@ -48,6 +48,8 @@ export class ProfileSaveService {
 						description: input.description.description,
 					},
 				});
+			} else {
+				await tx.description.deleteMany({ where: { profileId: profile.id } });
 			}
 
 			// ——— 3. Philosophy (1:1, upsert via profileId) ———
@@ -65,6 +67,8 @@ export class ProfileSaveService {
 						author: input.philosophy.author ?? null,
 					},
 				});
+			} else {
+				await tx.philosophy.deleteMany({ where: { profileId: profile.id } });
 			}
 
 			// ——— 3. Experiences (many:1, upsert via profileId) ———
@@ -83,7 +87,7 @@ export class ProfileSaveService {
 					const { missions: _missions, ...rest } = item.content;
 					const data = {
 						title: rest.title,
-						company: rest.company,
+						company: rest.company ?? "",
 						start: rest.start,
 						end: rest.end ?? null,
 						location: rest.location ?? null,
@@ -141,7 +145,7 @@ export class ProfileSaveService {
 					const order = item.order ?? index;
 					const { description: _description, ...rest } = item.content;
 					const data = {
-						icon: rest.icon,
+						icon: rest.icon ?? "",
 						title: rest.title,
 						description: _description ?? null,
 						order,

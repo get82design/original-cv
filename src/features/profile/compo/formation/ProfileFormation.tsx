@@ -116,20 +116,29 @@ export function ProfileFormation() {
 						return (
 							<div className="w-full flex flex-col gap-0" key={field.clientKey}>
 								<div className="w-full flex gap-2 justify-between items-start">
-									<div className="flex gap-1 items-center">
-										{openDelete && (
-											<Checkbox
-												checked={toDelete.has(field.clientKey)}
-												onChange={() => {
-													toggle(field.clientKey);
-												}}
+									<div className="flex flex-col gap-0">
+										<div className="flex gap-1 items-center">
+											{openDelete && (
+												<Checkbox
+													checked={toDelete.has(field.clientKey)}
+													onChange={() => {
+														toggle(field.clientKey);
+													}}
+												/>
+											)}
+											<TextareaProfile
+												placeholder="Nom de la formation"
+												name={`formations.${idx}.content.title`}
+												fontSize={"16px"}
+												weight={700}
+												textAlign="justify"
 											/>
-										)}
+										</div>
 										<TextareaProfile
-											placeholder="Nom de la formation"
-											name={`formations.${idx}.content.title`}
-											fontSize={"16px"}
-											weight={700}
+											placeholder="Organisme de formation"
+											name={`formations.${idx}.content.organismeFormation`}
+											fontSize={"14px"}
+											weight={300}
 											textAlign="justify"
 										/>
 									</div>
@@ -141,13 +150,6 @@ export function ProfileFormation() {
 										textAlign="right"
 									/>
 								</div>
-								<TextareaProfile
-									placeholder="Organisme de formation"
-									name={`formations.${idx}.content.organismeFormation`}
-									fontSize={"14px"}
-									weight={300}
-									textAlign="justify"
-								/>
 							</div>
 						);
 					})}
