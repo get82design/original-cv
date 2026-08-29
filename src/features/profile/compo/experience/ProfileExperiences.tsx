@@ -16,6 +16,10 @@ import type { ListItem } from "@utils/type";
 import { v4 as uuid } from "uuid";
 import { PeriodeProfile } from "../../input/PeriodeProfile";
 import { MiniFooterMultiFunc } from "../footer/MiniFooterMultiFunc";
+import type { CV } from "../../CompoPage";
+import { DialogSelectCv } from "../common/DialogSelectCv";
+import { trpc } from "@utils/trpc";
+import { DialogSelectExperience } from "./DialogSelectExperience";
 
 export function createEmptyExperience(opts?: {
 	order?: number;
@@ -43,13 +47,20 @@ export function createEmptyMission(order = 0) {
 	};
 }
 
-export const ProfileExperiences = () => {
+export const ProfileExperiences = ({ cvs }: { cvs: CV[] }) => {
 	const refExperience = useRef<SpeedDial>(null);
 	const [visio, setVision] = useState(false);
 	const [openDelete, setOpenDelete] = useState(false);
+	const [visibleMaj, setVisibleMaj] = useState(false);
+	const [idCv, setIdCv] = useState<string | undefined>(undefined);
+	const { data: cvSelected } = trpc.cv.byId.useQuery(
+		{ id: idCv ?? "" },
+		{ enabled: !!idCv },
+	);
+	const [visibleSelect, setVisibleSelect] = useState(false);
 
 	const { control } = useFormContext<ProfileSaveInput>();
-	const { fields, append, remove } = useFieldArray({
+	const { fields, append, remove, replace } = useFieldArray({
 		control,
 		name: "experiences",
 		keyName: "rhfId", // ne pas écraser clientKey
@@ -90,9 +101,14 @@ export const ProfileExperiences = () => {
 		{
 			label: "Mise à jour depuis CV",
 			icon: "pi pi-refresh",
-			// disabled: nbCv === 0 && true,
+			disabled: cvs.length === 0 && true,
 			command: () => {
-				// setVisibleMaj(true)
+				if (cvs.length > 1) {
+					setVisibleMaj(true);
+				} else {
+					setIdCv(cvs[0]?.id ?? "");
+					setVisibleSelect(true);
+				}
 			},
 		},
 		{
@@ -114,21 +130,26 @@ export const ProfileExperiences = () => {
 
 	return (
 		<div>
-			{/* <DialogSelectCv
-                visible={visibleMaj}
-                onHide={() => setVisibleMaj(false)}
-                setIdCv={setIdCv}
-                cvs={cvs}
-            />
-            <DialogSelectExperience
-                visible={visibleSelect}
-                listExperienceFromCv={expTemp}
-                listExperienceInDashboard={watchExperience
-                    ? watchExperience
-                    : []}
-                setListExperience={setListExperience}
-                onHide={() => setVisibleSelect(false)}
-            /> */}
+			{visibleMaj && (
+				<DialogSelectCv
+					visible={visibleMaj}
+					onHide={() => setVisibleMaj(false)}
+					setIdCv={(id) => {
+						setIdCv(id);
+						setVisibleSelect(true);
+					}}
+					cvs={cvs}
+				/>
+			)}
+			{visibleSelect && (
+				<DialogSelectExperience
+					visible={visibleSelect}
+					listExperienceFromCv={cvSelected?.experiences ?? []}
+					listExperienceInProfile={fields}
+					setListExperience={(list) => replace(list)}
+					onHide={() => setVisibleSelect(false)}
+				/>
+			)}
 			<AppCard className="relative group">
 				<div className="opacity-30 absolute top-2 left-3">
 					<TitleAppTwo
@@ -148,7 +169,7 @@ export const ProfileExperiences = () => {
 										onChange={() => toggle(field.clientKey)}
 									/>
 								)}
-								<div className="w-3/4 flex flex-col gap-0">
+								<div className="w-3/4 flex flex-col gap-1">
 									<TextareaProfile
 										placeholder="Votre intitulé"
 										name={`experiences.${idx}.content.title`}
@@ -167,7 +188,7 @@ export const ProfileExperiences = () => {
 										/>
 									</div>
 								</div>
-								<div className="flex flex-col items-end gap-0">
+								<div className="flex flex-col items-end gap-1">
 									<PeriodeProfile
 										startName={`experiences.${idx}.content.start`}
 										endName={`experiences.${idx}.content.end`}
@@ -196,6 +217,7 @@ export const ProfileExperiences = () => {
 											fontSize={"14px"}
 											weight={300}
 											textAlign="justify"
+											leading={1}
 										/>
 									</div>
 									<ExperienceMissions expIndex={idx} />
@@ -252,15 +274,19 @@ function ExperienceMissions({ expIndex }: { expIndex: number }) {
 	return (
 		<>
 			{fields.map((field, j) => (
-				<div key={field.rhfId} className="flex justify-between">
-					<InputTextProfile
-						name={`experiences.${expIndex}.content.missions.${j}.content.content`}
+				<div
+					key={field.rhfId}
+					className="flex justify-between items-start gap-2"
+				>
+					<TextareaProfile
 						placeholder="Mission accomplie ?"
+						name={`experiences.${expIndex}.content.missions.${j}.content.content`}
 						fontSize={"14px"}
 						weight={300}
-						textColor={"text-black dark:text-white"}
+						textAlign="justify"
+						leading={1}
 					/>
-					<button type="button" onClick={() => remove(j)}>
+					<button type="button" className="-mt-1.5" onClick={() => remove(j)}>
 						×
 					</button>
 				</div>

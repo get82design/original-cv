@@ -17,6 +17,10 @@ import { Checkbox } from "primereact/checkbox";
 import { InputTextProfile } from "../../input/InputTextProfile";
 import { FaTimes } from "react-icons/fa";
 import { RatingProfile } from "../../input/RatingProfile";
+import type { CV } from "../../CompoPage";
+import { trpc } from "@utils/trpc";
+import { DialogSelectCv } from "../common/DialogSelectCv";
+import { DialogSelectSkillGroup } from "./DialogSelectSkill";
 
 function createEmptySkillGroup(opts?: {
 	order?: number;
@@ -36,13 +40,20 @@ function createEmptySkill(opts?: { order?: number }): ListItem<SkillInput> {
 	};
 }
 
-export const ProfileSkill = () => {
+export const ProfileSkill = ({ cvs }: { cvs: CV[] }) => {
 	const refSkill = useRef<SpeedDial>(null);
 	const [openDelete, setOpenDelete] = useState(false);
 	const [toDelete, setToDelete] = useState<Set<string>>(new Set());
+	const [visibleMaj, setVisibleMaj] = useState(false);
+	const [idCv, setIdCv] = useState<string | undefined>(undefined);
+	const { data: cvSelected } = trpc.cv.byId.useQuery(
+		{ id: idCv ?? "" },
+		{ enabled: !!idCv },
+	);
+	const [visibleSelect, setVisibleSelect] = useState(false);
 
 	const { control, watch, setValue } = useFormContext<ProfileSaveInput>();
-	const { fields, append, remove } = useFieldArray({
+	const { fields, append, remove, replace } = useFieldArray({
 		control,
 		name: "skillGroups",
 		keyName: "rhfId", // ne pas écraser clientKey
@@ -81,9 +92,14 @@ export const ProfileSkill = () => {
 		{
 			label: "Mise à jour depuis CV",
 			icon: "pi pi-refresh",
-			// disabled: nbCv === 0 && true,
+			disabled: cvs.length === 0 && true,
 			command: () => {
-				// setVisibleMaj(true)
+				if (cvs.length > 1) {
+					setVisibleMaj(true);
+				} else {
+					setIdCv(cvs[0]?.id ?? "");
+					setVisibleSelect(true);
+				}
 			},
 		},
 		{
@@ -98,22 +114,26 @@ export const ProfileSkill = () => {
 
 	return (
 		<div>
-			{/* <DialogSelectCv
-                visible={visibleMaj}
-                onHide={() => setVisibleMaj(false)}
-                setIdCv={setIdCv}
-                cvs={cvs}
-            />
-            <DialogSelectSkill
-                onHide={() => setVisibleSelect(false)}
-                visible={visibleSelect}
-                listSkillFromCv={skillTemp}
-                listSkillInDashboard={watchSkill}
-                setNewSkillList={(data) => {
-                    setValue('skill', data)
-                    setIdCv('0')
-                }}
-            /> */}
+			{visibleMaj && (
+				<DialogSelectCv
+					visible={visibleMaj}
+					onHide={() => setVisibleMaj(false)}
+					setIdCv={(id) => {
+						setIdCv(id);
+						setVisibleSelect(true);
+					}}
+					cvs={cvs}
+				/>
+			)}
+			{visibleSelect && (
+				<DialogSelectSkillGroup
+					onHide={() => setVisibleSelect(false)}
+					visible={visibleSelect}
+					listSkillGroupFromCv={cvSelected?.skillGroups ?? []}
+					listSkillGroupInProfile={fields}
+					setListSkillGroup={(data) => replace(data)}
+				/>
+			)}
 			<AppCard className="relative group">
 				<div className="opacity-30 absolute top-2 left-3">
 					<TitleAppTwo

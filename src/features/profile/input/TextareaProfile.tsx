@@ -12,6 +12,7 @@ interface TextareaProfileProps extends InputTextareaProps {
 	weight: number;
 	textAlign: "left" | "justify" | "center" | "right";
 	pressEnter?: boolean;
+	leading?: number;
 }
 
 export const TextareaProfile = ({
@@ -22,6 +23,7 @@ export const TextareaProfile = ({
 	weight,
 	textAlign,
 	pressEnter = false,
+	leading = 1.2,
 	...props
 }: TextareaProfileProps) => {
 	const { control } = useFormContext();
@@ -43,7 +45,7 @@ export const TextareaProfile = ({
 								padding: "0px",
 								fontSize: fontSize,
 								fontWeight: weight,
-								lineHeight: 1.2,
+								lineHeight: leading,
 								textAlign: textAlign,
 								backgroundColor: "transparent",
 								border: "none",

@@ -15,6 +15,10 @@ import type { ListItem } from "@utils/type";
 import { TextareaProfile } from "../../input/TextareaProfile";
 import { Checkbox } from "primereact/checkbox";
 import { SelectBasicIconProfile } from "../../input/SelectIconProfile";
+import { trpc } from "@utils/trpc";
+import { DialogSelectCv } from "../common/DialogSelectCv";
+import type { CV } from "../../CompoPage";
+import { DialogSelectStrength } from "./DailogSelectStrength";
 
 export function createEmptyStrength(opts?: {
 	order?: number;
@@ -30,13 +34,20 @@ export function createEmptyStrength(opts?: {
 	};
 }
 
-export const ProfileStrengths = () => {
+export const ProfileStrengths = ({ cvs }: { cvs: CV[] }) => {
 	const refAtout = useRef<SpeedDial>(null);
 	const [openDelete, setOpenDelete] = useState(false);
 	const [toDelete, setToDelete] = useState<Set<string>>(new Set());
+	const [visibleMaj, setVisibleMaj] = useState(false);
+	const [idCv, setIdCv] = useState<string | undefined>(undefined);
+	const { data: cvSelected } = trpc.cv.byId.useQuery(
+		{ id: idCv ?? "" },
+		{ enabled: !!idCv },
+	);
+	const [visibleSelect, setVisibleSelect] = useState(false);
 
 	const { control, watch, setValue } = useFormContext<ProfileSaveInput>();
-	const { fields, append, remove } = useFieldArray({
+	const { fields, append, remove, replace } = useFieldArray({
 		control,
 		name: "strengths",
 		keyName: "rhfId", // ne pas écraser clientKey
@@ -75,9 +86,14 @@ export const ProfileStrengths = () => {
 		{
 			label: "Mise à jour depuis CV",
 			icon: "pi pi-refresh",
-			// disabled: nbCv === 0 && true,
+			disabled: cvs.length === 0 && true,
 			command: () => {
-				//
+				if (cvs.length > 1) {
+					setVisibleMaj(true);
+				} else {
+					setIdCv(cvs[0]?.id ?? "");
+					setVisibleSelect(true);
+				}
 			},
 		},
 		{
@@ -92,17 +108,26 @@ export const ProfileStrengths = () => {
 
 	return (
 		<div>
-			{/* <DialogSelectCv visible={visibleMaj} onHide={() => setVisibleMaj(false)} setIdCv={setIdCv} cvs={cvs} /> */}
-			{/* <DialogSelectAtout
-                onHide={() => setVisibleSelect(false)}
-                visible={visibleSelect}
-                listAtoutFromCv={listAtout}
-                listAtoutInDashboard={watchAtout}
-                setNewAtoutList={(data) => {
-                    setValue('atout', data)
-                    setIdCv('0')
-                }}
-            /> */}
+			{visibleMaj && (
+				<DialogSelectCv
+					visible={visibleMaj}
+					onHide={() => setVisibleMaj(false)}
+					setIdCv={(id) => {
+						setIdCv(id);
+						setVisibleSelect(true);
+					}}
+					cvs={cvs}
+				/>
+			)}
+			{visibleSelect && (
+				<DialogSelectStrength
+					onHide={() => setVisibleSelect(false)}
+					visible={visibleSelect}
+					listStrengthFromCv={cvSelected?.strengths ?? []}
+					listStrengthInProfile={fields}
+					setListStrength={(list) => replace(list)}
+				/>
+			)}
 			<AppCard className="relative group">
 				<div className="opacity-30 absolute top-2 left-3">
 					<TitleAppTwo
@@ -132,7 +157,7 @@ export const ProfileStrengths = () => {
 										}
 									/>
 								</div>
-								<div className="w-full flex flex-col gap-0">
+								<div className="w-full flex flex-col gap-1">
 									<TextareaProfile
 										placeholder="Votre atout"
 										name={`strengths.${idx}.content.title`}
@@ -147,6 +172,7 @@ export const ProfileStrengths = () => {
 											fontSize={"14px"}
 											weight={300}
 											textAlign="justify"
+											leading={1}
 										/>
 									</div>
 								</div>

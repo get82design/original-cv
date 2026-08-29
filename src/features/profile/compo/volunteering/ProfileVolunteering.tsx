@@ -14,6 +14,10 @@ import { TextareaProfile } from "../../input/TextareaProfile";
 import { InputTextProfile } from "../../input/InputTextProfile";
 import { PeriodeProfile } from "../../input/PeriodeProfile";
 import { MiniFooterMultiFunc } from "../footer/MiniFooterMultiFunc";
+import type { CV } from "../../CompoPage";
+import { trpc } from "@utils/trpc";
+import { DialogSelectCv } from "../common/DialogSelectCv";
+import { DialogSelectVolunteering } from "./DialogSelectVolunteering";
 
 export function createEmptyVolunteering(opts?: {
 	order?: number;
@@ -41,13 +45,20 @@ export function createEmptyMission(order = 0) {
 	};
 }
 
-export const ProfileVolunteering = () => {
+export const ProfileVolunteering = ({ cvs }: { cvs: CV[] }) => {
 	const refBenevolat = useRef<SpeedDial>(null);
 	const [openDelete, setOpenDelete] = useState(false);
 	const [toDelete, setToDelete] = useState<Set<string>>(new Set());
+	const [visibleMaj, setVisibleMaj] = useState(false);
+	const [idCv, setIdCv] = useState<string | undefined>(undefined);
+	const { data: cvSelected } = trpc.cv.byId.useQuery(
+		{ id: idCv ?? "" },
+		{ enabled: !!idCv },
+	);
+	const [visibleSelect, setVisibleSelect] = useState(false);
 
 	const { control, watch, setValue } = useFormContext<ProfileSaveInput>();
-	const { fields, append, remove } = useFieldArray({
+	const { fields, append, remove, replace } = useFieldArray({
 		control,
 		name: "volunteerings",
 		keyName: "rhfId", // ne pas écraser clientKey
@@ -86,9 +97,14 @@ export const ProfileVolunteering = () => {
 		{
 			label: "Mise à jour depuis CV",
 			icon: "pi pi-refresh",
-			// disabled: nbCv === 0 && true,
+			disabled: cvs.length === 0 && true,
 			command: () => {
-				// setVisibleMaj(true)
+				if (cvs.length > 1) {
+					setVisibleMaj(true);
+				} else {
+					setIdCv(cvs[0]?.id ?? "");
+					setVisibleSelect(true);
+				}
 			},
 		},
 		{
@@ -103,17 +119,26 @@ export const ProfileVolunteering = () => {
 
 	return (
 		<div>
-			{/* <DialogSelectCv visible={visibleMaj} onHide={() => setVisibleMaj(false)} setIdCv={setIdCv} cvs={cvs} />
-            <DialogSelectBenevolat
-                onHide={() => setVisibleSelect(false)}
-                visible={visibleSelect}
-                listBenevolatFromCv={listBenevolat}
-                listBenevolatInDashboard={watchBenevolat}
-                setNewBenevolatList={(data) => {
-                    setValue('benevolat', data)
-                    setIdCv('0')
-                }}
-            /> */}
+			{visibleMaj && (
+				<DialogSelectCv
+					visible={visibleMaj}
+					onHide={() => setVisibleMaj(false)}
+					setIdCv={(id) => {
+						setIdCv(id);
+						setVisibleSelect(true);
+					}}
+					cvs={cvs}
+				/>
+			)}
+			{visibleSelect && (
+				<DialogSelectVolunteering
+					onHide={() => setVisibleSelect(false)}
+					visible={visibleSelect}
+					listVolunteeringFromCv={cvSelected?.volunteerings ?? []}
+					listVolunteeringInProfile={fields}
+					setListVolunteering={(list) => replace(list)}
+				/>
+			)}
 			<AppCard className="relative group">
 				<div className="opacity-30 absolute top-2 left-3">
 					<TitleAppTwo

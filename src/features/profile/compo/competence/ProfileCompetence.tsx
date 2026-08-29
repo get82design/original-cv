@@ -16,6 +16,10 @@ import { v4 as uuid } from "uuid";
 import { TextareaProfile } from "../../input/TextareaProfile";
 import { FaTimes } from "react-icons/fa";
 import { Checkbox } from "primereact/checkbox";
+import type { CV } from "../../CompoPage";
+import { trpc } from "@utils/trpc";
+import { DialogSelectCv } from "../common/DialogSelectCv";
+import { DialogSelectCompetenceGroup } from "./DialogSelectCompetenceGroup";
 
 function createEmptyCompetenceGroup(opts?: {
 	order?: number;
@@ -37,13 +41,20 @@ function createEmptyCompetence(opts?: {
 	};
 }
 
-export const ProfileCompetence = () => {
+export const ProfileCompetence = ({ cvs }: { cvs: CV[] }) => {
 	const refCompetence = useRef<SpeedDial>(null);
 	const [openDelete, setOpenDelete] = useState(false);
 	const [toDelete, setToDelete] = useState<Set<string>>(new Set());
+	const [visibleMaj, setVisibleMaj] = useState(false);
+	const [idCv, setIdCv] = useState<string | undefined>(undefined);
+	const { data: cvSelected } = trpc.cv.byId.useQuery(
+		{ id: idCv ?? "" },
+		{ enabled: !!idCv },
+	);
+	const [visibleSelect, setVisibleSelect] = useState(false);
 
 	const { control, watch, setValue } = useFormContext<ProfileSaveInput>();
-	const { fields, append, remove } = useFieldArray({
+	const { fields, append, remove, replace } = useFieldArray({
 		control,
 		name: "competenceGroups",
 		keyName: "rhfId", // ne pas écraser clientKey
@@ -82,9 +93,14 @@ export const ProfileCompetence = () => {
 		{
 			label: "Mise à jour depuis CV",
 			icon: "pi pi-refresh",
-			// disabled: nbCv === 0 && true,
+			disabled: cvs.length === 0 && true,
 			command: () => {
-				// setVisibleMaj(true)
+				if (cvs.length > 1) {
+					setVisibleMaj(true);
+				} else {
+					setIdCv(cvs[0]?.id ?? "");
+					setVisibleSelect(true);
+				}
 			},
 		},
 		{
@@ -99,17 +115,26 @@ export const ProfileCompetence = () => {
 
 	return (
 		<div>
-			{/* <DialogSelectCv visible={visibleMaj} onHide={() => setVisibleMaj(false)} setIdCv={setIdCv} cvs={cvs} />
-            <DialogSelectCompetence
-                onHide={() => setVisibleSelect(false)}
-                visible={visibleSelect}
-                listCompetenceFromCv={listGroupCompetence}
-                listCompetenceInDashboard={watchCompetence}
-                setNewCompetenceList={(data) => {
-                    setValue('competence', data)
-                    setIdCv('0')
-                }}
-            /> */}
+			{visibleMaj && (
+				<DialogSelectCv
+					visible={visibleMaj}
+					onHide={() => setVisibleMaj(false)}
+					setIdCv={(id) => {
+						setIdCv(id);
+						setVisibleSelect(true);
+					}}
+					cvs={cvs}
+				/>
+			)}
+			{visibleSelect && (
+				<DialogSelectCompetenceGroup
+					onHide={() => setVisibleSelect(false)}
+					visible={visibleSelect}
+					listCompetenceGroupFromCv={cvSelected?.competences ?? []}
+					listCompetenceGroupInProfile={fields}
+					setListCompetenceGroup={(data) => replace(data)}
+				/>
+			)}
 			<AppCard className="relative group">
 				<div className="opacity-30 absolute top-2 left-3">
 					<TitleAppTwo
@@ -131,7 +156,7 @@ export const ProfileCompetence = () => {
 									)}
 									<TextareaProfile
 										placeholder="Nom du groupe de compétences"
-										name={`competence.${idx}.groupCompetence`}
+										name={`competenceGroups.${idx}.content.title`}
 										fontSize={"16px"}
 										weight={700}
 										textAlign="justify"
@@ -199,7 +224,7 @@ function CompetenceGroupCompetences({ groupIndex }: { groupIndex: number }) {
 					>
 						<TextareaProfile
 							placeholder="Nom de la compétence"
-							name={`competenceGroups.${groupIndex}.content.competences.${index}.name`}
+							name={`competenceGroups.${groupIndex}.content.competences.${index}.content.name`}
 							fontSize={"14px"}
 							weight={400}
 							className="w-auto"

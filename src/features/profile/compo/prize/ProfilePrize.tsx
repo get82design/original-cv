@@ -13,6 +13,10 @@ import { v4 as uuid } from "uuid";
 import { Checkbox } from "primereact/checkbox";
 import { SelectBasicIconProfile } from "../../input/SelectIconProfile";
 import { TextareaProfile } from "../../input/TextareaProfile";
+import type { CV } from "../../CompoPage";
+import { trpc } from "@utils/trpc";
+import { DialogSelectCv } from "../common/DialogSelectCv";
+import { DialogSelectPrize } from "./DialogSelectPrize";
 
 export function createEmptyPrize(opts?: {
 	order?: number;
@@ -28,13 +32,20 @@ export function createEmptyPrize(opts?: {
 	};
 }
 
-export const ProfilePrize = () => {
+export const ProfilePrize = ({ cvs }: { cvs: CV[] }) => {
 	const refPrize = useRef<SpeedDial>(null);
 	const [openDelete, setOpenDelete] = useState(false);
 	const [toDelete, setToDelete] = useState<Set<string>>(new Set());
+	const [visibleMaj, setVisibleMaj] = useState(false);
+	const [idCv, setIdCv] = useState<string | undefined>(undefined);
+	const { data: cvSelected } = trpc.cv.byId.useQuery(
+		{ id: idCv ?? "" },
+		{ enabled: !!idCv },
+	);
+	const [visibleSelect, setVisibleSelect] = useState(false);
 
 	const { control, watch, setValue } = useFormContext<ProfileSaveInput>();
-	const { fields, append, remove } = useFieldArray({
+	const { fields, append, remove, replace } = useFieldArray({
 		control,
 		name: "prizes",
 		keyName: "rhfId", // ne pas écraser clientKey
@@ -73,9 +84,14 @@ export const ProfilePrize = () => {
 		{
 			label: "Mise à jour depuis CV",
 			icon: "pi pi-refresh",
-			// disabled: nbCv === 0 && true,
+			disabled: cvs.length === 0 && true,
 			command: () => {
-				// setVisibleMaj(true)
+				if (cvs.length > 1) {
+					setVisibleMaj(true);
+				} else {
+					setIdCv(cvs[0]?.id ?? "");
+					setVisibleSelect(true);
+				}
 			},
 		},
 		{
@@ -90,17 +106,21 @@ export const ProfilePrize = () => {
 
 	return (
 		<div>
-			{/* <DialogSelectCv visible={visibleMaj} onHide={() => setVisibleMaj(false)} setIdCv={setIdCv} cvs={cvs} />
-            <DialogSelectPrix
-                onHide={() => setVisibleSelect(false)}
-                visible={visibleSelect}
-                listPrixFromCv={listPrix}
-                listPrixInDashboard={watchPrix}
-                setNewPrixList={(data) => {
-                    setValue('prix', data)
-                    setIdCv('0')
-                }}
-            /> */}
+			{visibleMaj && (
+				<DialogSelectCv
+					visible={visibleMaj}
+					onHide={() => setVisibleMaj(false)}
+					setIdCv={setIdCv}
+					cvs={cvs}
+				/>
+			)}
+			<DialogSelectPrize
+				onHide={() => setVisibleSelect(false)}
+				visible={visibleSelect}
+				listPrizeFromCv={cvSelected?.prizes ?? []}
+				listPrizeInProfile={fields}
+				setListPrize={(list) => replace(list)}
+			/>
 			<AppCard className="relative group">
 				<div className="opacity-30 absolute top-2 left-3">
 					<TitleAppTwo

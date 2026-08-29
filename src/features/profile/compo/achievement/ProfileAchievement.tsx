@@ -15,12 +15,16 @@ import { v4 as uuid } from "uuid";
 import { TextareaProfile } from "../../input/TextareaProfile";
 import { MiniFooterMultiFunc } from "../footer/MiniFooterMultiFunc";
 import { InputTextProfile } from "../../input/InputTextProfile";
+import { trpc } from "@utils/trpc";
+import { DialogSelectCv } from "../common/DialogSelectCv";
+import { DialogSelectAchievement } from "./DialogSelectAchievement";
+import type { CV } from "../../CompoPage";
 
 export function createEmptyAchievement(opts?: {
 	order?: number;
 }): ListItem<AchievementInput> {
 	return {
-		clientKey: "achievement-" + uuid(),
+		clientKey: `achievement-${uuid()}`,
 		order: opts?.order ?? 1,
 		content: {
 			title: "",
@@ -31,13 +35,20 @@ export function createEmptyAchievement(opts?: {
 	};
 }
 
-export const ProfileAchievement = () => {
+export const ProfileAchievement = ({ cvs }: { cvs: CV[] }) => {
 	const refAchievement = useRef<SpeedDial>(null);
 	const [openDelete, setOpenDelete] = useState(false);
 	const [toDelete, setToDelete] = useState<Set<string>>(new Set());
+	const [visibleMaj, setVisibleMaj] = useState(false);
+	const [idCv, setIdCv] = useState<string | undefined>(undefined);
+	const { data: cvSelected } = trpc.cv.byId.useQuery(
+		{ id: idCv ?? "" },
+		{ enabled: !!idCv },
+	);
+	const [visibleSelect, setVisibleSelect] = useState(false);
 
 	const { control, watch, setValue } = useFormContext<ProfileSaveInput>();
-	const { fields, append, remove } = useFieldArray({
+	const { fields, append, remove, replace } = useFieldArray({
 		control,
 		name: "achievements",
 		keyName: "rhfId", // ne pas écraser clientKey
@@ -76,9 +87,14 @@ export const ProfileAchievement = () => {
 		{
 			label: "Mise à jour depuis CV",
 			icon: "pi pi-refresh",
-			// disabled: nbCv === 0 && true,
+			disabled: cvs.length === 0 && true,
 			command: () => {
-				// setVisibleMaj(true)
+				if (cvs.length > 1) {
+					setVisibleMaj(true);
+				} else {
+					setIdCv(cvs[0]?.id ?? "");
+					setVisibleSelect(true);
+				}
 			},
 		},
 		{
@@ -93,17 +109,28 @@ export const ProfileAchievement = () => {
 
 	return (
 		<div>
-			{/* <DialogSelectCv visible={visibleMaj} onHide={() => setVisibleMaj(false)} setIdCv={setIdCv} cvs={cvs} />
-            <DialogSelectAchievement
-                onHide={() => setVisibleSelect(false)}
-                visible={visibleSelect}
-                listAchievementFromCv={listAchievement}
-                listAchievementInDashboard={watchAchievement}
-                setNewAchievementList={(data) => {
-                    setValue('achievement', data)
-                    setIdCv('0')
-                }}
-            /> */}
+			{visibleMaj && (
+				<DialogSelectCv
+					visible={visibleMaj}
+					onHide={() => setVisibleMaj(false)}
+					setIdCv={(id) => {
+						setIdCv(id);
+						setVisibleSelect(true);
+					}}
+					cvs={cvs}
+				/>
+			)}
+			{visibleSelect && (
+				<DialogSelectAchievement
+					onHide={() => setVisibleSelect(false)}
+					visible={visibleSelect}
+					listAchievementFromCv={cvSelected?.achievements ?? []}
+					listAchievementInProfile={fields}
+					setListAchievement={(data) => {
+						replace(data);
+					}}
+				/>
+			)}
 			<AppCard className="relative group">
 				<div className="opacity-30 absolute top-2 left-3">
 					<TitleAppTwo

@@ -12,9 +12,13 @@ import { useFieldArray, useFormContext } from "react-hook-form";
 import { MiniFooterMultiFunc } from "../footer/MiniFooterMultiFunc";
 import { Checkbox } from "primereact/checkbox";
 import { SelectBasicIconProfile } from "../../input/SelectIconProfile";
-import { InputTextProfile } from "../../input/InputTextProfile";
 import type { ListItem } from "@utils/type";
 import { v4 as uuid } from "uuid";
+import { trpc } from "@utils/trpc";
+import { DialogSelectCv } from "../common/DialogSelectCv";
+import type { CV } from "../../CompoPage";
+import { DialogSelectPassion } from "./DialogSelectPassion";
+import { TextareaProfile } from "../../input/TextareaProfile";
 
 function createEmptyPassion(opts?: { order?: number }): ListItem<PassionInput> {
 	return {
@@ -27,13 +31,20 @@ function createEmptyPassion(opts?: { order?: number }): ListItem<PassionInput> {
 	};
 }
 
-export const ProfilePassion = () => {
+export const ProfilePassion = ({ cvs }: { cvs: CV[] }) => {
 	const refPassion = useRef<SpeedDial>(null);
 	const [openDelete, setOpenDelete] = useState(false);
 	const [toDelete, setToDelete] = useState<Set<string>>(new Set());
+	const [visibleMaj, setVisibleMaj] = useState(false);
+	const [idCv, setIdCv] = useState<string | undefined>(undefined);
+	const { data: cvSelected } = trpc.cv.byId.useQuery(
+		{ id: idCv ?? "" },
+		{ enabled: !!idCv },
+	);
+	const [visibleSelect, setVisibleSelect] = useState(false);
 
 	const { control, watch, setValue } = useFormContext<ProfileSaveInput>();
-	const { fields, append, remove } = useFieldArray({
+	const { fields, append, remove, replace } = useFieldArray({
 		control,
 		name: "passions",
 		keyName: "rhfId", // ne pas écraser clientKey
@@ -72,9 +83,14 @@ export const ProfilePassion = () => {
 		{
 			label: "Mise à jour depuis CV",
 			icon: "pi pi-refresh",
-			// disabled: nbCv === 0 && true,
+			disabled: cvs.length === 0 && true,
 			command: () => {
-				// setVisibleMaj(true)
+				if (cvs.length > 1) {
+					setVisibleMaj(true);
+				} else {
+					setIdCv(cvs[0]?.id ?? "");
+					setVisibleSelect(true);
+				}
 			},
 		},
 		{
@@ -89,17 +105,26 @@ export const ProfilePassion = () => {
 
 	return (
 		<div>
-			{/* <DialogSelectCv visible={visibleMaj} onHide={() => setVisibleMaj(false)} setIdCv={setIdCv} cvs={cvs} />
-            <DialogSelectPassion
-                listPassionFromCv={listPassion}
-                listPassionInDashboard={watchPassion}
-                setNewPassionList={(data) => {
-                    setValue('passion', data)
-                    setIdCv('0')
-                }}
-                onHide={() => setVisibleSelect(false)}
-                visible={visibleSelect}
-            /> */}
+			{visibleMaj && (
+				<DialogSelectCv
+					visible={visibleMaj}
+					onHide={() => setVisibleMaj(false)}
+					setIdCv={(id) => {
+						setIdCv(id);
+						setVisibleSelect(true);
+					}}
+					cvs={cvs}
+				/>
+			)}
+			{visibleSelect && (
+				<DialogSelectPassion
+					listPassionFromCv={cvSelected?.passions ?? []}
+					listPassionInProfile={fields}
+					setListPassion={(data) => replace(data)}
+					visible={visibleSelect}
+					onHide={() => setVisibleSelect(false)}
+				/>
+			)}
 			<AppCard className="relative group">
 				<div className="opacity-30 absolute top-2 left-3">
 					<TitleAppTwo
@@ -131,11 +156,12 @@ export const ProfilePassion = () => {
 										setValue(`passions.${idx}.content.icon`, data)
 									}
 								/>
-								<InputTextProfile
+								<TextareaProfile
 									name={`passions.${idx}.content.title`}
 									fontSize={"16px"}
 									weight={400}
-									textColor={"text-black dark:text-white"}
+									textAlign="left"
+									leading={1}
 									placeholder="Nom de la passion"
 								/>
 							</div>

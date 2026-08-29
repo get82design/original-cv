@@ -8,8 +8,12 @@ import { Tooltip } from "primereact/tooltip";
 import { CompoPage } from "./CompoPage";
 import { FormProfile } from "./form/FormProfile";
 import { ProfileProvider } from "./contexte/ProfileContext";
+import { trpc } from "@utils/trpc";
+import { ProgressSpinner } from "primereact/progressspinner";
 
 export const ProfilePage = () => {
+	const { data: cvs, isLoading } = trpc.cv.allByUser.useQuery();
+	console.log("cvs", cvs);
 	const isLg = useMediaQuery("(min-width: 1024px)");
 	const isMd = useMediaQuery("(min-width: 768px)");
 	const isSm = useMediaQuery("(min-width: 640px)");
@@ -84,7 +88,7 @@ export const ProfilePage = () => {
 							{/* <Button color="light" icon="pi pi-angle-down" iconPos='right'>Options</Button> */}
 						</div>
 						<ProfileProvider>
-							<CompoPage /*nbCv={nbCv} myCvs={myCvs} cv={cv}*/ />
+							<CompoPage cvs={cvs ?? []} /*nbCv={nbCv} cv={cv}*/ />
 						</ProfileProvider>
 					</div>
 					<div
@@ -111,17 +115,29 @@ export const ProfilePage = () => {
 									size={"text-2xl"}
 									withSpace
 								/>
-								{/* {isLoading
-                                ? <ProgressSpinner style={{ width: '50px', height: '50px' }} strokeWidth="8" fill="var(--surface-ground)" animationDuration=".5s" />
-                                : <>
-                                    <p>Vous avez enregistré {myCvs.length} CV{myCvs.length > 1
-                                        ? 's'
-                                        : ''}</p>
-                                    <div className='flex w-full justify-center gap-2'>
-                                        {myCvs?.length > 0 && myCvs.map((cv, idx) => {
-                                            return (
-                                                <div key={idx} className='w-full flex flex-col items-center gap-4'>
-                                                    <PreviewImage
+								{isLoading ? (
+									<ProgressSpinner
+										style={{ width: "50px", height: "50px" }}
+										strokeWidth="8"
+										fill="var(--surface-ground)"
+										animationDuration=".5s"
+									/>
+								) : (
+									<>
+										<p>
+											Vous avez enregistré {cvs?.length} CV
+											{cvs?.length && cvs?.length > 1 ? "s" : ""}
+										</p>
+										<div className="flex w-full justify-center gap-2">
+											{cvs &&
+												cvs.length > 0 &&
+												cvs.map((cv) => {
+													return (
+														<div
+															key={cv?.id}
+															className="w-full flex flex-col items-center gap-4"
+														>
+															{/*<PreviewImage
                                                         width={breakpoint < 768 ? 'w-full p-2' : 'w-2/3'}
                                                         cv={cv}
                                                         action={
@@ -142,21 +158,26 @@ export const ProfilePage = () => {
                                                                 }
                                                             </>
                                                         }
-                                                    />
-                                                    {breakpoint >= 640 && <div className='w-full flex justify-center'>
-                                                        <Button onClick={(e) => {
-                                                            e.preventDefault()
-                                                            setIdCv(cv?.id as string)
-                                                            setVisibleSearchDatas(true)
-                                                        }} >Récupérer les données du CV</Button>
-                                                    </div>}
-                                                </div>
-                                            )
-                                        })}
-
-                                    </div>
-                                </>
-                            } */}
+                                                    /> */}
+															{isSm && (
+																<div className="w-full flex justify-center">
+																	<Button
+																		onClick={(e) => {
+																			e.preventDefault();
+																			// setIdCv(cv?.id as string)
+																			// setVisibleSearchDatas(true)
+																		}}
+																	>
+																		Récupérer les données du CV
+																	</Button>
+																</div>
+															)}
+														</div>
+													);
+												})}
+										</div>
+									</>
+								)}
 							</AppCard>
 						</div>
 					</div>

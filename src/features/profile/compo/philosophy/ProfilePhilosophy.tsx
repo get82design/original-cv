@@ -5,29 +5,55 @@ import { TextareaProfile } from "../../input/TextareaProfile";
 import { InputTextProfile } from "../../input/InputTextProfile";
 import { Tooltip } from "primereact/tooltip";
 import { SpeedDial } from "primereact/speeddial";
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
 import { useFormContext } from "react-hook-form";
 import type { MenuItem } from "primereact/menuitem";
+import type { CV } from "../../CompoPage";
+import { DialogSelectCv } from "../common/DialogSelectCv";
+import { trpc } from "@utils/trpc";
 
-export const ProfilePhilosophy = () => {
+export const ProfilePhilosophy = ({ cvs }: { cvs: CV[] }) => {
 	const refPhilosophie = useRef<SpeedDial>(null);
 	const { watch, setValue } = useFormContext();
 	const watchPhilosophie = watch("philosophy");
+	const [visibleMaj, setVisibleMaj] = useState(false);
+	const [idCv, setIdCv] = useState<string>("");
+	const { data: cvSelected } = trpc.cv.byId.useQuery(
+		{ id: idCv ?? "" },
+		{ enabled: !!idCv },
+	);
+
+	useEffect(() => {
+		if (cvSelected) {
+			setValue("philosophy.citation", cvSelected.philosophy?.citation ?? "");
+			setValue("philosophy.author", cvSelected.philosophy?.author ?? "");
+		}
+	}, [cvSelected, setValue]);
 
 	const items: MenuItem[] = [
 		{
 			label: "Mise à jour depuis CV",
 			icon: "pi pi-refresh",
-			// disabled: nbCv === 0 && true,
+			disabled: cvs?.length === 0,
 			command: () => {
-				// setVisibleMaj(true)
+				setVisibleMaj(true);
 			},
 		},
 	];
 
 	return (
 		<div>
-			{/* <DialogSelectCv visible={visibleMaj} onHide={() => setVisibleMaj(false)} setIdCv={setIdCv} cvs={cvs} /> */}
+			{visibleMaj && (
+				<DialogSelectCv
+					visible={visibleMaj}
+					onHide={() => setVisibleMaj(false)}
+					setIdCv={(id) => {
+						setIdCv(id);
+						setVisibleMaj(true);
+					}}
+					cvs={cvs}
+				/>
+			)}
 			<AppCard className="relative group">
 				<div className="opacity-30 absolute top-2 left-3">
 					<TitleAppTwo

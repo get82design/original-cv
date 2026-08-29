@@ -15,6 +15,10 @@ import { v4 as uuid } from "uuid";
 import { Checkbox } from "primereact/checkbox";
 import { TextareaProfile } from "../../input/TextareaProfile";
 import { RatingProfile } from "../../input/RatingProfile";
+import type { CV } from "../../CompoPage";
+import { trpc } from "@utils/trpc";
+import { DialogSelectCv } from "../common/DialogSelectCv";
+import { DialogSelectExpertise } from "./DialogSelectExpertise";
 
 function createEmptyExpertise(opts?: {
 	order?: number;
@@ -29,13 +33,20 @@ function createEmptyExpertise(opts?: {
 	};
 }
 
-export const ProfileExpertise = () => {
+export const ProfileExpertise = ({ cvs }: { cvs: CV[] }) => {
 	const refExpertise = useRef<SpeedDial>(null);
 	const [openDelete, setOpenDelete] = useState(false);
 	const [toDelete, setToDelete] = useState<Set<string>>(new Set());
+	const [visibleMaj, setVisibleMaj] = useState(false);
+	const [idCv, setIdCv] = useState<string | undefined>(undefined);
+	const { data: cvSelected } = trpc.cv.byId.useQuery(
+		{ id: idCv ?? "" },
+		{ enabled: !!idCv },
+	);
+	const [visibleSelect, setVisibleSelect] = useState(false);
 
 	const { control, watch, setValue } = useFormContext<ProfileSaveInput>();
-	const { fields, append, remove } = useFieldArray({
+	const { fields, append, remove, replace } = useFieldArray({
 		control,
 		name: "expertises",
 		keyName: "rhfId", // ne pas écraser clientKey
@@ -74,9 +85,14 @@ export const ProfileExpertise = () => {
 		{
 			label: "Mise à jour depuis CV",
 			icon: "pi pi-refresh",
-			// disabled: nbCv === 0 && true,
+			disabled: cvs.length === 0 && true,
 			command: () => {
-				// setVisibleMaj(true)
+				if (cvs.length > 1) {
+					setVisibleMaj(true);
+				} else {
+					setIdCv(cvs[0]?.id ?? "");
+					setVisibleSelect(true);
+				}
 			},
 		},
 		{
@@ -91,17 +107,24 @@ export const ProfileExpertise = () => {
 
 	return (
 		<div>
-			{/* <DialogSelectCv visible={visibleMaj} onHide={() => setVisibleMaj(false)} setIdCv={setIdCv} cvs={cvs} />
-            <DialogSelectExpertise
-                onHide={() => setVisibleSelect(false)}
-                visible={visibleSelect}
-                listExpertiseFromCv={listExpertise}
-                listExpertiseInDashboard={watchExpertise}
-                setNewExpertiseList={(data) => {
-                    setValue('expertise', data)
-                    setIdCv('0')
-                }}
-            /> */}
+			{visibleMaj && (
+				<DialogSelectCv
+					visible={visibleMaj}
+					onHide={() => setVisibleMaj(false)}
+					setIdCv={(id) => {
+						setIdCv(id);
+						setVisibleSelect(true);
+					}}
+					cvs={cvs}
+				/>
+			)}
+			<DialogSelectExpertise
+				onHide={() => setVisibleSelect(false)}
+				visible={visibleSelect}
+				listExpertiseFromCv={cvSelected?.expertises ?? []}
+				listExpertiseInProfile={fields}
+				setListExpertise={(data) => replace(data)}
+			/>
 			<AppCard className="relative group">
 				<div className="opacity-30 absolute top-2 left-3">
 					<TitleAppTwo

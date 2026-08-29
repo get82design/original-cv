@@ -2,27 +2,55 @@ import { AppCard } from "@/components/card/AppCard";
 import { TitleAppTwo } from "@/components/title/TitleAppTwo";
 import { SpeedDial } from "primereact/speeddial";
 import { Tooltip } from "primereact/tooltip";
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { TextareaProfile } from "../../input/TextareaProfile";
 import type { MenuItem } from "primereact/menuitem";
+import { DialogSelectCv } from "../common/DialogSelectCv";
+import type { CV } from "../../CompoPage";
+import { trpc } from "@utils/trpc";
+import { useFormContext } from "react-hook-form";
 
-export const ProfileDescription = () => {
+export const ProfileDescription = ({ cvs }: { cvs: CV[] }) => {
 	const refDescription = useRef<SpeedDial>(null);
+	const [visibleMaj, setVisibleMaj] = useState(false);
+	const { setValue } = useFormContext();
+	const [idCv, setIdCv] = useState<string>("");
+	const { data: cvSelected } = trpc.cv.byId.useQuery(
+		{ id: idCv ?? "" },
+		{ enabled: !!idCv },
+	);
+
+	useEffect(() => {
+		if (cvSelected) {
+			setValue(
+				"description.description",
+				cvSelected.description?.description ?? "",
+			);
+		}
+	}, [cvSelected, setValue]);
 
 	const items: MenuItem[] = [
 		{
 			label: "Mise à jour depuis CV",
 			icon: "pi pi-refresh",
-			// disabled: nbCv === 0 && true,
+			disabled: cvs?.length === 0,
 			command: () => {
-				// setVisibleMaj(true)
+				setVisibleMaj(true);
 			},
 		},
 	];
 
 	return (
 		<div>
-			{/* <DialogSelectCv visible={visibleMaj} onHide={() => setVisibleMaj(false)} setIdCv={setIdCv} cvs={cvs} /> */}
+			<DialogSelectCv
+				visible={visibleMaj}
+				onHide={() => setVisibleMaj(false)}
+				setIdCv={(id) => {
+					setIdCv(id);
+					setVisibleMaj(true);
+				}}
+				cvs={cvs}
+			/>
 			<AppCard className="relative group">
 				<div className="opacity-30 absolute top-2 left-3">
 					<TitleAppTwo

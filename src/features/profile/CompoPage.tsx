@@ -20,8 +20,13 @@ import { ProfileCertification } from "./compo/certification/ProfileCertification
 import { ProfileFormation } from "./compo/formation/ProfileFormation";
 import { ProfilePassion } from "./compo/passion/ProfilePassion";
 import { ProfilePrize } from "./compo/prize/ProfilePrize";
+import type { inferRouterOutputs } from "@trpc/server";
+import type { AppRouter } from "@server/api/root";
 
-export const CompoPage = () => {
+type RouterOutputs = inferRouterOutputs<AppRouter>;
+export type CV = NonNullable<RouterOutputs["cv"]["allByUser"]>[number];
+
+export const CompoPage = ({ cvs }: { cvs: CV[] }) => {
 	const { watch } = useFormContext();
 	const profileId = watch("id");
 	return (
@@ -30,13 +35,13 @@ export const CompoPage = () => {
 				<ProfileIdentite />
 				{profileId ? (
 					<>
-						<ProfileExperiences />
-						<ProfileStrengths />
-						<ProfileFormation />
-						<ProfileProject />
-						<ProfilePublication />
-						<ProfileAchievement />
-						<ProfileVolunteering />
+						<ProfileExperiences cvs={cvs} />
+						<ProfileStrengths cvs={cvs} />
+						<ProfileFormation cvs={cvs} />
+						<ProfileProject cvs={cvs} />
+						<ProfilePublication cvs={cvs} />
+						<ProfileAchievement cvs={cvs} />
+						<ProfileVolunteering cvs={cvs} />
 					</>
 				) : (
 					<p className="text-center text-gray-500">
@@ -47,22 +52,22 @@ export const CompoPage = () => {
 			</div>
 			{profileId && (
 				<div className="w-full xl:w-1/2 -mt-2 flex flex-col gap-6">
-					<ProfileDescription />
-					<ProfilePhilosophy />
-					<ProfileEducation />
-					<ProfileLanguage />
-					<ProfileSkill />
-					<ProfileTag />
+					<ProfileDescription cvs={cvs} />
+					<ProfilePhilosophy cvs={cvs} />
+					<ProfileEducation cvs={cvs} />
+					<ProfileLanguage cvs={cvs} />
+					<ProfileSkill cvs={cvs} />
+					<ProfileTag cvs={cvs} />
 					<div className="w-full grid grid-cols-2 gap-6">
 						<div className="col-span-1 flex flex-col gap-6">
-							<ProfileCompetence />
-							<ProfileExpertise />
-							<ProfileCertification />
+							<ProfileCompetence cvs={cvs} />
+							<ProfileExpertise cvs={cvs} />
+							<ProfileCertification cvs={cvs} />
 						</div>
 						<div className="col-span-1 flex flex-col gap-6">
-							<ProfileSocialMedia />
-							<ProfilePassion />
-							<ProfilePrize />
+							<ProfileSocialMedia cvs={cvs} />
+							<ProfilePassion cvs={cvs} />
+							<ProfilePrize cvs={cvs} />
 						</div>
 					</div>
 				</div>

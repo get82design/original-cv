@@ -13,6 +13,10 @@ import { MiniFooterMultiFunc } from "../footer/MiniFooterMultiFunc";
 import type { ListItem } from "@utils/type";
 import type { FormationInput } from "@/services/schemas/profileSave.schema";
 import { v4 as uuid } from "uuid";
+import { trpc } from "@utils/trpc";
+import { DialogSelectCv } from "../common/DialogSelectCv";
+import type { CV } from "../../CompoPage";
+import { DialogSelectFormation } from "./DialogSelectFormation";
 
 function createEmptyFormation(opts?: {
 	order?: number;
@@ -30,13 +34,20 @@ function createEmptyFormation(opts?: {
 	};
 }
 
-export function ProfileFormation() {
+export function ProfileFormation({ cvs }: { cvs: CV[] }) {
 	const refFormation = useRef<SpeedDial>(null);
 	const [openDelete, setOpenDelete] = useState(false);
 	const [toDelete, setToDelete] = useState<Set<string>>(new Set());
+	const [visibleMaj, setVisibleMaj] = useState(false);
+	const [idCv, setIdCv] = useState<string | undefined>(undefined);
+	const { data: cvSelected } = trpc.cv.byId.useQuery(
+		{ id: idCv ?? "" },
+		{ enabled: !!idCv },
+	);
+	const [visibleSelect, setVisibleSelect] = useState(false);
 
 	const { control, watch, setValue } = useFormContext<ProfileSaveInput>();
-	const { fields, append, remove } = useFieldArray({
+	const { fields, append, remove, replace } = useFieldArray({
 		control,
 		name: "formations",
 		keyName: "rhfId", // ne pas écraser clientKey
@@ -75,9 +86,14 @@ export function ProfileFormation() {
 		{
 			label: "Mise à jour depuis CV",
 			icon: "pi pi-refresh",
-			// disabled: nbCv === 0 && true,
+			disabled: cvs?.length === 0,
 			command: () => {
-				// setVisibleMaj(true)
+				if (cvs.length > 1) {
+					setVisibleMaj(true);
+				} else {
+					setIdCv(cvs[0]?.id ?? "");
+					setVisibleSelect(true);
+				}
 			},
 		},
 		{
@@ -92,17 +108,26 @@ export function ProfileFormation() {
 
 	return (
 		<div>
-			{/* <DialogSelectCv visible={visibleMaj} onHide={() => setVisibleMaj(false)} setIdCv={setIdCv} cvs={cvs} />
-            <DialogSelectFormation
-                onHide={() => setVisibleSelect(false)}
-                visible={visibleSelect}
-                listFormationFromCv={listFormation}
-                listFormationInDashboard={watchFormation}
-                setNewFormationList={(data) => {
-                    setValue('formation', data)
-                    setIdCv('0')
-                }}
-            /> */}
+			{visibleMaj && (
+				<DialogSelectCv
+					visible={visibleMaj}
+					onHide={() => setVisibleMaj(false)}
+					setIdCv={(id) => {
+						setIdCv(id);
+						setVisibleSelect(true);
+					}}
+					cvs={cvs}
+				/>
+			)}
+			{visibleSelect && (
+				<DialogSelectFormation
+					onHide={() => setVisibleSelect(false)}
+					visible={visibleSelect}
+					listFormationFromCv={cvSelected?.formations ?? []}
+					listFormationInProfile={fields}
+					setListFormation={(list) => replace(list)}
+				/>
+			)}
 			<AppCard className="relative group">
 				<div className="opacity-30 absolute top-2 left-3">
 					<TitleAppTwo

@@ -15,6 +15,10 @@ import { v4 as uuid } from "uuid";
 import { Checkbox } from "primereact/checkbox";
 import { InputTextProfile } from "../../input/InputTextProfile";
 import { TextareaProfile } from "../../input/TextareaProfile";
+import type { CV } from "../../CompoPage";
+import { trpc } from "@utils/trpc";
+import { DialogSelectCv } from "../common/DialogSelectCv";
+import { DialogSelectCertification } from "./DialogSelectCertification";
 
 function createEmptyCertification(opts?: {
 	order?: number;
@@ -29,13 +33,20 @@ function createEmptyCertification(opts?: {
 	};
 }
 
-export function ProfileCertification() {
+export function ProfileCertification({ cvs }: { cvs: CV[] }) {
 	const refCertification = useRef<SpeedDial>(null);
 	const [openDelete, setOpenDelete] = useState(false);
 	const [toDelete, setToDelete] = useState<Set<string>>(new Set());
+	const [visibleMaj, setVisibleMaj] = useState(false);
+	const [idCv, setIdCv] = useState<string | undefined>(undefined);
+	const { data: cvSelected } = trpc.cv.byId.useQuery(
+		{ id: idCv ?? "" },
+		{ enabled: !!idCv },
+	);
+	const [visibleSelect, setVisibleSelect] = useState(false);
 
 	const { control, watch, setValue } = useFormContext<ProfileSaveInput>();
-	const { fields, append, remove } = useFieldArray({
+	const { fields, append, remove, replace } = useFieldArray({
 		control,
 		name: "certifications",
 		keyName: "rhfId", // ne pas écraser clientKey
@@ -74,9 +85,14 @@ export function ProfileCertification() {
 		{
 			label: "Mise à jour depuis CV",
 			icon: "pi pi-refresh",
-			// disabled: nbCv === 0 && true,
+			disabled: cvs.length === 0 && true,
 			command: () => {
-				// setVisibleMaj(true)
+				if (cvs.length > 1) {
+					setVisibleMaj(true);
+				} else {
+					setIdCv(cvs[0]?.id ?? "");
+					setVisibleSelect(true);
+				}
 			},
 		},
 		{
@@ -90,17 +106,26 @@ export function ProfileCertification() {
 	];
 	return (
 		<div>
-			{/* <DialogSelectCv visible={visibleMaj} onHide={() => setVisibleMaj(false)} setIdCv={setIdCv} cvs={cvs} />
-            <DialogSelectCertification
-                onHide={() => setVisibleSelect(false)}
-                visible={visibleSelect}
-                listCertificationFromCv={listCertification}
-                listCertificationInDashboard={watchCertification}
-                setNewCertificationList={(data) => {
-                    setValue('certification', data)
-                    setIdCv('0')
-                }}
-            /> */}
+			{visibleMaj && (
+				<DialogSelectCv
+					visible={visibleMaj}
+					onHide={() => setVisibleMaj(false)}
+					setIdCv={(id) => {
+						setIdCv(id);
+						setVisibleSelect(true);
+					}}
+					cvs={cvs}
+				/>
+			)}
+			{visibleSelect && (
+				<DialogSelectCertification
+					onHide={() => setVisibleSelect(false)}
+					visible={visibleSelect}
+					listCertificationFromCv={cvSelected?.certifications ?? []}
+					listCertificationInProfile={fields}
+					setListCertification={(data) => replace(data)}
+				/>
+			)}
 			<AppCard className="relative group">
 				<div className="opacity-30 absolute top-2 left-3">
 					<TitleAppTwo

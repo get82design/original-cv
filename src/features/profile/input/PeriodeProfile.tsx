@@ -70,6 +70,7 @@ export const PeriodeProfile = ({
 				value={label}
 				fontSize={"14px"}
 				weight={300}
+				leading={1}
 				textAlign={"right"}
 				onClick={(e) => {
 					setPeriode({

@@ -16,6 +16,10 @@ import { InputTextProfile } from "../../input/InputTextProfile";
 import { MiniFooterMultiFunc } from "../footer/MiniFooterMultiFunc";
 import { Checkbox } from "primereact/checkbox";
 import { PeriodeProfile } from "../../input/PeriodeProfile";
+import type { CV } from "../../CompoPage";
+import { trpc } from "@utils/trpc";
+import { DialogSelectCv } from "../common/DialogSelectCv";
+import { DialogSelectEducation } from "./DialogSelectEducation";
 
 function createEmptyEducation(opts?: {
 	order?: number;
@@ -34,13 +38,20 @@ function createEmptyEducation(opts?: {
 	};
 }
 
-export function ProfileEducation() {
+export function ProfileEducation({ cvs }: { cvs: CV[] }) {
 	const refDiplome = useRef<SpeedDial>(null);
 	const [openDelete, setOpenDelete] = useState(false);
 	const [toDelete, setToDelete] = useState<Set<string>>(new Set());
+	const [visibleMaj, setVisibleMaj] = useState(false);
+	const [idCv, setIdCv] = useState<string | undefined>(undefined);
+	const { data: cvSelected } = trpc.cv.byId.useQuery(
+		{ id: idCv ?? "" },
+		{ enabled: !!idCv },
+	);
+	const [visibleSelect, setVisibleSelect] = useState(false);
 
 	const { control, watch, setValue } = useFormContext<ProfileSaveInput>();
-	const { fields, append, remove } = useFieldArray({
+	const { fields, append, remove, replace } = useFieldArray({
 		control,
 		name: "educations",
 		keyName: "rhfId", // ne pas écraser clientKey
@@ -79,15 +90,20 @@ export function ProfileEducation() {
 		{
 			label: "Mise à jour depuis CV",
 			icon: "pi pi-refresh",
-			// disabled: nbCv === 0 && true,
+			disabled: cvs.length === 0 && true,
 			command: () => {
-				// setVisibleMaj(true)
+				if (cvs.length > 1) {
+					setVisibleMaj(true);
+				} else {
+					setIdCv(cvs[0]?.id ?? "");
+					setVisibleSelect(true);
+				}
 			},
 		},
 		{
 			label: "Supprimer",
 			icon: "pi pi-trash",
-			// disabled: !watchDiplome,
+			disabled: fields.length === 0,
 			command: () => {
 				setOpenDelete(true);
 			},
@@ -96,21 +112,26 @@ export function ProfileEducation() {
 
 	return (
 		<div>
-			{/* <DialogSelectCv
-                visible={visibleMaj}
-                onHide={() => setVisibleMaj(false)}
-                setIdCv={setIdCv}
-                cvs={cvs}
-            />
-            <DialogSelectDiplome
-                visible={visibleSelect}
-                listDiplomeFromCv={diplomeTemp}
-                listDiplomeInDashboard={watchDiplome
-                    ? watchDiplome
-                    : []}
-                setListDiplome={setListDiplome}
-                onHide={() => setVisibleSelect(false)}
-            /> */}
+			{visibleMaj && (
+				<DialogSelectCv
+					visible={visibleMaj}
+					onHide={() => setVisibleMaj(false)}
+					setIdCv={(id) => {
+						setIdCv(id);
+						setVisibleMaj(true);
+					}}
+					cvs={cvs}
+				/>
+			)}
+			{visibleSelect && (
+				<DialogSelectEducation
+					visible={visibleSelect}
+					listEducationFromCv={cvSelected?.educations ?? []}
+					listEducationInProfile={fields}
+					setListEducation={(list) => replace(list)}
+					onHide={() => setVisibleSelect(false)}
+				/>
+			)}
 			<AppCard className="relative group">
 				<div className="opacity-30 absolute top-2 left-3">
 					<TitleAppTwo
@@ -124,47 +145,51 @@ export function ProfileEducation() {
 					{fields.map((field, idx) => {
 						return (
 							<div className="w-full flex flex-col gap-0" key={field.clientKey}>
-								<div className="w-full flex justify-between items-center gap-1">
+								<div className="w-full flex justify-between items-center gap-6">
 									{openDelete && (
 										<Checkbox
 											checked={toDelete.has(field.clientKey)}
 											onChange={() => toggle(field.clientKey)}
 										/>
 									)}
-									<div className="w-4/5">
+									<div className="w-3/4 flex flex-col gap-1">
 										<TextareaProfile
 											placeholder="Votre diplôme"
 											name={`educations.${idx}.content.title`}
 											fontSize={"18px"}
 											weight={700}
-											textAlign="justify"
+											textAlign="left"
 										/>
+										<div className="-mt-2">
+											<InputTextProfile
+												placeholder="Etablissement"
+												name={`educations.${idx}.content.school`}
+												fontSize={"16px"}
+												weight={300}
+												textAlign="justify"
+												textColor={"text-black dark:text-white"}
+											/>
+										</div>
 									</div>
-									<PeriodeProfile
-										startName={`educations.${idx}.content.start`}
-										endName={`educations.${idx}.content.end`}
-										fontSize={"14px"}
-										fontWeight={300}
-										textAlign={"right"}
-									/>
-								</div>
-								<div className="w-full flex justify-between items-center gap-1 -mt-1">
-									<InputTextProfile
-										placeholder="Etablissement"
-										name={`educations.${idx}.content.school`}
-										fontSize={"16px"}
-										weight={300}
-										textAlign="justify"
-										textColor={"text-black dark:text-white"}
-									/>
-									<InputTextProfile
-										placeholder="ville"
-										name={`educations.${idx}.content.city`}
-										fontSize={"14px"}
-										weight={500}
-										textAlign="right"
-										textColor={"text-black dark:text-white"}
-									/>
+									<div className="flex flex-col items-end gap-1">
+										<PeriodeProfile
+											startName={`educations.${idx}.content.start`}
+											endName={`educations.${idx}.content.end`}
+											fontSize={"14px"}
+											fontWeight={300}
+											textAlign={"right"}
+										/>
+										<div className="-mt-2">
+											<InputTextProfile
+												placeholder="ville"
+												name={`educations.${idx}.content.city`}
+												fontSize={"14px"}
+												weight={500}
+												textAlign="right"
+												textColor={"text-black dark:text-white"}
+											/>
+										</div>
+									</div>
 								</div>
 							</div>
 						);

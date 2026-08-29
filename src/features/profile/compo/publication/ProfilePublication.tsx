@@ -16,6 +16,10 @@ import { InputTextProfile } from "../../input/InputTextProfile";
 import { PeriodeProfile } from "../../input/PeriodeProfile";
 import type { ListItem } from "@utils/type";
 import { v4 as uuid } from "uuid";
+import type { CV } from "../../CompoPage";
+import { trpc } from "@utils/trpc";
+import { DialogSelectCv } from "../common/DialogSelectCv";
+import { DialogSelectPublication } from "./DialogSelectPublication";
 
 function createEmptyPublication(opts?: {
 	order?: number;
@@ -34,13 +38,20 @@ function createEmptyPublication(opts?: {
 	};
 }
 
-export const ProfilePublication = () => {
+export const ProfilePublication = ({ cvs }: { cvs: CV[] }) => {
 	const refPublication = useRef<SpeedDial>(null);
 	const [openDelete, setOpenDelete] = useState(false);
 	const [toDelete, setToDelete] = useState<Set<string>>(new Set());
+	const [visibleMaj, setVisibleMaj] = useState(false);
+	const [idCv, setIdCv] = useState<string | undefined>(undefined);
+	const { data: cvSelected } = trpc.cv.byId.useQuery(
+		{ id: idCv ?? "" },
+		{ enabled: !!idCv },
+	);
+	const [visibleSelect, setVisibleSelect] = useState(false);
 
 	const { control, watch, setValue } = useFormContext<ProfileSaveInput>();
-	const { fields, append, remove } = useFieldArray({
+	const { fields, append, remove, replace } = useFieldArray({
 		control,
 		name: "publications",
 		keyName: "rhfId", // ne pas écraser clientKey
@@ -79,9 +90,14 @@ export const ProfilePublication = () => {
 		{
 			label: "Mise à jour depuis CV",
 			icon: "pi pi-refresh",
-			// disabled: nbCv === 0 && true,
+			disabled: cvs.length === 0 && true,
 			command: () => {
-				// setVisibleMaj(true)
+				if (cvs.length > 1) {
+					setVisibleMaj(true);
+				} else {
+					setIdCv(cvs[0]?.id ?? "");
+					setVisibleSelect(true);
+				}
 			},
 		},
 		{
@@ -96,18 +112,26 @@ export const ProfilePublication = () => {
 
 	return (
 		<div>
-			{/* <DialogSelectCv visible={visibleMaj} onHide={() => setVisibleMaj(false)} setIdCv={setIdCv} cvs={cvs} />
-            <DialogSelectPublication
-                onHide={() => setVisibleSelect(false)}
-                visible={visibleSelect}
-                listPublicationFromCv={listPublication}
-                listPublicationInDashboard={watchPublication}
-                setNewPublicationList={(data) => {
-                    setValue('publication', data)
-                    setIdCv('0')
-                    // onChangeProfile()
-                }}
-            /> */}
+			{visibleMaj && (
+				<DialogSelectCv
+					visible={visibleMaj}
+					onHide={() => setVisibleMaj(false)}
+					setIdCv={(id) => {
+						setIdCv(id);
+						setVisibleMaj(false);
+					}}
+					cvs={cvs}
+				/>
+			)}
+			{visibleSelect && (
+				<DialogSelectPublication
+					onHide={() => setVisibleSelect(false)}
+					visible={visibleSelect}
+					listPublicationFromCv={cvSelected?.publications ?? []}
+					listPublicationInProfile={fields}
+					setListPublication={(data) => replace(data)}
+				/>
+			)}
 			<AppCard className="relative group">
 				<div className="opacity-30 absolute top-2 left-3">
 					<TitleAppTwo

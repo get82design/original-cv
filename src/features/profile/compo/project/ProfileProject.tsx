@@ -16,6 +16,10 @@ import { PeriodeProfile } from "../../input/PeriodeProfile";
 import { Checkbox } from "primereact/checkbox";
 import type { ListItem } from "@utils/type";
 import { v4 as uuid } from "uuid";
+import type { CV } from "../../CompoPage";
+import { DialogSelectCv } from "../common/DialogSelectCv";
+import { trpc } from "@utils/trpc";
+import { DialogSelectProject } from "./DialogSelectProject";
 
 export function createEmptyProject(opts?: {
 	order?: number;
@@ -44,13 +48,20 @@ export function createEmptyMission(order = 0) {
 	};
 }
 
-export const ProfileProject = () => {
+export const ProfileProject = ({ cvs }: { cvs: CV[] }) => {
 	const refProjet = useRef<SpeedDial>(null);
 	const [openDelete, setOpenDelete] = useState(false);
 	const [toDelete, setToDelete] = useState<Set<string>>(new Set());
+	const [visibleMaj, setVisibleMaj] = useState(false);
+	const [idCv, setIdCv] = useState<string | undefined>(undefined);
+	const { data: cvSelected } = trpc.cv.byId.useQuery(
+		{ id: idCv ?? "" },
+		{ enabled: !!idCv },
+	);
+	const [visibleSelect, setVisibleSelect] = useState(false);
 
 	const { control } = useFormContext<ProfileSaveInput>();
-	const { fields, append, remove } = useFieldArray({
+	const { fields, append, remove, replace } = useFieldArray({
 		control,
 		name: "projects",
 		keyName: "rhfId", // ne pas écraser clientKey
@@ -89,9 +100,14 @@ export const ProfileProject = () => {
 		{
 			label: "Mise à jour depuis CV",
 			icon: "pi pi-refresh",
-			// disabled: nbCv === 0 && true,
+			disabled: cvs.length === 0 && true,
 			command: () => {
-				// setVisibleMaj(true)
+				if (cvs.length > 1) {
+					setVisibleMaj(true);
+				} else {
+					setIdCv(cvs[0]?.id ?? "");
+					setVisibleSelect(true);
+				}
 			},
 		},
 		{
@@ -106,17 +122,26 @@ export const ProfileProject = () => {
 
 	return (
 		<div>
-			{/* <DialogSelectCv visible={visibleMaj} onHide={() => setVisibleMaj(false)} setIdCv={setIdCv} cvs={cvs} />
-            <DialogSelectProjet
-                onHide={() => setVisibleSelect(false)}
-                visible={visibleSelect}
-                listProjetFromCv={listProjet}
-                listProjetInDashboard={watchProjet}
-                setNewProjetList={(data) => {
-                    setValue('projet', data)
-                    setIdCv('0')
-                }}
-            /> */}
+			{visibleMaj && (
+				<DialogSelectCv
+					visible={visibleMaj}
+					onHide={() => setVisibleMaj(false)}
+					setIdCv={(id) => {
+						setIdCv(id);
+						setVisibleSelect(true);
+					}}
+					cvs={cvs}
+				/>
+			)}
+			{visibleSelect && (
+				<DialogSelectProject
+					onHide={() => setVisibleSelect(false)}
+					visible={visibleSelect}
+					listProjectFromCv={cvSelected?.projects ?? []}
+					listProjectInProfile={fields}
+					setListProject={replace}
+				/>
+			)}
 			<AppCard className="relative group">
 				<div className="opacity-30 absolute top-2 left-3">
 					<TitleAppTwo
@@ -144,7 +169,7 @@ export const ProfileProject = () => {
 										weight={700}
 										textAlign="justify"
 									/>
-									<div className="flex flex-col gap-0 items-end">
+									<div className="flex flex-col gap-1 items-end">
 										<PeriodeProfile
 											startName={`projects.${idx}.content.start`}
 											endName={`projects.${idx}.content.end`}
@@ -171,6 +196,7 @@ export const ProfileProject = () => {
 										fontSize={"14px"}
 										weight={300}
 										textAlign="justify"
+										leading={1}
 									/>
 									<ProjectMissions projectIndex={idx} />
 								</div>
@@ -228,15 +254,19 @@ function ProjectMissions({ projectIndex }: { projectIndex: number }) {
 	return (
 		<>
 			{fields.map((field, j) => (
-				<div key={field.rhfId} className="flex justify-between">
-					<InputTextProfile
+				<div
+					key={field.rhfId}
+					className="flex justify-between items-start gap-2"
+				>
+					<TextareaProfile
 						name={`projects.${projectIndex}.content.missions.${j}.content.content`}
 						placeholder="Mission accomplie ?"
 						fontSize={"14px"}
 						weight={300}
-						textColor={"text-black dark:text-white"}
+						textAlign="justify"
+						leading={1}
 					/>
-					<button type="button" onClick={() => remove(j)}>
+					<button type="button" className="-mt-1.5" onClick={() => remove(j)}>
 						×
 					</button>
 				</div>
