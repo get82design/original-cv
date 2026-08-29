@@ -10,6 +10,8 @@ import { FormProfile } from "./form/FormProfile";
 import { ProfileProvider } from "./contexte/ProfileContext";
 import { trpc } from "@utils/trpc";
 import { ProgressSpinner } from "primereact/progressspinner";
+import { PreviewImage } from "./compo/common/PreviewImage";
+import Link from "next/link";
 
 export const ProfilePage = () => {
 	const { data: cvs, isLoading } = trpc.cv.allByUser.useQuery();
@@ -137,28 +139,38 @@ export const ProfilePage = () => {
 															key={cv?.id}
 															className="w-full flex flex-col items-center gap-4"
 														>
-															{/*<PreviewImage
-                                                        width={breakpoint < 768 ? 'w-full p-2' : 'w-2/3'}
-                                                        cv={cv}
-                                                        action={
-                                                            <>
-                                                                {breakpoint >= 768 &&
-                                                                    <Button size='small' onClick={() => {
-                                                                        setIdCv(cv?.id as string)
-                                                                        setVisibleApercu(true)
-                                                                    }}>Visionner</Button>
-                                                                }
-                                                                {cv?.preview
-                                                                    && <Button size='small' disabled={!cv?.isReadyPreview}>Télécharger</Button>
-                                                                }
-                                                                {breakpoint >= 768 &&
-                                                                    <Link href={`/cree-ton-cv?idCv=${cv?.id}`} >
-                                                                        <Button size='small'>Modifier</Button>
-                                                                    </Link>
-                                                                }
-                                                            </>
-                                                        }
-                                                    /> */}
+															<PreviewImage
+																width={!isMd ? "w-full p-2" : "w-2/3"}
+																cv={cv}
+																action={
+																	<>
+																		{isMd && (
+																			<Button
+																				size="small"
+																				// onClick={() => {
+																				// 	setIdCv(cv?.id as string);
+																				// 	setVisibleApercu(true);
+																				// }}
+																			>
+																				Visionner
+																			</Button>
+																		)}
+																		{/* {cv?.preview && (
+																			<Button
+																				size="small"
+																				disabled={!cv?.isReadyPreview}
+																			>
+																				Télécharger
+																			</Button>
+																		)} */}
+																		{isMd && (
+																			<Link href={`/cv/${cv?.id}`}>
+																				<Button size="small">Modifier</Button>
+																			</Link>
+																		)}
+																	</>
+																}
+															/>
 															{isSm && (
 																<div className="w-full flex justify-center">
 																	<Button

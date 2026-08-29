@@ -174,6 +174,7 @@ export class CvService {
 				title: true,
 				photo: true,
 				templateId: true,
+				template: { select: { name: true } },
 				userId: true,
 				createdAt: true,
 				updatedAt: true,

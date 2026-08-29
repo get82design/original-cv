@@ -21,7 +21,14 @@ async function main() {
 	const templates = await buildTemplates();
 	console.info("^^templates", templates);
 
-	await buildCvClaraDelorme(usersResult[0]!.id, templates[0]!.id);
+	const templateStockholm = await prisma.cVTemplate.findFirst({
+		where: { name: "Stockholm" },
+	});
+	if (!templateStockholm) {
+		throw new Error("Template Stockholm not found");
+	}
+
+	await buildCvClaraDelorme(usersResult[0]!.id, templateStockholm.id);
 	console.info("^^cv Clara Delorme créé");
 
 	// === Users ===
@@ -160,9 +167,7 @@ async function buildUsers() {
 			data: {
 				...el,
 				password: hashedPassword,
-				emailVerified: el.emailVerified
-					? new Date(el.emailVerified)
-					: null,
+				emailVerified: el.emailVerified ? new Date(el.emailVerified) : null,
 			},
 		});
 	});

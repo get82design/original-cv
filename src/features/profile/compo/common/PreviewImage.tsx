@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect, type JSX } from "react";
+import type { JSX } from "react";
 import type { CV } from "../../CompoPage";
 
 interface PreviewImageProps {
@@ -8,35 +8,29 @@ interface PreviewImageProps {
 }
 
 export const PreviewImage = ({ cv, action, width }: PreviewImageProps) => {
-	const refImage = useRef<HTMLDivElement>(null);
-	const [previewHeight, setPreviewHeight] = useState(0);
-
-	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
-	useEffect(() => {
-		const width = refImage.current?.offsetWidth as number;
-		const height = width * 1.414;
-		setPreviewHeight(height);
-	}, [refImage.current?.offsetWidth]);
+	const name = cv.template?.name ?? "";
+	const src = `/assets/img/${name}.png`;
 
 	return (
 		<div
-			ref={refImage}
-			className={`${width} shadow-md group`}
-			style={{
-				// backgroundImage: `url(${cv?.preview})` as string,
-				height: `${previewHeight}px`,
-				backgroundSize: "cover",
-			}}
+			className={`${width} relative shadow-md group overflow-hidden rounded`}
 		>
-			<div
-				className="w-full flex flex-col justify-center items-center gap-2 opacity-0 transition duration-300 ease-in-out group-hover:opacity-100"
-				style={{
-					height: `${previewHeight}px`,
-					backgroundColor: "rgb(0,0,0, 0.3)",
+			<img
+				src={src}
+				alt={cv.title}
+				className="w-full aspect-[1/1.414] object-cover object-top bg-gray-100"
+				onError={(e) => {
+					e.currentTarget.style.visibility = "hidden";
 				}}
-			>
-				{action}
-			</div>
+			/>
+			<p className="absolute bottom-0 left-0 right-0 text-center text-sm font-medium truncate px-2 py-1">
+				{cv.title}
+			</p>
+			{action && (
+				<div className="absolute inset-0 flex flex-col justify-center items-center gap-2 opacity-0 group-hover:opacity-100 bg-black/30 transition">
+					{action}
+				</div>
+			)}
 		</div>
 	);
 };
