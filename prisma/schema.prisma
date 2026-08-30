@@ -962,6 +962,7 @@ model CV {
   isPublic   Boolean @default(false) // si le CV est public
 
   isDefault Boolean @default(false) // si le CV est le CV par défaut de l'utilisateur
+  previewUrl String?
   pdfUrl     String?
   pdfVersion Int @default(0) // version du PDF
   pdfGeneratedAt DateTime?

@@ -14,3 +14,8 @@ export type CreateCvInput = z.infer<typeof createCvInputSchema> & {
 };
 
 export type UpdateCvInput = z.infer<typeof updateCvInputSchema>;
+
+export const setCvPreviewSchema = z.object({
+	cvId: z.string().min(1),
+	previewUrl: z.string().startsWith("data:image/").max(800_000),
+});

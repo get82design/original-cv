@@ -3,6 +3,7 @@ import { cvService } from "../../../src/services/cv/cvService";
 import { protectedProcedure, router } from "../trpc";
 import {
 	createCvInputSchema,
+	setCvPreviewSchema,
 	updateCvInputSchema,
 } from "../../../src/services/schemas/cv.schema";
 import { ForbiddenError } from "../../../src/services/errors";
@@ -39,12 +40,18 @@ export const cvRouter = router({
 		),
 
 	allByUser: protectedProcedure.query(({ ctx }) =>
-			cvService.findAllByUser(ctx.session.user.id),
-		),
+		cvService.findAllByUser(ctx.session.user.id),
+	),
 
 	save: protectedProcedure
 		.input(cvSaveSchema)
 		.mutation(({ input, ctx }) =>
 			cvSaveService.save(ctx.session.user.id, input),
+		),
+
+	setPreview: protectedProcedure
+		.input(setCvPreviewSchema)
+		.mutation(({ input, ctx }) =>
+			cvService.setPreview(input.cvId, ctx.session.user.id, input.previewUrl),
 		),
 });

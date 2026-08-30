@@ -17,6 +17,7 @@ import { Toast } from "primereact/toast";
 import { useSession } from "next-auth/react";
 import { switchTemplate } from "../../utils/applyTemplateToForm";
 import { clearTemplateCache } from "../../utils/templateCache";
+import { captureCvPreview } from "../../utils/captureCvPreview";
 
 interface FormCvProviderProps extends PropsWithChildren {
 	idCv: string | null;
@@ -28,10 +29,11 @@ export const FormCv = ({ children, idCv, exemple }: FormCvProviderProps) => {
 	const [visibleSelectModel, setVisibleSelectModel] = useState(false);
 	const [modelSelect, setModelSelect] = useState<TemplateCv>();
 	const [draft, setDraft] = useState<CvFormValues | undefined>(undefined);
-	const loadedIdRef = useRef<string | null>(null);
+	const loadedStampRef = useRef<string | null>(null);
+	const utils = trpc.useUtils();
 	const { data: dataCv } = trpc.cv.byId.useQuery(
 		{ id: idCv as string },
-		{ enabled: idCv !== "0" },
+		{ enabled: idCv !== "0", refetchOnMount: "always" },
 	);
 	const needsTemplate =
 		!!dataCv &&
@@ -43,6 +45,7 @@ export const FormCv = ({ children, idCv, exemple }: FormCvProviderProps) => {
 	);
 	const router = useRouter();
 	const saveCv = trpc.cv.save.useMutation();
+	const setPreview = trpc.cv.setPreview.useMutation();
 	const toast = useRef<Toast>(null);
 
 	const methods = useForm<CvFormValues>({
@@ -104,9 +107,11 @@ export const FormCv = ({ children, idCv, exemple }: FormCvProviderProps) => {
 	}, [idCv, exemple]);
 
 	useEffect(() => {
-		if (!dataCv || loadedIdRef.current === dataCv.id) return;
+		if (!dataCv) return;
 		if (needsTemplate && !dataTemplate) return; // attendre le template
-		loadedIdRef.current = dataCv.id;
+		const stamp = `${dataCv.id}:${new Date(dataCv.updatedAt).toISOString()}`;
+		if (loadedStampRef.current === stamp) return;
+		loadedStampRef.current = stamp;
 		const base = mapCvToSaveInput(dataCv);
 		reset(
 			needsTemplate && dataTemplate
@@ -121,25 +126,42 @@ export const FormCv = ({ children, idCv, exemple }: FormCvProviderProps) => {
 			clearTemplateCache();
 			setDraft(undefined);
 			// reset(formCvDefaultValue);
-			reset(switchTemplate(formCvDefaultValue, modelSelect, { updateModules: true }));
+			reset(
+				switchTemplate(formCvDefaultValue, modelSelect, {
+					updateModules: true,
+				}),
+			);
 			setVisibleSelectModel(false);
 		}
 	};
 
 	const onResumeDraft = () => {
 		if (draft) {
-		  reset(draft);
-		  setVisibleSelectModel(false);
+			reset(draft);
+			setVisibleSelectModel(false);
 		}
 	};
 
 	const onSubmit = async (cv: CvFormValues) => {
 		try {
 			const saved = await saveCv.mutateAsync(mapFormToSaveInput(cv));
+			try {
+				const previewUrl = await captureCvPreview();
+				if (previewUrl) {
+					await setPreview.mutateAsync({ cvId: saved.id, previewUrl });
+				}
+			} catch {
+				// le save a déjà réussi
+			}
 			reset(mapCvToSaveInput(saved));
-			loadedIdRef.current = saved.id;
+			loadedStampRef.current = `${saved.id}:${new Date(saved.updatedAt).toISOString()}`;
+			utils.cv.byId.setData({ id: saved.id }, saved);
+			await Promise.all([
+				utils.cv.byId.invalidate({ id: saved.id }),
+				utils.cv.allByUser.invalidate(),
+			]);
 			clearGuestCvDraft();
-            clearTemplateCache();
+			clearTemplateCache();
 			if (idCv !== saved.id) await router.replace(`/cv/${saved.id}`);
 			showSuccess();
 		} catch (err) {
@@ -156,11 +178,11 @@ export const FormCv = ({ children, idCv, exemple }: FormCvProviderProps) => {
 
 	const wasAuth = useRef(status === "authenticated");
 	useEffect(() => {
-	if (wasAuth.current && status === "unauthenticated") {
-		clearGuestCvDraft();
-		clearTemplateCache();
-	}
-	wasAuth.current = status === "authenticated";
+		if (wasAuth.current && status === "unauthenticated") {
+			clearGuestCvDraft();
+			clearTemplateCache();
+		}
+		wasAuth.current = status === "authenticated";
 	}, [status]);
 
 	return (

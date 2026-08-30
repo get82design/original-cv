@@ -9,7 +9,7 @@ interface PreviewImageProps {
 
 export const PreviewImage = ({ cv, action, width }: PreviewImageProps) => {
 	const name = cv.template?.name ?? "";
-	const src = `/assets/img/${name}.png`;
+	const src = cv.previewUrl ?? `/assets/img/${name}.png`;
 
 	return (
 		<div

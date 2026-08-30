@@ -178,7 +178,17 @@ export class CvService {
 				userId: true,
 				createdAt: true,
 				updatedAt: true,
+				previewUrl: true,
 			},
+		});
+	}
+
+	async setPreview(cvId: string, userId: string, previewUrl: string) {
+		// findUnique → 404 / 403 si pas à toi
+		return prisma.cV.update({
+			where: { id: cvId },
+			data: { previewUrl },
+			select: { id: true, previewUrl: true },
 		});
 	}
 }
