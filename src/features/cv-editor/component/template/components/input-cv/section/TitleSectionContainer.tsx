@@ -32,10 +32,16 @@ export const TitleSectionContainer = ({
 	const watchIconStyle = general.titleSection.iconStyle;
 	const watchIconColor = general.titleSection.iconColor ?? "primaryColor";
 	const watchLineWeight = general.titleSection.lineWeight;
+	const bg = general.titleSection.bgColor;
+	const shadeBg = general.titleSection.shadeBgColor;
 
 	const [name, info1, info2] = modelName?.split("-") ?? [];
 
+	const accent = general.pageAccent; // ou watch("layoutGeneral.layout.pageAccent")
+	const onBand = accent?.type === "leftBand";
+
 	const resolveColorToken = (colorName: string | undefined) => {
+		if (colorName === "white" || colorName === "black") return colorName;
 		if (!colorName || colorName === "primaryColor") {
 			return primaryColorValue;
 		}
@@ -43,14 +49,28 @@ export const TitleSectionContainer = ({
 		return found ? `${found.name}${found.primary ?? ""}` : primaryColorValue;
 	};
 
+	const baseToken = resolveColorToken(bg); // "gray-500" si bgColor = "primaryColor"
+	const hue = baseToken.split("-")[0]; // "gray"
+	const cssToken =
+		bg && shadeBg && hue !== "white" && hue !== "black"
+			? `${hue}${shadeBg}` // "gray" + "-100" → "gray-100"
+			: baseToken;
+
 	// Style "icon" : couleur de l’icône = iconColor
 	// Styles flat/rounded : fond = primary, icône sombre pour le contraste
-	const iconFgToken =
-		watchIconStyle === "icon" ? resolveColorToken(watchIconColor) : "white";
+	const isChip = watchIconStyle !== "icon";
+	const iconFgToken = !isChip
+		? onBand
+			? "white"
+			: resolveColorToken(watchIconColor)
+		: onBand
+			? primaryColorValue
+			: "white";
 
-	const iconBg =
-		watchIconStyle === "icon"
-			? "transparent"
+	const iconBg = !isChip
+		? "transparent"
+		: onBand
+			? "var(--white)"
 			: primaryColorValue
 				? `var(--${primaryColorValue})`
 				: "transparent";
@@ -84,7 +104,12 @@ export const TitleSectionContainer = ({
 							? `var(--${primaryColorValue})`
 							: undefined,
 						opacity: "1",
-						height: watchLineWeight === 'sm' ? '1px' : watchLineWeight === 'md' ? '3px' : '5px',
+						height:
+							watchLineWeight === "sm"
+								? "1px"
+								: watchLineWeight === "md"
+									? "3px"
+									: "5px",
 					}}
 					className="w-full"
 				></div>
@@ -93,6 +118,8 @@ export const TitleSectionContainer = ({
 				className="w-full flex gap-2 items-center title-section-correctif"
 				style={{
 					fontFamily: "var(--cv-font-sectionTitle)",
+					backgroundColor: bg ? `var(--${cssToken})` : undefined,
+					padding: bg ? "2px 8px" : undefined, // sinon le fond est collé au texte, peu visible
 				}}
 			>
 				{watchWithIcon && coloredIcon && (
@@ -119,7 +146,12 @@ export const TitleSectionContainer = ({
 							? `var(--${primaryColorValue})`
 							: undefined,
 						opacity: "1",
-						height: watchLineWeight === 'sm' ? '1px' : watchLineWeight === 'md' ? '3px' : '5px',
+						height:
+							watchLineWeight === "sm"
+								? "1px"
+								: watchLineWeight === "md"
+									? "3px"
+									: "5px",
 					}}
 					className={`w-full ${
 						watchLigneDessus || info1 === "line" ? "" : "-mt-1"

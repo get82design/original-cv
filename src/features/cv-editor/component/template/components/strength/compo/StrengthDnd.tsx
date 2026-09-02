@@ -78,20 +78,17 @@ export const StrengthDnd = ({
 	return (
 		<SortableContext
 			items={watchStrengths.map((s) => s.clientKey)}
-			strategy={colOfStrength === 1 ? verticalListSortingStrategy : horizontalListSortingStrategy}
+			strategy={
+				colOfStrength === 1
+					? verticalListSortingStrategy
+					: horizontalListSortingStrategy
+			}
 		>
-			<div className={`strengths-grid grid ${COL_CLASS[colOfStrength as keyof typeof COL_CLASS] ?? "grid-cols-1"} ${colOfStrength === 1 ? "gap-1" : "gap-x-4 gap-y-1"}`}>
+			<div
+				className={`strengths-grid grid ${COL_CLASS[colOfStrength as keyof typeof COL_CLASS] ?? "grid-cols-1"} ${colOfStrength === 1 ? "gap-1" : "gap-x-4 gap-y-1"}`}
+			>
 				{watchStrengths.map((strength, index) => (
-					<button
-						type="button"
-						className="strength-card w-full"
-						key={strength.clientKey}
-						onClick={(e) => {
-							e.stopPropagation();
-							setItemSelected(strength.clientKey);
-							setSectionSelected("section-strength"); // global : sa section
-						}}
-					>
+					<div className="strength-card w-full" key={strength.clientKey}>
 						<CardComponent
 							index={index}
 							item={strength}
@@ -99,7 +96,7 @@ export const StrengthDnd = ({
 							setItemSelected={setItemSelected} // local
 							itemsMenu={itemsMenu}
 						/>
-					</button>
+					</div>
 				))}
 				{showAddStrength && (
 					<Button

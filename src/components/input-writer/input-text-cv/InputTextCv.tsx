@@ -75,9 +75,10 @@ export const InputTextCv = ({
 							textTransform: "inherit",
 							backgroundColor: "transparent",
 							color: `var(--${color})`,
-							width:
-								field.value === "" || forceWidthFull
-									? "100%"
+							width: forceWidthFull
+								? "100%"
+								: field.value === "" && props.placeholder
+									? `${props.placeholder.length}ch`
 									: `${field.value?.length}ch`,
 						}}
 						onFocus={(e) => op.current && op.current.show(e, e.target)}

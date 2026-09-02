@@ -1,82 +1,135 @@
-import type { Color, TemplateCv } from "@utils/trpc.types"
-import { Dialog, type DialogProps } from "primereact/dialog"
-import { useEffect, useState, type Dispatch, type SetStateAction } from "react"
-import { useModelAndColorContext } from "../context/ModelAndColorContext"
-import { Button } from "primereact/button"
-import { RadioColorRhf } from "@/components/input/radio/RadioColorRhf"
-import { RadioButton } from "primereact/radiobutton"
-import { trpc } from "@utils/trpc"
-import { InputTextRhf } from "@/components/input/input-text/InputTextRhf"
-import type { CvFormValues } from "@/services/schemas/cvSave.schema"
-import { SelectButton } from "primereact/selectbutton"
-import { FieldNameLayoutGeneral } from "../../utils/fields/fieldNameLayoutGeneral"
+import type { Color, TemplateCv } from "@utils/trpc.types";
+import { Dialog, type DialogProps } from "primereact/dialog";
+import { useEffect, useState, type Dispatch, type SetStateAction } from "react";
+import { useFormContext } from "react-hook-form";
+import { useModelAndColorContext } from "../context/ModelAndColorContext";
+import { Button } from "primereact/button";
+import { RadioColorRhf } from "@/components/input/radio/RadioColorRhf";
+import { trpc } from "@utils/trpc";
+import type { CvFormValues } from "@/services/schemas/cvSave.schema";
+import { SelectButton } from "primereact/selectbutton";
+import { FieldNameLayoutGeneral } from "../../utils/fields/fieldNameLayoutGeneral";
+import { templateDefaultStylesSchema } from "@/services/schemas/cvTemplate.schema";
+import { Carousel } from "primereact/carousel";
 
 interface DialogSelectModelProp extends DialogProps {
-    modelSelect: TemplateCv | undefined
-    setModelSelect: Dispatch<SetStateAction<TemplateCv | undefined>>
-    onSelectModel: () => void
-    draft: CvFormValues | undefined
-    onResumeDraft: () => void
-  }
-  
-  export const DialogSelectModel = ({
-    visible,
-    onHide,
-    modelSelect,
-    setModelSelect,
-    onSelectModel,
-    draft,
-    onResumeDraft,
-  }: DialogSelectModelProp) => {
-    const { colors, modeles } = useModelAndColorContext()
-    const options = ['Reprendre brouillon', 'Nouveau CV'];
-    const [value, setValue] = useState<string | undefined>(undefined);
-  
-    const [idModele, setIdModele] = useState('')
-    const { data: dataTemplate } = trpc.cvTemplate.findById.useQuery(
-        { id: idModele }, 
-        { enabled: idModele !== '', staleTime: 3600000 } // staleTime 1h
-    )
-  
-    useEffect(() => {
-      if (dataTemplate) {
-        setModelSelect(dataTemplate as TemplateCv)
-      }
-    }, [dataTemplate, setModelSelect])
+	modelSelect: TemplateCv | undefined;
+	setModelSelect: Dispatch<SetStateAction<TemplateCv | undefined>>;
+	onSelectModel: () => void;
+	draft: CvFormValues | undefined;
+	onResumeDraft: () => void;
+}
 
-    const footerTemplate = () => {
-      return (
-        <div className="w-full flex justify-center">
-          <Button
-            className="resume-setup-modal__submit-button"
-            label={value === 'Nouveau CV' || !draft ? "Selectionner ce modèle" : "Charger le brouillon"}
-            onClick={value === 'Nouveau CV' || !draft ? onSelectModel : onResumeDraft}
-            disabled={(value === 'Nouveau CV' || !draft) && !modelSelect}
-          />
-        </div>
-      )
-    }
-    
-    return (
-      <Dialog
-        style={{ minWidth: '1200px' }}
-        visible={visible}
-        onHide={onHide}
-        className="bg-white dark:bg-gray-900"
-        header="Modèle de votre CV"
-        closable={false}
-        footer={footerTemplate}
-      >
-        <div className="flex flex-col gap-4 py-4">
-          {draft ? (
-            <div className="w-full flex flex-col justify-center gap-2">
-              <p className="text-center font-semibold">Vous avez un CV en cours. Voulez-vous le reprendre ?</p>
-              <div className="w-full flex justify-center">
-              <SelectButton value={value} onChange={(e) => setValue(e.value)} options={options} />
-              </div>
-            </div>
-          ) : null}
-          {/* <div className='w-full flex justify-center gap-2'>
+export const DialogSelectModel = ({
+	visible,
+	onHide,
+	modelSelect,
+	setModelSelect,
+	onSelectModel,
+	draft,
+	onResumeDraft,
+}: DialogSelectModelProp) => {
+	const { colors, modeles } = useModelAndColorContext();
+	const { setValue } = useFormContext<CvFormValues>();
+	const options = ["Reprendre brouillon", "Nouveau CV"];
+	const [draftOption, setDraftOption] = useState<string | undefined>(undefined);
+
+	const [idModele, setIdModele] = useState("");
+	const { data: dataTemplate } = trpc.cvTemplate.findById.useQuery(
+		{ id: idModele },
+		{ enabled: idModele !== "" }, // staleTime 1h
+	);
+
+	useEffect(() => {
+		if (dataTemplate) {
+			setModelSelect(dataTemplate as TemplateCv);
+			const defaultStyles = templateDefaultStylesSchema.parse(
+				dataTemplate.defaultStyles,
+			);
+			setValue(FieldNameLayoutGeneral.primaryColor, {
+				name: defaultStyles.primaryColor.name,
+				primary: defaultStyles.primaryColor.primary,
+			});
+		}
+	}, [dataTemplate, setModelSelect, setValue]);
+
+	const footerTemplate = () => {
+		return (
+			<div className="w-full flex justify-center">
+				<Button
+					className="resume-setup-modal__submit-button"
+					label={
+						draftOption === "Nouveau CV" || !draft
+							? "Selectionner ce modèle"
+							: "Charger le brouillon"
+					}
+					onClick={
+						draftOption === "Nouveau CV" || !draft
+							? onSelectModel
+							: onResumeDraft
+					}
+					disabled={(draftOption === "Nouveau CV" || !draft) && !modelSelect}
+				/>
+			</div>
+		);
+	};
+
+	const itemTemplate = (model: TemplateCv) => {
+		return (
+			<button
+				type="button"
+				className="w-full h-66 py-3 relative rounded-lg flex flex-col gap-2 items-center"
+				onClick={() => setIdModele(model.id)}
+			>
+				<label
+					htmlFor={model.id}
+					className="absolute bottom-3 left-0 w-full text-center font-semibold"
+				>
+					{model.name}
+				</label>
+				<div
+					className="h-60 w-44 flex justify-center cursor-pointer rounded-lg shadow-md"
+					style={{
+						backgroundImage: `url(/assets/img/${model.name}.png)`,
+						backgroundSize: "cover",
+						backgroundPosition: "top center",
+						backgroundRepeat: "no-repeat",
+						border:
+							idModele === model.id
+								? "solid 2px var(--primary-color)"
+								: "solid 2px transparent",
+					}}
+				></div>
+			</button>
+		);
+	};
+
+	return (
+		<Dialog
+			style={{ minWidth: "1200px", maxWidth: "85vw" }}
+			visible={visible}
+			onHide={onHide}
+			className="bg-white dark:bg-gray-900"
+			header="Modèle de votre CV"
+			closable={false}
+			footer={footerTemplate}
+		>
+			<div className="flex flex-col gap-4 py-4">
+				{draft ? (
+					<div className="w-full flex flex-col justify-center gap-2">
+						<p className="text-center font-semibold">
+							Vous avez un CV en cours. Voulez-vous le reprendre ?
+						</p>
+						<div className="w-full flex justify-center">
+							<SelectButton
+								value={draftOption}
+								onChange={(e) => setDraftOption(e.value)}
+								options={options}
+							/>
+						</div>
+					</div>
+				) : null}
+				{/* <div className='w-full flex justify-center gap-2'>
             <InputTextRhf 
                 //! penser à remettre le fieldName
                 // name={FieldNameCvHeader.nom} 
@@ -89,56 +142,41 @@ interface DialogSelectModelProp extends DialogProps {
                 label='Prénom' 
             />
           </div> */}
-          {value === 'Nouveau CV' || !draft ? (
-            <>
-              <p className='-mb-2 text-center font-semibold'>Sélectionner une couleur pour votre CV</p>
-              <div className="w-full flex justify-center gap-2">
-                {colors && colors.length > 0
-                  ? colors.map((color: Color, index) => {
-                    return (
-                      <RadioColorRhf
-                        index={index}
-                        general={true}
-                        className="col" 
-                        key={color.name}
-                        name={FieldNameLayoutGeneral.primaryColor}
-                        // name='layoutGeneral.defaultStyles.primaryColor'
-                        color={'--' + color.name + color.primary}
-                        value={color}
-                      />
-                    )
-                  })
-                  : null}
-              </div>
-              <p className='text-center font-semibold'>Choisissez un modèle pour votre CV :</p>
-              <div className="w-full flex justify-center gap-2">
-                {modeles?.map((model, index) => {
-                  return (
-                    <div className="w-1/4 flex flex-col gap-2 items-center">
-                      <label>{model.name}</label>
-                      <div
-                        className="h-60 w-full flex justify-center"
-                        key={model.id}
-                        style={{ 
-                          backgroundImage: `url(/assets/img/${model.name}.png)`,
-                          backgroundSize: "contain",
-                          backgroundPosition: "top center",
-                          backgroundRepeat: "no-repeat", 
-                        }}
-                      >
-                        <RadioButton
-                          className={`radio-select-model-${index}`}
-                          checked={idModele === model.id}
-                          onChange={(e) => setIdModele(model.id)}
-                        />
-                      </div>
-                    </div>
-                  )
-                })}
-              </div>
-            </>
-          ) : null}
-        </div>
-      </Dialog>
-    )
-  }
+				{draftOption === "Nouveau CV" || !draft ? (
+					<>
+						<p className="-mb-2 text-center font-semibold">
+							Sélectionner une couleur pour votre CV
+						</p>
+						<div className="w-full flex justify-center gap-2">
+							{colors && colors.length > 0
+								? colors.map((color: Color, index) => {
+										return (
+											<RadioColorRhf
+												index={index}
+												general={true}
+												className="col"
+												key={color.name}
+												name={FieldNameLayoutGeneral.primaryColor}
+												// name='layoutGeneral.defaultStyles.primaryColor'
+												color={`--${color.name}${color.primary}`}
+												value={color}
+											/>
+										);
+									})
+								: null}
+						</div>
+						<p className="text-center font-semibold">
+							Choisissez un modèle pour votre CV :
+						</p>
+						<Carousel
+							value={modeles}
+							numScroll={1}
+							numVisible={5}
+							itemTemplate={itemTemplate}
+						/>
+					</>
+				) : null}
+			</div>
+		</Dialog>
+	);
+};

@@ -44,7 +44,7 @@ export const SelectTemplate = () => {
 						key={idx}
 						onClick={() => {
 							const next = switchTemplate(getValues() as CvFormValues, model, {
-							  updateModules: true,
+								updateModules: true,
 							});
 							reset(next);
 						}}

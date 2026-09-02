@@ -4,7 +4,7 @@ import {
 	SortableContext,
 	verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useFormContext } from "react-hook-form";
 import { HeaderRegister } from "../../template/register/header/HeaderRegister";
 import { useCreateCvContext } from "../../context/CreateCvContext";
@@ -12,6 +12,7 @@ import { SectionSortableContext } from "../shared/SectionSortableContext";
 import type { ItemGeneralProps } from "@utils/type";
 import { useCvSectionItems } from "../shared/useCvSectionItems";
 import { useCvPageDnd } from "../shared/useCvPageDnd";
+import { GetPrimaryColor } from "@/features/cv-editor/utils/utilsCv/color";
 
 export interface OneColumnModelProps {
 	deleteSection: (item: ItemGeneralProps) => void;
@@ -26,11 +27,28 @@ export const OneColumnModel = ({ deleteSection }: OneColumnModelProps) => {
 	const { sensors, handleDragEnd, handleDragOver, collisionDetection } =
 		useCvPageDnd(itemUse);
 
+	const primaryColor = GetPrimaryColor() ?? "white";
+	const accent = watch("layoutGeneral.layout.pageAccent");
+	const shade = accent?.shade;
+	const marge = watch("layoutGeneral.layout.marge") ?? "md";
+	const pagePad = { sm: "2rem", md: "3rem", lg: "4rem" }[marge];
+	const [colorSelected, setColorSelected] = useState<string | null>(null);
+	const bandStop =
+		"calc(var(--page-pad) + (100% - 2 * var(--page-pad)) * 0.2 + 0.5rem)";
+
 	const headerKey =
 		watch("layoutGeneral.defaultStyles")?.components?.sectionHeader ??
 		"HeaderOne";
 	const HeaderComponent = HeaderRegister[headerKey] ?? HeaderRegister.HeaderOne;
 
+	useEffect(() => {
+		if (shade) {
+			const color = primaryColor.split("-")[0] + shade;
+			setColorSelected(color);
+		} else {
+			setColorSelected(primaryColor);
+		}
+	}, [shade, primaryColor]);
 	return (
 		<DndContext
 			sensors={sensors}
@@ -39,11 +57,16 @@ export const OneColumnModel = ({ deleteSection }: OneColumnModelProps) => {
 			onDragOver={handleDragOver}
 		>
 			<div
+				className={`cv-page-document shadow-lg relative bg-white ${paddingDoc}`}
 				style={{
 					width: "940px",
 					height: "1300px",
+					["--page-pad" as string]: pagePad,
+					background:
+						accent?.type === "leftBand" && colorSelected
+							? `linear-gradient(to right, var(--${colorSelected}) ${bandStop}, #fff ${bandStop})`
+							: "#fff",
 				}}
-				className={`cv-page-document shadow-lg relative bg-white ${paddingDoc}`}
 			>
 				<div className="absolute bottom-6 right-8 z-10">Test signature</div>
 				<SortableContext

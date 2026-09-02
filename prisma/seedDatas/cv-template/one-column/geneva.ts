@@ -1,17 +1,22 @@
-import { stockholmTokens } from "../../themeTokens";
-import { defineTemplate } from "../_shared/defineTemplate";
 import { sharedLayout } from "../_shared/layouts";
 
-export const stockholm = defineTemplate({
-	name: "Stockholm",
-	slug: "stockholm-noLine-x",
-	tokens: stockholmTokens,
-	primaryColor: { name: "yellow", primary: "-600" },
+import { defineTemplate } from "../_shared/defineTemplate";
+import { genevaTokens } from "../../themeTokens";
+
+export const geneva = defineTemplate({
+	name: "Geneva",
+	slug: "geneva-noLine-x",
+	tokens: genevaTokens,
+	primaryColor: { name: "gray", primary: "-500" },
 	layout: {
 		...sharedLayout,
+		withPhoto: true,
+		stylePhoto: "circle",
 		titleSection: {
 			...sharedLayout.titleSection,
-			withLigneDessous: true,
+			bgColor: "primaryColor",
+			textTransform: "uppercase",
+			shadeBgColor: "-200",
 			textAlign: "center",
 		},
 	},

@@ -51,7 +51,8 @@ export const SectionSortableContext = ({
 			ref={setNodeRef}
 			style={style}
 			className={`section-card relative ${
-				isSexionSelected ? "bg-gray-50 rounded-lg" : ""
+				// isSexionSelected ? "bg-gray-50 rounded-lg" : ""
+				isSexionSelected ? "rounded-lg ring-2 ring-gray-300" : ""
 			}`}
 		>
 			{/* Poignée de déplacement de la section */}

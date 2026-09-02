@@ -80,17 +80,19 @@ export const PrizeDnd = ({
 			items={watchPrizes.map((s) => s.clientKey)}
 			strategy={verticalListSortingStrategy}
 		>
-			<div className={`prizes-grid grid ${COL_CLASS[colOfPrize as keyof typeof COL_CLASS] ?? "grid-cols-3"} ${colOfPrize === 1 ? "gap-1" : "gap-x-4 gap-y-1"}`}>
+			<div
+				className={`prizes-grid grid ${COL_CLASS[colOfPrize as keyof typeof COL_CLASS] ?? "grid-cols-3"} ${colOfPrize === 1 ? "gap-1" : "gap-x-4 gap-y-1"}`}
+			>
 				{watchPrizes.map((prize, index) => (
-					<button
-						type="button"
+					<div
+						// type="button"
 						className="prize-card w-full"
 						key={prize.clientKey}
-						onClick={(e) => {
-							e.stopPropagation();
-							setItemSelected(prize.clientKey);
-							setSectionSelected("section-prize"); // global : sa section
-						}}
+						// onClick={(e) => {
+						// 	e.stopPropagation();
+						// 	setItemSelected(prize.clientKey);
+						// 	setSectionSelected("section-prize"); // global : sa section
+						// }}
 					>
 						<CardComponent
 							index={index}
@@ -99,7 +101,7 @@ export const PrizeDnd = ({
 							setItemSelected={setItemSelected} // local
 							itemsMenu={itemsMenu}
 						/>
-					</button>
+					</div>
 				))}
 				{showAddPrize && (
 					<Button

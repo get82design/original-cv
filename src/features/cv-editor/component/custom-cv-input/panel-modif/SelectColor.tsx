@@ -33,7 +33,7 @@ export const SelectColor = ({ watchSelectInput, select }: SelectColorProps) => {
 				<RadioColorRhf
 					index={2}
 					name={select + ".colorSelect"}
-					color={"--gray-800"}
+					color={"--gray-700"}
 					value={"gray"}
 					checked={watchSelectInput?.colorSelect === "gray"}
 				/>

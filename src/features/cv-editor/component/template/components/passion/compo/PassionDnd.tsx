@@ -63,20 +63,20 @@ export const PassionDnd = ({
 			items={watchPassions.map((s) => s.clientKey)}
 			strategy={horizontalListSortingStrategy}
 		>
-				<div
-					className={`passion-grid grid ${COL_CLASS[colOfPassion as keyof typeof COL_CLASS] ?? "grid-cols-4"} gap-x-2 gap-y-0 min-h-[30px]`}
-				>
-					<CompoPassionDnd
-						passions={watchPassions}
-						itemSelected={itemSelected}
-						setItemSelected={setItemSelected}
-						setSectionSelected={setSectionSelected}
-						showAddPassion={showAddPassion}
-						createNewItem={createNewItem}
-						itemsMenu={itemsMenu}
-						CardComponent={CardComponent}
-					/>
-				</div>
+			<div
+				className={`passion-grid grid ${COL_CLASS[colOfPassion as keyof typeof COL_CLASS] ?? "grid-cols-4"} gap-x-2 gap-y-0 min-h-[30px]`}
+			>
+				<CompoPassionDnd
+					passions={watchPassions}
+					itemSelected={itemSelected}
+					setItemSelected={setItemSelected}
+					setSectionSelected={setSectionSelected}
+					showAddPassion={showAddPassion}
+					createNewItem={createNewItem}
+					itemsMenu={itemsMenu}
+					CardComponent={CardComponent}
+				/>
+			</div>
 		</SortableContext>
 	);
 };
@@ -111,15 +111,15 @@ export const CompoPassionDnd = ({
 	return (
 		<>
 			{passions.map((passion, index) => (
-				<button
-					type="button"
+				<div
+					// type="button"
 					className="passion-card"
 					key={passion.clientKey}
-					onClick={(e) => {
-						e.stopPropagation();
-						setItemSelected(passion.clientKey);
-						setSectionSelected("section-passion"); // global : sa section
-					}}
+					// onClick={(e) => {
+					// 	e.stopPropagation();
+					// 	setItemSelected(passion.clientKey);
+					// 	setSectionSelected("section-passion"); // global : sa section
+					// }}
 				>
 					<CardComponent
 						index={index}
@@ -128,7 +128,7 @@ export const CompoPassionDnd = ({
 						setItemSelected={setItemSelected} // local
 						itemsMenu={itemsMenu}
 					/>
-				</button>
+				</div>
 			))}
 			{showAddPassion && (
 				<Button

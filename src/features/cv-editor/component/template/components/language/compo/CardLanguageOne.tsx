@@ -113,7 +113,7 @@ export const ContentLanguageContainer = ({
 	levelCompo,
 }: ContentLanguageContainerProps) => {
 	return (
-		<div className="w-1/4 flex justify-between items-center gap-2 px-2 relative mr-2 mt-1">
+		<div className="w-1/4 flex justify-between items-center gap-2 px-2 relative mr-2 mt-2">
 			<div className="min-w-[90px]">{nameCompo}</div>
 			{levelCompo}
 		</div>

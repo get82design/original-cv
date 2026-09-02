@@ -13,12 +13,7 @@ const colorSelectSchema = z.enum(["primaryColor", "gray", "black", "white"]);
 const textAlignSchema = z.enum(["left", "center", "right", "justify"]);
 
 export const levelDisplaySchema = z.enum(["stars", "dots", "bars", "progress"]);
-export const tagDisplaySchema = z.enum([
-	"tag",
-	"border",
-	"none",
-	"hashtag",
-]);
+export const tagDisplaySchema = z.enum(["tag", "border", "none", "hashtag"]);
 
 export const baseSettingsSchema = z.object({
 	sizeModel: z.string().min(1),
@@ -97,9 +92,9 @@ export const educationContentSchema = z
 		withYear: z.boolean().default(true),
 		withVille: z.boolean().default(true),
 		withEtablissement: z.boolean().default(true),
-		columns: z.union([
-			z.literal(1), z.literal(2), z.literal(3), z.literal(4),
-		]).default(1),
+		columns: z
+			.union([z.literal(1), z.literal(2), z.literal(3), z.literal(4)])
+			.default(1),
 	});
 
 const educationModuleSchema = baseModuleSchema.extend({
@@ -118,10 +113,12 @@ export const skillContentSchema = z
 	})
 	.extend({
 		withGroupTitle: z.boolean().default(true),
-		groupColumns: z.union([z.literal(1), z.literal(2), z.literal(3)]).default(1),
-		itemColumns: z.union([
-		z.literal(1), z.literal(2), z.literal(3), z.literal(4),
-		]).default(3),
+		groupColumns: z
+			.union([z.literal(1), z.literal(2), z.literal(3)])
+			.default(1),
+		itemColumns: z
+			.union([z.literal(1), z.literal(2), z.literal(3), z.literal(4)])
+			.default(3),
 	});
 
 const skillModuleSchema = baseModuleSchema.extend({
@@ -139,9 +136,9 @@ export const competenceContentSchema = z
 	})
 	.extend({
 		withGroupTitle: z.boolean().default(true),
-		columns: z.union([
-			z.literal(1), z.literal(2), z.literal(3), z.literal(4),
-		  ]).default(1),
+		columns: z
+			.union([z.literal(1), z.literal(2), z.literal(3), z.literal(4)])
+			.default(1),
 	});
 
 const competenceModuleSchema = baseModuleSchema.extend({
@@ -176,9 +173,9 @@ export const languageContentSchema = z
 	})
 	.extend({
 		design: levelDisplaySchema.default("stars"),
-		columns: z.union([
-			z.literal(1), z.literal(2), z.literal(3), z.literal(4),
-		  ]).default(3),
+		columns: z
+			.union([z.literal(1), z.literal(2), z.literal(3), z.literal(4)])
+			.default(3),
 	});
 
 const languageModulesSchema = baseModuleSchema.extend({
@@ -225,9 +222,9 @@ export const socialMediaContentSchema = z
 		withUsername: z.boolean().default(true),
 		withIcon: z.boolean().default(true),
 		iconColor: colorSelectSchema.optional(),
-		columns: z.union([
-			z.literal(1), z.literal(2), z.literal(3), z.literal(4),
-		]).default(3),
+		columns: z
+			.union([z.literal(1), z.literal(2), z.literal(3), z.literal(4)])
+			.default(3),
 	});
 
 const socialMediaModuleSchema = baseModuleSchema.extend({
@@ -248,9 +245,9 @@ export const strengthContentSchema = z
 		withIcon: z.boolean().default(true),
 		iconColor: colorSelectSchema.optional(),
 		withDescription: z.boolean().default(true),
-		columns: z.union([
-			z.literal(1), z.literal(2), z.literal(3), z.literal(4),
-		]).default(1),
+		columns: z
+			.union([z.literal(1), z.literal(2), z.literal(3), z.literal(4)])
+			.default(1),
 	});
 
 const strengthModuleSchema = baseModuleSchema.extend({
@@ -273,9 +270,9 @@ export const formationContentSchema = z
 		withOrganismeFormation: z.boolean().default(true),
 		withPeriode: z.boolean().default(true),
 		withStatus: z.boolean().default(true),
-		columns: z.union([
-			z.literal(1), z.literal(2), z.literal(3), z.literal(4),
-		]).default(2),
+		columns: z
+			.union([z.literal(1), z.literal(2), z.literal(3), z.literal(4)])
+			.default(2),
 	});
 
 const formationModuleSchema = baseModuleSchema.extend({
@@ -294,9 +291,9 @@ export const certificationContentSchema = z
 	.extend({
 		withTitle: z.boolean().default(true),
 		withOrganismeCertification: z.boolean().default(true),
-		columns: z.union([
-			z.literal(1), z.literal(2), z.literal(3), z.literal(4),
-		]).default(2),
+		columns: z
+			.union([z.literal(1), z.literal(2), z.literal(3), z.literal(4)])
+			.default(2),
 	});
 
 const certificationModuleSchema = baseModuleSchema.extend({
@@ -318,9 +315,9 @@ export const prizeContentSchema = z
 		withDomain: z.boolean().default(true),
 		withIcon: z.boolean().default(true),
 		iconColor: colorSelectSchema.optional(),
-		columns: z.union([
-			z.literal(1), z.literal(2), z.literal(3), z.literal(4),
-		]).default(3),
+		columns: z
+			.union([z.literal(1), z.literal(2), z.literal(3), z.literal(4)])
+			.default(3),
 	});
 
 const prizeModuleSchema = baseModuleSchema.extend({
@@ -338,9 +335,9 @@ export const passionContentSchema = z
 	.extend({
 		withIcon: z.boolean().default(true),
 		iconColor: colorSelectSchema.optional(),
-		columns: z.union([
-			z.literal(1), z.literal(2), z.literal(3), z.literal(4),
-		  ]).default(3),
+		columns: z
+			.union([z.literal(1), z.literal(2), z.literal(3), z.literal(4)])
+			.default(3),
 	});
 
 const passionModuleSchema = baseModuleSchema.extend({
@@ -357,9 +354,9 @@ export const expertiseContentSchema = z
 	})
 	.extend({
 		design: levelDisplaySchema.default("stars"),
-		columns: z.union([
-			z.literal(1), z.literal(2), z.literal(3), z.literal(4),
-		]).default(3),
+		columns: z
+			.union([z.literal(1), z.literal(2), z.literal(3), z.literal(4)])
+			.default(3),
 	});
 
 const expertiseModuleSchema = baseModuleSchema.extend({
@@ -516,6 +513,7 @@ export const templateLayoutSchema = z.object({
 		}),
 	stylePhoto: z.enum(["circle", "flat"]).default("circle"),
 	listStyle: z.enum(["none", "line", "point"]).default("none"),
+	headerPrimaryColor: z.boolean().default(false),
 	titleSection: z.object({
 		textTransform: z.enum(["capitalize", "uppercase"]).default("capitalize"),
 		withIcon: z.boolean().default(false),
@@ -527,8 +525,16 @@ export const templateLayoutSchema = z.object({
 		bottomSpaceLine: z.enum(["sm", "md", "lg"]).default("sm"),
 		topSpaceLine: z.enum(["sm", "md", "lg"]).default("sm"),
 		bgColor: colorSelectSchema.optional(),
+		shadeBgColor: z.enum(["-100", "-200", "-300", "-400", "-500"]).optional(),
 		textAlign: z.enum(["left", "center", "right", "justify"]).default("left"),
 	}),
+	pageAccent: z
+		.object({
+			type: z.enum(["none", "leftBand"]).default("none"),
+			width: z.enum(["sm", "md", "lg"]).default("sm"), // ex. 20% / 25% / 30%
+			shade: z.enum(["-100", "-200", "-300", "-400", "-500"]).optional(),
+		})
+		.optional(),
 });
 
 export const templateHeaderSettingsSchema = z.object({
@@ -577,7 +583,12 @@ export const templateDefaultStylesSchema = z.object({
 					"TwoColumnRightBar",
 				])
 				.default("OneColumnModel"),
-			sectionHeader: z.enum(["HeaderOne", "HeaderTwo", "HeaderThree"]),
+			sectionHeader: z.enum([
+				"HeaderOne",
+				"HeaderTwo",
+				"HeaderThree",
+				"HeaderFour",
+			]),
 			sectionExperience: z.object({
 				component: z.enum(["SectionExperienceOne", "SectionExperienceTwo"]),
 				miniature: z.enum(["MiniExperienceOne"]),

@@ -119,15 +119,15 @@ export const CompoSocialMediaDnd = ({
 		<>
 			{socialMedias.map((socialMedia, index) => (
 				<div
-					role="button"
-					tabIndex={0}
+					// role="button"
+					// tabIndex={0}
 					className="socialMedia-card w-full"
 					key={socialMedia.clientKey}
-					onClick={(e) => {
-						e.stopPropagation();
-						setItemSelected(socialMedia.clientKey);
-						setSectionSelected("section-socialMedia"); // global : sa section
-					}}
+					// onClick={(e) => {
+					// 	e.stopPropagation();
+					// 	setItemSelected(socialMedia.clientKey);
+					// 	setSectionSelected("section-socialMedia"); // global : sa section
+					// }}
 				>
 					<CardComponent
 						index={index}

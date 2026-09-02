@@ -1,7 +1,8 @@
+import type { TemplateDefaultStyles } from "@/services/schemas/cvTemplate.schema";
+import { HeaderFour } from "../../components/headers/HeaderFour";
 import { HeaderOne } from "../../components/headers/HeaderOne";
 import { HeaderTwo } from "../../components/headers/HeaderTwo";
 import { HeaderThree } from "../../components/headers/HeaderThree";
-import type { TemplateDefaultStyles } from "@/services/schemas/cvTemplate.schema";
 
 // 1. Définis un composant par défaut garanti
 const DefaultHeader = HeaderOne;
@@ -11,6 +12,7 @@ export const HeaderRegister: Record<string, React.ComponentType> = {
 	HeaderOne,
 	HeaderTwo,
 	HeaderThree,
+	HeaderFour,
 };
 
 export function HeaderRenderer({

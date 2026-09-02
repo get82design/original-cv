@@ -125,12 +125,14 @@ export const FormCv = ({ children, idCv, exemple }: FormCvProviderProps) => {
 			clearGuestCvDraft();
 			clearTemplateCache();
 			setDraft(undefined);
-			// reset(formCvDefaultValue);
-			reset(
-				switchTemplate(formCvDefaultValue, modelSelect, {
-					updateModules: true,
-				}),
-			);
+			const picked = getValues("layoutGeneral.defaultStyles.primaryColor");
+			const next = switchTemplate(formCvDefaultValue, modelSelect, {
+				updateModules: true,
+			});
+			if (next.layoutGeneral?.defaultStyles && picked) {
+				next.layoutGeneral.defaultStyles.primaryColor = picked;
+			}
+			reset(next);
 			setVisibleSelectModel(false);
 		}
 	};
