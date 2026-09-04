@@ -3,7 +3,7 @@ import { FormProvider, useForm } from "react-hook-form";
 import type { CvFormValues } from "../../../../services/schemas/cvSave.schema";
 import { formCvDefaultValue } from "./defaultValue";
 import { trpc } from "@utils/trpc";
-import type { TemplateCv } from "@utils/trpc.types";
+import type { Color, TemplateCv } from "@utils/trpc.types";
 import { DialogSelectModel } from "./DialogSelectModel";
 import { applyTemplateToForm } from "../../utils/applyTemplateToForm";
 import {
@@ -18,14 +18,18 @@ import { useSession } from "next-auth/react";
 import { switchTemplate } from "../../utils/applyTemplateToForm";
 import { clearTemplateCache } from "../../utils/templateCache";
 import { captureCvPreview } from "../../utils/captureCvPreview";
+import { useModelAndColorContext } from "../context/ModelAndColorContext";
 
 interface FormCvProviderProps extends PropsWithChildren {
 	idCv: string | null;
-	exemple: string | null;
+	template: string | null;
+	color?: string | null;
 }
 
-export const FormCv = ({ children, idCv, exemple }: FormCvProviderProps) => {
+export const FormCv = ({ children, idCv, template, color }: FormCvProviderProps) => {
 	const { status } = useSession();
+	const { modeles, colors } = useModelAndColorContext();
+	const appliedFromUrl = useRef(false);
 	const [visibleSelectModel, setVisibleSelectModel] = useState(false);
 	const [modelSelect, setModelSelect] = useState<TemplateCv>();
 	const [draft, setDraft] = useState<CvFormValues | undefined>(undefined);
@@ -98,13 +102,38 @@ export const FormCv = ({ children, idCv, exemple }: FormCvProviderProps) => {
 		return () => window.removeEventListener("beforeunload", handler);
 	}, [status, idCv, getValues]);
 
-	useEffect(() => {
-		if (idCv !== "0" || exemple) return;
+	// useEffect(() => {
+	// 	if (idCv !== "0" || template) return;
 
-		const oldDraft = loadGuestCvDraft();
-		setDraft(oldDraft?.templateId ? oldDraft : undefined);
-		setVisibleSelectModel(true); // toujours
-	}, [idCv, exemple]);
+	// 	const oldDraft = loadGuestCvDraft();
+	// 	setDraft(oldDraft?.templateId ? oldDraft : undefined);
+	// 	setVisibleSelectModel(true); // toujours
+	// }, [idCv, template]);
+
+	useEffect(() => {
+		if (idCv !== "0" || !template || appliedFromUrl.current) return;
+		if (!modeles.length) return;
+
+		const model = modeles.find((m) => m.name === template);
+		if (!model) {
+			setVisibleSelectModel(true); // nom inconnu → dialog
+			return;
+		}
+		appliedFromUrl.current = true;
+		clearGuestCvDraft();
+		clearTemplateCache();
+
+		const next = switchTemplate(formCvDefaultValue, model, {
+			updateModules: true,
+		});
+		if (color && next.layoutGeneral?.defaultStyles) {
+			const fromUrl = colors.find((c) => c.name === color);
+			if (fromUrl) {
+			    next.layoutGeneral.defaultStyles.primaryColor = fromUrl;
+			}
+		}
+		reset(next);
+	}, [idCv, template, modeles, reset, color, colors]);
 
 	useEffect(() => {
 		if (!dataCv) return;

@@ -32,3 +32,19 @@
   width: 2rem;
   height: 2rem;
 }
+
+.gallery-mini { 
+  container-type: inline-size; 
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1.414;
+  overflow: hidden;
+}
+.gallery-mini-page {
+  position: absolute;
+  inset: 0 auto auto 0;
+  width: 940px;
+  height: 1300px;
+  transform: #{'scale(calc(100cqw / 940))'};
+  transform-origin: top left;
+}

@@ -19,7 +19,8 @@ export default withAuth(
 					pathname === "/" ||
 					pathname.startsWith("/login") ||
 					pathname.startsWith("/register") ||
-					pathname.startsWith("/cv/0");
+					pathname.startsWith("/cv/0") ||
+					pathname.startsWith("/modeles");
 				if (isPublic) return true;
 				return !!token; // le reste exige un JWT
 			},
@@ -27,5 +28,5 @@ export default withAuth(
 	},
 );
 export const config = {
-	matcher: ["/", "/login", "/register", "/cv/:path*"],
+	matcher: ["/", "/login", "/register", "/cv/:path*", "/modeles"],
 };

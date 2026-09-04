@@ -37,6 +37,7 @@ const DEFAULT_ACTIVE: ModuleKey[] = [
 type BaseOverride = {
     title?: string;
     isActive?: boolean;
+    order?: number;
   };
 
 type LevelDesign = "stars" | "dots" | "bars";
@@ -86,7 +87,7 @@ export function buildModules(tokens: ThemeTokens, overrides: ModuleOverrides = {
   return keys.map((key, i) => {
     const o = overrides[key] ?? {};
     return builders[`build${capitalize(key)}Module` as ModuleBuilderName](tokens, {
-      order: i + 1,
+      order: o.order ?? i + 1,
       title: o.title ?? DEFAULT_TITLES[key],
       isActive: o.isActive ?? DEFAULT_ACTIVE.includes(key),
       ...o,

@@ -12,8 +12,10 @@ import { CreateCvProvider } from "../../src/features/cv-editor/component/context
 export default function CvPage() {
 	const router = useRouter();
 	const id = typeof router.query.id === "string" ? router.query.id : null;
-	const exemple =
-    typeof router.query.exemple === "string" ? router.query.exemple : null;
+	const template =
+		typeof router.query.template === "string" ? router.query.template : null;
+	const color =
+		typeof router.query.color === "string" ? router.query.color : null;
 
 	// optionnel : attendre que le router soit prêt
 	if (!router.isReady) return <div>Loading...</div>;
@@ -23,30 +25,33 @@ export default function CvPage() {
 	// 	{ enabled: !!id }, // attend que le router ait l'id
 	// );
 
-    // const utils = trpc.useUtils();
-    // const [draft, setDraft] = useState<CvSaveInput | null>(null);
+	// const utils = trpc.useUtils();
+	// const [draft, setDraft] = useState<CvSaveInput | null>(null);
 
-    // useEffect(() => {
-    //     if (cv) setDraft(mapCvToSaveInput(cv));
-    // }, [cv]);
+	// useEffect(() => {
+	//     if (cv) setDraft(mapCvToSaveInput(cv));
+	// }, [cv]);
 
-    // const save = trpc.cv.save.useMutation({
-    //     onSuccess: (saved) => {
-    //         setDraft(mapCvToSaveInput(saved)); // récupère les ids serveur
-    //         void utils.cv.byId.invalidate({ id: saved.id });
-    //         void utils.cv.allByUser.invalidate();
-    //     },
-    // });
+	// const save = trpc.cv.save.useMutation({
+	//     onSuccess: (saved) => {
+	//         setDraft(mapCvToSaveInput(saved)); // récupère les ids serveur
+	//         void utils.cv.byId.invalidate({ id: saved.id });
+	//         void utils.cv.allByUser.invalidate();
+	//     },
+	// });
 
 	// if (!id || isLoading) return <div>Loading...</div>;
 	// if (error) return <div>Erreur : {error.message}</div>;
 	// if (!cv) return <div>CV introuvable</div>;
 
 	return (
-		<main id="content" style={{ height: 'calc(100vh - 62px)' }}>
-			<div className={'w-full py-8 px-4 lg:px-3 xl:px-4'} style={{ /*...ClassikAppColor(),*/ minHeight: "calc(100vh - 62px)" }} >
+		<main id="content" style={{ height: "calc(100vh - 62px)" }}>
+			<div
+				className={"w-full py-8 px-4 lg:px-3 xl:px-4"}
+				style={{ /*...ClassikAppColor(),*/ minHeight: "calc(100vh - 62px)" }}
+			>
 				<ModelAndColorProvider>
-					<FormCv idCv={id} exemple={exemple}>
+					<FormCv idCv={id} template={template} color={color}>
 						<CreateCvProvider>
 							<CvEditor />
 						</CreateCvProvider>
@@ -54,7 +59,6 @@ export default function CvPage() {
 				</ModelAndColorProvider>
 			</div>
 		</main>
-
 
 		// <div>
 		// 	<Link href="/">← Retour</Link>
@@ -64,37 +68,36 @@ export default function CvPage() {
 		// 	<pre>{JSON.stringify(cv, null, 2)}</pre>
 		// 	<pre>{JSON.stringify(draft, null, 2)}</pre>
 
-        //     <input
-        //         value={draft?.datas.header?.prenom ?? ""}
-        //         onChange={(e) =>
-        //             setDraft((d) =>
-        //             d
-        //                 ? {
-        //                     ...d,
-        //                     datas: {
-        //                     ...d.datas,
-        //                     header: {
-        //                         ...d.datas.header,
-        //                         title: d.datas.header?.title ?? d.title,
-        //                         prenom: e.target.value,
-        //                     },
-        //                     },
-        //                 }
-        //                 : d,
-        //             )
-        //         }
-        //         />
-        //         <button
-        //             type="button"
-        //             disabled={!draft || save.isPending}
-        //             onClick={() => draft && save.mutate(draft)}
-        //         >
-        //             Sauver
-        //     </button>
+		//     <input
+		//         value={draft?.datas.header?.prenom ?? ""}
+		//         onChange={(e) =>
+		//             setDraft((d) =>
+		//             d
+		//                 ? {
+		//                     ...d,
+		//                     datas: {
+		//                     ...d.datas,
+		//                     header: {
+		//                         ...d.datas.header,
+		//                         title: d.datas.header?.title ?? d.title,
+		//                         prenom: e.target.value,
+		//                     },
+		//                     },
+		//                 }
+		//                 : d,
+		//             )
+		//         }
+		//         />
+		//         <button
+		//             type="button"
+		//             disabled={!draft || save.isPending}
+		//             onClick={() => draft && save.mutate(draft)}
+		//         >
+		//             Sauver
+		//     </button>
 		// </div>
 
-
-        // <div>
+		// <div>
 		// 	<Link href="/">← Retour</Link>
 		// 	<label>
 		// 		Titre CV

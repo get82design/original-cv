@@ -421,7 +421,30 @@ export function applyTemplateToForm(
 				? {
 						tagGroup: {
 							title: current.datas?.tagGroup?.title ?? tagGroupFromModel!.title,
-							content: current.datas?.tagGroup?.content ?? [],
+							content: (current.datas?.tagGroup?.content ?? []).map((group) => {
+								const fromModel = tagGroupFromModel?.settings.content;
+								const prev = group.content?.settings;
+								return {
+								  ...group,
+								  content: {
+									...group.content,
+									settings:
+									  options?.resetSectionStyles && fromModel
+										? {
+											groupTitle: fromModel.groupTitle,
+											tags: fromModel.tags,
+											withGroupTitle: fromModel.withGroupTitle,
+											design: fromModel.design,
+										  }
+										: (prev ?? {
+											groupTitle: fromModel!.groupTitle,
+											tags: fromModel!.tags,
+											withGroupTitle: fromModel!.withGroupTitle,
+											design: fromModel!.design,
+										  }),
+								  },
+								};
+							  }),
 							settings: options?.resetSectionStyles
 								? {
 									...current.datas?.tagGroup?.settings,
@@ -439,9 +462,9 @@ export function applyTemplateToForm(
 					modules: structure.modules.map((module) => ({
 						...module,
 						column: "column" in module ? (module.column as number) : 0,
-						settings: {
-							...structure.modules[module.order - 1]?.settings,
-						},
+						// settings: {
+						// 	...structure.modules[module.order - 1]?.settings,
+						// },
 					})),
 				}
 			: {
