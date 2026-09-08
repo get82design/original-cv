@@ -3,6 +3,10 @@ import { CSS } from "@dnd-kit/utilities";
 import { useCreateCvContext } from "../../context/CreateCvContext";
 import { MdDelete, MdOutlineOpenWith } from "react-icons/md";
 import type { ItemGeneralProps } from "@utils/type";
+import { Button } from "primereact/button";
+import { Divider } from "primereact/divider";
+import { useState } from "react";
+import { DialogDataSectionFromProfile } from "../../dialog/dataFromProfile/DialogDataSectionFromProfile";
 
 interface SectionSortableContextProps {
 	item: ItemGeneralProps;
@@ -14,6 +18,7 @@ export const SectionSortableContext = ({
 	deleteSection,
 	sectionMenu,
 }: SectionSortableContextProps) => {
+	const [visibleDialogDataSectionFromProfile, setVisibleDialogDataSectionFromProfile] = useState(false);
 	const {
 		attributes,
 		listeners,
@@ -36,6 +41,8 @@ export const SectionSortableContext = ({
 		setSectionSelected,
 	} = useCreateCvContext();
 
+	console.log('sectionSelected', sectionSelected);
+
 	const ContentComponent = item.content;
 
 	const style = {
@@ -57,14 +64,24 @@ export const SectionSortableContext = ({
 		>
 			{/* Poignée de déplacement de la section */}
 			{isSexionSelected ? (
-				<div className="absolute bg-white dark:bg-gray-800 w-auto left-0 -top-6 rounded-l-lg flex justify-center items-center border-l-2 border-b-2 border-t-2 border-gray-100">
+				<div className="absolute z-100 bg-white dark:bg-gray-800 w-auto left-0 -top-8 rounded-l-lg flex gap-0 justify-center items-center border-l-2 border-b-2 border-t-2 border-gray-100">
 					<div className="p-2" {...attributes} {...listeners}>
 						<MdOutlineOpenWith
 							style={{ width: "20px", height: "20px" }}
 							className="cursor-move"
 						/>
 					</div>
+					<Divider layout="vertical" className="h-full m-0" />
 					{sectionMenu}
+					<Divider layout="vertical" className="h-full m-0" />
+					<button
+						type="button"
+						className="p-2 cursor-pointer hover:bg-gray-100" 
+						onClick={() => setVisibleDialogDataSectionFromProfile(true)}
+					>
+						Récupérer les données
+					</button>
+					<Divider layout="vertical" className="h-full m-0" />
 					<button
 						type="button"
 						className="p-2 cursor-pointer hover:bg-gray-100"
@@ -81,6 +98,11 @@ export const SectionSortableContext = ({
 				</div>
 			) : null}
 			{ContentComponent && <ContentComponent />}
+			{visibleDialogDataSectionFromProfile && <DialogDataSectionFromProfile 
+			  visible={visibleDialogDataSectionFromProfile} 
+			  onHide={() => setVisibleDialogDataSectionFromProfile(false)} 
+			  sectionSelected={sectionSelected} 
+			/>}
 		</div>
 	);
 };

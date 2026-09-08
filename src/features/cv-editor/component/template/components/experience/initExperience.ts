@@ -80,7 +80,7 @@ export function createInitExperience(
       title: '',
       company: '',
       start: new Date(),
-      end: undefined,
+      end: null,
       location: '',
       description: '',
       missions: [],

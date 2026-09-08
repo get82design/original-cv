@@ -26,26 +26,23 @@ import { FormProvider, useForm } from "react-hook-form";
 import { mapProfileToSaveInput } from "../mapProfileToSaveInput";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
-	isBlankAchievement,
-	isBlankCertification,
-	isBlankCompetenceGroup,
-	isBlankEducation,
-	isBlankExperience,
-	isBlankExpertise,
-	isBlankFormation,
-	isBlankLanguage,
-	isBlankPassion,
-	isBlankPrize,
-	isBlankProject,
-	isBlankPublication,
-	isBlankSkill,
-	isBlankSkillGroup,
-	isBlankSocialMedia,
-	isBlankStrength,
-	isBlankTagGroup,
-	isBlankVolunteering,
 	validationSchema,
 } from "./validation-schema";
+import { 
+	isBlankExperience, 
+	isBlankStrength, 
+	isBlankFormation, 
+	isBlankProject, 
+	isBlankPublication, 
+	isBlankAchievement, 
+	isBlankVolunteering, 
+	isBlankEducation, 
+	isBlankLanguage, 
+	isBlankPassion, 
+	isBlankPrize, 
+	isBlankCertification, 
+	isBlankSocialMedia, 
+	isBlankExpertise, isBlankSkillGroup, isBlankCompetenceGroup, isBlankTagGroup, isBlankSkill } from "@/utils/isBankSection";
 import type { ListItem } from "@utils/type";
 
 export const FormProfile = ({ children }: PropsWithChildren) => {

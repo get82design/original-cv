@@ -30,14 +30,14 @@ import { createEducationSchema } from "./education.schema";
 import { createSkillGroupSchema } from "./skillGroup.schema";
 import { skillInCvFormSchema } from "./skill.schema";
 import { createCompetenceGroupSchema } from "./competenceGroup.schema";
-import { createCompetenceSchema } from "./competence.schema";
+import { competenceInCvFormSchema, createCompetenceSchema } from "./competence.schema";
 import {
 	baseSettingsSchema,
 	philosophyContentSchema,
 	templateDefaultStylesSchema,
 	templateLayoutSchema,
 } from "./cvTemplate.schema";
-import { createTagSchema } from "./tag.schema";
+import { createTagSchema, tagInCvFormSchema } from "./tag.schema";
 import { createTagGroupSchema } from "./tagGroup.schema";
 
 /** Id local front (ex: "experience-1") */
@@ -68,7 +68,7 @@ const descriptionSchema = z.object({
 	settings: z.object({
 		title: baseSettingsSchema,
 		content: baseSettingsSchema,
-	}),
+	}).optional(),
 });
 
 const experienceItemContentSchema = createExperienceSchema
@@ -88,7 +88,7 @@ const experienceSectionSchema = z.object({
 	content: z.array(listItemSchema(experienceItemContentSchema)),
 	settings: z.object({
 		title: baseSettingsSchema,
-	}),
+	}).optional(),
 });
 
 const projectItemContentSchema = createProjectSchema
@@ -106,7 +106,7 @@ const projectSectionSchema = z.object({
 	content: z.array(listItemSchema(projectItemContentSchema)),
 	settings: z.object({
 		title: baseSettingsSchema,
-	}),
+	}).optional(),
 });
 
 const volunteeringItemContentSchema = createVolunteeringSchema
@@ -126,7 +126,7 @@ const volunteeringSectionSchema = z.object({
 	content: z.array(listItemSchema(volunteeringItemContentSchema)),
 	settings: z.object({
 		title: baseSettingsSchema,
-	}),
+	}).optional(),
 });
 
 const formationItemContentSchema = createFormationSchema
@@ -141,7 +141,7 @@ const formationSectionSchema = z.object({
 	content: z.array(listItemSchema(formationItemContentSchema)),
 	settings: z.object({
 		title: baseSettingsSchema,
-	}),
+	}).optional(),
 });
 
 const certificationItemContentSchema = createCertificationSchema.omit({
@@ -153,7 +153,7 @@ const certificationSectionSchema = z.object({
 	content: z.array(listItemSchema(certificationItemContentSchema)),
 	settings: z.object({
 		title: baseSettingsSchema,
-	}),
+	}).optional(),
 });
 
 export const prizeItemContentSchema = createPrizeSchema.omit({ order: true });
@@ -163,7 +163,7 @@ const prizeSectionSchema = z.object({
 	content: z.array(listItemSchema(prizeItemContentSchema)),
 	settings: z.object({
 		title: baseSettingsSchema,
-	}),
+	}).optional(),
 });
 
 const expertiseItemContentSchema = createExpertiseSchema.omit({ order: true });
@@ -173,7 +173,7 @@ const expertiseSectionSchema = z.object({
 	content: z.array(listItemSchema(expertiseItemContentSchema)),
 	settings: z.object({
 		title: baseSettingsSchema,
-	}),
+	}).optional(),
 });
 
 const philosophySchema = z.object({
@@ -183,7 +183,7 @@ const philosophySchema = z.object({
 	settings: z.object({
 		title: baseSettingsSchema,
 		content: philosophyContentSchema,
-	}),
+	}).optional(),
 });
 
 const socialMediaItemContentSchema = createSocialMediaSchema.omit({
@@ -195,7 +195,7 @@ const socialMediaSectionSchema = z.object({
 	content: z.array(listItemSchema(socialMediaItemContentSchema)),
 	settings: z.object({
 		title: baseSettingsSchema,
-	}),
+	}).optional(),
 });
 
 const passionItemContentSchema = createPassionInputSchema.omit({ order: true });
@@ -205,7 +205,7 @@ const passionSectionSchema = z.object({
 	content: z.array(listItemSchema(passionItemContentSchema)),
 	settings: z.object({
 		title: baseSettingsSchema,
-	}),
+	}).optional(),
 });
 
 const languageItemContentSchema = createLanguageSchema.omit({ order: true });
@@ -215,7 +215,7 @@ const languageSectionSchema = z.object({
 	content: z.array(listItemSchema(languageItemContentSchema)),
 	settings: z.object({
 		title: baseSettingsSchema,
-	}),
+	}).optional(),
 });
 
 const publicationItemContentSchema = createPublicationSchema
@@ -230,7 +230,7 @@ const publicationSectionSchema = z.object({
 	content: z.array(listItemSchema(publicationItemContentSchema)),
 	settings: z.object({
 		title: baseSettingsSchema,
-	}),
+	}).optional(),
 });
 
 const strengthItemContentSchema = createStrengthSchema.omit({ order: true });
@@ -240,7 +240,7 @@ const strengthSectionSchema = z.object({
 	content: z.array(listItemSchema(strengthItemContentSchema)),
 	settings: z.object({
 		title: baseSettingsSchema,
-	}),
+	}).optional(),
 });
 
 const achievementItemContentSchema = createAchievementSchema.omit({
@@ -252,7 +252,7 @@ const achievementSectionSchema = z.object({
 	content: z.array(listItemSchema(achievementItemContentSchema)),
 	settings: z.object({
 		title: baseSettingsSchema,
-	}),
+	}).optional(),
 });
 
 const educationItemContentSchema = createEducationSchema
@@ -267,7 +267,7 @@ const educationSectionSchema = z.object({
 	content: z.array(listItemSchema(educationItemContentSchema)),
 	settings: z.object({
 		title: baseSettingsSchema,
-	}),
+	}).optional(),
 });
 
 const skillInGroupSchema = listItemSchema(skillInCvFormSchema);
@@ -283,12 +283,10 @@ const skillGroupSectionSchema = z.object({
 	content: z.array(listItemSchema(skillGroupItemContentSchema)),
 	settings: z.object({
 		title: baseSettingsSchema,
-	}),
+	}).optional(),
 });
 
-const competenceInGroupSchema = listItemSchema(
-	createCompetenceSchema.omit({ order: true }), // reste: competenceId + level
-);
+const competenceInGroupSchema = listItemSchema(competenceInCvFormSchema);
 
 const competenceGroupItemContentSchema = createCompetenceGroupSchema
 	.omit({ order: true, competences: true })
@@ -301,12 +299,10 @@ const competenceGroupSectionSchema = z.object({
 	content: z.array(listItemSchema(competenceGroupItemContentSchema)),
 	settings: z.object({
 		title: baseSettingsSchema,
-	}),
+	}).optional(),
 });
 
-const tagInGroupSchema = listItemSchema(
-	createTagSchema.omit({ order: true }), // reste: tagId
-);
+const tagInGroupSchema = listItemSchema(tagInCvFormSchema);
 
 const tagGroupItemContentSchema = createTagGroupSchema
 	.omit({ order: true, tags: true })
@@ -319,7 +315,7 @@ const tagGroupSectionSchema = z.object({
 	content: z.array(listItemSchema(tagGroupItemContentSchema)),
 	settings: z.object({
 		title: baseSettingsSchema,
-	}),
+	}).optional(),
 });
 
 const datasSchema = z.object({

@@ -6,8 +6,11 @@ export const createCompetenceSchema = z.object({
 });
 
 export const competenceInCvFormSchema = z.object({
-	name: z.string(),
-	competenceId: z.string().min(1).optional(),
+	name: z.string().default(""),
+	competenceId: z.preprocess(
+		(v) => (v === "" || v == null ? undefined : v),
+		z.string().min(1).optional(),
+	),
 });
 
 export const updateCompetenceSchema = createCompetenceSchema.partial();

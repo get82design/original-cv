@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState, type PropsWithChildren } from "react";
-import { FormProvider, useForm } from "react-hook-form";
+import { FormProvider, useForm, type FieldErrors, type Resolver } from "react-hook-form";
 import type { CvFormValues } from "../../../../services/schemas/cvSave.schema";
 import { formCvDefaultValue } from "./defaultValue";
 import { trpc } from "@utils/trpc";
-import type { Color, TemplateCv } from "@utils/trpc.types";
+import type { TemplateCv } from "@utils/trpc.types";
 import { DialogSelectModel } from "./DialogSelectModel";
 import { applyTemplateToForm } from "../../utils/applyTemplateToForm";
 import {
@@ -19,11 +19,33 @@ import { switchTemplate } from "../../utils/applyTemplateToForm";
 import { clearTemplateCache } from "../../utils/templateCache";
 import { captureCvPreview } from "../../utils/captureCvPreview";
 import { useModelAndColorContext } from "../context/ModelAndColorContext";
+import type { inferRouterOutputs } from "@trpc/server";
+import type { AppRouter } from "@server/api/root";
+import { mapProfileToCvDatas } from "./mapProfileToCvDatas";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { cvValidationSchema } from "./validationSchema";
+
+type RouterOutputs = inferRouterOutputs<AppRouter>;
+export type ProfileComplete = NonNullable<RouterOutputs["profile"]["completeMe"]>;
 
 interface FormCvProviderProps extends PropsWithChildren {
 	idCv: string | null;
 	template: string | null;
 	color?: string | null;
+}
+
+function applyProfileToNext(
+	next: CvFormValues,
+	profile: ProfileComplete,
+	model: TemplateCv,
+  ) {
+	next.photo = profile.photo ?? null;
+	next.title = `CV - ${profile.firstName} ${profile.lastName}`;
+	next.datas = {
+	  ...next.datas,
+	  ...mapProfileToCvDatas(profile, model),
+	};
+	return next;
 }
 
 export const FormCv = ({ children, idCv, template, color }: FormCvProviderProps) => {
@@ -51,9 +73,12 @@ export const FormCv = ({ children, idCv, template, color }: FormCvProviderProps)
 	const saveCv = trpc.cv.save.useMutation();
 	const setPreview = trpc.cv.setPreview.useMutation();
 	const toast = useRef<Toast>(null);
+	const optionsProfile = [{label: 'Non', value: false}, {label: 'Oui', value: true}];
+    const [withProfileValue, setWithProfileValue] = useState(false);
+	const { data: profile } = trpc.profile.completeMe.useQuery();
 
 	const methods = useForm<CvFormValues>({
-		// resolver: yupResolver(validationSchema),
+		resolver: zodResolver(cvValidationSchema) as Resolver<CvFormValues>,
 		shouldFocusError: false, //! Régler l'erreur quand shouldFocus est à true
 		mode: "onSubmit",
 		defaultValues: formCvDefaultValue,
@@ -102,13 +127,13 @@ export const FormCv = ({ children, idCv, template, color }: FormCvProviderProps)
 		return () => window.removeEventListener("beforeunload", handler);
 	}, [status, idCv, getValues]);
 
-	// useEffect(() => {
-	// 	if (idCv !== "0" || template) return;
+	useEffect(() => {
+		if (idCv !== "0" || template) return;
 
-	// 	const oldDraft = loadGuestCvDraft();
-	// 	setDraft(oldDraft?.templateId ? oldDraft : undefined);
-	// 	setVisibleSelectModel(true); // toujours
-	// }, [idCv, template]);
+		const oldDraft = loadGuestCvDraft();
+		setDraft(oldDraft?.templateId ? oldDraft : undefined);
+		setVisibleSelectModel(true); // toujours
+	}, [idCv, template]);
 
 	useEffect(() => {
 		if (idCv !== "0" || !template || appliedFromUrl.current) return;
@@ -132,6 +157,9 @@ export const FormCv = ({ children, idCv, template, color }: FormCvProviderProps)
 			    next.layoutGeneral.defaultStyles.primaryColor = fromUrl;
 			}
 		}
+		if (profile) {
+			applyProfileToNext(next, profile, model);
+		}
 		reset(next);
 	}, [idCv, template, modeles, reset, color, colors]);
 
@@ -149,7 +177,8 @@ export const FormCv = ({ children, idCv, template, color }: FormCvProviderProps)
 		);
 	}, [dataCv, dataTemplate, needsTemplate, reset]);
 
-	const onSelectModel = () => {
+	const onSelectModel = (withProfile: boolean) => {
+		console.log("withProfile", withProfile);
 		if (modelSelect) {
 			clearGuestCvDraft();
 			clearTemplateCache();
@@ -160,6 +189,9 @@ export const FormCv = ({ children, idCv, template, color }: FormCvProviderProps)
 			});
 			if (next.layoutGeneral?.defaultStyles && picked) {
 				next.layoutGeneral.defaultStyles.primaryColor = picked;
+			}
+			if (profile && withProfile) {
+				applyProfileToNext(next, profile, modelSelect);
 			}
 			reset(next);
 			setVisibleSelectModel(false);
@@ -216,9 +248,41 @@ export const FormCv = ({ children, idCv, template, color }: FormCvProviderProps)
 		wasAuth.current = status === "authenticated";
 	}, [status]);
 
+	function flattenErrors(errors: FieldErrors, prefix = ""): string[] {
+		const messages: string[] = [];
+		for (const [key, value] of Object.entries(errors)) {
+		  if (!value) continue;
+		  const path = prefix ? `${prefix}.${key}` : key;
+		  if (typeof value === "object" && "message" in value && value.message) {
+			messages.push(String(value.message));
+		  } else if (typeof value === "object") {
+			messages.push(...flattenErrors(value as FieldErrors, path));
+		  }
+		}
+		return messages;
+	}
+	
+	const showValidationErrors = (errors: FieldErrors) => {
+		const messages = flattenErrors(errors);
+		if (!messages.length) return;
+		toast.current?.show({
+		  severity: "error",
+		  summary: "Champs à corriger",
+		//   detail: messages.join("\n"),
+		  detail: (
+			<ul className="m-0 pl-4 list-disc">
+			  {messages.map((m) => (
+				<li key={m}>{m}</li>
+			  ))}
+			</ul>
+		  ),
+		  life: 6000,
+		});
+	};
+
 	return (
 		<FormProvider {...methods}>
-			<form onSubmit={handleSubmit(onSubmit)}>
+			<form onSubmit={handleSubmit(onSubmit, showValidationErrors)}>
 				{children}
 				<Toast ref={toast} />
 				{visibleSelectModel && (
@@ -230,6 +294,10 @@ export const FormCv = ({ children, idCv, template, color }: FormCvProviderProps)
 						onSelectModel={onSelectModel}
 						onResumeDraft={onResumeDraft}
 						draft={draft}
+						withProfileValue={withProfileValue}
+						setWithProfileValue={setWithProfileValue}
+						optionsProfile={optionsProfile}
+						profile={profile ?? undefined}
 					/>
 				)}
 			</form>

@@ -45,7 +45,7 @@ export const EducationSectionMenu = () => {
 		<>
 			<button
 				type="button"
-				className="p-2 cursor-pointer"
+				className="p-2 cursor-pointer hover:bg-gray-100"
 				onClick={(e) => {
 					e.stopPropagation();
 					menuRef.current?.toggle(e);

@@ -1,22 +1,44 @@
 import type { TemplateModule } from "@/services/schemas/cvTemplate.schema";
 
-/** Renumérote uniquement les modules actifs : 1, 2, 3… (ordre stable actuel) */
+/**
+ * Renumérote les modules par colonne :
+ * - actifs : 1, 2, 3… (ordre relatif conservé)
+ * - inactifs : à la suite (n+1…) pour respecter @@unique([cvId, column, order])
+ */
 export function compactActiveOrders(
 	modules: TemplateModule[],
 ): TemplateModule[] {
-	const activeSorted = modules
-		.filter((m) => m.isActive)
-		.slice()
-		.sort((a, b) => a.order - b.order);
+	const columns = [
+		...new Set(modules.map((m) => m.column ?? 0)),
+	];
 
-	const orderByType = new Map(
-		activeSorted.map((m, i) => [m.type, i + 1] as const),
-	);
+	const orderByType = new Map<string, number>();
 
-	return modules.map((m) => {
-		const nextOrder = orderByType.get(m.type);
-		return m.isActive && nextOrder != null ? { ...m, order: nextOrder } : m;
-	});
+	for (const col of columns) {
+		const inCol = modules.filter((m) => (m.column ?? 0) === col);
+
+		const activeSorted = inCol
+			.filter((m) => m.isActive)
+			.slice()
+			.sort((a, b) => a.order - b.order);
+
+		const inactiveSorted = inCol
+			.filter((m) => !m.isActive)
+			.slice()
+			.sort((a, b) => a.order - b.order);
+
+		activeSorted.forEach((m, i) => {
+			orderByType.set(m.type, i + 1);
+		});
+		inactiveSorted.forEach((m, i) => {
+			orderByType.set(m.type, activeSorted.length + i + 1);
+		});
+	}
+
+	return modules.map((m) => ({
+		...m,
+		order: orderByType.get(m.type) ?? m.order,
+	}));
 }
 
 export function nextActiveOrder(modules: TemplateModule[]): number {
@@ -24,14 +46,3 @@ export function nextActiveOrder(modules: TemplateModule[]): number {
 	if (active.length === 0) return 1;
 	return Math.max(...active.map((m) => m.order)) + 1;
 }
-
-// !Plus tard (2 colonnes)
-// Même logique, scopée :
-
-// nextActiveOrder(modules.filter((m) => m.column === targetColumn));
-// // add → { isActive: true, column: 0, order: newOrder }
-
-// compactActiveOrders(
-//   modules.filter((m) => m.column === deletedColumn),
-//   // puis merger avec les autres colonnes
-// );

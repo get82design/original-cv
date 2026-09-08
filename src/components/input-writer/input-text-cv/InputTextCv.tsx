@@ -36,7 +36,7 @@ export const InputTextCv = ({
 }: InputTextProps) => {
 	const ref = useRef<HTMLInputElement>(null);
 	const op = useRef<OverlayPanel>(null);
-	const { control, watch } = useFormContext();
+	const { control } = useFormContext();
 	const { getSize, getWeight } = useChangeTextFormat(dataInput);
 	// const watchFont = watch(FieldNameCvModelGeneral.font)
 	const isXl = useMediaQuery("(min-width: 1440px)");
@@ -60,7 +60,8 @@ export const InputTextCv = ({
 			<Controller
 				name={name}
 				control={control}
-				render={({ field }) => (
+				render={({ field, fieldState }) => (
+					<>
 					<PrimeInputText
 						{...field}
 						style={{
@@ -86,6 +87,12 @@ export const InputTextCv = ({
 						ref={ref}
 						{...props}
 					/>
+					{fieldState.error && (
+						<span className="text-red-500 text-xs -mt-1 mb-1">
+							{fieldState.error.message}
+						</span>
+					)}
+					</>
 				)}
 			/>
 		</div>

@@ -40,7 +40,8 @@ export function createInitTag(opts?: {
 					clientKey: "tag-" + uuid(),
 					order: 1,
 					content: {
-						tagId: "",
+						name: "",
+						tagId: undefined,
 					},
 				},
 			],

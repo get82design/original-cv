@@ -31,53 +31,53 @@ import { dateToStringMonthYear } from "../../utils/date";
 type RouterOutputs = inferRouterOutputs<AppRouter>;
 export type CvFull = RouterOutputs["cv"]["byId"];
 type ExperienceSettings = NonNullable<
-	CvSaveInput["datas"]["experience"]
->["settings"];
+    NonNullable<CvSaveInput["datas"]["experience"]
+>["settings"]>;
 type EducationSettings = NonNullable<
-	CvSaveInput["datas"]["education"]
->["settings"];
+    NonNullable<CvSaveInput["datas"]["education"]
+>["settings"]>;
 type SkillGroupSettings = NonNullable<
-	CvSaveInput["datas"]["skillGroup"]
->["settings"];
+    NonNullable<CvSaveInput["datas"]["skillGroup"]
+>["settings"]>;
 type LanguageSettings = NonNullable<
-	CvSaveInput["datas"]["language"]
->["settings"];
-type ProjectSettings = NonNullable<CvSaveInput["datas"]["project"]>["settings"];
+    NonNullable<CvSaveInput["datas"]["language"]
+>["settings"]>;
+type ProjectSettings = NonNullable<NonNullable<CvSaveInput["datas"]["project"]>["settings"]>;
 type SocialMediaSettings = NonNullable<
-	CvSaveInput["datas"]["socialMedia"]
->["settings"];
+    NonNullable<CvSaveInput["datas"]["socialMedia"]
+>["settings"]>;
 type StrengthSettings = NonNullable<
-	CvSaveInput["datas"]["strength"]
->["settings"];
+    NonNullable<CvSaveInput["datas"]["strength"]
+>["settings"]>;
 type PhilosophySettings = NonNullable<
-	CvSaveInput["datas"]["philosophy"]
->["settings"];
+    NonNullable<CvSaveInput["datas"]["philosophy"]
+>["settings"]>;
 type FormationSettings = NonNullable<
-	CvSaveInput["datas"]["formation"]
->["settings"];
+    NonNullable<CvSaveInput["datas"]["formation"]
+>["settings"]>;
 type CertificationSettings = NonNullable<
-	CvSaveInput["datas"]["certification"]
->["settings"];
-type PrizeSettings = NonNullable<CvSaveInput["datas"]["prize"]>["settings"];
-type PassionSettings = NonNullable<CvSaveInput["datas"]["passion"]>["settings"];
+    NonNullable<CvSaveInput["datas"]["certification"]
+>["settings"]>;
+type PrizeSettings = NonNullable<NonNullable<CvSaveInput["datas"]["prize"]>["settings"]>;
+type PassionSettings = NonNullable<NonNullable<CvSaveInput["datas"]["passion"]>["settings"]>;
 type ExpertiseSettings = NonNullable<
-	CvSaveInput["datas"]["expertise"]
->["settings"];
+    NonNullable<CvSaveInput["datas"]["expertise"]
+>["settings"]>;
 type VolunteeringSettings = NonNullable<
-	CvSaveInput["datas"]["volunteering"]
->["settings"];
+    NonNullable<CvSaveInput["datas"]["volunteering"]
+>["settings"]>;
 type PublicationSettings = NonNullable<
-	CvSaveInput["datas"]["publication"]
->["settings"];
+    NonNullable<CvSaveInput["datas"]["publication"]
+>["settings"]>;
 type AchievementSettings = NonNullable<
-	CvSaveInput["datas"]["achievement"]
->["settings"];
+    NonNullable<CvSaveInput["datas"]["achievement"]
+>["settings"]>;
 type CompetenceGroupSettings = NonNullable<
-	CvSaveInput["datas"]["competenceGroup"]
->["settings"];
+    NonNullable<CvSaveInput["datas"]["competenceGroup"]
+>["settings"]>;
 type TagGroupSettings = NonNullable<
-	CvSaveInput["datas"]["tagGroup"]
->["settings"];
+    NonNullable<CvSaveInput["datas"]["tagGroup"]
+>["settings"]>;
 
 const defaultTitleSettings: ExperienceSettings["title"] = {
 	sizeModel: "18px",
@@ -99,13 +99,15 @@ function withFallback(value: string | undefined, fallback: string) {
 	return t ? t : fallback;
 }
 
+function deriveCvTitle(cv: CvFormValues): string {
+	const prenom = cv.datas?.header?.prenom?.trim() ?? "";
+	const nom = cv.datas?.header?.nom?.trim() ?? "";
+	if (prenom && nom) return `CV - ${prenom} ${nom}`;
+	return withFallback(cv.title, "Mon CV");
+}
+
 export function mapFormToSaveInput(cv: CvFormValues): CvSaveInput {
-	const title = withFallback(
-		cv.title,
-		[cv.datas?.header?.prenom, cv.datas?.header?.nom]
-			.filter(Boolean)
-			.join(" ") || "Mon CV",
-	);
+	const title = deriveCvTitle(cv);
 	return {
 		...cv,
 		title,
@@ -261,6 +263,210 @@ export function mapFormToSaveInput(cv: CvFormValues): CvSaveInput {
 				: undefined,
 			philosophy: cv.datas?.philosophy?.content?.citation?.trim()
 				? cv.datas.philosophy
+				: undefined,
+			certification: cv.datas?.certification
+				? {
+						...cv.datas.certification,
+						content: cv.datas.certification.content
+							.filter((item) => item.content.title.trim())
+							.map((item) => ({
+								...item,
+								content: {
+									...item.content,
+									title: withFallback(item.content.title, "Intitulé"),
+								},
+							})),
+					}
+				: undefined,
+			achievement: cv.datas?.achievement
+				? {
+						...cv.datas.achievement,
+						content: cv.datas.achievement.content
+							.filter((item) => item.content.title.trim())
+							.map((item) => ({
+								...item,
+								content: {
+									...item.content,
+									title: withFallback(item.content.title, "Intitulé"),
+								},
+							})),
+					}
+				: undefined,
+			expertise: cv.datas?.expertise
+				? {
+						...cv.datas.expertise,
+						content: cv.datas.expertise.content
+							.filter((item) => item.content.title.trim())
+							.map((item) => ({
+								...item,
+								content: {
+									...item.content,
+									title: withFallback(item.content.title, "Intitulé"),
+								},
+							})),
+					}
+				: undefined,
+			language: cv.datas?.language
+				? {
+						...cv.datas.language,
+						content: cv.datas.language.content
+							.filter((item) => item.content.name.trim())
+							.map((item) => ({
+								...item,
+								content: {
+									...item.content,
+									name: withFallback(item.content.name, "Langue"),
+								},
+							})),
+					}
+				: undefined,
+			passion: cv.datas?.passion
+				? {
+						...cv.datas.passion,
+						content: cv.datas.passion.content
+							.filter((item) => item.content.title.trim())
+							.map((item) => ({
+								...item,
+								content: {
+									...item.content,
+									title: withFallback(item.content.title, "Intitulé"),
+									icon: withFallback(item.content.icon, "BsBalloonHeartFill"),
+								},
+							})),
+					}
+				: undefined,
+			prize: cv.datas?.prize
+				? {
+						...cv.datas.prize,
+						content: cv.datas.prize.content
+							.filter((item) => item.content.title.trim())
+							.map((item) => ({
+								...item,
+								content: {
+									...item.content,
+									title: withFallback(item.content.title, "Intitulé"),
+									domaine: item.content.domaine ?? "",
+								},
+							})),
+					}
+				: undefined,
+			publication: cv.datas?.publication
+				? {
+						...cv.datas.publication,
+						content: cv.datas.publication.content
+							.filter((item) => item.content.title.trim())
+							.map((item) => ({
+								...item,
+								content: {
+									...item.content,
+									title: withFallback(item.content.title, "Intitulé"),
+									start: asDate(item.content.start),
+									end: item.content.end ? asDate(item.content.end) : undefined,
+								},
+							})),
+					}
+				: undefined,
+			socialMedia: cv.datas?.socialMedia
+				? {
+						...cv.datas.socialMedia,
+						content: cv.datas.socialMedia.content
+							.filter(
+								(item) =>
+									item.content.username.trim() ||
+									(item.content.socialNetwork ?? "").trim(),
+							)
+							.map((item) => ({
+								...item,
+								content: {
+									...item.content,
+									username: withFallback(item.content.username, "Utilisateur"),
+									icon: item.content.icon ?? "",
+								},
+							})),
+					}
+				: undefined,
+			strength: cv.datas?.strength
+				? {
+						...cv.datas.strength,
+						content: cv.datas.strength.content
+							.filter((item) => item.content.title.trim())
+							.map((item) => ({
+								...item,
+								content: {
+									...item.content,
+									title: withFallback(item.content.title, "Intitulé"),
+								},
+							})),
+					}
+				: undefined,
+			description: cv.datas?.description?.content?.description?.trim()
+				? cv.datas.description
+				: undefined,
+			skillGroup: cv.datas?.skillGroup
+				? {
+						...cv.datas.skillGroup,
+						content: cv.datas.skillGroup.content
+							.map((group) => ({
+								...group,
+								content: {
+									...group.content,
+									skills: (group.content.skills ?? []).filter(
+										(s) =>
+											(s.content.name ?? "").trim().length > 0 ||
+											!!s.content.skillId,
+									),
+								},
+							}))
+							.filter(
+								(group) =>
+									(group.content.title ?? "").trim().length > 0 ||
+									(group.content.skills?.length ?? 0) > 0,
+							),
+					}
+				: undefined,
+			competenceGroup: cv.datas?.competenceGroup
+				? {
+						...cv.datas.competenceGroup,
+						content: cv.datas.competenceGroup.content
+							.map((group) => ({
+								...group,
+								content: {
+									...group.content,
+									competences: (group.content.competences ?? []).filter(
+										(c) =>
+											(c.content.name ?? "").trim().length > 0 ||
+											!!c.content.competenceId,
+									),
+								},
+							}))
+							.filter(
+								(group) =>
+									(group.content.title ?? "").trim().length > 0 ||
+									(group.content.competences?.length ?? 0) > 0,
+							),
+					}
+				: undefined,
+			tagGroup: cv.datas?.tagGroup
+				? {
+						...cv.datas.tagGroup,
+						content: cv.datas.tagGroup.content
+							.map((group) => ({
+								...group,
+								content: {
+									...group.content,
+									tags: (group.content.tags ?? []).filter(
+										(t) =>
+											(t.content.name ?? "").trim().length > 0 ||
+											!!t.content.tagId,
+									),
+								},
+							}))
+							.filter(
+								(group) =>
+									(group.content.title ?? "").trim().length > 0 ||
+									(group.content.tags?.length ?? 0) > 0,
+							),
+					}
 				: undefined,
 		},
 	} as CvSaveInput;

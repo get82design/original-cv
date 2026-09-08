@@ -1,18 +1,52 @@
 import { AppCard } from "@/components/card/AppCard";
 import { TitleAppTwo } from "@/components/title/TitleAppTwo";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useFormContext } from "react-hook-form";
 import { InputTextProfile } from "../input/InputTextProfile";
 import { Tooltip } from "primereact/tooltip";
 import { SpeedDial } from "primereact/speeddial";
+import type { CV } from "../CompoPage";
+import { DialogSelectCv } from "./common/DialogSelectCv";
+import { trpc } from "@utils/trpc";
 
-export const ProfileIdentite = () => {
-	const { watch } = useFormContext();
+export const ProfileIdentite = ({ cvs }: { cvs: CV[] }) => {
+	const { watch, setValue } = useFormContext();
 	const refProfil = useRef<SpeedDial>(null);
 	const [edit, setEdit] = useState(false);
 	const watchPhoto = watch("photo");
 	const watchNom = watch("firstName");
 	const watchPrenom = watch("lastName");
+	const [visibleMaj, setVisibleMaj] = useState(false);
+	const [idCv, setIdCv] = useState<string | null>(null);
+	const { data: cvSelected } = trpc.cv.byId.useQuery(
+		{ id: idCv ?? "" },
+		{ enabled: !!idCv },
+	);
+
+	useEffect(() => {
+		if (cvSelected) {
+			setValue(
+				"firstName",
+				cvSelected?.headerCv?.prenom ?? "",
+			);
+			setValue(
+				"lastName",
+				cvSelected?.headerCv?.nom ?? "",
+			);
+			setValue(
+				"email",
+				cvSelected?.headerCv?.email ?? "",
+			);
+			setValue(
+				"phone",
+				cvSelected?.headerCv?.phone ?? "",
+			);
+			setValue(
+				"location",
+				cvSelected?.headerCv?.location ?? "",
+			);
+		}
+	}, [cvSelected, setValue]);
 
 	const items = [
 		{
@@ -25,10 +59,10 @@ export const ProfileIdentite = () => {
 		{
 			label: "Mettre à jour",
 			icon: "pi pi-refresh",
-			// disabled: nbCv === 0 && true,
-			// command: () => {
-			//     setVisibleMaj(true)
-			// }
+			disabled: cvs.length === 0 && true,
+			command: () => {
+				setVisibleMaj(true)
+			}
 		},
 		{
 			label: "Plus de données",
@@ -41,7 +75,7 @@ export const ProfileIdentite = () => {
 
 	return (
 		<div>
-			{/* <DialogSelectCv visible={visibleMaj} onHide={() => setVisibleMaj(false)} setIdCv={setIdCv} cvs={cvs} /> */}
+			{visibleMaj && <DialogSelectCv visible={visibleMaj} onHide={() => setVisibleMaj(false)} setIdCv={setIdCv} cvs={cvs} />}
 			<AppCard className="flex justify-between gap-4 relative group">
 				<div className="opacity-30 absolute top-2 left-3">
 					<TitleAppTwo

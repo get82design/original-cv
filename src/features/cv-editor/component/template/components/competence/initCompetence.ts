@@ -23,6 +23,7 @@ const defaultSettings: CompetenceContentSettings = {
 		textAlign: "left",
 	},
 	withGroupTitle: false,
+	columns: 2,
 };
 
 export function createInitCompetence(opts?: {
@@ -39,7 +40,8 @@ export function createInitCompetence(opts?: {
 					clientKey: "competence-" + uuid(),
 					order: 1,
 					content: {
-						competenceId: "",
+						competenceId: undefined,
+						name: "",
 					},
 				},
 			],

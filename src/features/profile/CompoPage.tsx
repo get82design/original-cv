@@ -32,7 +32,7 @@ export const CompoPage = ({ cvs }: { cvs: CV[] }) => {
 	return (
 		<div className={`w-full flex flex-wrap xl:flex-nowrap gap-6 relative pb-8`}>
 			<div className="w-full xl:w-1/2 -mt-2 flex flex-col gap-6">
-				<ProfileIdentite />
+				<ProfileIdentite cvs={cvs} />
 				{profileId ? (
 					<>
 						<ProfileExperiences cvs={cvs} />

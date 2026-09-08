@@ -11,13 +11,18 @@ import { SelectButton } from "primereact/selectbutton";
 import { FieldNameLayoutGeneral } from "../../utils/fields/fieldNameLayoutGeneral";
 import { templateDefaultStylesSchema } from "@/services/schemas/cvTemplate.schema";
 import { Carousel } from "primereact/carousel";
+import type { ProfileComplete } from "./FormCv";
 
 interface DialogSelectModelProp extends DialogProps {
 	modelSelect: TemplateCv | undefined;
 	setModelSelect: Dispatch<SetStateAction<TemplateCv | undefined>>;
-	onSelectModel: () => void;
+	onSelectModel: (withProfile: boolean) => void;
 	draft: CvFormValues | undefined;
 	onResumeDraft: () => void;
+	withProfileValue: boolean;
+	setWithProfileValue: Dispatch<SetStateAction<boolean>>;
+	optionsProfile: {label: string, value: boolean}[];
+	profile: ProfileComplete | undefined;
 }
 
 export const DialogSelectModel = ({
@@ -28,11 +33,18 @@ export const DialogSelectModel = ({
 	onSelectModel,
 	draft,
 	onResumeDraft,
+	withProfileValue,
+	setWithProfileValue,
+	optionsProfile,
+	profile,
 }: DialogSelectModelProp) => {
 	const { colors, modeles } = useModelAndColorContext();
 	const { setValue } = useFormContext<CvFormValues>();
 	const options = ["Reprendre brouillon", "Nouveau CV"];
 	const [draftOption, setDraftOption] = useState<string | undefined>(undefined);
+	// const {data: profile} = trpc.profile.me.useQuery();
+	// const optionsProfile = ['Non', 'Oui'];
+    // const [valueProfile, setValueProfile] = useState(optionsProfile[0]);
 
 	const [idModele, setIdModele] = useState("");
 	const { data: dataTemplate } = trpc.cvTemplate.findById.useQuery(
@@ -65,7 +77,7 @@ export const DialogSelectModel = ({
 					}
 					onClick={
 						draftOption === "Nouveau CV" || !draft
-							? onSelectModel
+							? () => onSelectModel(!!withProfileValue)
 							: onResumeDraft
 					}
 					disabled={(draftOption === "Nouveau CV" || !draft) && !modelSelect}
@@ -116,11 +128,11 @@ export const DialogSelectModel = ({
 		>
 			<div className="flex flex-col gap-4 py-4">
 				{draft ? (
-					<div className="w-full flex flex-col justify-center gap-2">
+					<div className="w-full flex flex-col justify-center items-center gap-2">
 						<p className="text-center font-semibold">
 							Vous avez un CV en cours. Voulez-vous le reprendre ?
 						</p>
-						<div className="w-full flex justify-center">
+						<div className="w-full">
 							<SelectButton
 								value={draftOption}
 								onChange={(e) => setDraftOption(e.value)}
@@ -129,6 +141,16 @@ export const DialogSelectModel = ({
 						</div>
 					</div>
 				) : null}
+				{profile && <div className="w-full flex justify-center items-center gap-2">
+					<p>Voulez-vous charger les données de votre profil ?</p>
+					<SelectButton 
+					    value={withProfileValue} 
+						onChange={(e) => setWithProfileValue(!!e.value)} 
+						optionLabel="label"
+                        optionValue="value" 
+						options={optionsProfile} 
+					/>
+				</div>}
 				{/* <div className='w-full flex justify-center gap-2'>
             <InputTextRhf 
                 //! penser à remettre le fieldName

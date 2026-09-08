@@ -23,13 +23,18 @@ import { saveGuestCvDraft } from "./utils/guestCvDraft";
 import type { CvFormValues } from "@/services/schemas/cvSave.schema";
 import { useRouter } from "next/router";
 import { trpc } from "@utils/trpc";
+import { SpeedDial } from "primereact/speeddial";
+import { Tooltip } from "primereact/tooltip";
+import { DialogDataFromProfile } from "./component/dialog/dataFromProfile/DialogDataFromProfile";
 
 export const CvEditor = () => {
 	const {data} = trpc.cv.allByUser.useQuery();
 	console.log(data);
 	const router = useRouter();
 	const { data: session, status } = useSession();
+	const { data: profile } = trpc.profile.completeMe.useQuery();
 	const [itemNoUse, setItemNoUse] = useState<TemplateModule[]>([]);
+	const [visibleDialogDataFromProfile, setVisibleDialogDataFromProfile] = useState(false);
 	const {
 		getValues,
 		setValue,
@@ -93,7 +98,8 @@ export const CvEditor = () => {
 				: mod,
 		);
 
-		setValue("modules", updated, { shouldDirty: true });
+		// compacte actifs + inactifs pour éviter les collisions (cvId, column, order)
+		setValue("modules", compactActiveOrders(updated), { shouldDirty: true });
 	};
 
 	const deleteSection = (item: ItemGeneralProps) => {
@@ -119,6 +125,38 @@ export const CvEditor = () => {
 		watch("layoutGeneral.defaultStyles.pageLayout") ?? "OneColumnModel";
 	const PageLayout = PageLayoutRegister[key] ?? OneColumnModel;
 
+	const items = [
+        {
+            label: 'Générer mon QR Code',
+            icon: 'pi pi-qrcode',
+            command: () => {
+                // router.push('/fileupload');
+            }
+        },
+        {
+            label: 'Fiche métier',
+            icon: 'pi pi-clipboard',
+            command: () => {
+                // toast.current.show({ severity: 'info', summary: 'Add', detail: 'Data Added' });
+            }
+        },
+        {
+            label: 'Quelques tips',
+            icon: 'pi pi-info-circle',
+            command: () => {
+                // window.location.href = 'https://react.dev/';
+            }
+        },
+        {
+            label: 'Données du profil',
+            icon: 'pi pi-refresh',
+            command: () => {
+				setVisibleDialogDataFromProfile(true);
+                // toast.current.show({ severity: 'success', summary: 'Update', detail: 'Data Updated' });
+            }
+        },
+    ];
+
 	return (
 		<>
 			<div className="my-8 px-8 lg:hidden">
@@ -131,6 +169,27 @@ export const CvEditor = () => {
                     cvForViewer={cvForViewer}
                 /> */}
 				{/* <RefreshCvProvider> */}
+				{profile && (
+				    <>
+					    <DialogDataFromProfile 
+						    visible={visibleDialogDataFromProfile} 
+							onHide={() => setVisibleDialogDataFromProfile(false)} 
+							profile={profile} 
+						/>
+					    <Tooltip 
+						    target=".speeddial-bottom-right .p-speeddial-action" 
+							position="left" 
+						/>
+				        <SpeedDial 
+						    className="speeddial-bottom-right" 
+							model={items} 
+							radius={120} 
+							type="quarter-circle" 
+							direction="down-left" 
+							style={{ position: 'fixed', right: 10, top: 88 }} 
+						/>
+					</>
+				)}
 				<div className="w-full">
 					<div className="lg:hidden"></div>
 					<div className={"w-full flex gap-8 my-4"}>

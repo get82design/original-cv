@@ -3,6 +3,8 @@ import { prisma } from "../../../lib/prisma";
 import { validateTimeline } from "../../utils/validateTimeline";
 import { ForbiddenError, NotFoundError, ValidationError } from "../errors";
 import type { CvSaveInput } from "../schemas/cvSave.schema";
+import type { TemplateModule } from "../schemas/cvTemplate.schema";
+import { compactActiveOrders } from "../../utils/moduleOrder";
 import { userService } from "../user/userService";
 import { cvService } from "./cvService";
 
@@ -132,7 +134,12 @@ export class CvSaveService {
 			// ——— 4. Experiences (replace) ———
 			if (datas.experience) {
 				const items = datas.experience.content;
-				const keepIds = items
+				const itemsToSave = items.filter(
+					(i) =>
+						(i.content.title ?? "").trim().length > 0 ||
+						(i.content.company ?? "").trim().length > 0,
+				);
+				const keepIds = itemsToSave
 					.map((item) => item.id)
 					.filter((experienceId): experienceId is string => !!experienceId);
 
@@ -144,7 +151,7 @@ export class CvSaveService {
 					});
 				}
 
-				for (const [index, item] of items.entries()) {
+				for (const [index, item] of itemsToSave.entries()) {
 					const order = item.order ?? index + 1;
 					const { missions, settings, ...rest } = item.content;
 
@@ -221,7 +228,10 @@ export class CvSaveService {
 			// ——— 5. Projects (replace) ———
 			if (datas.project) {
 				const items = datas.project.content;
-				const keepIds = items
+				const itemsToSave = items.filter(
+					(i) => (i.content.title ?? "").trim().length > 0,
+				);
+				const keepIds = itemsToSave
 					.map((item) => item.id)
 					.filter((projectId): projectId is string => !!projectId);
 
@@ -233,7 +243,7 @@ export class CvSaveService {
 					});
 				}
 
-				for (const [index, item] of items.entries()) {
+				for (const [index, item] of itemsToSave.entries()) {
 					const order = item.order ?? index + 1;
 					const { missions, settings, ...rest } = item.content;
 
@@ -311,7 +321,12 @@ export class CvSaveService {
 			// ——— 6. Volunteering (replace) ———
 			if (datas.volunteering) {
 				const items = datas.volunteering.content;
-				const keepIds = items
+				const itemsToSave = items.filter(
+					(i) =>
+						(i.content.title ?? "").trim().length > 0 ||
+						(i.content.organisation ?? "").trim().length > 0,
+				);
+				const keepIds = itemsToSave
 					.map((item) => item.id)
 					.filter(
 						(volunteeringId): volunteeringId is string => !!volunteeringId,
@@ -325,7 +340,7 @@ export class CvSaveService {
 					});
 				}
 
-				for (const [index, item] of items.entries()) {
+				for (const [index, item] of itemsToSave.entries()) {
 					const order = item.order ?? index + 1;
 					const { missions, settings, ...rest } = item.content;
 
@@ -402,7 +417,10 @@ export class CvSaveService {
 			// ——— 7. Formations (replace) ———
 			if (datas.formation) {
 				const items = datas.formation.content;
-				const keepIds = items
+				const itemsToSave = items.filter(
+					(i) => (i.content.title ?? "").trim().length > 0,
+				);
+				const keepIds = itemsToSave
 					.map((item) => item.id)
 					.filter((formationId): formationId is string => !!formationId);
 
@@ -414,7 +432,7 @@ export class CvSaveService {
 					});
 				}
 
-				for (const [index, item] of items.entries()) {
+				for (const [index, item] of itemsToSave.entries()) {
 					const order = item.order ?? index + 1;
 					const { settings, ...rest } = item.content;
 
@@ -452,7 +470,10 @@ export class CvSaveService {
 			// ——— 8. Certifications (replace) ———
 			if (datas.certification) {
 				const items = datas.certification.content;
-				const keepIds = items
+				const itemsToSave = items.filter(
+					(i) => (i.content.title ?? "").trim().length > 0,
+				  );
+				const keepIds = itemsToSave
 					.map((item) => item.id)
 					.filter(
 						(certificationId): certificationId is string => !!certificationId,
@@ -466,7 +487,7 @@ export class CvSaveService {
 					});
 				}
 
-				for (const [index, item] of items.entries()) {
+				for (const [index, item] of itemsToSave.entries()) {
 					const order = item.order ?? index + 1;
 					const { settings, ...rest } = item.content;
 
@@ -499,7 +520,10 @@ export class CvSaveService {
 			// ——— 9. Prizes (replace) ———
 			if (datas.prize) {
 				const items = datas.prize.content;
-				const keepIds = items
+				const itemsToSave = items.filter(
+					(i) => (i.content.title ?? "").trim().length > 0,
+				);
+				const keepIds = itemsToSave
 					.map((item) => item.id)
 					.filter((prizeId): prizeId is string => !!prizeId);
 
@@ -511,7 +535,7 @@ export class CvSaveService {
 					});
 				}
 
-				for (const [index, item] of items.entries()) {
+				for (const [index, item] of itemsToSave.entries()) {
 					const order = item.order ?? index + 1;
 					const { settings, ...rest } = item.content;
 
@@ -544,7 +568,10 @@ export class CvSaveService {
 			// ——— 10. Expertises (replace) ———
 			if (datas.expertise) {
 				const items = datas.expertise.content;
-				const keepIds = items
+				const itemsToSave = items.filter(
+					(i) => (i.content.title ?? "").trim().length > 0,
+				);
+				const keepIds = itemsToSave
 					.map((item) => item.id)
 					.filter((expertiseId): expertiseId is string => !!expertiseId);
 
@@ -556,7 +583,7 @@ export class CvSaveService {
 					});
 				}
 
-				for (const [index, item] of items.entries()) {
+				for (const [index, item] of itemsToSave.entries()) {
 					const order = item.order ?? index + 1;
 					const { settings, ...rest } = item.content;
 
@@ -608,7 +635,12 @@ export class CvSaveService {
 			// ——— 12. Social Media (replace) ———
 			if (datas.socialMedia) {
 				const items = datas.socialMedia.content;
-				const keepIds = items
+				const itemsToSave = items.filter(
+					(i) =>
+						(i.content.username ?? "").trim().length > 0 ||
+						(i.content.socialNetwork ?? "").trim().length > 0,
+				);
+				const keepIds = itemsToSave
 					.map((item) => item.id)
 					.filter((socialMediaId): socialMediaId is string => !!socialMediaId);
 
@@ -620,7 +652,7 @@ export class CvSaveService {
 					});
 				}
 
-				for (const [index, item] of items.entries()) {
+				for (const [index, item] of itemsToSave.entries()) {
 					const order = item.order ?? index + 1;
 					const { settings, ...rest } = item.content;
 
@@ -654,7 +686,10 @@ export class CvSaveService {
 			// ——— 13. Passion (replace) ———
 			if (datas.passion) {
 				const items = datas.passion.content;
-				const keepIds = items
+				const itemsToSave = items.filter(
+					(i) => (i.content.title ?? "").trim().length > 0,
+				);
+				const keepIds = itemsToSave
 					.map((item) => item.id)
 					.filter((passionId): passionId is string => !!passionId);
 
@@ -666,7 +701,7 @@ export class CvSaveService {
 					});
 				}
 
-				for (const [index, item] of items.entries()) {
+				for (const [index, item] of itemsToSave.entries()) {
 					const order = item.order ?? index + 1;
 					const { settings, ...rest } = item.content;
 
@@ -696,7 +731,10 @@ export class CvSaveService {
 			// ——— 14. Language (replace) ———
 			if (datas.language) {
 				const items = datas.language.content;
-				const keepIds = items
+				const itemsToSave = items.filter(
+					(i) => (i.content.name ?? "").trim().length > 0,
+				);
+				const keepIds = itemsToSave
 					.map((item) => item.id)
 					.filter((languageId): languageId is string => !!languageId);
 
@@ -708,7 +746,7 @@ export class CvSaveService {
 					});
 				}
 
-				for (const [index, item] of items.entries()) {
+				for (const [index, item] of itemsToSave.entries()) {
 					const order = item.order ?? index + 1;
 					const { settings, ...rest } = item.content;
 
@@ -738,7 +776,10 @@ export class CvSaveService {
 			// ——— 15. Publication (replace) ———
 			if (datas.publication) {
 				const items = datas.publication.content;
-				const keepIds = items
+				const itemsToSave = items.filter(
+					(i) => (i.content.title ?? "").trim().length > 0,
+				);
+				const keepIds = itemsToSave
 					.map((item) => item.id)
 					.filter((publicationId): publicationId is string => !!publicationId);
 
@@ -750,7 +791,7 @@ export class CvSaveService {
 					});
 				}
 
-				for (const [index, item] of items.entries()) {
+				for (const [index, item] of itemsToSave.entries()) {
 					const order = item.order ?? index + 1;
 					const { settings, ...rest } = item.content;
 
@@ -789,7 +830,10 @@ export class CvSaveService {
 			// ——— 16. Strength (replace) ———
 			if (datas.strength) {
 				const items = datas.strength.content;
-				const keepIds = items
+				const itemsToSave = items.filter(
+					(i) => (i.content.title ?? "").trim().length > 0,
+				);
+				const keepIds = itemsToSave
 					.map((item) => item.id)
 					.filter((strengthId): strengthId is string => !!strengthId);
 
@@ -801,7 +845,7 @@ export class CvSaveService {
 					});
 				}
 
-				for (const [index, item] of items.entries()) {
+				for (const [index, item] of itemsToSave.entries()) {
 					const order = item.order ?? index + 1;
 					const { settings, ...rest } = item.content;
 
@@ -832,7 +876,10 @@ export class CvSaveService {
 			// ——— 17. Achievement (replace) ———
 			if (datas.achievement) {
 				const items = datas.achievement.content;
-				const keepIds = items
+				const itemsToSave = items.filter(
+					(i) => (i.content.title ?? "").trim().length > 0,
+				  );
+				const keepIds = itemsToSave
 					.map((item) => item.id)
 					.filter((achievementId): achievementId is string => !!achievementId);
 
@@ -844,7 +891,7 @@ export class CvSaveService {
 					});
 				}
 
-				for (const [index, item] of items.entries()) {
+				for (const [index, item] of itemsToSave.entries()) {
 					const order = item.order ?? index + 1;
 					const { settings, ...rest } = item.content;
 
@@ -876,7 +923,10 @@ export class CvSaveService {
 			// ——— 18. Education (replace) ———
 			if (datas.education) {
 				const items = datas.education.content;
-				const keepIds = items
+				const itemsToSave = items.filter(
+					(i) => (i.content.school ?? "").trim().length > 0,
+				  );
+				const keepIds = itemsToSave
 					.map((item) => item.id)
 					.filter((educationId): educationId is string => !!educationId);
 
@@ -888,7 +938,7 @@ export class CvSaveService {
 					});
 				}
 
-				for (const [index, item] of items.entries()) {
+				for (const [index, item] of itemsToSave.entries()) {
 					const order = item.order ?? index + 1;
 					const { settings, ...rest } = item.content;
 
@@ -962,7 +1012,9 @@ export class CvSaveService {
 					}
 					// skills nested — ton bloc tx.cvSkill est déjà bon
 					const skillsToSave = skills.filter(
-						(s) => s.content.name.trim().length > 0,
+						(s) =>
+							(s.content.name ?? "").trim().length > 0 ||
+							!!s.content.skillId,
 					);
 					const skillKeepIds = skillsToSave
 						.map((s) => s.id)
@@ -1046,8 +1098,12 @@ export class CvSaveService {
 						});
 						competenceGroupId = created.id;
 					}
-					// skills nested — ton bloc tx.cvSkill est déjà bon
-					const competenceKeepIds = competences
+					const competencesToSave = competences.filter(
+						(c) =>
+						  (c.content.name ?? "").trim().length > 0 ||
+						  !!c.content.competenceId,
+					  );
+					const competenceKeepIds = competencesToSave
 						.map((c) => c.id)
 						.filter((competenceId): competenceId is string => !!competenceId);
 					await tx.cvCompetence.deleteMany({
@@ -1059,10 +1115,20 @@ export class CvSaveService {
 										id: { notIn: competenceKeepIds },
 									},
 					});
-					for (const [cIndex, c] of competences.entries()) {
+					for (const [cIndex, c] of competencesToSave.entries()) {
 						const cOrder = c.order ?? cIndex + 1;
+						const catalog = c.content.competenceId
+							? await tx.competence.findUniqueOrThrow({
+									where: { id: c.content.competenceId },
+								})
+							: ((await tx.competence.findFirst({
+									where: { name: c.content.name.trim() },
+								})) ??
+								(await tx.competence.create({
+									data: { name: c.content.name.trim() },
+								})));
 						const data = {
-							competenceId: c.content.competenceId,
+							competenceId: catalog.id,
 							order: cOrder,
 						};
 						if (c.id) {
@@ -1111,8 +1177,12 @@ export class CvSaveService {
 						});
 						tagGroupId = created.id;
 					}
-					// tags nested — ton bloc tx.cvTag est déjà bon
-					const tagKeepIds = tags
+					const tagsToSave = tags.filter(
+						(t) =>
+						  (t.content.name ?? "").trim().length > 0 ||
+						  !!t.content.tagId,
+					  );
+					const tagKeepIds = tagsToSave
 						.map((t) => t.id)
 						.filter((tagId): tagId is string => !!tagId);
 					await tx.cvTag.deleteMany({
@@ -1124,10 +1194,20 @@ export class CvSaveService {
 										id: { notIn: tagKeepIds },
 									},
 					});
-					for (const [tIndex, t] of tags.entries()) {
+					for (const [tIndex, t] of tagsToSave.entries()) {
 						const tOrder = t.order ?? tIndex + 1;
+						const catalog = t.content.tagId
+							? await tx.tag.findUniqueOrThrow({
+									where: { id: t.content.tagId },
+								})
+							: ((await tx.tag.findFirst({
+									where: { name: t.content.name.trim() },
+								})) ??
+								(await tx.tag.create({
+									data: { name: t.content.name.trim() },
+								})));
 						const data = {
-							tagId: t.content.tagId,
+							tagId: catalog.id,
 							order: tOrder,
 						};
 						if (t.id) {
@@ -1145,8 +1225,11 @@ export class CvSaveService {
 			await tx.cVModule.deleteMany({ where: { cvId: id } });
 
 			if (modules.length > 0) {
+				const normalized = compactActiveOrders(
+					modules as TemplateModule[],
+				);
 				await tx.cVModule.createMany({
-					data: modules.map((mod) => ({
+					data: normalized.map((mod) => ({
 						cvId: id,
 						type: mod.type,
 						title: mod.title ?? null,
