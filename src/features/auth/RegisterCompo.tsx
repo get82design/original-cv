@@ -78,6 +78,11 @@ export const RegisterCompo = () => {
 				<div className="flex justify-around gap-4 my-4">
 					{/* //! pas encore mis en place */}
 					<Button
+						onClick={() =>
+							signIn("google", {
+							    callbackUrl: hasGuestCvDraft() ? "/cv/0" : "/",
+							})
+						}
 						outlined
 						color="light"
 						className="w-full text-black dark:text-white flex justify-center items-center gap-2"
@@ -85,15 +90,20 @@ export const RegisterCompo = () => {
 						<FaGoogle />
 						Google
 					</Button>
-					<Button
+					{/* <Button
 						outlined
 						color="light"
 						className="w-full text-black dark:text-white flex justify-center items-center gap-2"
 					>
 						<FaFacebook />
 						Facebook
-					</Button>
+					</Button> */}
 					<Button
+					    onClick={() =>
+							signIn("github", {
+							  callbackUrl: hasGuestCvDraft() ? "/cv/0" : "/",
+							})
+						}
 						outlined
 						color="light"
 						className="w-full text-black dark:text-white flex justify-center items-center gap-2"

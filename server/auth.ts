@@ -1,12 +1,16 @@
 import { getServerSession, type NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
+import GoogleProvider from "next-auth/providers/google";
+import GitHubProvider from "next-auth/providers/github";
 import { compare } from "bcrypt";
 import { userService } from "../src/services/user/userService";
 import type { PlanRole } from "../generated/prisma/client";
 import { prisma } from "../lib/prisma";
 import type { GetServerSidePropsContext, NextApiRequest, NextApiResponse } from "next";
+import { PrismaAdapter } from "@next-auth/prisma-adapter";
 
 export const authOptions: NextAuthOptions = {
+    adapter: PrismaAdapter(prisma),
 	providers: [
 		CredentialsProvider({
 			name: "Credentials",
@@ -63,6 +67,17 @@ export const authOptions: NextAuthOptions = {
                 };
             }
 		}),
+        GoogleProvider({
+            clientId: process.env.GOOGLE_CLIENT_ID!,
+            clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+            allowDangerousEmailAccountLinking: true,
+        }),
+        GitHubProvider({
+            clientId: process.env.GITHUB_CLIENT_ID!,
+            clientSecret: process.env.GITHUB_CLIENT_SECRET!,
+            allowDangerousEmailAccountLinking: true,
+            authorization: { params: { scope: "read:user user:email" } },
+          }),
 	],
 
 	session: {
@@ -71,11 +86,14 @@ export const authOptions: NextAuthOptions = {
 
     callbacks: {
         async jwt({ token, user }) {
-            if (user) {
+            if (user?.id) {
                 token.id = user.id;
-                token.plan = user.plan;
+                const dbUser = await prisma.user.findUnique({
+                  where: { id: user.id },
+                  select: { plan: true },
+                });
+                token.plan = dbUser?.plan ?? "FREE";
             }
-    
             return token;
         },
     

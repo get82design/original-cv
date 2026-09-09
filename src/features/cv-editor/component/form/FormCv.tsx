@@ -76,6 +76,7 @@ export const FormCv = ({ children, idCv, template, color }: FormCvProviderProps)
 	const optionsProfile = [{label: 'Non', value: false}, {label: 'Oui', value: true}];
     const [withProfileValue, setWithProfileValue] = useState(false);
 	const { data: profile } = trpc.profile.completeMe.useQuery();
+	
 
 	const methods = useForm<CvFormValues>({
 		resolver: zodResolver(cvValidationSchema) as Resolver<CvFormValues>,

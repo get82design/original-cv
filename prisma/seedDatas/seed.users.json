@@ -5,5 +5,12 @@
     "emailVerified": "2023-11-15T11:44:07.155Z",
     "password": "password",
     "image": ""
+  },
+  {
+    "name": "Test",
+    "email": "get82design@gmail.com",
+    "emailVerified": "2023-11-15T11:44:07.155Z",
+    "password": "password",
+    "image": ""
   }
 ]

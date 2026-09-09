@@ -6,9 +6,13 @@ import {
 } from "../../../generated/prisma/client";
 import {
 	mapCvToSaveInput,
+	mapFormToSaveInput,
 	type CvFull,
 } from "../../../src/features/cv-editor/mapCvToSaveInput";
-import { cvSaveSchema } from "../../../src/services/schemas/cvSave.schema";
+import {
+	cvSaveSchema,
+	type CvFormValues,
+} from "../../../src/services/schemas/cvSave.schema";
 
 const now = new Date("2024-01-01T00:00:00.000Z");
 const start = new Date("2020-01-01T00:00:00.000Z");
@@ -54,6 +58,31 @@ function baseCv(overrides: Record<string, unknown> = {}): CvFull {
 		...emptyLists(),
 		...overrides,
 	} as unknown as CvFull;
+}
+
+function baseForm(overrides: Record<string, unknown> = {}): CvFormValues {
+	return {
+		templateId: "template-1",
+		title: "Mon CV",
+		photo: null,
+		datas: {},
+		modules: [],
+		...overrides,
+	} as CvFormValues;
+}
+
+function formModule(
+	type: string,
+	title: string,
+	order: number,
+): NonNullable<CvFormValues["modules"]>[number] {
+	return {
+		type: type as NonNullable<CvFormValues["modules"]>[number]["type"],
+		title,
+		order,
+		column: 0,
+		isActive: true,
+	};
 }
 
 describe("mapCvToSaveInput", () => {
@@ -743,3 +772,588 @@ describe("mapCvToSaveInput", () => {
 		expect(cvSaveSchema.safeParse(input).success).toBe(true);
 	});
 });
+
+describe("mapFormToSaveInput", () => {
+	it("maps a minimal form and drops guest cvId", () => {
+		const input = mapFormToSaveInput(
+			baseForm({ cvId: "0", title: "   " }),
+		);
+
+		expect(input.cvId).toBeUndefined();
+		expect(input.title).toBe("Mon CV");
+		expect(input.templateId).toBe("template-1");
+		expect(input.datas.header).toBeUndefined();
+		expect(input.modules).toEqual([]);
+		expect(cvSaveSchema.safeParse(input).success).toBe(true);
+	});
+
+	it("keeps a real cvId and derives the title from prenom and nom", () => {
+		const input = mapFormToSaveInput(
+			baseForm({
+				cvId: "cv-1",
+				title: "Ancien titre",
+				datas: {
+					header: {
+						prenom: " John ",
+						nom: " Doe ",
+						title: "   ",
+					},
+				},
+			}),
+		);
+
+		expect(input.cvId).toBe("cv-1");
+		expect(input.title).toBe("CV - John Doe");
+		expect(input.datas.header?.title).toBe("CV - John Doe");
+		expect(cvSaveSchema.safeParse(input).success).toBe(true);
+	});
+
+	it("falls back to the form title when the name is incomplete", () => {
+		const input = mapFormToSaveInput(
+			baseForm({
+				title: "  Titre perso  ",
+				datas: { header: { prenom: "John", nom: "", title: "Dev" } },
+			}),
+		);
+
+		expect(input.title).toBe("Titre perso");
+		expect(input.datas.header?.title).toBe("Dev");
+	});
+
+	it("copies section titles onto matching modules", () => {
+		const input = mapFormToSaveInput(
+			baseForm({
+				datas: {
+					description: { title: "À propos", content: { description: "Bio" } },
+					experience: { title: "Expériences", content: [] },
+					education: { title: "Études", content: [] },
+					skillGroup: { title: "Compétences", content: [] },
+					language: { title: "Langues", content: [] },
+					project: { title: "Projets", content: [] },
+					volunteering: { title: "Bénévolat", content: [] },
+					formation: { title: "Formations", content: [] },
+					certification: { title: "Certifs", content: [] },
+					prize: { title: "Prix", content: [] },
+					expertise: { title: "Expertises", content: [] },
+					socialMedia: { title: "Réseaux", content: [] },
+					strength: { title: "Forces", content: [] },
+					philosophy: {
+						title: "Citation",
+						content: { citation: "Think" },
+					},
+					passion: { title: "Passions", content: [] },
+					competenceGroup: { title: "Savoir-faire", content: [] },
+					tagGroup: { title: "Tags", content: [] },
+					publication: { title: "Pubs", content: [] },
+					achievement: { title: "Réussites", content: [] },
+				},
+				modules: [
+					formModule("description", "old", 1),
+					formModule("experience", "old", 2),
+					formModule("education", "old", 3),
+					formModule("skill", "old", 4),
+					formModule("language", "old", 5),
+					formModule("project", "old", 6),
+					formModule("volunteering", "old", 7),
+					formModule("formation", "old", 8),
+					formModule("certification", "old", 9),
+					formModule("prize", "old", 10),
+					formModule("expertise", "old", 11),
+					formModule("socialMedia", "old", 12),
+					formModule("strength", "old", 13),
+					formModule("philosophy", "old", 14),
+					formModule("passion", "old", 15),
+					formModule("competence", "old", 16),
+					formModule("tag", "old", 17),
+					formModule("publication", "old", 18),
+					formModule("achievement", "old", 19),
+				],
+			}),
+		);
+
+		expect(input.modules?.map((m) => m.title)).toEqual([
+			"À propos",
+			"Expériences",
+			"Études",
+			"Compétences",
+			"Langues",
+			"Projets",
+			"Bénévolat",
+			"Formations",
+			"Certifs",
+			"Prix",
+			"Expertises",
+			"Réseaux",
+			"Forces",
+			"Citation",
+			"Passions",
+			"Savoir-faire",
+			"Tags",
+			"Pubs",
+			"Réussites",
+		]);
+		expect(cvSaveSchema.safeParse(input).success).toBe(true);
+	});
+
+	it("filters empty dated items, empty missions and coerces string dates", () => {
+		const startDate = new Date("2020-01-01T00:00:00.000Z");
+		const input = mapFormToSaveInput(
+			baseForm({
+				datas: {
+					experience: {
+						content: [
+							{
+								clientKey: "exp-empty",
+								content: {
+									title: "  ",
+									company: "",
+									start: startDate,
+									end: null,
+									missions: [],
+								},
+							},
+							{
+								clientKey: "exp-company",
+								content: {
+									title: "",
+									company: "ACME",
+									start: "2020-06-01T00:00:00.000Z",
+									end: "2021-06-01T00:00:00.000Z",
+									missions: [
+										{ clientKey: "m-empty", content: { content: "  " } },
+										{
+											clientKey: "m-ok",
+											content: { content: "Livré" },
+										},
+									],
+								},
+							},
+							{
+								clientKey: "exp-title",
+								content: {
+									title: "Dev",
+									company: "  ",
+									start: startDate,
+									end: null,
+								},
+							},
+						],
+					},
+					project: {
+						content: [
+							{
+								clientKey: "p-empty",
+								content: {
+									title: "  ",
+									start: startDate,
+									end: null,
+									missions: [],
+								},
+							},
+							{
+								clientKey: "p-ok",
+								content: {
+									title: "App",
+									start: "2019-01-01T00:00:00.000Z",
+									end: null,
+									missions: [
+										{ clientKey: "pm", content: { content: "Code" } },
+									],
+								},
+							},
+						],
+					},
+					volunteering: {
+						content: [
+							{
+								clientKey: "v-empty",
+								content: {
+									title: "",
+									organisation: "  ",
+									start: startDate,
+									end: null,
+									missions: [],
+								},
+							},
+							{
+								clientKey: "v-org",
+								content: {
+									title: "",
+									organisation: "Croix Rouge",
+									start: startDate,
+									end: null,
+									missions: [],
+								},
+							},
+							{
+								clientKey: "v-title",
+								content: {
+									title: "Aide",
+									organisation: "",
+									start: startDate,
+									end: null,
+								},
+							},
+						],
+					},
+					education: {
+						content: [
+							{
+								clientKey: "ed-empty",
+								content: {
+									title: "Master",
+									school: "  ",
+									degree: "M2",
+									start: startDate,
+									end: null,
+								},
+							},
+							{
+								clientKey: "ed-ok",
+								content: {
+									title: "Master",
+									school: "Uni",
+									degree: "M2",
+									start: "2018-09-01T00:00:00.000Z",
+									end: null,
+								},
+							},
+						],
+					},
+					formation: {
+						content: [
+							{
+								clientKey: "f-empty",
+								content: { title: "  ", start: startDate },
+							},
+							{
+								clientKey: "f-ok",
+								content: {
+									title: "React",
+									start: startDate,
+									end: "2022-01-01T00:00:00.000Z",
+								},
+							},
+							{
+								clientKey: "f-open",
+								content: { title: "Vue", start: startDate },
+							},
+						],
+					},
+					publication: {
+						content: [
+							{
+								clientKey: "pub-empty",
+								content: { title: "", start: startDate },
+							},
+							{
+								clientKey: "pub-ok",
+								content: {
+									title: "Paper",
+									start: startDate,
+									end: "2023-01-01T00:00:00.000Z",
+								},
+							},
+						],
+					},
+				},
+			}),
+		);
+
+		expect(input.datas.experience?.content.map((i) => i.clientKey)).toEqual([
+			"exp-company",
+			"exp-title",
+		]);
+		expect(input.datas.experience?.content[0]?.content).toMatchObject({
+			title: "Intitulé",
+			company: "ACME",
+		});
+		expect(input.datas.experience?.content[0]?.content.start).toEqual(
+			new Date("2020-06-01T00:00:00.000Z"),
+		);
+		expect(input.datas.experience?.content[0]?.content.end).toEqual(
+			new Date("2021-06-01T00:00:00.000Z"),
+		);
+		expect(
+			input.datas.experience?.content[0]?.content.missions.map(
+				(m) => m.clientKey,
+			),
+		).toEqual(["m-ok"]);
+		expect(input.datas.experience?.content[1]?.content.company).toBe(
+			"Entreprise",
+		);
+		expect(input.datas.experience?.content[1]?.content.start).toBe(startDate);
+		expect(input.datas.experience?.content[1]?.content.end).toBeNull();
+
+		expect(input.datas.project?.content.map((i) => i.clientKey)).toEqual([
+			"p-ok",
+		]);
+		expect(input.datas.volunteering?.content.map((i) => i.clientKey)).toEqual([
+			"v-org",
+			"v-title",
+		]);
+		expect(input.datas.volunteering?.content[0]?.content.title).toBe(
+			"Intitulé",
+		);
+		expect(input.datas.volunteering?.content[1]?.content.organisation).toBe(
+			"Organisation",
+		);
+		expect(input.datas.education?.content.map((i) => i.clientKey)).toEqual([
+			"ed-ok",
+		]);
+		expect(input.datas.formation?.content.map((i) => i.clientKey)).toEqual([
+			"f-ok",
+			"f-open",
+		]);
+		expect(input.datas.formation?.content[0]?.content.end).toEqual(
+			new Date("2022-01-01T00:00:00.000Z"),
+		);
+		expect(input.datas.formation?.content[1]?.content.end).toBeUndefined();
+		expect(input.datas.publication?.content[0]?.content.end).toEqual(
+			new Date("2023-01-01T00:00:00.000Z"),
+		);
+		expect(cvSaveSchema.safeParse(input).success).toBe(true);
+	});
+
+	it("drops empty philosophy and description", () => {
+		const empty = mapFormToSaveInput(
+			baseForm({
+				datas: {
+					philosophy: { content: { citation: "   " } },
+					description: { content: { description: "  " } },
+				},
+			}),
+		);
+		expect(empty.datas.philosophy).toBeUndefined();
+		expect(empty.datas.description).toBeUndefined();
+
+		const filled = mapFormToSaveInput(
+			baseForm({
+				datas: {
+					philosophy: { content: { citation: "Think", author: "Ada" } },
+					description: { content: { description: "Bio" } },
+				},
+			}),
+		);
+		expect(filled.datas.philosophy?.content.citation).toBe("Think");
+		expect(filled.datas.description?.content.description).toBe("Bio");
+		expect(cvSaveSchema.safeParse(filled).success).toBe(true);
+	});
+
+	it("filters empty remaining sections and applies fallbacks", () => {
+		const input = mapFormToSaveInput(
+			baseForm({
+				datas: {
+					certification: {
+						content: [
+							{ clientKey: "c-empty", content: { title: "  ", organismeCertification: "" } },
+							{
+								clientKey: "c-ok",
+								content: { title: "AWS", organismeCertification: "Amazon" },
+							},
+						],
+					},
+					achievement: {
+						content: [
+							{ clientKey: "a-empty", content: { title: "" } },
+							{ clientKey: "a-ok", content: { title: "Ship" } },
+						],
+					},
+					expertise: {
+						content: [
+							{
+								clientKey: "x-empty",
+								content: { title: "  ", level: Level.Senior },
+							},
+							{
+								clientKey: "x-ok",
+								content: { title: "TS", level: Level.Senior },
+							},
+						],
+					},
+					language: {
+						content: [
+							{
+								clientKey: "l-empty",
+								content: { name: "  ", level: Level.Expert },
+							},
+							{
+								clientKey: "l-ok",
+								content: { name: "FR", level: Level.Expert },
+							},
+						],
+					},
+					passion: {
+						content: [
+							{ clientKey: "pa-empty", content: { title: "", icon: "" } },
+							{ clientKey: "pa-ok", content: { title: "Ski", icon: "" } },
+						],
+					},
+					prize: {
+						content: [
+							{ clientKey: "z-empty", content: { title: "  ", domaine: "" } },
+							{ clientKey: "z-ok", content: { title: "Oscar", domaine: undefined } },
+						],
+					},
+					socialMedia: {
+						content: [
+							{
+								clientKey: "sm-empty",
+								content: { username: "", socialNetwork: "  ", icon: "" },
+							},
+							{
+								clientKey: "sm-ok",
+								content: {
+									username: "",
+									socialNetwork: "LinkedIn",
+									icon: undefined,
+								},
+							},
+						],
+					},
+					strength: {
+						content: [
+							{ clientKey: "st-empty", content: { title: "  " } },
+							{ clientKey: "st-ok", content: { title: "Focus" } },
+						],
+					},
+				},
+			}),
+		);
+
+		expect(input.datas.certification?.content.map((i) => i.clientKey)).toEqual([
+			"c-ok",
+		]);
+		expect(input.datas.achievement?.content.map((i) => i.clientKey)).toEqual([
+			"a-ok",
+		]);
+		expect(input.datas.expertise?.content.map((i) => i.clientKey)).toEqual([
+			"x-ok",
+		]);
+		expect(input.datas.language?.content.map((i) => i.clientKey)).toEqual([
+			"l-ok",
+		]);
+		expect(input.datas.passion?.content[0]?.content.icon).toBe(
+			"BsBalloonHeartFill",
+		);
+		expect(input.datas.prize?.content[0]?.content.domaine).toBe("");
+		expect(input.datas.socialMedia?.content[0]?.content).toMatchObject({
+			username: "Utilisateur",
+			icon: "",
+		});
+		expect(input.datas.strength?.content.map((i) => i.clientKey)).toEqual([
+			"st-ok",
+		]);
+		expect(cvSaveSchema.safeParse(input).success).toBe(true);
+	});
+
+	it("drops empty skill, competence and tag groups and blank children", () => {
+		const input = mapFormToSaveInput(
+			baseForm({
+				datas: {
+					skillGroup: {
+						content: [
+							{
+								clientKey: "sg-empty",
+								content: {
+									title: "  ",
+									skills: [
+										{
+											clientKey: "s-blank",
+											content: { name: "  ", level: Level.Junior },
+										},
+									],
+								},
+							},
+							{
+								clientKey: "sg-ok",
+								content: {
+									title: "Hard",
+									skills: [
+										{
+											clientKey: "s-name",
+											content: { name: "React", level: Level.Senior },
+										},
+										{
+											clientKey: "s-id",
+											content: {
+												name: "",
+												skillId: "skill-1",
+												level: Level.Junior,
+											},
+										},
+										{
+											clientKey: "s-blank",
+											content: { name: "  ", level: Level.Débutant },
+										},
+									],
+								},
+							},
+						],
+					},
+					competenceGroup: {
+						content: [
+							{
+								clientKey: "cg-empty",
+								content: { title: "", competences: [] },
+							},
+							{
+								clientKey: "cg-ok",
+								content: {
+									title: "Soft",
+									competences: [
+										{ clientKey: "c-name", content: { name: "Com" } },
+										{
+											clientKey: "c-id",
+											content: { name: "", competenceId: "comp-1" },
+										},
+										{ clientKey: "c-blank", content: { name: "  " } },
+									],
+								},
+							},
+						],
+					},
+					tagGroup: {
+						content: [
+							{
+								clientKey: "tg-empty",
+								content: { title: "", tags: [] },
+							},
+							{
+								clientKey: "tg-ok",
+								content: {
+									title: "Stack",
+									tags: [
+										{ clientKey: "t-name", content: { name: "TS" } },
+										{
+											clientKey: "t-id",
+											content: { name: "", tagId: "tag-1" },
+										},
+										{ clientKey: "t-blank", content: { name: "  " } },
+									],
+								},
+							},
+						],
+					},
+				},
+			}),
+		);
+
+		expect(input.datas.skillGroup?.content.map((g) => g.clientKey)).toEqual([
+			"sg-ok",
+		]);
+		expect(
+			input.datas.skillGroup?.content[0]?.content.skills.map((s) => s.clientKey),
+		).toEqual(["s-name", "s-id"]);
+		expect(
+			input.datas.competenceGroup?.content[0]?.content.competences.map(
+				(c) => c.clientKey,
+			),
+		).toEqual(["c-name", "c-id"]);
+		expect(
+			input.datas.tagGroup?.content[0]?.content.tags.map((t) => t.clientKey),
+		).toEqual(["t-name", "t-id"]);
+		expect(cvSaveSchema.safeParse(input).success).toBe(true);
+	});
+});
+

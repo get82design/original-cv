@@ -5,7 +5,7 @@ import { Divider } from "primereact/divider";
 import { FloatLabel } from "primereact/floatlabel";
 import { InputText } from "primereact/inputtext";
 import { useState } from "react";
-import { FaGoogle, FaFacebook, FaGithub } from "react-icons/fa";
+import { FaGoogle, FaGithub } from "react-icons/fa";
 import { AppCard } from "../../components/card/AppCard";
 import { Checkbox } from "primereact/checkbox";
 import Link from "next/link";
@@ -49,6 +49,11 @@ export const LoginCompo = () => {
 				<div className="flex justify-around gap-4 my-4">
 					{/* //! pas encore mis en place */}
 					<Button
+						onClick={() =>
+							signIn("google", {
+							    callbackUrl: hasGuestCvDraft() ? "/cv/0" : "/",
+							})
+						}
 						outlined
 						color="light"
 						className="w-full text-black dark:text-white flex justify-center items-center gap-2"
@@ -57,14 +62,11 @@ export const LoginCompo = () => {
 						Google
 					</Button>
 					<Button
-						outlined
-						color="light"
-						className="w-full text-black dark:text-white flex justify-center items-center gap-2"
-					>
-						<FaFacebook />
-						Facebook
-					</Button>
-					<Button
+					    onClick={() =>
+							signIn("github", {
+							  callbackUrl: hasGuestCvDraft() ? "/cv/0" : "/",
+							})
+						}
 						outlined
 						color="light"
 						className="w-full text-black dark:text-white flex justify-center items-center gap-2"

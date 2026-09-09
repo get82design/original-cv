@@ -30,6 +30,8 @@ model Account {
   token_type        String?
   scope             String?
   id_token          String?
+  refresh_token_expires_in Int?
+  session_state            String?  // souvent utile pour rester aligné NextAuth
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade) // relation avec User
   @@unique([provider, providerAccountId]) // chaque compte provider unique par user
@@ -44,6 +46,15 @@ model Session {
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   @@index([userId])
+}
+
+model PasswordResetToken {
+  id        String   @id @default(cuid())
+  email     String
+  tokenHash String   @unique   // hash du token brut (jamais stocker le token en clair)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  @@index([email])
 }
 
 // === Les Rôles pour gérer les accès aux abonnements ===

@@ -1,7 +1,7 @@
 import { userService } from "../../../src/services/user/userService";
 import { updateUserSchema } from "../../../src/services/schemas/user.schema";
 import { protectedProcedure, publicProcedure, router } from "../trpc";
-import { registerSchema } from "../../../src/services/schemas/auth.schema";
+import { forgotPasswordSchema, registerSchema, resetPasswordSchema } from "../../../src/services/schemas/auth.schema";
 
 export const userRouter = router({
 	me: protectedProcedure.query(({ ctx }) =>
@@ -33,6 +33,16 @@ export const userRouter = router({
 	register: publicProcedure
 	.input(registerSchema)
 	.mutation(({ input }) => userService.register({ email: input.email, password: input.password, name: input.name ?? "" })),
+
+	forgotPassword: publicProcedure
+		.input(forgotPasswordSchema)
+		.mutation(({ input }) => userService.requestPasswordReset(input.email)),
+	
+	resetPassword: publicProcedure
+		.input(resetPasswordSchema)
+		.mutation(({ input }) =>
+			userService.resetPassword({ token: input.token, password: input.password }),
+		),
 });
 
 //! Retiré volontairement (à faire plus tard avec un adminProcedure) :

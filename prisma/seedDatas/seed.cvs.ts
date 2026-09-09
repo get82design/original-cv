@@ -304,7 +304,7 @@ export async function buildCvClaraDelorme(userId: string, templateId: string) {
                       competences: hardComps.map((c, i) => ({
                         clientKey: `comp-hard-${i}`,
                         order: i + 1,
-                        content: { competenceId: c.id, order: i + 1 },
+                        content: { competenceId: c.id, order: i + 1, name: c.name },
                       })),
                       settings: {
                         groupTitle: { ...stockholmTokens.itemTitle, colorSelect: 'primaryColor', weightSelect: 'xl' },
@@ -322,7 +322,7 @@ export async function buildCvClaraDelorme(userId: string, templateId: string) {
                       competences: softComps.map((c, i) => ({
                         clientKey: `comp-soft-${i}`,
                         order: i + 1,
-                        content: { competenceId: c.id, order: i + 1 },
+                        content: { competenceId: c.id, order: i + 1, name: c.name },
                       })),
                       settings: {
                         groupTitle: { ...stockholmTokens.itemTitle, colorSelect: 'primaryColor', weightSelect: 'xl' },
@@ -345,7 +345,7 @@ export async function buildCvClaraDelorme(userId: string, templateId: string) {
                       tags: hardTags.map((t, i) => ({
                         clientKey: `tag-hard-${i}`,
                         order: i + 1,
-                        content: { tagId: t.id, order: i + 1 },
+                        content: { tagId: t.id, order: i + 1, name: t.name },
                       })),
                       settings: {
                         groupTitle: { ...stockholmTokens.itemTitle, colorSelect: 'black', weightSelect: 'xl' },
@@ -363,7 +363,7 @@ export async function buildCvClaraDelorme(userId: string, templateId: string) {
                       tags: softTags.map((t, i) => ({
                         clientKey: `tag-soft-${i}`,
                         order: i + 1,
-                        content: { tagId: t.id, order: i + 1 },
+                        content: { tagId: t.id, order: i + 1, name: t.name },
                       })),
                       settings: {
                         groupTitle: { ...stockholmTokens.itemTitle, colorSelect: 'black', weightSelect: 'xl' },
