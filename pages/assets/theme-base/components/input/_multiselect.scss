@@ -1,4 +1,5 @@
 @use "sass:math";
+@use "sass:list";
 
 // core
 .p-multiselect {
@@ -146,7 +147,7 @@
 
     &.p-multiselect-chip {
         .p-multiselect-token {
-            padding: math.div(nth($inputPadding, 1), 2) nth($inputPadding, 2);
+            padding: math.div(list.nth($inputPadding, 1), 2) list.nth($inputPadding, 2);
             margin-right: $inlineSpacing;
             background: $chipBg;
             color: $chipTextColor;
@@ -175,8 +176,8 @@
     &.p-multiselect {
         &.p-multiselect-chip {
             .p-multiselect-label {
-                padding: math.div(nth($inputPadding, 1), 2)
-                    nth($inputPadding, 2);
+                padding: math.div(list.nth($inputPadding, 1), 2)
+                    list.nth($inputPadding, 2);
             }
         }
     }
@@ -200,11 +201,11 @@
 
         .p-multiselect-filter-container {
             .p-inputtext {
-                padding-right: nth($inputPadding, 2) + $primeIconFontSize;
+                padding-right: list.nth($inputPadding, 2) + $primeIconFontSize;
             }
 
             .p-multiselect-filter-icon {
-                right: nth($inputPadding, 2);
+                right: list.nth($inputPadding, 2);
                 color: $inputIconColor;
             }
         }
