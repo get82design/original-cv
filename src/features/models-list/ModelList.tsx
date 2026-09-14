@@ -12,6 +12,7 @@ import { useModelAndColorContext } from "../cv-editor/component/context/ModelAnd
 import { galleryDemoValues } from "./galleryDemoValues";
 import { ProgressSpinner } from "primereact/progressspinner";
 import { MdOutlineEdit } from "react-icons/md";
+import { PageLayoutRegister } from "../cv-editor/component/kit-dnd/register/PageLayoutRegister";
 
 function GalleryMiniCv({ template, color}: { template: TemplateCv, color: Color | null }) {
 	const methods = useForm({
@@ -19,6 +20,11 @@ function GalleryMiniCv({ template, color}: { template: TemplateCv, color: Color 
 			updateModules: true,
 		}),
 	});
+
+	const key =
+		methods.watch("layoutGeneral.defaultStyles.components.pageLayout") ??
+		"OneColumnModel";
+    const PageLayout = PageLayoutRegister[key] ?? OneColumnModel;
 
 	useEffect(() => {
 		const original =
@@ -56,7 +62,7 @@ function GalleryMiniCv({ template, color}: { template: TemplateCv, color: Color 
 						transform: `scale(${scale})`,
 					}}
 				>
-					<OneColumnModel deleteSection={() => {}} />
+					<PageLayout deleteSection={() => {}} />
 				</div>
 				<p className="absolute bottom-0 inset-x-0 z-10 text-center text-sm font-semibold px-2 py-1 bg-black/40 text-white">
 					{template.name}
@@ -81,6 +87,17 @@ function GalleryMiniCv({ template, color}: { template: TemplateCv, color: Color 
 export default function ModelList() {
 	const { data: templates, isLoading: isLoadingTemplates } = trpc.cvTemplate.findAll.useQuery();
 	const { colors } = useModelAndColorContext();
+	const [visibleCount, setVisibleCount] = useState(0);
+	useEffect(() => {
+		if (!templates?.length) return;
+		let n = 0;
+		const step = () => {
+			n = Math.min(n + 3, templates.length);
+			setVisibleCount(n);
+			if (n < templates.length) requestAnimationFrame(step);
+		};
+		requestAnimationFrame(step);
+	}, [templates]);
 
 	const [picked, setPicked] = useState<Color | null>(null);
 	const [colorLoading, setColorLoading] = useState(false);
@@ -149,25 +166,32 @@ export default function ModelList() {
 						}}
 					><MdOutlineEdit className="w-4 h-4" /></Button>
 				</div>
-				{isLoadingTemplates ? (
+				{isLoadingTemplates || visibleCount === 0 ? (
 					<div className="w-full flex justify-center py-16">
 						<ProgressSpinner />
 					</div>
 				) : (
-					<div
-						className="w-full relative grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 [grid-template-columns:repeat(4,minmax(0,1fr))]"
-					>
-						{colorLoading && (
-							<div className="absolute inset-0 z-30 flex items-center justify-center bg-white/60">
-								<ProgressSpinner />
+					<>
+						<div
+							className="w-full relative grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6 [grid-template-columns:repeat(4,minmax(0,1fr))]"
+						>
+							{colorLoading && (
+								<div className="absolute inset-0 z-30 flex items-center justify-center bg-white/60">
+									<ProgressSpinner />
+								</div>
+							)}
+							{templates?.slice(0, visibleCount).map((t) => (
+								<div key={t.id} className="w-full min-w-0">
+									<GalleryMiniCv template={t} color={picked} />
+								</div>
+							))}
+						</div>
+						{visibleCount < (templates?.length ?? 0) && (
+							<div className="w-full flex justify-center py-8">
+							<ProgressSpinner />
 							</div>
 						)}
-						{templates?.map((t) => (
-							<div key={t.id} className="w-full min-w-0">
-								<GalleryMiniCv template={t} color={picked} />
-							</div>
-						))}
-					</div>
+					</>
 				)}
 			</AppCard>
 		</div>

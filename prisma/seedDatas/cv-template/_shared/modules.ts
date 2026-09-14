@@ -38,6 +38,8 @@ type BaseOverride = {
     title?: string;
     isActive?: boolean;
     order?: number;
+    /** Colonne de page : 0 = gauche/sidebar, 1 = main */
+    column?: 0 | 1;
   };
 
 type LevelDesign = "stars" | "dots" | "bars";
@@ -86,11 +88,14 @@ export function buildModules(tokens: ThemeTokens, overrides: ModuleOverrides = {
   const keys: ModuleKey[] = ["description", "experience", "education", "language", "skill", "competence", "tag", "socialMedia", "passion", "project", "expertise", "strength", "philosophy", "formation", "certification", "prize", "publication", "achievement", "volunteering"];
   return keys.map((key, i) => {
     const o = overrides[key] ?? {};
-    return builders[`build${capitalize(key)}Module` as ModuleBuilderName](tokens, {
+    // `column` = placement page (pas les builders) ; `columns` = grille interne (passé via ...rest)
+    const { column, ...rest } = o;
+    const built = builders[`build${capitalize(key)}Module` as ModuleBuilderName](tokens, {
       order: o.order ?? i + 1,
       title: o.title ?? DEFAULT_TITLES[key],
       isActive: o.isActive ?? DEFAULT_ACTIVE.includes(key),
-      ...o,
+      ...rest,
     });
+    return { ...built, column: column ?? 0 };
   });
 }

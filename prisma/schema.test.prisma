@@ -14,6 +14,8 @@ model Color {
   name    String @unique
   // name    NameOfColor
   primary String
+  order   Int    @default(0)
+  @@unique([order])
 }
 
 // === NextAuth ===

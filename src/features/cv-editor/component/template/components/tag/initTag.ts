@@ -16,7 +16,7 @@ const defaultSettings: TagContentSettings = {
 	tags: {
 		sizeModel: "18px",
 		weightModel: 600,
-		colorSelect: "primaryColor",
+		colorSelect: "white",
 		sizeSelect: "md",
 		weightSelect: "md",
 		withPrimaryColor: true,

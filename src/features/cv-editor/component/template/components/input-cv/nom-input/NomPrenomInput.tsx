@@ -7,9 +7,10 @@ import { useCreateCvContext } from "@/features/cv-editor/component/context/Creat
 
 interface NomPrenomInputProps {
     forceWidthFull?: boolean
+    textAlign?: "left" | "right" | "center" | "justify" | undefined
   }
   
-  export const NomPrenomInput = ({ forceWidthFull = false, }: NomPrenomInputProps) => {
+  export const NomPrenomInput = ({ forceWidthFull = false, textAlign = 'left' }: NomPrenomInputProps) => {
     const { watch } = useFormContext()
     const { setSelectModifInput, setSelectInputForm } = useCreateCvContext()
     const watchDataHeaderTitleSettings: BaseTextSettings = watch(
@@ -27,7 +28,7 @@ interface NomPrenomInputProps {
         }}
         forceWidthFull={forceWidthFull}
         textColor={watchDataHeaderTitleSettings?.colorSelect}
-        textAlign={watchDataHeaderTitleSettings?.textAlign || 'left'}
+        textAlign={textAlign ?? watchDataHeaderTitleSettings?.textAlign ?? "left"}
         dataInput={{
           changeSize: '4px',
           model: watchDataHeaderTitleSettings,

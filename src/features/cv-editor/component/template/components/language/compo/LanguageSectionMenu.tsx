@@ -10,6 +10,9 @@ export const LanguageSectionMenu = () => {
 	const modules = watch("modules");
 	const pathDesign = moduleField(modules, "language", "settings", "content");
 
+	const languageMod = modules?.find((m: { type: string }) => m.type === "language");
+    const inSidebar = (languageMod?.column ?? 0) === 0;
+
 	// → modules.{i}.settings.content
 	const designPath = `${pathDesign}.design`;
 	const columnsPath = `${pathDesign}.columns`;
@@ -46,8 +49,8 @@ export const LanguageSectionMenu = () => {
 						</div>
 					),
 				},
-				{
-					template: (
+				...(!inSidebar
+					? [{template: (
 						<div className="flex flex-col py-1 px-4 gap-2">
 							<p>Nombre de colonnes</p>
 							<div className="grid grid-cols-3 gap-2">
@@ -72,7 +75,8 @@ export const LanguageSectionMenu = () => {
 							</div>
 						</div>
 					),
-				},
+				}]
+				: [])
 			],
 		},
 	];

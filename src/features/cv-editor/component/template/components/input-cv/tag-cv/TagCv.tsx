@@ -1,4 +1,5 @@
 import { useCreateCvContext } from "@/features/cv-editor/component/context/CreateCvContext";
+import { useColumnFg } from "@/features/cv-editor/component/kit-dnd/shared/ColumnFgContext";
 import { GetPrimaryColor } from "@/features/cv-editor/utils/utilsCv/color";
 import { useChangeTextFormat } from "@/features/cv-editor/utils/utilsCv/font";
 import type { BaseTextSettings, TagContentSettings } from "@/services/schemas/cvTemplate.schema";
@@ -30,6 +31,17 @@ export const TagCv = ({
 }: TagCvProps) => {
 	const { getSize, getWeight } = useChangeTextFormat(dataInput);
 	const primaryColor = GetPrimaryColor();
+	const columnFg = useColumnFg();
+	// Accent bordure / # toujours en primary ; icône delete suit le texte de colonne
+	const accentCss = primaryColor ? `var(--${primaryColor})` : undefined;
+	const fgCss = columnFg ? `var(--${columnFg})` : accentCss;
+	const deleteStyle = {
+		width: 12,
+		height: 12,
+		cursor: "pointer" as const,
+		color: style === "tag" ? "white" : (fgCss ?? accentCss),
+	};
+
 	switch (style) {
 		case "tag":
 			return (
@@ -37,7 +49,7 @@ export const TagCv = ({
 					key={groupIndex}
 					className="rounded-full"
 					style={{
-						backgroundColor: `var(--${primaryColor})`,
+						backgroundColor: accentCss,
 						fontSize: getSize(),
 						fontWeight: getWeight(),
 					}}
@@ -46,19 +58,13 @@ export const TagCv = ({
 						{children}
 						{showDelete && (
 							<FaTimes
-								style={{ width: 12, height: 12, cursor: "pointer" }}
+								style={deleteStyle}
 								onClick={(e) => {
 									e.stopPropagation();
 									onDelete(groupIndex, index);
 								}}
 							/>
 						)}
-						{/* <InTagCv
-							content={content}
-							index={index}
-							groupIndex={groupIndex}
-							onDelete={onDelete}
-						/> */}
 					</div>
 				</div>
 			);
@@ -69,24 +75,18 @@ export const TagCv = ({
 					className="flex px-3 py-1"
 					style={{ fontSize: getSize(), fontWeight: getWeight() }}
 				>
-					<span style={{ color: `var(--${primaryColor})` }}>#</span>
+					<span style={{ color: accentCss }}>#</span>
 					<div className="flex gap-2 items-center ">
 						{children}
 						{showDelete && (
 							<FaTimes
-								style={{ width: 12, height: 12, cursor: "pointer" }}
+								style={deleteStyle}
 								onClick={(e) => {
 									e.stopPropagation();
 									onDelete(groupIndex, index);
 								}}
 							/>
 						)}
-						{/* <InTagCv
-							content={content}
-							index={index}
-							groupIndex={groupIndex}
-							onDelete={onDelete}
-						/> */}
 					</div>
 				</div>
 			);
@@ -96,7 +96,7 @@ export const TagCv = ({
 					key={groupIndex}
 					className="flex px-2.5 py-0.5 border rounded-md"
 					style={{
-						borderColor: `var(--${primaryColor})`,
+						borderColor: accentCss,
 						fontSize: getSize(),
 						fontWeight: getWeight(),
 					}}
@@ -105,19 +105,13 @@ export const TagCv = ({
 						{children}
 						{showDelete && (
 							<FaTimes
-								style={{ width: 12, height: 12, cursor: "pointer" }}
+								style={deleteStyle}
 								onClick={(e) => {
 									e.stopPropagation();
 									onDelete(groupIndex, index);
 								}}
 							/>
 						)}
-						{/* <InTagCv
-							content={content}
-							index={index}
-							groupIndex={groupIndex}
-							onDelete={onDelete}
-						/> */}
 					</div>
 				</div>
 			);
@@ -132,19 +126,13 @@ export const TagCv = ({
 						{children}
 						{showDelete && (
 							<FaTimes
-								style={{ width: 12, height: 12, cursor: "pointer" }}
+								style={deleteStyle}
 								onClick={(e) => {
 									e.stopPropagation();
 									onDelete(groupIndex, index);
 								}}
 							/>
 						)}
-						{/* <InTagCv
-							content={content}
-							index={index}
-							groupIndex={groupIndex}
-							onDelete={onDelete}
-						/> */}
 					</div>
 				</div>
 			);

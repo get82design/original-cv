@@ -10,6 +10,9 @@ export const PrizeSectionMenu = () => {
 	const modules = watch("modules");
 	const pathDesign = moduleField(modules, "prize", "settings", "content");
 
+	const prizeMod = modules?.find((m: { type: string }) => m.type === "prize");
+    const inSidebar = (prizeMod?.column ?? 0) === 0;
+
 	// → modules.{i}.settings.content
 	const columnsPath = `${pathDesign}.columns`;
 	const watchColumns = watch(columnsPath);
@@ -47,6 +50,9 @@ export const PrizeSectionMenu = () => {
 			],
 		},
 	];
+	
+	if (inSidebar) return null;
+
 	return (
 		<>
 			<button

@@ -509,5 +509,58 @@ export const galleryDemoValues: CvFormValues = {
 				title: classiqueTokens.sectionTitle,
 			},
 		},
+		project: {
+			content: [
+				{
+					clientKey: "demo-proj-1",
+					order: 1,
+					content: {
+						title: "Refonte du Parcours Client Phygital & Merchandising",
+						description: "Contexte : Baisse de la fréquentation physique de 10 % face à la montée de la vente en ligne.",
+						technology: '',
+						location: "Boutique L'Élégance (Paris)",
+						start: new Date("2024-01-01"),
+						end: new Date("2024-06-30"),
+						missions: [
+							{
+								clientKey: "m1-1",
+								order: 1,
+								content: { 
+									content: "Pilotage d'un projet pilote d'intégration de caisses mobiles (tablettes)." },
+							},
+							{
+								clientKey: "m1-2",
+								order: 2,
+								content: { 
+									content: "Réorganisation de la zone d'essayage VIP." },
+							},
+							{
+								clientKey: "m1-3",
+								order: 3,
+								content: { 
+									content: "Élaboration d'un guide de recommandations visuelles pour la mise en valeur des pièces phares." },
+							},
+						],
+						settings: {
+							title: classiqueTokens.itemTitle,
+							description: classiqueTokens.body,
+							technology: classiqueTokens.body,
+							location: classiqueTokens.body,
+							periode: classiqueTokens.body,
+							missions: classiqueTokens.body,
+							withTitle: true,
+							withDescription: true,
+							withTechnology: true,
+							withLocation: true,
+							withPeriode: true,
+							withMissions: true,
+						}
+					},
+				},
+			],
+			settings: {
+				title: classiqueTokens.sectionTitle,
+			},
+		},
 	},
 };

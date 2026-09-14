@@ -10,6 +10,9 @@ export const FormationSectionMenu = () => {
 	const modules = watch("modules");
 	const pathDesign = moduleField(modules, "formation", "settings", "content");
 
+	const formationMod = modules?.find((m: { type: string }) => m.type === "formation");
+    const inSidebar = (formationMod?.column ?? 0) === 0;
+
 	// → modules.{i}.settings.content
 	const columnsPath = `${pathDesign}.columns`;
 	const watchColumns = watch(columnsPath);
@@ -41,6 +44,9 @@ export const FormationSectionMenu = () => {
 			],
 		},
 	];
+
+	if (inSidebar) return null;
+	
 	return (
 		<>
 			<button

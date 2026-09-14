@@ -12,6 +12,7 @@ export const portland = defineTemplate({
 	layout: {
 		...sharedLayout,
 		withPhoto: true,
+		photoSide: "right",
 		stylePhoto: "circle",
 		listStyle: "none",
 		marge: "sm",

@@ -1,5 +1,6 @@
 import type { ListItem } from "@utils/type";
 import type { TagGroupItemContentInput } from "@/services/schemas/cvSave.schema";
+import type { TagContentSettings } from "@/services/schemas/cvTemplate.schema";
 import { useCreateCvContext } from "@/features/cv-editor/component/context/CreateCvContext";
 import { useFormContext } from "react-hook-form";
 import { ToggleAfficherCacher } from "@/components/input/toggle-button/AfficherCacher";
@@ -22,8 +23,14 @@ interface TagGroupDndProps {
 	GroupCardComponent: React.ComponentType<GroupTagCardProps>;
 }
 
-//! Penser le composant qui possède plusieurs zones de plusieurs Tags qui peuvent dnd entre eux dans la zone
-//! Mais ce même composant doit pouvoir dnd les différents zones de Tags
+type TagDesign = NonNullable<TagContentSettings["design"]>;
+
+/** Couleur texte adaptée au fond / style du design */
+function colorForTagDesign(design: TagDesign) {
+	if (design === "tag") return "white" as const;
+	if (design === "hashtag") return "primaryColor" as const;
+	return "black" as const; // border | none
+}
 
 export const TagGroupDnd = ({
 	watchTags,
@@ -34,12 +41,32 @@ export const TagGroupDnd = ({
 	GroupCardComponent,
 }: TagGroupDndProps) => {
 	const { sectionSelected, setSectionSelected } = useCreateCvContext();
-	const { setValue, getValues } = useFormContext();
+	const { setValue, watch } = useFormContext();
 
+	const applyDesign = (idx: number, design: TagDesign) => {
+		const settingsBase = `datas.tagGroup.content.${idx}.content.settings`;
+		setValue(`${settingsBase}.design`, design, { shouldDirty: true });
+		setValue(
+			`${settingsBase}.tags.colorSelect`,
+			colorForTagDesign(design),
+			{ shouldDirty: true },
+		);
+	};
 
 	const itemsMenu = (idx: number) => {
 		const designPath = `datas.tagGroup.content.${idx}.content.settings.design`;
-		const watchDesign = getValues(designPath);
+		const watchDesign = watch(designPath) as TagDesign | undefined;
+
+		const designRadio = (label: string, value: TagDesign) => (
+			<RadioRhf
+				name={designPath}
+				label={label}
+				value={value}
+				checked={watchDesign === value}
+				onChange={() => applyDesign(idx, value)}
+			/>
+		);
+
 		return [
 			{
 				label: "Options",
@@ -59,30 +86,10 @@ export const TagGroupDnd = ({
 							<div className="flex flex-col py-1 px-4 gap-2">
 								<p>Design</p>
 								<div className="grid grid-cols-2 gap-2">
-									<RadioRhf
-										name={designPath}
-										label="Tag"
-										value="tag"
-										checked={watchDesign === "tag"}
-									/>
-									<RadioRhf
-										name={designPath}
-										label="Border"
-										value="border"
-										checked={watchDesign === "border"}
-									/>
-									<RadioRhf
-										name={designPath}
-										label="Hashtag"
-										value="hashtag"
-										checked={watchDesign === "hashtag"}
-									/>
-									<RadioRhf
-										name={designPath}
-										label="None"
-										value="none"
-										checked={watchDesign === "none"}
-									/>
+									{designRadio("Tag", "tag")}
+									{designRadio("Border", "border")}
+									{designRadio("Hashtag", "hashtag")}
+									{designRadio("None", "none")}
 								</div>
 							</div>
 						),
@@ -108,14 +115,14 @@ export const TagGroupDnd = ({
 						onClick={(e) => {
 							e.stopPropagation();
 							setItemSelected(tag.clientKey);
-							setSectionSelected("section-tag"); // global : sa section
+							setSectionSelected("section-tag");
 						}}
 					>
 						<GroupCardComponent
 							index={index}
 							item={tag}
-							itemSelected={itemSelected} // local
-							setItemSelected={setItemSelected} // local
+							itemSelected={itemSelected}
+							setItemSelected={setItemSelected}
 							itemsMenu={itemsMenu}
 							colOfTag={colOfTag}
 						/>

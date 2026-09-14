@@ -2,6 +2,7 @@ import { MdDelete, MdOutlineOpenWith } from "react-icons/md"
 import { CSS } from "@dnd-kit/utilities";
 import { useSortable } from "@dnd-kit/sortable";
 import { useCreateCvContext } from "@/features/cv-editor/component/context/CreateCvContext";
+import { useColumnFg } from "@/features/cv-editor/component/kit-dnd/shared/ColumnFgContext";
 
 type SectionItemShellProps = {
     clientKey: string
@@ -44,6 +45,9 @@ export function SectionItemShell({
   }: SectionItemShellProps) {
     const { selectModifInput, sectionSelected, setSectionSelected } =
       useCreateCvContext()
+    const columnFg = useColumnFg()
+    // Sidebar sombre (fg white) : pas de bg clair qui casse le contraste du texte
+    const darkColumn = columnFg === "white"
   
     const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
       useSortable({
@@ -57,6 +61,18 @@ export function SectionItemShell({
       selectModifInput.includes(modifMatch) && isItemSelected
     const highlight =
       isItemSelected && sectionSelected.includes(sectionId)
+
+    const highlightClass = highlight
+      ? darkColumn
+        ? "rounded-lg ring-2 ring-white/50"
+        : "bg-gray-100 rounded-lg"
+      : ""
+    const toolbarBgClass =
+      showToolbar && sectionSelected.includes(sectionId)
+        ? darkColumn
+          ? "rounded-lg ring-2 ring-white/50"
+          : "rounded-lg bg-gray-100"
+        : ""
   
     return (
       <div
@@ -66,15 +82,11 @@ export function SectionItemShell({
           transition,
           opacity: isDragging ? 0.5 : 1,
         }}
-        className={`section-card relative ${className} ${highlight ? "bg-gray-100 rounded-lg" : ""}`}
+        className={`section-card relative ${className} ${highlightClass}`}
       >
         {leading}
         <div
-          className={`relative w-full ${
-            showToolbar && sectionSelected.includes(sectionId)
-              ? "rounded-lg bg-gray-100"
-              : ""
-          }`}
+          className={`relative w-full ${toolbarBgClass}`}
           onClick={(e) => {
             e.stopPropagation()
             setItemSelected(clientKey)

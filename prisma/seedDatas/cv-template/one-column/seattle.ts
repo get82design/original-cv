@@ -12,6 +12,7 @@ export const seattle = defineTemplate({
 	layout: {
 		...sharedLayout,
 		withPhoto: true,
+		lockPhotoSide: true,
 		stylePhoto: "flat",
 		listStyle: "none",
 		titleSection: {

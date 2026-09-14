@@ -2,9 +2,11 @@ import { GetPrimaryColor } from "@/features/cv-editor/utils/utilsCv/color";
 import type { TemplateLayout } from "@/services/schemas/cvTemplate.schema";
 import type { JSX } from "react";
 import { useFormContext } from "react-hook-form";
+import type { HeaderChrome } from "../utils/headerLayout";
 
 interface HeaderContentProps {
 	modelGeneral: TemplateLayout;
+	chrome: HeaderChrome;
 	nomCompo: JSX.Element | undefined;
 	prenomCompo: JSX.Element | undefined;
 	subTitleCompo: JSX.Element;
@@ -16,6 +18,7 @@ interface HeaderContentProps {
 
 export const HeaderFourContainer = ({
 	modelGeneral,
+	chrome,
 	nomCompo,
 	prenomCompo,
 	subTitleCompo,
@@ -28,6 +31,11 @@ export const HeaderFourContainer = ({
 	const headerPrimaryColor = watch("layoutGeneral.layout.headerPrimaryColor");
 	const primaryColor = GetPrimaryColor();
 
+	const nameRowClass =
+		chrome.photoSide === "right"
+			? "flex justify-end items-end gap-2"
+			: "flex justify-start items-end gap-2";
+
 	return (
 		<div className="flex flex-col gap-2">
 			<div
@@ -37,15 +45,22 @@ export const HeaderFourContainer = ({
 						: "var(--gray-700)",
 				}}
 				className={`w-full h-6`}
-			></div>
-			<div className="w-full flex justify-end gap-2">
-				<div className="w-full flex flex-col gap-0">
-					<div className="flex justify-end items-end gap-2">
+			/>
+			{/* photo à droite = flex-row (texte puis photo) ; à gauche = reverse */}
+			<div
+				className={`w-full flex gap-2 ${
+					chrome.photoSide === "right" ? "flex-row" : "flex-row-reverse"
+				}`}
+			>
+				<div
+					className={`w-full flex flex-col gap-0 ${chrome.textAlignClass}`}
+				>
+					<div className={nameRowClass}>
 						{nomCompo}
 						{prenomCompo}
 					</div>
 					{subTitleCompo}
-					<div className="w-full flex flex-col gap-0">
+					<div className={`w-full flex flex-col gap-0 ${chrome.textAlignClass}`}>
 						{emailCompo}
 						{phoneCompo}
 						{locationCompo}

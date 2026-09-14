@@ -50,7 +50,7 @@ describe("ColorService.create", () => {
 });
 
 describe("ColorService.findAll", () => {
-	it("returns all colors sorted by name", async () => {
+	it("returns all colors sorted by order", async () => {
 		await colorService.create({
 			name: "Red",
 			primary: "#FF0000",
@@ -61,8 +61,8 @@ describe("ColorService.findAll", () => {
 		});
 		const colors = await colorService.findAll();
 		expect(colors).toHaveLength(2);
-		expect(colors[0]?.name).toBe("blue");
-		expect(colors[1]?.name).toBe("red");
+		expect(colors[0]?.name).toBe("red");
+		expect(colors[1]?.name).toBe("blue");
 	});
 
 	it("returns an empty array if no colors are found", async () => {

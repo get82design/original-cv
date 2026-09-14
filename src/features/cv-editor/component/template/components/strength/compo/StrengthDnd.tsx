@@ -85,7 +85,7 @@ export const StrengthDnd = ({
 			}
 		>
 			<div
-				className={`strengths-grid grid ${COL_CLASS[colOfStrength as keyof typeof COL_CLASS] ?? "grid-cols-1"} ${colOfStrength === 1 ? "gap-1" : "gap-x-4 gap-y-1"}`}
+				className={`strengths-grid grid ${COL_CLASS[colOfStrength as keyof typeof COL_CLASS] ?? "grid-cols-1"} ${colOfStrength === 1 ? "gap-1" : "gap-x-4 gap-y-0"}`}
 			>
 				{watchStrengths.map((strength, index) => (
 					<div className="strength-card w-full" key={strength.clientKey}>

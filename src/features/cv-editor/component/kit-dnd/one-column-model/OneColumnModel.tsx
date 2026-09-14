@@ -25,12 +25,15 @@ export const OneColumnModel = ({ deleteSection }: OneColumnModelProps) => {
 
 	const itemUse = useCvSectionItems(0); // colonne unique
 	const { sensors, handleDragEnd, handleDragOver, collisionDetection } =
-		useCvPageDnd(itemUse);
+		useCvPageDnd([itemUse]);
 
 	const primaryColor = GetPrimaryColor() ?? "white";
 	const accent = watch("layoutGeneral.layout.pageAccent");
 	const shade = accent?.shade;
-	const marge = watch("layoutGeneral.layout.marge") ?? "md";
+	const marge = (watch("layoutGeneral.layout.marge") ?? "md") as
+		| "sm"
+		| "md"
+		| "lg";
 	const pagePad = { sm: "2rem", md: "3rem", lg: "4rem" }[marge];
 	const [colorSelected, setColorSelected] = useState<string | null>(null);
 	const bandStop =

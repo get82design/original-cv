@@ -3,6 +3,7 @@ import { HeaderFour } from "../../components/headers/HeaderFour";
 import { HeaderOne } from "../../components/headers/HeaderOne";
 import { HeaderTwo } from "../../components/headers/HeaderTwo";
 import { HeaderThree } from "../../components/headers/HeaderThree";
+import { HeaderFive } from "../../components/headers/HeaderFive";
 
 // 1. Définis un composant par défaut garanti
 const DefaultHeader = HeaderOne;
@@ -13,6 +14,7 @@ export const HeaderRegister: Record<string, React.ComponentType> = {
 	HeaderTwo,
 	HeaderThree,
 	HeaderFour,
+	HeaderFive,
 };
 
 export function HeaderRenderer({

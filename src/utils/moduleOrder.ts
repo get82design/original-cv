@@ -46,3 +46,14 @@ export function nextActiveOrder(modules: TemplateModule[]): number {
 	if (active.length === 0) return 1;
 	return Math.max(...active.map((m) => m.order)) + 1;
 }
+
+export function nextActiveOrderInColumn(
+	modules: TemplateModule[],
+	column: number,
+): number {
+	const active = modules.filter(
+		(m) => m.isActive && (m.column ?? 0) === column,
+	);
+	if (active.length === 0) return 1;
+	return Math.max(...active.map((m) => m.order)) + 1;
+}

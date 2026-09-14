@@ -3,21 +3,38 @@ import { useModelAndColorContext } from "../../component/context/ModelAndColorCo
 import type { Color } from "@utils/trpc.types";
 import { useEffect, useState } from "react";
 import { FieldNameLayoutGeneral } from "../fields/fieldNameLayoutGeneral";
+import { useColumnFg } from "../../component/kit-dnd/shared/ColumnFgContext";
 
-export const useInputCvColor = (textColor: string) => {
+export const useInputCvColor = (
+	textColor: string,
+	opts?: { ignoreColumnFg?: boolean },
+) => {
 	const { watch } = useFormContext();
 	const { colors } = useModelAndColorContext();
-	const watchPrimaryColor = watch("layoutGeneral.defaultStyles.primaryColor");
-	let color = "";
+	const watchPrimaryColor = watch(FieldNameLayoutGeneral.primaryColor);
+	const columnFg = useColumnFg();
+
+	// Accent : jamais écrasé par le fg de colonne (sauf si l’appelant a déjà choisi le fg)
+	if (textColor === "primaryColor") {
+		return watchPrimaryColor?.name
+			? watchPrimaryColor.name + (watchPrimaryColor.primary ?? "")
+			: "";
+	}
+
+	// Dans une colonne thématisée : black/gray/white suivent le fg
+	if (
+		!opts?.ignoreColumnFg &&
+		columnFg &&
+		(textColor === "black" || textColor === "gray" || textColor === "white")
+	) {
+		return columnFg;
+	}
+
 	if (textColor === "white" || textColor === "black") return textColor;
 	if (textColor === "gray") return "gray-700";
-	if (textColor !== "primaryColor") {
-		const tempColor = colors.find((color: Color) => color.name === textColor);
-		color = tempColor ? tempColor?.name + tempColor?.primary : "";
-	} else {
-		color = watchPrimaryColor.name + watchPrimaryColor.primary;
-	}
-	return color;
+
+	const found = colors.find((color: Color) => color.name === textColor);
+	return found ? found.name + (found.primary ?? "") : "";
 };
 
 export const ColorForMiniCard = () => {

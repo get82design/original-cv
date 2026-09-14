@@ -13,6 +13,7 @@ export const zurich = defineTemplate({
 		...sharedLayout,
 		withPhoto: true,
 		stylePhoto: "circle",
+		photoSide: "right",
 		listStyle: "none",
 		marge: "sm",
 		space: "sm",

@@ -6,29 +6,39 @@ import { TitleSectionIcon } from "./mise-en-page/TitleSectionIcon";
 import { TitleSectionLigne } from "./mise-en-page/TitleSectionLigne";
 import { GeneralPhoto } from "./mise-en-page/GeneralPhoto";
 import { GeneralFont } from "./mise-en-page/GeneralFont";
+import { FieldNameLayoutGeneral } from "../../utils/fields/fieldNameLayoutGeneral";
+import { GeneralSidebar } from "./mise-en-page/GeneralSidebar";
 
 export const ModifMiseEnPage = () => {
 	const { watch } = useFormContext();
-	const watchMarge = watch("layoutGeneral.layout.marge");
-	const watchSpace = watch("layoutGeneral.layout.space");
+	const watchMarge = watch(FieldNameLayoutGeneral.marge);
+	const watchSpace = watch(FieldNameLayoutGeneral.space);
 	// const primaryColor = PrimaryTextColorStyle()
-	const watchWithIcon = watch("layoutGeneral.layout.titleSection.withIcon");
-	const watchIconStyle = watch("layoutGeneral.layout.titleSection.iconStyle");
+	const watchWithIcon = watch(FieldNameLayoutGeneral.withIcon);
+	const watchIconStyle = watch(FieldNameLayoutGeneral.iconStyle);
 	const watchLigneDessous = watch(
-		"layoutGeneral.layout.titleSection.withLigneDessous",
+		FieldNameLayoutGeneral.withLigneDessous,
 	);
 	const watchLigneDessus = watch(
-		"layoutGeneral.layout.titleSection.withLigneDessus",
+		FieldNameLayoutGeneral.withLigneDessus,
 	);
 	const watchTitleSectionTextTransform = watch(
-		"layoutGeneral.layout.titleSection.textTransform",
+		FieldNameLayoutGeneral.textTransform,
 	);
-	const watchWithPhoto = watch("layoutGeneral.layout.withPhoto");
-	const watchStylePhoto = watch("layoutGeneral.layout.stylePhoto");
+	const watchWithPhoto = watch(FieldNameLayoutGeneral.withPhoto);
+	const watchStylePhoto = watch(FieldNameLayoutGeneral.stylePhoto);
+	const watchPhotoSide = watch(FieldNameLayoutGeneral.photoSide);
+	const watchLockPhotoSide = watch(FieldNameLayoutGeneral.lockPhotoSide);
 	return (
 		<div className="flex flex-col gap-3">
+			<GeneralPhoto
+				watchWithPhoto={watchWithPhoto}
+				watchStylePhoto={watchStylePhoto}
+				watchPhotoSide={watchPhotoSide}
+				watchLockPhotoSide={watchLockPhotoSide}
+			/>
 			<GeneralFont />
-
+			<GeneralSidebar />
 			<div className="grid grid-cols-2 gap-8 items-start">
 				<GeneralMarge watchMarge={watchMarge} />
 				<GeneralSpace watchSpace={watchSpace} />
@@ -66,10 +76,6 @@ export const ModifMiseEnPage = () => {
 					watchLigneDessous={watchLigneDessous}
 				/>
 			) : null}
-			<GeneralPhoto
-				watchWithPhoto={watchWithPhoto}
-				watchStylePhoto={watchStylePhoto}
-			/>
 		</div>
 	);
 };

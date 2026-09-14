@@ -13,13 +13,89 @@ import {
 import { arrayMove } from "@dnd-kit/sortable";
 import type { CvModulesInput } from "@/services/schemas/cvSave.schema";
 
-export function useCvPageDnd(itemUse: SectionItem[]) {
+const SIDEBAR_ALLOWED = new Set([
+	"language",
+	"tag",
+	"socialMedia",
+	"passion",
+	"prize",
+	"expertise",
+]);
+
+function forceSidebarInnerColumns(
+	modules: CvModulesInput[],
+	movedType: string,
+): CvModulesInput[] {
+	return modules.map((mod) => {
+		if (mod.type !== movedType) return mod;
+		if (mod.type === "skill") {
+			const settings = (mod.settings ?? {}) as Record<string, unknown>;
+			const content = (settings.content ?? {}) as Record<string, unknown>;
+			return {
+				...mod,
+				settings: {
+					...settings,
+					content: { ...content, groupColumns: 1 },
+				},
+			};
+		}
+		if (!SIDEBAR_ALLOWED.has(mod.type)) return mod;
+		const settings = (mod.settings ?? {}) as Record<string, unknown>;
+		const content = (settings.content ?? {}) as Record<string, unknown>;
+		return {
+			...mod,
+			settings: {
+				...settings,
+				content: { ...content, columns: 1 },
+			},
+		};
+	});
+}
+
+/** "section-education" → "education" */
+function sectionIdToType(id: string | number) {
+	return String(id).replace(/^section-/, "");
+}
+
+/**
+ * DnD page CV.
+ * - `columns[0]` = sidebar / unique, `columns[1]` = main, etc.
+ * - OneColumn : `useCvPageDnd([itemUse])`
+ * - TwoColumn : `useCvPageDnd([left, right])`
+ */
+export function useCvPageDnd(
+	columns: Array<SectionItem[]>,
+	{ sidebarColumn }: { sidebarColumn?: 0 | 1 } = {},
+) {
 	const { watch, setValue, getValues } = useFormContext();
-	const watchModules = watch("modules");
+	const watchModules = watch("modules") as CvModulesInput[];
 
 	const sensors = useSensors(
 		useSensor(PointerSensor, { activationConstraint: { distance: 6 } }),
 	);
+
+	const findColumnOf = (sectionId: string | number) => {
+		for (let col = 0; col < columns.length; col++) {
+			if (columns[col]?.some((item) => item.id === sectionId)) return col;
+		}
+		return -1;
+	};
+
+	/** Réécrit order (+ column optionnelle) pour une liste de types dans une colonne. */
+	const applyOrdersForColumn = (
+		modules: CvModulesInput[],
+		column: number,
+		orderedTypes: string[],
+	) => {
+		const orderByType = Object.fromEntries(
+			orderedTypes.map((type, index) => [type, index + 1]),
+		);
+		return modules.map((mod) => {
+			const nextOrder = orderByType[mod.type];
+			if (nextOrder == null) return mod;
+			return { ...mod, column, order: nextOrder };
+		});
+	};
 
 	const reorderByClientKey = (
 		path: string,
@@ -43,49 +119,134 @@ export function useCvPageDnd(itemUse: SectionItem[]) {
 		);
 	};
 
+	const handleSectionDragEnd = (
+		activeId: string | number,
+		overId: string | number,
+		activeData: Record<string, unknown>,
+		overData: Record<string, unknown> | undefined,
+	) => {
+		const activeCol = findColumnOf(activeId);
+		if (activeCol < 0) return;
+
+		const movedType = sectionIdToType(activeId);
+		const sourceList = columns[activeCol] ?? [];
+
+		// ——— Drop sur une zone colonne (souvent vide) ———
+		if (overData?.type === "column") {
+			const overCol = overData.column as number;
+			if (typeof overCol !== "number") return;
+
+			// Même colonne + drop sur le conteneur → rien à faire
+			if (activeCol === overCol) return;
+			if (
+				sidebarColumn != null &&
+				overCol === sidebarColumn &&
+				!SIDEBAR_ALLOWED.has(movedType)
+			)
+				return;
+
+			const sourceTypes = sourceList
+				.filter((item) => item.id !== activeId)
+				.map((item) => sectionIdToType(item.id));
+			const targetTypes = [
+				...(columns[overCol] ?? []).map((item) => sectionIdToType(item.id)),
+				movedType, // en fin de colonne cible
+			];
+
+			let next = applyOrdersForColumn(watchModules, activeCol, sourceTypes);
+			next = applyOrdersForColumn(next, overCol, targetTypes);
+
+			if (overCol === 0) {
+				next = forceSidebarInnerColumns(next, movedType);
+			}
+
+			setValue("modules", next, { shouldDirty: true });
+			return;
+		}
+
+		// ——— Drop sur une autre section ———
+		if (overData?.type !== "section") return;
+
+		const overCol =
+			typeof overData.column === "number"
+				? overData.column
+				: findColumnOf(overId);
+		if (overCol < 0) return;
+
+		// —— Même colonne : reorder classique ——
+		if (activeCol === overCol) {
+			const list = [...sourceList];
+			const oldIndex = list.findIndex((i) => i.id === activeId);
+			const newIndex = list.findIndex((i) => i.id === overId);
+			if (oldIndex === -1 || newIndex === -1 || oldIndex === newIndex) return;
+
+			const reorderedTypes = arrayMove(list, oldIndex, newIndex).map((item) =>
+				sectionIdToType(item.id),
+			);
+			setValue(
+				"modules",
+				applyOrdersForColumn(watchModules, activeCol, reorderedTypes),
+				{ shouldDirty: true },
+			);
+			return;
+		}
+        if (
+			sidebarColumn != null &&
+			overCol === sidebarColumn &&
+			!SIDEBAR_ALLOWED.has(movedType)
+		)
+			return;
+		// —— Autre colonne : change column + recalcule les 2 orders ——
+		const sourceTypes = sourceList
+			.filter((item) => item.id !== activeId)
+			.map((item) => sectionIdToType(item.id));
+
+		const targetList = (columns[overCol] ?? []).filter(
+			(item) => item.id !== activeId,
+		);
+		const insertAt = targetList.findIndex((i) => i.id === overId);
+		const safeInsert = insertAt === -1 ? targetList.length : insertAt;
+		const targetTypes = [
+			...targetList.slice(0, safeInsert).map((i) => sectionIdToType(i.id)),
+			movedType,
+			...targetList.slice(safeInsert).map((i) => sectionIdToType(i.id)),
+		];
+
+		let next = applyOrdersForColumn(watchModules, activeCol, sourceTypes);
+		next = applyOrdersForColumn(next, overCol, targetTypes);
+
+		if (overCol === 0) {
+			next = forceSidebarInnerColumns(next, movedType);
+		}
+
+		setValue("modules", next, { shouldDirty: true });
+	};
+
 	const handleDragEnd = (event: DragEndEvent) => {
 		const { active, over } = event;
 		if (!over || active.id === over.id) return;
 
 		const activeData = active.data.current;
 		const overData = over.data.current;
-
 		if (!activeData) return;
 
-		// ——— Niveau 1 : sections ———
+		// ——— Niveau 1 : sections (multi-colonnes) ———
 		if (activeData.type === "section") {
-			const sorted = [...itemUse];
-			const oldIndex = sorted.findIndex((i) => i.id === active.id);
-			const newIndex = sorted.findIndex((i) => i.id === over.id);
-
-			if (oldIndex === -1 || newIndex === -1) return;
-
-			const reordered = arrayMove(sorted, oldIndex, newIndex);
-			const orderByType = Object.fromEntries(
-				reordered.map((item, index) => [
-					item.id.replace("section-", ""),
-					index + 1,
-				]),
-			);
-
-			setValue(
-				"modules",
-				watchModules.map((mod: CvModulesInput) =>
-					orderByType[mod.type] != null
-						? { ...mod, order: orderByType[mod.type] }
-						: mod,
-				),
-				{ shouldDirty: true },
+			handleSectionDragEnd(
+				active.id,
+				over.id,
+				activeData as Record<string, unknown>,
+				overData as Record<string, unknown> | undefined,
 			);
 			return;
 		}
+
 		// ——— Niveau 2 : cards (même conteneur) ———
 		if (activeData.type === "card") {
 			if (
 				overData?.type !== "card" ||
 				overData.containerId !== activeData.containerId
 			) {
-				console.warn("drop ignoré, over =", over.id, overData);
 				return;
 			}
 
@@ -109,140 +270,85 @@ export function useCvPageDnd(itemUse: SectionItem[]) {
 			);
 			return;
 		}
-		// // ——— Niveau 2 : cards education ———
-		// if (activeData.type === 'card' && activeData.containerId === 'education') {
-		//     // on ne reorder que si on drop sur une autre card du même conteneur
-		//     if (overData?.type !== 'card' || overData.containerId !== 'education') {
-		//         console.warn('drop ignoré, over =', over.id, overData)
-		//         return
-		//     }
 
-		//     const path = activeData.path as string // FieldNameEducation.content
-		//     const list = getValues(path) as Array<{ clientKey: string; order?: number }>
-
-		//     const oldIndex = list.findIndex((i) => i.clientKey === String(active.id))
-		//     const newIndex = list.findIndex((i) => i.clientKey === String(over.id))
-		//     if (oldIndex === -1 || newIndex === -1) return
-
-		//     const reordered = arrayMove(list, oldIndex, newIndex).map((item, index) => ({
-		//         ...item,
-		//         order: index + 1,
-		//     }))
-		//     setValue(path, reordered, { shouldDirty: true })
-		// }
-		// // ——— Niveau 2 : cards experience ———
-		// if (activeData.type === 'card' && activeData.containerId === 'experience') {
-		//     // on ne reorder que si on drop sur une autre card du même conteneur
-		//     if (overData?.type !== 'card' || overData.containerId !== 'experience') {
-		//         console.warn('drop ignoré, over =', over.id, overData)
-		//         return
-		//     }
-
-		//     const path = activeData.path as string // FieldNameExperience.content
-		//     const list = getValues(path) as Array<{ clientKey: string; order?: number }>
-
-		//     const oldIndex = list.findIndex((i) => i.clientKey === String(active.id))
-		//     const newIndex = list.findIndex((i) => i.clientKey === String(over.id))
-		//     if (oldIndex === -1 || newIndex === -1) return
-
-		//     const reordered = arrayMove(list, oldIndex, newIndex).map((item, index) => ({
-		//         ...item,
-		//         order: index + 1,
-		//     }))
-		//     setValue(path, reordered, { shouldDirty: true })
-		// }
-		// // ——— Niveau 2 : cards language ———
-		// if (activeData.type === 'card' && activeData.containerId === 'language') {
-		//     // on ne reorder que si on drop sur une autre card du même conteneur
-		//     if (overData?.type !== 'card' || overData.containerId !== 'language') {
-		//         console.warn('drop ignoré, over =', over.id, overData)
-		//         return
-		//     }
-
-		//     const path = activeData.path as string // FieldNameLanguage.content
-		//     const list = getValues(path) as Array<{ clientKey: string; order?: number }>
-
-		//     const oldIndex = list.findIndex((i) => i.clientKey === String(active.id))
-		//     const newIndex = list.findIndex((i) => i.clientKey === String(over.id))
-		//     if (oldIndex === -1 || newIndex === -1) return
-
-		//     const reordered = arrayMove(list, oldIndex, newIndex).map((item, index) => ({
-		//         ...item,
-		//         order: index + 1,
-		//     }))
-		//     setValue(path, reordered, { shouldDirty: true })
-		// }
-		// // ——— Niveau 2 : cards skillGroup ———
-		// if (activeData.type === 'card' && activeData.containerId === 'skillGroup') {
-		//     // on ne reorder que si on drop sur une autre card du même conteneur
-		//     if (overData?.type !== 'card' || overData.containerId !== 'skillGroup') {
-		//         console.warn('drop ignoré, over =', over.id, overData)
-		//         return
-		//     }
-
-		//     const path = activeData.path as string // FieldNameSkill.content
-		//     const list = getValues(path) as Array<{ clientKey: string; order?: number }>
-
-		//     const oldIndex = list.findIndex((i) => i.clientKey === String(active.id))
-		//     const newIndex = list.findIndex((i) => i.clientKey === String(over.id))
-		//     if (oldIndex === -1 || newIndex === -1) return
-
-		//     const reordered = arrayMove(list, oldIndex, newIndex).map((item, index) => ({
-		//         ...item,
-		//         order: index + 1,
-		//     }))
-		//     setValue(path, reordered, { shouldDirty: true })
-		// }
-		// ——— Niveau 3 : skills (subcard) ———
+		// ——— Niveau 3 : subcards (même groupe) ———
 		if (activeData.type === "subcard") {
 			if (overData?.type !== "subcard") return;
 			if (activeData.containerId !== overData.containerId) return;
 			reorderByClientKey(activeData.path as string, active.id, over.id);
-			return;
 		}
-		// if (activeData.type === 'subcard') {
-		//     // drop sur un autre skill
-		//     if (overData?.type !== 'subcard') return
-
-		//     // même groupe uniquement ici (le cross est dans dragOver)
-		//     if (activeData.containerId !== overData.containerId) return
-
-		//     const path = activeData.path as string
-		//     const list = getValues(path) as Array<{ clientKey: string; order?: number }>
-		//     if (!list) return
-
-		//     const oldIndex = list.findIndex((i) => i.clientKey === String(active.id))
-		//     const newIndex = list.findIndex((i) => i.clientKey === String(over.id))
-		//     if (oldIndex === -1 || newIndex === -1 || oldIndex === newIndex) return
-
-		//     const reordered = arrayMove(list, oldIndex, newIndex).map((item, index) => ({
-		//         ...item,
-		//         order: index + 1,
-		//     }))
-		//     setValue(path, reordered, { shouldDirty: true })
-		//     return
-		// }
 	};
 
 	const handleDragOver = (event: DragOverEvent) => {
 		const { active, over } = event;
 		if (!over || active.id === over.id) return;
-
 		const activeData = active.data.current;
 		const overData = over.data.current;
 		if (!activeData || !overData) return;
+		// ——— Sections : cross-colonne live ———
+		if (activeData.type === "section") {
+			const activeCol = findColumnOf(active.id);
+			if (activeCol < 0) return;
+			let overCol: number;
+			let insertAt: number;
+			if (overData.type === "column") {
+				overCol = overData.column as number;
+				if (typeof overCol !== "number") return;
+				insertAt = (columns[overCol] ?? []).length;
+			} else if (overData.type === "section") {
+				overCol =
+					typeof overData.column === "number"
+						? (overData.column as number)
+						: findColumnOf(over.id);
+				if (overCol < 0) return;
+				const targetList = (columns[overCol] ?? []).filter(
+					(i) => i.id !== active.id,
+				);
+				const idx = targetList.findIndex((i) => i.id === over.id);
+				insertAt = idx === -1 ? targetList.length : idx;
+			} else {
+				return;
+			}
+			// déjà dans la colonne cible → laisse le sortable / dragEnd gérer
+			if (activeCol === overCol) return;
+			const movedType = sectionIdToType(active.id);
+			if (
+				sidebarColumn != null &&
+				overCol === sidebarColumn &&
+				!SIDEBAR_ALLOWED.has(movedType)
+			)
+				return;
+			const sourceTypes = (columns[activeCol] ?? [])
+				.filter((i) => i.id !== active.id)
+				.map((i) => sectionIdToType(i.id));
+			const targetList = (columns[overCol] ?? []).filter(
+				(i) => i.id !== active.id,
+			);
+			const targetTypes = [
+				...targetList.slice(0, insertAt).map((i) => sectionIdToType(i.id)),
+				movedType,
+				...targetList.slice(insertAt).map((i) => sectionIdToType(i.id)),
+			];
+			const modules = getValues("modules") as CvModulesInput[];
+			let next = applyOrdersForColumn(modules, activeCol, sourceTypes);
+			next = applyOrdersForColumn(next, overCol, targetTypes);
+			if (overCol === 0) {
+				next = forceSidebarInnerColumns(next, movedType);
+			}
+			setValue("modules", next, { shouldDirty: true });
+			return;
+		}
+		// Cross-groupe skills uniquement (inchangé)
 		if (activeData.type !== "subcard") return;
 
 		const activeContainer = activeData.containerId as string;
 		const activePath = activeData.path as string;
 
-		let overContainer: string;
 		let overPath: string;
 		let insertIndex: number;
 
 		if (overData.type === "subcard") {
-			// drop sur un skill d'un autre groupe
-			overContainer = overData.containerId as string;
+			const overContainer = overData.containerId as string;
 			overPath = overData.path as string;
 			if (activeContainer === overContainer) return;
 
@@ -255,24 +361,22 @@ export function useCvPageDnd(itemUse: SectionItem[]) {
 			overData.type === "card" &&
 			overData.containerId === "skillGroup"
 		) {
-			// drop sur le groupe lui-même (vide ou zone libre)
-			overContainer = String(over.id); // clientKey du groupe
+			const overContainer = String(over.id);
 			if (activeContainer === overContainer) return;
 
-			// préférer skillsPath si tu l'as mis dans data
 			overPath =
 				(overData.skillsPath as string) ??
 				(() => {
 					const groups = getValues("datas.skillGroup.content") ?? [];
 					const gi = groups.findIndex(
-						(g: any) => g.clientKey === String(over.id),
+						(g: { clientKey: string }) => g.clientKey === String(over.id),
 					);
 					return gi === -1
 						? null
 						: `datas.skillGroup.content.${gi}.content.skills`;
 				})();
 			if (!overPath) return;
-			insertIndex = (getValues(overPath) ?? []).length; // à la fin
+			insertIndex = (getValues(overPath) ?? []).length;
 		} else {
 			return;
 		}
@@ -284,8 +388,6 @@ export function useCvPageDnd(itemUse: SectionItem[]) {
 			(i) => i.clientKey === String(active.id),
 		);
 		if (activeIndex === -1) return;
-
-		// déjà présent dans la cible (dragOver répété) → ne rien refaire
 		if (overList.some((i) => i.clientKey === String(active.id))) return;
 
 		const [moved] = activeList.splice(activeIndex, 1);
@@ -317,10 +419,12 @@ export function useCvPageDnd(itemUse: SectionItem[]) {
 				return container?.data.current?.type === type;
 			});
 
-		// On ne “voit” que les cibles du même niveau
 		if (activeType === "section") {
 			const section = findByType("section");
-			return section ? [section] : list;
+			if (section) return [section];
+			// Colonne vide (ou zone libre entre sections)
+			const column = findByType("column");
+			return column ? [column] : list;
 		}
 
 		if (activeType === "card") {
@@ -332,7 +436,6 @@ export function useCvPageDnd(itemUse: SectionItem[]) {
 			const subcard = findByType("subcard");
 			if (subcard) return [subcard];
 
-			// fallback : drop sur un groupe de skills (y compris vide)
 			const groupCard = list.find((collision) => {
 				const container = args.droppableContainers.find(
 					(c) => c.id === collision.id,

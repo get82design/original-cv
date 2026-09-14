@@ -1,5 +1,7 @@
 import { useCreateCvContext } from "@/features/cv-editor/component/context/CreateCvContext";
+import { useColumnFg } from "@/features/cv-editor/component/kit-dnd/shared/ColumnFgContext";
 import { FieldNameLayoutGeneral } from "@/features/cv-editor/utils/fields/fieldNameLayoutGeneral";
+import { useInputCvColor } from "@/features/cv-editor/utils/utilsCv/color";
 import type { ListItem } from "@utils/type";
 import { useFormContext } from "react-hook-form";
 import { SectionItemShell } from "../../common-compo/section/SectionItemShell";
@@ -38,6 +40,18 @@ export const CardTagOne = ({
 	const watchModelTag = watch(
 		`datas.tagGroup.content.${groupIndex}.content.settings.tags`,
 	);
+	const columnFg = useColumnFg();
+	const design = watchDesign ?? "tag";
+	// Pastille : blanc sur primary. Border/none : noir, ou fg sidebar (blanc).
+	const tagTextColor =
+		design === "tag"
+			? "white"
+			: design === "border" || design === "none"
+				? (columnFg ?? "black")
+				: (columnFg ?? watchModelTag?.colorSelect ?? "black");
+	const tagCssColor = useInputCvColor(tagTextColor, {
+		ignoreColumnFg: design === "tag",
+	});
 
 	// const deleteItem = (itemToDelete: ListItem<unknown>) => {
 	// 	const list = (getValues(itemName) ?? []) as ListItem<unknown>[];
@@ -96,7 +110,7 @@ export const CardTagOne = ({
 			<ContentTagContainer
 				tagCompo={
 					<TagCv
-						style={watchDesign ?? "tag"}
+						style={design}
 						groupIndex={groupIndex}
 						index={index}
 						onDelete={handleDelete}
@@ -114,16 +128,23 @@ export const CardTagOne = ({
 								}}
 								forceWidthFull
 								name={`${pathContent}.name`}
-								textColor={watchModelTag?.colorSelect}
+								textColor={tagTextColor}
+								ignoreColumnFg={design === "tag"}
 								dataInput={{ changeSize: "2px", model: watchModelTag }}
 							/>
 						) : (
-							<span className="my-0" onClick={() => {
-								setSelectModifInput(
-								  `datas.tagGroup.content.${groupIndex}.content.settings.tags`,
-								);
-								setSelectInputForm("");
-							  }}>{label || "Tag"}</span>
+							<span
+								className="my-0"
+								style={{ color: tagCssColor ? `var(--${tagCssColor})` : undefined }}
+								onClick={() => {
+									setSelectModifInput(
+										`datas.tagGroup.content.${groupIndex}.content.settings.tags`,
+									);
+									setSelectInputForm("");
+								}}
+							>
+								{label || "Tag"}
+							</span>
 						)}
 					</TagCv>
 				}

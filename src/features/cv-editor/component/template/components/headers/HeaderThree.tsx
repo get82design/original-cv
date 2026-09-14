@@ -8,6 +8,7 @@ import { HeaderThreeContainer } from "./content/HeaderThreeContainer"
 import { FieldNameLayoutGeneral } from "@/features/cv-editor/utils/fields/fieldNameLayoutGeneral"
 import { FieldNameHeader } from "@/features/cv-editor/utils/fields/fieldNameHeader"
 import { useCreateCvContext } from "../../../context/CreateCvContext"
+import { getHeaderChrome } from "./utils/headerLayout"
 
 export const HeaderThree = () => {
     const { watch } = useFormContext()
@@ -15,9 +16,11 @@ export const HeaderThree = () => {
     const { setSelectModifInput } = useCreateCvContext()
     const watchModelHeaderNom = watch(FieldNameHeader.settingsNom)
     const watchModelHeaderPrenom = watch(FieldNameHeader.settingsPrenom)
+    const chrome = getHeaderChrome(watchGeneral); // watchGeneral = layout
     return (
       <HeaderThreeContainer
         modelGeneral={watchGeneral}
+        chrome={chrome}
         nomCompo={
           <InputTextCv
             placeholder="Prenom"
@@ -25,7 +28,7 @@ export const HeaderThree = () => {
             name={FieldNameHeader.prenom}
             onClick={() => setSelectModifInput(FieldNameHeader.settingsPrenom)}
             textColor={watchModelHeaderPrenom?.colorSelect}
-            textAlign={watchModelHeaderPrenom?.textAlign || 'left'}
+            textAlign={chrome.textAlign}
             dataInput={{
               changeSize: '4px',
               model: watchModelHeaderPrenom,
@@ -40,7 +43,7 @@ export const HeaderThree = () => {
             name={FieldNameHeader.nom}
             onClick={() => setSelectModifInput(FieldNameHeader.settingsNom)}
             textColor={watchModelHeaderNom?.colorSelect}
-            textAlign={watchModelHeaderNom?.textAlign || 'left'}
+            textAlign={chrome.textAlign}
             dataInput={{
               changeSize: '4px',
               model: watchModelHeaderNom,
@@ -48,10 +51,10 @@ export const HeaderThree = () => {
             forceWidthFull={true}
           />
         }
-        subTitleCompo={<IntituleCvInput forceWidthFull />}
-        emailCompo={<EmailInput withIcon colorIcon="000000" />}
-        phoneCompo={<PhoneInput withIcon colorIcon="000000" />}
-        locationCompo={<LocationInput withIcon colorIcon="000000" />}
+        subTitleCompo={<IntituleCvInput forceWidthFull textAlign={chrome.textAlign} />}
+        emailCompo={<EmailInput withIcon textAlign={chrome.textAlign} />}
+        phoneCompo={<PhoneInput withIcon textAlign={chrome.textAlign} />}
+        locationCompo={<LocationInput withIcon textAlign={chrome.textAlign} />}
       />
     )
   }

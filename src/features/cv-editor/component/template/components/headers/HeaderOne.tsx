@@ -8,13 +8,26 @@ import { LocationInput } from "../input-cv/location-input/LocationCvInput";
 import { HeaderOneContainer } from "./content/HeaderOneContainer";
 import { FieldNameLayoutGeneral } from "@/features/cv-editor/utils/fields/fieldNameLayoutGeneral";
 import { FieldNameCv } from "@/features/cv-editor/utils/fields/fieldNameCv";
+import { getHeaderChrome } from "./utils/headerLayout";
+import { FieldNameHeader } from "@/features/cv-editor/utils/fields/fieldNameHeader";
+import type { BaseTextSettings } from "@/services/schemas/cvTemplate.schema";
 
 export const HeaderOne = () => {
 	const { watch, setValue } = useFormContext();
 	const watchGeneral = watch(FieldNameLayoutGeneral.layout);
 	const watchPhoto = watch(FieldNameCv.photo);
+	const chrome = getHeaderChrome(watchGeneral); // watchGeneral = layout
 	const refPhoto = useRef<HTMLInputElement | null>(null);
 	const [photo, setPhoto] = useState(watchPhoto);
+	const watchDataHeaderTitleSettings: BaseTextSettings = watch(
+		FieldNameHeader.settingsTitle
+	  )
+
+	const titleAlign =
+		chrome.photoSide === "right"
+			? "right" // flip photo → texte côté photo
+			: (watchDataHeaderTitleSettings?.textAlign ?? "left"); // tokens : left | center | right
+
 
 	const onSelect = (event: React.MouseEvent<HTMLInputElement>) => {
 		//   if (((event.target as HTMLInputElement).files as FileList)[0]) {
@@ -38,11 +51,16 @@ export const HeaderOne = () => {
 	return (
 		<HeaderOneContainer
 			modelGeneral={watchGeneral}
-			titleCompo={<NomPrenomInput forceWidthFull />}
-			subTitleCompo={<IntituleCvInput forceWidthFull />}
-			emailCompo={<EmailInput textAlign="left" />}
-			phoneCompo={<PhoneInput textAlign="center" />}
-			locationCompo={<LocationInput textAlign="right" />}
+			chrome={chrome}
+			titleCompo={
+				<NomPrenomInput forceWidthFull textAlign={titleAlign} />
+			}
+			subTitleCompo={
+				<IntituleCvInput forceWidthFull textAlign={titleAlign} />
+			}
+			emailCompo={<EmailInput textAlign={chrome.contacts.email} />}
+			phoneCompo={<PhoneInput textAlign={chrome.contacts.phone} />}
+			locationCompo={<LocationInput textAlign={chrome.contacts.location} />}
 			photo={
 				<>
 					{/* <Image

@@ -12,6 +12,7 @@ export const classique = defineTemplate({
 	layout: {
 		...sharedLayout,
 		withPhoto: true,
+		photoSide: "right",
 		stylePhoto: "circle",
 	},
 });

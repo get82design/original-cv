@@ -10,6 +10,9 @@ export const CertificationSectionMenu = () => {
 	const modules = watch("modules");
 	const pathDesign = moduleField(modules, "certification", "settings", "content");
 
+	const certificationMod = modules?.find((m: { type: string }) => m.type === "certification");
+    const inSidebar = (certificationMod?.column ?? 0) === 0;
+
 	// → modules.{i}.settings.content
 	const columnsPath = `${pathDesign}.columns`;
 	const watchColumns = watch(columnsPath);
@@ -41,6 +44,9 @@ export const CertificationSectionMenu = () => {
 			],
 		},
 	];
+	
+	if (inSidebar) return null;
+
 	return (
 		<>
 			<button

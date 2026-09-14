@@ -145,9 +145,17 @@ export const minimalTokens: ThemeTokens = {
 		weightModel: 500,
 		colorSelect: "gray",
 	},
+	headerTitle: {
+		...classiqueTokens.headerTitle,
+		sizeModel: "18px",
+		weightModel: 600,
+		textAlign: "center",
+	},
 	headerSubTitle: {
 		...classiqueTokens.headerSubTitle,
-		textAlign: "right",
+		sizeModel: "18px",
+		weightModel: 600,
+		textAlign: "center",
 	},
 	sectionTitle: {
 		...classiqueTokens.sectionTitle,
@@ -531,6 +539,453 @@ export const zurichTokens: ThemeTokens = {
 		sizeModel: "14px",
 		weightModel: 600,
 		colorSelect: "gray",
+	},
+	itemTitle: {
+		...classiqueTokens.itemTitle,
+		sizeModel: "14px",
+		weightModel: 500,
+	},
+	meta: {
+		...classiqueTokens.meta,
+		sizeModel: "12px",
+		weightModel: 400,
+	},
+	body: {
+		...classiqueTokens.body,
+		sizeModel: "12px",
+	},
+};
+
+export const chicagoTokens: ThemeTokens = {
+	...classiqueTokens,
+	headerNom: {
+		...classiqueTokens.headerNom,
+		textAlign: "right",
+		sizeModel: "28px",
+		weightModel: 700,
+		colorSelect: "primaryColor",
+	},
+	headerPrenom: {
+		...classiqueTokens.headerPrenom,
+		textAlign: "right",
+		sizeModel: "28px",
+		weightModel: 500,
+		colorSelect: "gray",
+	},
+	headerSubTitle: {
+		...classiqueTokens.headerSubTitle,
+		textAlign: "right",
+	},
+}
+
+export const tokyoTokens: ThemeTokens = {
+	...classiqueTokens,
+	headerNom: {
+		...classiqueTokens.headerNom,
+		textAlign: "right",
+		sizeModel: "28px",
+		weightModel: 700,
+		colorSelect: "primaryColor",
+	},
+	headerPrenom: {
+		...classiqueTokens.headerPrenom,
+		textAlign: "right",
+		sizeModel: "28px",
+		weightModel: 500,
+		colorSelect: "gray",
+	},
+	headerSubTitle: {
+		...classiqueTokens.headerSubTitle,
+		textAlign: "right",
+	},
+}
+
+export const lisbonTokens: ThemeTokens = {
+	...classiqueTokens,
+	headerNom: {
+		...classiqueTokens.headerNom,
+		textAlign: "right",
+		sizeModel: "28px",
+		weightModel: 700,
+		colorSelect: "primaryColor",
+	},
+	headerPrenom: {
+		...classiqueTokens.headerPrenom,
+		textAlign: "right",
+		sizeModel: "28px",
+		weightModel: 500,
+		colorSelect: "gray",
+	},
+	headerSubTitle: {
+		...classiqueTokens.headerSubTitle,
+		textAlign: "right",
+	},
+}
+
+export const florenceTokens: ThemeTokens = {
+	...classiqueTokens,
+	headerNom: {
+		...classiqueTokens.headerNom,
+		textAlign: "right",
+		sizeModel: "28px",
+		weightModel: 700,
+		colorSelect: "primaryColor",
+	},
+	headerPrenom: {
+		...classiqueTokens.headerPrenom,
+		textAlign: "right",
+		sizeModel: "28px",
+		weightModel: 500,
+		colorSelect: "gray",
+	},
+	headerSubTitle: {
+		...classiqueTokens.headerSubTitle,
+		textAlign: "right",
+	},
+}
+
+export const helsinkiTokens: ThemeTokens = {
+	...classiqueTokens,
+	headerNom: {
+		...classiqueTokens.headerNom,
+		textAlign: "right",
+		sizeModel: "28px",
+		weightModel: 700,
+		colorSelect: "primaryColor",
+	},
+	headerPrenom: {
+		...classiqueTokens.headerPrenom,
+		textAlign: "right",
+		sizeModel: "28px",
+		weightModel: 500,
+		colorSelect: "gray",
+	},
+	headerSubTitle: {
+		...classiqueTokens.headerSubTitle,
+		textAlign: "right",
+	},
+	sectionTitle: {
+		...classiqueTokens.sectionTitle,
+		sizeModel: "14px",
+		weightModel: 600,
+		colorSelect: "gray",
+	},
+	itemTitle: {
+		...classiqueTokens.itemTitle,
+		sizeModel: "14px",
+		weightModel: 500,
+	},
+	meta: {
+		...classiqueTokens.meta,
+		sizeModel: "12px",
+		weightModel: 400,
+	},
+	body: {
+		...classiqueTokens.body,
+		sizeModel: "12px",
+	},
+}
+
+export const naraTokens: ThemeTokens = {
+	...classiqueTokens,
+	headerTitle: {
+		...classiqueTokens.headerTitle,
+		weightSelect: "lg",
+		textAlign: "center",
+		colorSelect: "black",
+	},
+	headerSubTitle: {
+		...classiqueTokens.headerSubTitle,
+		weightSelect: "sm",
+		textAlign: "center",
+		colorSelect: "primaryColor",
+	},
+	sectionTitle: {
+		...classiqueTokens.sectionTitle,
+		weightSelect: "sm",
+		textAlign: "center",
+		colorSelect: "black",
+	},
+};
+
+export const reykjavikTokens: ThemeTokens = {
+	...classiqueTokens,
+	headerTitle: {
+		...classiqueTokens.headerTitle,
+		weightSelect: "lg",
+		textAlign: "center",
+		colorSelect: "black",
+	},
+	headerSubTitle: {
+		...classiqueTokens.headerSubTitle,
+		weightSelect: "sm",
+		textAlign: "center",
+		colorSelect: "primaryColor",
+	},
+	sectionTitle: {
+		...classiqueTokens.sectionTitle,
+		weightSelect: "sm",
+		textAlign: "left",
+		colorSelect: "black",
+	},
+};
+
+export const krakowTokens: ThemeTokens = {
+	...classiqueTokens,
+	headerTitle: {
+		...classiqueTokens.headerTitle,
+		weightSelect: "lg",
+		textAlign: "center",
+		colorSelect: "black",
+	},
+	headerSubTitle: {
+		...classiqueTokens.headerSubTitle,
+		weightSelect: "sm",
+		textAlign: "center",
+		colorSelect: "primaryColor",
+	},
+	sectionTitle: {
+		...classiqueTokens.sectionTitle,
+		weightSelect: "sm",
+		textAlign: "left",
+		colorSelect: "black",
+	},
+};
+
+export const shenzhenTokens: ThemeTokens = {
+	...classiqueTokens,
+	headerNom: {
+		...classiqueTokens.headerNom,
+		sizeModel: "24px",
+		weightModel: 700,
+		colorSelect: "primaryColor",
+		weightSelect: "lg",
+	},
+	headerPrenom: {
+		...classiqueTokens.headerPrenom,
+		sizeModel: "28px",
+		weightModel: 500,
+		colorSelect: "black",
+		weightSelect: "sm",
+		sizeSelect: "lg",
+	},
+	headerSubTitle: {
+		...classiqueTokens.headerSubTitle,
+		sizeModel: "18px",
+		weightModel: 500,
+		colorSelect: "gray",
+	},
+	sectionTitle: {
+		...classiqueTokens.sectionTitle,
+		sizeModel: "14px",
+		weightModel: 600,
+		colorSelect: "black",
+	},
+	itemTitle: {
+		...classiqueTokens.itemTitle,
+		sizeModel: "14px",
+		weightModel: 500,
+	},
+	meta: {
+		...classiqueTokens.meta,
+		sizeModel: "12px",
+		weightModel: 400,
+	},
+	body: {
+		...classiqueTokens.body,
+		sizeModel: "14px",
+	},
+};
+
+export const eindhovenTokens: ThemeTokens = {
+	...classiqueTokens,
+	headerNom: {
+		...classiqueTokens.headerNom,
+		textAlign: "right",
+		sizeModel: "28px",
+		weightModel: 700,
+		colorSelect: "primaryColor",
+	},
+	headerPrenom: {
+		...classiqueTokens.headerPrenom,
+		textAlign: "right",
+		sizeModel: "28px",
+		weightModel: 500,
+		colorSelect: "gray",
+	},
+	headerSubTitle: {
+		...classiqueTokens.headerSubTitle,
+		textAlign: "right",
+	},
+	sectionTitle: {
+		...classiqueTokens.sectionTitle,
+		weightSelect: "sm",
+		textAlign: "center",
+		colorSelect: "black",
+	},
+}
+
+export const oxfordTokens: ThemeTokens = {
+	...classiqueTokens,
+	headerNom: {
+		...classiqueTokens.headerNom,
+		textAlign: "right",
+		sizeModel: "28px",
+		weightModel: 700,
+		colorSelect: "primaryColor",
+	},
+	headerPrenom: {
+		...classiqueTokens.headerPrenom,
+		textAlign: "right",
+		sizeModel: "28px",
+		weightModel: 500,
+		colorSelect: "gray",
+	},
+	headerSubTitle: {
+		...classiqueTokens.headerSubTitle,
+		textAlign: "right",
+	},
+	sectionTitle: {
+		...classiqueTokens.sectionTitle,
+		weightSelect: "sm",
+		textAlign: "center",
+		colorSelect: "black",
+	},
+}
+
+export const singaporeTokens: ThemeTokens = {
+	...classiqueTokens,
+	headerNom: {
+		...classiqueTokens.headerNom,
+		textAlign: "right",
+		sizeModel: "28px",
+		weightModel: 700,
+		colorSelect: "primaryColor",
+	},
+	headerPrenom: {
+		...classiqueTokens.headerPrenom,
+		textAlign: "right",
+		sizeModel: "28px",
+		weightModel: 500,
+		colorSelect: "gray",
+	},
+	headerTitle: {
+		...classiqueTokens.headerTitle,
+		sizeModel: "18px",
+		weightModel: 600,
+		textAlign: "center",
+	},
+	headerSubTitle: {
+		...classiqueTokens.headerSubTitle,
+		sizeModel: "18px",
+		weightModel: 600,
+		textAlign: "center",
+	},
+	sectionTitle: {
+		...classiqueTokens.sectionTitle,
+		sizeModel: "14px",
+		weightModel: 600,
+		colorSelect: "black",
+	},
+	itemTitle: {
+		...classiqueTokens.itemTitle,
+		sizeModel: "14px",
+		weightModel: 500,
+	},
+	meta: {
+		...classiqueTokens.meta,
+		sizeModel: "12px",
+		weightModel: 400,
+	},
+	body: {
+		...classiqueTokens.body,
+		sizeModel: "12px",
+	},
+};
+
+export const torontoTokens: ThemeTokens = {
+	...classiqueTokens,
+	headerNom: {
+		...classiqueTokens.headerNom,
+		textAlign: "right",
+		sizeModel: "28px",
+		weightModel: 700,
+		colorSelect: "primaryColor",
+	},
+	headerPrenom: {
+		...classiqueTokens.headerPrenom,
+		textAlign: "right",
+		sizeModel: "28px",
+		weightModel: 500,
+		colorSelect: "gray",
+	},
+	headerTitle: {
+		...classiqueTokens.headerTitle,
+		sizeModel: "18px",
+		weightModel: 600,
+		textAlign: "center",
+	},
+	headerSubTitle: {
+		...classiqueTokens.headerSubTitle,
+		sizeModel: "18px",
+		weightModel: 600,
+		textAlign: "center",
+	},
+	sectionTitle: {
+		...classiqueTokens.sectionTitle,
+		sizeModel: "14px",
+		weightModel: 600,
+		colorSelect: "black",
+	},
+	itemTitle: {
+		...classiqueTokens.itemTitle,
+		sizeModel: "14px",
+		weightModel: 500,
+	},
+	meta: {
+		...classiqueTokens.meta,
+		sizeModel: "12px",
+		weightModel: 400,
+	},
+	body: {
+		...classiqueTokens.body,
+		sizeModel: "12px",
+	},
+};
+
+export const frankfurtTokens: ThemeTokens = {
+	...classiqueTokens,
+	headerNom: {
+		...classiqueTokens.headerNom,
+		textAlign: "right",
+		sizeModel: "28px",
+		weightModel: 700,
+		colorSelect: "primaryColor",
+	},
+	headerPrenom: {
+		...classiqueTokens.headerPrenom,
+		textAlign: "right",
+		sizeModel: "28px",
+		weightModel: 500,
+		colorSelect: "gray",
+	},
+	headerTitle: {
+		...classiqueTokens.headerTitle,
+		sizeModel: "18px",
+		weightModel: 600,
+		textAlign: "center",
+	},
+	headerSubTitle: {
+		...classiqueTokens.headerSubTitle,
+		sizeModel: "18px",
+		weightModel: 600,
+		textAlign: "center",
+	},
+	sectionTitle: {
+		...classiqueTokens.sectionTitle,
+		sizeModel: "14px",
+		weightModel: 600,
+		colorSelect: "black",
 	},
 	itemTitle: {
 		...classiqueTokens.itemTitle,

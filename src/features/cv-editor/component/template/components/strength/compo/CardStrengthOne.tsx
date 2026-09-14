@@ -127,20 +127,19 @@ export const CardStrengthOne = ({
 					/>
 				}
 				titleCompo={
-					<InputTextCv
+					<TextareaCv
 						placeholder="Quel est votre atout ?"
 						onClick={() => {
 							setSelectModifInput(`${pathContent}.settings.strength`);
 							setSelectInputForm(`${pathContent}.settings.withStrength`);
-						}}
+						} }
 						name={`${pathContent}.title`}
 						textColor={watchModelStrength?.colorSelect}
 						dataInput={{
 							changeSize: "1px",
 							model: watchModelStrength,
-						}}
-						forceWidthFull={true}
-					/>
+						}} 
+						textAlign={watchModelStrength.textAlign}					/>
 				}
 				descriptionCompo={
 					<TextareaCv
@@ -180,7 +179,7 @@ export const ContentStrengthContainer = ({
 	descriptionCompo,
 }: ContentStrngthContainerProps) => {
 	return (
-		<div className="flex gap-3 items-center pb-1 px-2 relative mt-1">
+		<div className="flex gap-3 items-start pb-1 px-2 relative mt-1">
 			<CommonPointList general={general} withIconMarge />
 			{item.content.settings?.withIcon && iconComponent}
 			<div className="w-full flex flex-col gap-0">

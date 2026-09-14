@@ -11,6 +11,7 @@ import { useRef, useState } from "react";
 import { InputTextCv } from "@/components/input-writer/input-text-cv/InputTextCv";
 import { FieldNameHeader } from "@/features/cv-editor/utils/fields/fieldNameHeader";
 import { useCreateCvContext } from "../../../context/CreateCvContext";
+import { getHeaderChrome } from "./utils/headerLayout";
 
 export const HeaderFour = () => {
 	const { setSelectModifInput } = useCreateCvContext();
@@ -20,6 +21,7 @@ export const HeaderFour = () => {
 	const watchModelHeaderNom = watch(FieldNameHeader.settingsNom);
 	const watchModelHeaderPrenom = watch(FieldNameHeader.settingsPrenom);
 	const refPhoto = useRef<HTMLInputElement | null>(null);
+	const chrome = getHeaderChrome(watchGeneral); // watchGeneral = layout
 	const [photo, setPhoto] = useState(watchPhoto);
 
 	const onSelect = (event: React.MouseEvent<HTMLInputElement>) => {
@@ -44,6 +46,7 @@ export const HeaderFour = () => {
 	return (
 		<HeaderFourContainer
 			modelGeneral={watchGeneral}
+			chrome={chrome}
 			nomCompo={
 				<InputTextCv
 					placeholder="Prenom"
@@ -51,7 +54,7 @@ export const HeaderFour = () => {
 					name={FieldNameHeader.prenom}
 					onClick={() => setSelectModifInput(FieldNameHeader.settingsPrenom)}
 					textColor={watchModelHeaderPrenom?.colorSelect}
-					textAlign={watchModelHeaderPrenom?.textAlign || "left"}
+					textAlign={chrome.textAlign}
 					dataInput={{
 						changeSize: "4px",
 						model: watchModelHeaderPrenom,
@@ -65,17 +68,19 @@ export const HeaderFour = () => {
 					name={FieldNameHeader.nom}
 					onClick={() => setSelectModifInput(FieldNameHeader.settingsNom)}
 					textColor={watchModelHeaderNom?.colorSelect}
-					textAlign={watchModelHeaderNom?.textAlign || "left"}
+					textAlign={chrome.textAlign}
 					dataInput={{
 						changeSize: "4px",
 						model: watchModelHeaderNom,
 					}}
 				/>
 			}
-			subTitleCompo={<IntituleCvInput forceWidthFull />}
-			emailCompo={<EmailInput textAlign="right" />}
-			phoneCompo={<PhoneInput textAlign="right" />}
-			locationCompo={<LocationInput textAlign="right" />}
+			subTitleCompo={
+				<IntituleCvInput forceWidthFull textAlign={chrome.textAlign} />
+			}
+			emailCompo={<EmailInput textAlign={chrome.textAlign} />}
+			phoneCompo={<PhoneInput textAlign={chrome.textAlign} />}
+			locationCompo={<LocationInput textAlign={chrome.textAlign} />}
 			photo={
 				<>
 					<button

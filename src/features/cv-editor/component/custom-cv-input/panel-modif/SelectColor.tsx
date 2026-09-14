@@ -24,6 +24,13 @@ export const SelectColor = ({ watchSelectInput, select }: SelectColorProps) => {
 			<p className="font-semibold text-sm">Couleur :</p>
 			<div className="w-full flex gap-2">
 				<RadioColorRhf
+					index={4}
+					name={select + ".colorSelect"}
+					color={"--white"}
+					value={"white"}
+					checked={watchSelectInput?.colorSelect === "white"}
+				/>
+				<RadioColorRhf
 					index={1}
 					name={select + ".colorSelect"}
 					color={"--black"}

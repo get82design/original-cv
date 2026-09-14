@@ -81,7 +81,7 @@ export const EducationDnd = ({
 			items={watchEducations.map((s) => s.clientKey)}
 			strategy={verticalListSortingStrategy}
 		>
-			<div className={`educations-grid grid items-start ${COL_CLASS[colOfEducation as keyof typeof COL_CLASS] ?? "grid-cols-1"} gap-6`}>
+			<div className={`educations-grid grid items-start ${COL_CLASS[colOfEducation as keyof typeof COL_CLASS] ?? "grid-cols-1"} gap-x-6 gap-y-2`}>
 				{watchEducations.map((education, index) => (
 					<button
 						type="button"

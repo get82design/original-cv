@@ -10,6 +10,9 @@ export const StrengthSectionMenu = () => {
 	const modules = watch("modules");
 	const pathDesign = moduleField(modules, "strength", "settings", "content");
 
+	const strengthMod = modules?.find((m: { type: string }) => m.type === "strength");
+    const inSidebar = (strengthMod?.column ?? 0) === 0;
+
 	// → modules.{i}.settings.content
 	const columnsPath = `${pathDesign}.columns`;
 	const watchColumns = watch(columnsPath);
@@ -41,6 +44,9 @@ export const StrengthSectionMenu = () => {
 			],
 		},
 	];
+
+	if (inSidebar) return null;
+
 	return (
 		<>
 			<button

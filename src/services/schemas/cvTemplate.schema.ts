@@ -10,6 +10,7 @@ const baseModuleSchema = z.object({
 const sizeSelectSchema = z.enum(["xs", "sm", "md", "lg", "xl"]);
 const weightSelectSchema = z.enum(["xs", "sm", "md", "lg", "xl"]);
 const colorSelectSchema = z.enum(["primaryColor", "gray", "black", "white"]);
+export type ColorSelect = z.infer<typeof colorSelectSchema>;
 const textAlignSchema = z.enum(["left", "center", "right", "justify"]);
 
 export const levelDisplaySchema = z.enum(["stars", "dots", "bars", "progress"]);
@@ -484,6 +485,10 @@ export const templateLayoutSchema = z.object({
 	marge: elmSizeSchema,
 	space: elmSizeSchema,
 	withPhoto: z.boolean(),
+	photoSide: z.enum(["left", "right"]).default("left"),
+	sidebarSide: z.enum(["left", "right"]).default("left"),
+	headerPlacement: z.enum(["top", "sidebar"]).default("top"),
+	lockPhotoSide: z.boolean().default(false),
 	typography: z
 		.object({
 			fontFamily: fontSlugSchema.default("inter"), // niveau 1 : choix user (plus tard)
@@ -514,6 +519,11 @@ export const templateLayoutSchema = z.object({
 	stylePhoto: z.enum(["circle", "flat"]).default("circle"),
 	listStyle: z.enum(["none", "line", "point"]).default("none"),
 	headerPrimaryColor: z.boolean().default(false),
+	sidebarTheme: z.object({
+		bgColor: colorSelectSchema.optional(),      // primaryColor | gray | black | white
+		shadeBgColor: z.enum(["-100","-200","-300","-400","-500","-600","-700","-800","-900"]).optional(),
+		fg: z.enum(["auto", "black", "white"]).default("auto"),
+	  }).optional(),
 	titleSection: z.object({
 		textTransform: z.enum(["capitalize", "uppercase"]).default("capitalize"),
 		withIcon: z.boolean().default(false),
@@ -579,15 +589,16 @@ export const templateDefaultStylesSchema = z.object({
 					"OneColumnModel",
 					"OneColumnWithLeftBar",
 					"TwoColumnCenter",
-					"TwoColumnLeftBar",
-					"TwoColumnRightBar",
+					"TwoColumnSideBar",
 				])
 				.default("OneColumnModel"),
+			sidebarSide: z.enum(["left", "right"]).default("left"),
 			sectionHeader: z.enum([
 				"HeaderOne",
 				"HeaderTwo",
 				"HeaderThree",
 				"HeaderFour",
+				"HeaderFive",
 			]),
 			sectionExperience: z.object({
 				component: z.enum(["SectionExperienceOne", "SectionExperienceTwo"]),

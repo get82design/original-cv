@@ -13,6 +13,7 @@ export const denver = defineTemplate({
 		...sharedLayout,
 		withPhoto: true,
 		stylePhoto: "circle",
+		photoSide: "left",
 		listStyle: "line",
 		titleSection: {
 			withIcon: true,

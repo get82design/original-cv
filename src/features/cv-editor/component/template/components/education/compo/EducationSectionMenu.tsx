@@ -10,6 +10,9 @@ export const EducationSectionMenu = () => {
 	const modules = watch("modules");
 	const pathDesign = moduleField(modules, "education", "settings", "content");
 
+	const educationMod = modules?.find((m: { type: string }) => m.type === "education");
+    const inSidebar = (educationMod?.column ?? 0) === 0;
+
 	// → modules.{i}.settings.content
 	const columnsPath = `${pathDesign}.columns`;
 	const watchColumns = watch(columnsPath);
@@ -41,6 +44,9 @@ export const EducationSectionMenu = () => {
 			],
 		},
 	];
+
+	if (inSidebar) return null;
+	
 	return (
 		<>
 			<button

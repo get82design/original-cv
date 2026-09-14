@@ -3,7 +3,6 @@ import { CSS } from "@dnd-kit/utilities";
 import { useCreateCvContext } from "../../context/CreateCvContext";
 import { MdDelete, MdOutlineOpenWith } from "react-icons/md";
 import type { ItemGeneralProps } from "@utils/type";
-import { Button } from "primereact/button";
 import { Divider } from "primereact/divider";
 import { useState } from "react";
 import { DialogDataSectionFromProfile } from "../../dialog/dataFromProfile/DialogDataSectionFromProfile";
@@ -30,6 +29,7 @@ export const SectionSortableContext = ({
 		id: item.id, // 'section-education'
 		data: {
 			type: "section",
+			column: item.column, // 0 | 1
 		},
 	});
 
@@ -71,8 +71,12 @@ export const SectionSortableContext = ({
 							className="cursor-move"
 						/>
 					</div>
-					<Divider layout="vertical" className="h-full m-0" />
-					{sectionMenu}
+					{sectionMenu ? (
+						<>
+							<Divider layout="vertical" className="h-full m-0" />
+							{sectionMenu}
+						</>
+					) : null}
 					<Divider layout="vertical" className="h-full m-0" />
 					<button
 						type="button"

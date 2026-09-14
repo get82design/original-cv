@@ -1,4 +1,4 @@
-import type { CertificationContentSettings, CompetenceContentSettings, EducationContentSettings, ExpertiseContentSettings, FormationContentSettings, LanguageContentSettings, PassionContentSettings, PrizeContentSettings, SkillContentSettings, SocialMediaContentSettings, StrengthContentSettings, TagContentSettings } from "@/services/schemas/cvTemplate.schema";
+import type { CertificationContentSettings, ColorSelect, CompetenceContentSettings, EducationContentSettings, ExpertiseContentSettings, FormationContentSettings, LanguageContentSettings, PassionContentSettings, PrizeContentSettings, SkillContentSettings, SocialMediaContentSettings, StrengthContentSettings, TagContentSettings } from "@/services/schemas/cvTemplate.schema";
 import type { ThemeTokens } from "./themeTokens";
 
 export function buildHeader(t: ThemeTokens) {
@@ -156,8 +156,21 @@ export function buildCompetenceModule(
 
 export function buildTagModule(
 	t: ThemeTokens,
-	opts: { order: number; title: string; isActive?: boolean, design?: TagContentSettings["design"] },
+	opts: {
+		order: number;
+		title: string;
+		isActive?: boolean;
+		design?: TagContentSettings["design"];
+	},
 ) {
+	const design = opts.design ?? "tag";
+	const tagsColorSelect: ColorSelect =
+		design === "tag"
+			? "white"
+			: design === "hashtag"
+				? "primaryColor"
+				: "black"; // border | none
+
 	return {
 		type: "tag" as const,
 		order: opts.order,
@@ -167,10 +180,12 @@ export function buildTagModule(
 			title: t.sectionTitle,
 			content: {
 				groupTitle: t.itemTitle,
-				tags: t.meta,
+				tags: {
+					...t.meta,
+					colorSelect: tagsColorSelect,
+				},
 				withGroupTitle: true,
-				design: opts.design ?? "tag",
-			  
+				design,
 			},
 		},
 	};

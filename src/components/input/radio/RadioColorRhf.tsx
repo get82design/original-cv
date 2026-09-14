@@ -16,7 +16,7 @@ export const RadioColorRhf = ({
 	...props
 }: FormRadioColorProps) => {
 	const { control, setValue } = useFormContext();
-
+	const isWhite = color === "--white";
 	return (
 		<Controller
 			name={name}
@@ -56,6 +56,7 @@ export const RadioColorRhf = ({
 											? "2px solid var(--teal-500)"
 											: "2px solid transparent",
 										outlineOffset: "2px",
+										boxShadow: isWhite ? "inset 0 0 0 1px var(--gray-300)" : undefined,
 										cursor: "pointer",
 									}}
 								></button>

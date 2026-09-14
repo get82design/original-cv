@@ -14,10 +14,16 @@ export class ColorService {
 			throw new ConflictError("COLOR_ALREADY_EXISTS", "La couleur existe déjà");
 		}
 
+		const maxOrder = await prisma.color.aggregate({
+			_max: { order: true },
+		});
+		const nextOrder = (maxOrder._max.order ?? -1) + 1;
+
 		return prisma.color.create({
 			data: {
 				name: data.name.trim().toLowerCase(),
 				primary: data.primary,
+				order: nextOrder,
 			},
 		});
 	}
@@ -25,7 +31,7 @@ export class ColorService {
 	async findAll() {
 		return prisma.color.findMany({
 			orderBy: {
-				name: "asc",
+				order: "asc",
 			},
 		});
 	}

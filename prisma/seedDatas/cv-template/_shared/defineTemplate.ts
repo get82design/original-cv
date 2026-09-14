@@ -11,13 +11,20 @@ import type z from "zod";
 
 type SeedTemplate = z.input<typeof createCvTemplateSchema>;
 
+type PageLayout =
+	| "OneColumnModel"
+	| "OneColumnWithLeftBar"
+	| "TwoColumnCenter"
+	| "TwoColumnSideBar";
+
 export function defineTemplate(opts: {
 	name: string;
 	slug: string;
 	tokens: ThemeTokens;
 	primaryColor: { name: string; primary: string };
-	sectionHeader: "HeaderOne" | "HeaderTwo" | "HeaderThree" | "HeaderFour";
+	sectionHeader: "HeaderOne" | "HeaderTwo" | "HeaderThree" | "HeaderFour" | "HeaderFive";
 	variant: 1 | 2;
+	pageLayout?: PageLayout;
 	layout?: Omit<Partial<TemplateLayout>, "titleSection" | "typography"> & {
 		titleSection?: Partial<TemplateLayout["titleSection"]>;
 		typography?: Partial<TemplateLayout["typography"]>;
@@ -43,6 +50,7 @@ export function defineTemplate(opts: {
 			primaryColor: opts.primaryColor,
 			slugTemplate: opts.slug,
 			components: buildComponents({
+				...(opts.pageLayout ? { pageLayout: opts.pageLayout } : {}),
 				sectionHeader: opts.sectionHeader,
 				variant: opts.variant,
 			}),

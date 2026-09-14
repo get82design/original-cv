@@ -15,7 +15,7 @@ import { SectionNoUse } from "./component/custom-cv-input/SectionNoUse";
 import { OneColumnModel } from "./component/kit-dnd/one-column-model/OneColumnModel";
 import { clearEditorSelection, useCreateCvContext } from "./component/context/CreateCvContext";
 import type { ItemGeneralProps } from "@utils/type";
-import { compactActiveOrders, nextActiveOrder } from "@/utils/moduleOrder";
+import { compactActiveOrders, nextActiveOrderInColumn } from "@/utils/moduleOrder";
 import { PageLayoutRegister } from "./component/kit-dnd/register/PageLayoutRegister";
 import { getCvTypographyVars } from "./utils/utilsCv/font";
 import { MdInfoOutline } from "react-icons/md";
@@ -86,19 +86,15 @@ export const CvEditor = () => {
 
 	const addItem = (item: TemplateModule) => {
 		if (!modules) return;
-
-		// déjà actif → noop
 		if (modules.some((m) => m.type === item.type && m.isActive)) return;
-
-		const newOrder = nextActiveOrder(modules);
-
+		const target = modules.find((m) => m.type === item.type);
+		const column = target?.column ?? 0;
+		const newOrder = nextActiveOrderInColumn(modules, column);
 		const updated = modules.map((mod) =>
 			mod.type === item.type
-				? { ...mod, isActive: true, column: 0, order: newOrder }
+				? { ...mod, isActive: true, order: newOrder } // garde column du seed
 				: mod,
 		);
-
-		// compacte actifs + inactifs pour éviter les collisions (cvId, column, order)
 		setValue("modules", compactActiveOrders(updated), { shouldDirty: true });
 	};
 
@@ -122,7 +118,7 @@ export const CvEditor = () => {
 	};
 
 	const key =
-		watch("layoutGeneral.defaultStyles.pageLayout") ?? "OneColumnModel";
+		watch("layoutGeneral.defaultStyles.components.pageLayout") ?? "OneColumnModel";
 	const PageLayout = PageLayoutRegister[key] ?? OneColumnModel;
 
 	const items = [

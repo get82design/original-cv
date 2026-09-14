@@ -10,6 +10,9 @@ export const SocialMediaSectionMenu = () => {
 	const modules = watch("modules");
 	const pathDesign = moduleField(modules, "socialMedia", "settings", "content");
 
+	const socialMediaMod = modules?.find((m: { type: string }) => m.type === "socialMedia");
+    const inSidebar = (socialMediaMod?.column ?? 0) === 0;
+
 	// → modules.{i}.settings.content
 	const columnsPath = `${pathDesign}.columns`;
 	const watchColumns = watch(columnsPath);
@@ -47,6 +50,9 @@ export const SocialMediaSectionMenu = () => {
 			],
 		},
 	];
+
+	if (inSidebar) return null;
+
 	return (
 		<>
 			<button

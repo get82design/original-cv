@@ -52,7 +52,7 @@ describe("colorRouter", () => {
 		).rejects.toMatchObject({ code: "CONFLICT" });
 	});
 
-	it("findAll returns colors sorted by name", async () => {
+	it("findAll returns colors sorted by order", async () => {
 		const user = await createTestUser();
 		const caller = await createTestCaller(createTestSession(user));
 
@@ -62,7 +62,7 @@ describe("colorRouter", () => {
 		const list = await caller.color.findAll();
 
 		expect(list).toHaveLength(2);
-		expect(list.map((c) => c.name)).toEqual(["blue", "red"]);
+		expect(list.map((c) => c.name)).toEqual(["red", "blue"]);
 	});
 
 	it("findAll returns empty array when no colors", async () => {

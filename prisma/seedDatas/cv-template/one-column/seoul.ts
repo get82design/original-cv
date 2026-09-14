@@ -13,6 +13,7 @@ export const seoul = defineTemplate({
 		...sharedLayout,
 		withPhoto: true,
 		stylePhoto: "circle",
+		lockPhotoSide: true,
 		listStyle: "none",
 		titleSection: {
 			withIcon: true,

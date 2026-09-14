@@ -6,9 +6,10 @@ import { useFormContext } from "react-hook-form"
 
 interface IntituleCvInputProps {
     forceWidthFull?: boolean
+    textAlign?: "left" | "right" | "center" | "justify" | undefined
   }
   
-  export const IntituleCvInput = ({ forceWidthFull = false, }: IntituleCvInputProps) => {
+  export const IntituleCvInput = ({ forceWidthFull = false, textAlign = 'left' }: IntituleCvInputProps) => {
     const { watch } = useFormContext()
     const watchModelHeaderSubTitle: BaseTextSettings = watch(
       FieldNameHeader.settingsSubTitle
@@ -16,6 +17,7 @@ interface IntituleCvInputProps {
     const { setSelectModifInput, setSelectInputForm } = useCreateCvContext()
     return (
       <InputTextCv
+        className="w-full"
         placeholder="Role que vous souhaitez intégrer"
         name={FieldNameHeader.subTitle}
         onClick={() => {
@@ -23,13 +25,7 @@ interface IntituleCvInputProps {
           setSelectInputForm('')
         }}
         textColor={watchModelHeaderSubTitle?.colorSelect}
-        textAlign={watchModelHeaderSubTitle?.textAlign || 'left'}
-        className={`w-full ${watchModelHeaderSubTitle?.textAlign === 'center'
-          ? 'justify-center'
-          : watchModelHeaderSubTitle?.textAlign === 'right'
-            ? 'justify-end'
-            : 'justify-start'
-          }`}
+        textAlign={textAlign ?? watchModelHeaderSubTitle?.textAlign ?? "left"}
         forceWidthFull={forceWidthFull}
         dataInput={{
           changeSize: '2px',

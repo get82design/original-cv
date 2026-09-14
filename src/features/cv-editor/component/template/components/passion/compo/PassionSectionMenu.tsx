@@ -10,6 +10,9 @@ export const PassionSectionMenu = () => {
 	const modules = watch("modules");
 	const pathDesign = moduleField(modules, "passion", "settings", "content");
 
+	const passionMod = modules?.find((m: { type: string }) => m.type === "passion");
+    const inSidebar = (passionMod?.column ?? 0) === 0;
+
 	// → modules.{i}.settings.content
 	const columnsPath = `${pathDesign}.columns`;
 	const watchColumns = watch(columnsPath);
@@ -47,6 +50,9 @@ export const PassionSectionMenu = () => {
 			],
 		},
 	];
+
+	if (inSidebar) return null;
+	
 	return (
 		<>
 			<button

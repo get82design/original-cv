@@ -22,6 +22,8 @@ interface InputTextProps extends PrimeInputTextProps {
 	textAlign?: "left" | "center" | "right" | "justify";
 	textColor: string;
 	forceWidthFull?: boolean;
+	/** Ne pas appliquer le fg de colonne (ex. pastille tag sur fond primary). */
+	ignoreColumnFg?: boolean;
 }
 
 export const InputTextCv = ({
@@ -32,6 +34,7 @@ export const InputTextCv = ({
 	textAlign = "left",
 	textColor,
 	forceWidthFull = false,
+	ignoreColumnFg = false,
 	...props
 }: InputTextProps) => {
 	const ref = useRef<HTMLInputElement>(null);
@@ -41,7 +44,7 @@ export const InputTextCv = ({
 	// const watchFont = watch(FieldNameCvModelGeneral.font)
 	const isXl = useMediaQuery("(min-width: 1440px)");
 
-	const color = useInputCvColor(textColor);
+	const color = useInputCvColor(textColor, { ignoreColumnFg });
 
 	useLayoutEffect(() => {
 		if (ref.current) {
