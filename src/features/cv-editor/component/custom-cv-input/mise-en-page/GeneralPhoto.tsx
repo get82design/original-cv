@@ -33,7 +33,7 @@ export const GeneralPhoto = ({
 	return (
 		(watchWithPhoto || watchWithPhoto === false) && !watchLockPhotoSide && (
 			<div className="flex flex-col gap-1">
-				<p className="my-0 font-semibold text-sm">Photo</p>
+				<p className="my-0 font-semibold text-xs">Photo</p>
 				<div className="flex gap-2 items-center justify-between general-photo">
 					<ToggleAfficherCacher name="layoutGeneral.layout.withPhoto" />
 					{watchWithPhoto && (

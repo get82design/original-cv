@@ -318,22 +318,69 @@ html.dark body {
     padding: 0;
 }
 
-#panel-modif-cv {
+#panel-modif-cv.cv-modif-tabview {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 0;
+
+    .p-tabview-nav-container {
+        flex-shrink: 0;
+        position: sticky;
+        top: 0;
+        z-index: 2;
+        background: var(--white, #fff);
+    }
+
     .p-tabview-nav {
-        flex: 'grid';
+        display: grid;
         grid-template-columns: repeat(3, 1fr);
-        gap: 1rem;
+        gap: 0.5rem;
         justify-content: center;
         align-items: center;
         width: 100%;
-        height: 100%;
+        margin: 0;
+        background: var(--white, #fff);
+
         .p-unselectable-text {
-            width: 100%;  
+            width: 100%;
         }
         .p-unselectable-text a {
             width: 100%;
             display: flex;
             justify-content: center;
         }
+    }
+
+    .p-tabview-panels {
+        flex: 1 1 auto;
+        min-height: 0;
+        overflow: auto;
+        padding: 0.5rem 0.75rem 0.75rem;
+    }
+}
+
+html.dark #panel-modif-cv.cv-modif-tabview {
+    .p-tabview-nav-container,
+    .p-tabview-nav {
+        background: var(--black, #000);
+    }
+}
+
+/* Police select — compact, scoped to this control only */
+.p-dropdown.cv-font-select {
+    height: 2rem;
+    min-height: 2rem;
+
+    .p-dropdown-label {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.8125rem;
+        line-height: 1.5rem;
+        display: flex;
+        align-items: center;
+    }
+
+    .p-dropdown-trigger {
+        width: 2rem;
     }
 }

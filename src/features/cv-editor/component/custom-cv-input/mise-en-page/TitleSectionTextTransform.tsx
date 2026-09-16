@@ -23,10 +23,10 @@ export const TitleSectionTextTranform = ({
 		return <div className="text-sm">{option.name}</div>;
 	};
 	return (
-		<div className="flex gap-8 items-center">
-			<div className="flex gap-2 items-center">
-				<p className="my-0 font-semibold text-sm">Titres des sections</p>
-				<MdInfo className="infoTitleSection" /*style={primaryColor}*/ />
+		<div className="flex flex-col gap-1">
+			<div className="flex gap-1 items-center">
+				<p className="my-0 font-semibold text-xs">Titres des sections</p>
+				<MdInfo className="infoTitleSection text-sm text-muted-color" />
 				<Tooltip
 					target=".infoTitleSection"
 					content={"Modifier l'ensemble des titres"}

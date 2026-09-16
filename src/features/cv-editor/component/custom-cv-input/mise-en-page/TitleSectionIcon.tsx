@@ -22,12 +22,12 @@ export const TitleSectionIcon = ({ watchIconStyle }: TitleSectionIconProps) => {
 	};
 
 	return (
-		<div className="flex gap-8 items-center">
-			<div className="flex gap-2 items-center">
-				<p className="my-0 font-semibold text-sm">Icones</p>
-				<MdInfo className="infoIconTitleSection" />
+		<div className="flex flex-col gap-1">
+			<div className="flex gap-1 items-center">
+				<p className="my-0 font-semibold text-xs">Icones</p>
+				<MdInfo className="infoIconTitleSectionStyle text-sm text-muted-color" />
 				<Tooltip
-					target=".infoIconTitleSection"
+					target=".infoIconTitleSectionStyle"
 					content={"Modifier l'icone des titres"}
 				/>
 			</div>

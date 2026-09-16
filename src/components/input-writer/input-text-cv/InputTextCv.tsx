@@ -42,7 +42,7 @@ export const InputTextCv = ({
 	const { control } = useFormContext();
 	const { getSize, getWeight } = useChangeTextFormat(dataInput);
 	// const watchFont = watch(FieldNameCvModelGeneral.font)
-	const isXl = useMediaQuery("(min-width: 1440px)");
+	const isLg = useMediaQuery("(min-width: 1024px)");
 
 	const color = useInputCvColor(textColor, { ignoreColumnFg });
 
@@ -54,7 +54,7 @@ export const InputTextCv = ({
 
 	return (
 		<div className={`card flex ${className} relative`}>
-			{!isXl && (
+			{!isLg && (
 				<OverlayPanel style={{ minWidth: "450px" }} ref={op}>
 					<ModifSelectInput />
 				</OverlayPanel>

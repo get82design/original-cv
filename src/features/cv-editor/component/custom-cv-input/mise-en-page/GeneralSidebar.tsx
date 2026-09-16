@@ -18,7 +18,7 @@ export const GeneralSidebar = () => {
 		<>
 			{isTwoCol && (
 				<div className="flex gap-6 items-center">
-					<p className="my-0 font-semibold text-sm">Sidebar</p>
+					<p className="my-0 font-semibold text-xs">Sidebar</p>
                     <SelectButtonRhf
                         name={FieldNameLayoutGeneral.sidebarSide}
                         value={watch(FieldNameLayoutGeneral.sidebarSide) ?? "left"}

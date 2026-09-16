@@ -8,20 +8,16 @@ import { GeneralPhoto } from "./mise-en-page/GeneralPhoto";
 import { GeneralFont } from "./mise-en-page/GeneralFont";
 import { FieldNameLayoutGeneral } from "../../utils/fields/fieldNameLayoutGeneral";
 import { GeneralSidebar } from "./mise-en-page/GeneralSidebar";
+import { GeneralColor } from "./GeneralColor";
 
 export const ModifMiseEnPage = () => {
 	const { watch } = useFormContext();
 	const watchMarge = watch(FieldNameLayoutGeneral.marge);
 	const watchSpace = watch(FieldNameLayoutGeneral.space);
-	// const primaryColor = PrimaryTextColorStyle()
 	const watchWithIcon = watch(FieldNameLayoutGeneral.withIcon);
 	const watchIconStyle = watch(FieldNameLayoutGeneral.iconStyle);
-	const watchLigneDessous = watch(
-		FieldNameLayoutGeneral.withLigneDessous,
-	);
-	const watchLigneDessus = watch(
-		FieldNameLayoutGeneral.withLigneDessus,
-	);
+	const watchLigneDessous = watch(FieldNameLayoutGeneral.withLigneDessous);
+	const watchLigneDessus = watch(FieldNameLayoutGeneral.withLigneDessus);
 	const watchTitleSectionTextTransform = watch(
 		FieldNameLayoutGeneral.textTransform,
 	);
@@ -30,7 +26,8 @@ export const ModifMiseEnPage = () => {
 	const watchPhotoSide = watch(FieldNameLayoutGeneral.photoSide);
 	const watchLockPhotoSide = watch(FieldNameLayoutGeneral.lockPhotoSide);
 	return (
-		<div className="flex flex-col gap-3">
+		<div className="flex flex-col gap-3 px-1">
+			<GeneralColor />
 			<GeneralPhoto
 				watchWithPhoto={watchWithPhoto}
 				watchStylePhoto={watchStylePhoto}
@@ -39,29 +36,10 @@ export const ModifMiseEnPage = () => {
 			/>
 			<GeneralFont />
 			<GeneralSidebar />
-			<div className="grid grid-cols-2 gap-8 items-start">
+			<div className="grid grid-cols-2 gap-4 items-start">
 				<GeneralMarge watchMarge={watchMarge} />
 				<GeneralSpace watchSpace={watchSpace} />
 			</div>
-			{/* <div>
-					<GeneralFont />
-					<GeneralMarge watchMarge={watchMarge} />
-					<GeneralSpace watchSpace={watchSpace} />
-				</div>
-				<div>
-					<GeneralPhoto
-						watchWithPhoto={watchWithPhoto}
-						watchStylePhoto={watchStylePhoto}
-					/>
-					<TitleSectionTextTranform
-						watchTitleSectionTextTransform={watchTitleSectionTextTransform}
-					/>
-				</div>
-			</div> */}
-			{/* <div className="flex justify-center gap-8">
-				<GeneralMarge watchMarge={watchMarge} />
-				<GeneralSpace watchSpace={watchSpace} />
-			</div> */}
 			<TitleSectionTextTranform
 				watchTitleSectionTextTransform={watchTitleSectionTextTransform}
 			/>

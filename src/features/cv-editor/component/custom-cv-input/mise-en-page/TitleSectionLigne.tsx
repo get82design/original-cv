@@ -60,13 +60,13 @@ export const TitleSectionLigne = ({
 		return <div className="text-sm">{option}</div>;
 	};
 	return (
-		<div className="flex gap-8 items-center">
-			<div className="flex gap-2 items-center">
-				<p className="my-0 font-semibold text-sm">Lignes</p>
-				<MdInfo className="infoIconTitleSection" /*style={primaryColor}*/ />
+		<div className="flex flex-col gap-1">
+			<div className="flex gap-1 items-center">
+				<p className="my-0 font-semibold text-xs">Lignes</p>
+				<MdInfo className="infoIconTitleSection text-sm text-muted-color" />
 				<Tooltip
 					target=".infoIconTitleSection"
-					content={"Modifier l'icone des titres"}
+					content={"Modifier les lignes des titres"}
 				/>
 			</div>
 			<SelectButton

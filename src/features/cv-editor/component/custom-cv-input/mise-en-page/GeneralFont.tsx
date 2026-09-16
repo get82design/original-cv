@@ -32,7 +32,7 @@ export const GeneralFont = () => {
 				options={options}
 				optionLabel="name"
 				optionValue="value"
-				className="w-full"
+				className="w-full cv-font-select"
 				appendTo="self"
 				itemTemplate={fontOptionTemplate}
 				valueTemplate={fontOptionTemplate}

@@ -52,7 +52,7 @@ export const TextareaCv = ({
 	const { control, watch } = useFormContext()
 	const color = useInputCvColor(textColor)
 	const { getSize, getWeight } = useChangeTextFormat(dataInput)
-	const isXl = useMediaQuery("(min-width: 1440px)")
+	const isLg = useMediaQuery("(min-width: 1024px)")
 	const value = watch(name)
 	const fontSize = getSize()
 	const fontWeight = getWeight()
@@ -89,7 +89,7 @@ export const TextareaCv = ({
 
 	return (
 		<span ref={wrapperRef} className={`w-full ${className}`}>
-			{!isXl && (
+			{!isLg && (
 				<OverlayPanel style={{ minWidth: "450px" }} ref={op}>
 					<ModifSelectInput />
 				</OverlayPanel>

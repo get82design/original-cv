@@ -14,7 +14,7 @@ export const GeneralMarge = ({ watchMarge }: GeneralMargeProps) => {
 		return <div className="text-sm">{option}</div>;
 	};
 	return (
-		<div className="flex gap-2 items-center justify-between">
+		<div className="flex flex-col gap-1">
 			<p className="my-0 font-semibold text-xs">Marges</p>
 			<SelectButtonRhf
 				className="shadow-none panel-modification"
