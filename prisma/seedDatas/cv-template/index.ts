@@ -4,7 +4,7 @@ import { eindhoven } from "./one-column/eindhoven";
 import { geneva } from "./one-column/geneva";
 import { helsinki } from "./one-column/helsinki";
 import { kyoto } from "./one-column/kyoto";
-import { minimal } from "./one-column/minimal";
+// import { minimal } from "./one-column/minimal";
 import { nara } from "./one-column/nara";
 import { oslo } from "./one-column/oslo";
 import { oxford } from "./one-column/oxford";
@@ -33,7 +33,7 @@ export const seedTemplates = [
 	seattle,
 	seoul,
 	geneva,
-	minimal,
+	// minimal,
 	austin,
 	portland,
 	tallinn,

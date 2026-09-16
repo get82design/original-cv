@@ -44,39 +44,39 @@ $inlineMessageBorderWidth: 1px;
 
 /// Font size of a toast message icon
 /// @group message
-$toastIconFontSize: 2rem;
+$toastIconFontSize: 1.25rem;
 
 /// Margin of a toast message text
 /// @group message
-$toastMessageTextMargin: 0 0 0 1rem;
+$toastMessageTextMargin: 0 0 0 0.75rem;
 
 /// Margin of a toast message
 /// @group message
-$toastMargin: 0 0 1rem 0;
+$toastMargin: 0 0 0.75rem 0;
 
 /// Padding of a toast message
 /// @group message
-$toastPadding: 1rem;
+$toastPadding: 0.875rem 1rem;
 
 /// Border width of a toast message
 /// @group message
-$toastBorderWidth: 0 0 0 4px;
+$toastBorderWidth: 0 0 0 3px;
 
 /// Box shadow of a toast message
 /// @group message
-$toastShadow: 0 3px 14px 0 rgba(0, 0, 0, 0.3);
+$toastShadow: 0 4px 20px rgba(15, 23, 42, 0.1);
 
 /// Opacity of a toast message
 /// @group message
-$toastOpacity: .9;
+$toastOpacity: 1;
 
 /// Font weight of a toast message title text
 /// @group message
-$toastTitleFontWeight: 700;
+$toastTitleFontWeight: 600;
 
 /// Margin of a toast message detail text
 /// @group message
-$toastDetailMargin: $inlineSpacing 0 0 0;
+$toastDetailMargin: 0.25rem 0 0 0;
 
 /// Background of an info message
 /// @group message
