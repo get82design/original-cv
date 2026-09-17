@@ -13,6 +13,7 @@ import type { ItemGeneralProps } from "@utils/type";
 import { useCvSectionItems } from "../shared/useCvSectionItems";
 import { useCvPageDnd } from "../shared/useCvPageDnd";
 import { GetPrimaryColor } from "@/features/cv-editor/utils/utilsCv/color";
+import { CvSignature } from "../../brand/CvSignature";
 
 export interface OneColumnModelProps {
 	deleteSection: (item: ItemGeneralProps) => void;
@@ -71,7 +72,7 @@ export const OneColumnModel = ({ deleteSection }: OneColumnModelProps) => {
 							: "#fff",
 				}}
 			>
-				<div className="absolute bottom-6 right-8 z-10">Test signature</div>
+				<CvSignature />
 				<SortableContext
 					items={itemUse.map((item) => item.id)}
 					strategy={verticalListSortingStrategy}

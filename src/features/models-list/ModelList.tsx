@@ -16,6 +16,7 @@ import { PageLayoutRegister } from "../cv-editor/component/kit-dnd/register/Page
 import Image from "next/image";
 import { Sidebar } from "primereact/sidebar";
 import { Toast } from "primereact/toast";
+import { GalleryModTips } from "./GalleryModTips";
 import {
 	CV_TEXTAREA_RECALC_EVENT,
 	remesureTextareas,
@@ -345,10 +346,16 @@ export default function ModelList() {
 	useEffect(() => {
 		if (!filteredTemplates.length) {
 			setShownCount(0);
+			setLiveCount(0);
 			return;
 		}
 		setShownCount(Math.min(PAGE, filteredTemplates.length));
 	}, [columnFilter, selectionMode, filteredTemplates]);
+
+	// Si la galerie rétrécit (filtre / sélection), liveCount ne doit pas rester trop haut
+	useEffect(() => {
+		setLiveCount((n) => (n > shownCount ? shownCount : n));
+	}, [shownCount]);
 
 	useEffect(() => {
 		if (liveCount >= shownCount) return;
@@ -358,8 +365,9 @@ export default function ModelList() {
 
 	const shown = filteredTemplates.slice(0, shownCount);
 	const hasMore = shownCount < filteredTemplates.length;
-	const galleryReady = shownCount > 0 && liveCount >= shownCount;
-	const modificationsLocked = liveCount > MAX_SELECTION;
+	const activeLiveCount = Math.min(liveCount, shownCount);
+	const galleryReady = shownCount > 0 && activeLiveCount >= shownCount;
+	const modificationsLocked = activeLiveCount > MAX_SELECTION;
 	const showGalleryLoader =
 		filterLoading ||
 		(!isLoadingTemplates &&
@@ -452,7 +460,10 @@ export default function ModelList() {
 
 	const applySelection = () => {
 		if (selectedCount === 0 || filterLoading || selectionMode) return;
-		runWithLoader(() => setSelectionMode(true));
+		runWithLoader(() => {
+			setColumnFilter("all");
+			setSelectionMode(true);
+		});
 	};
 
 	const exitSelectionMode = () => {
@@ -506,10 +517,16 @@ export default function ModelList() {
 			>
 				Modifications
 			</Button>
-			<Sidebar header="Panneau de modification" visible={visibleSidebar} position="right" onHide={() => setVisibleSidebar(false)}>
-                <div className="flex flex-col gap-4">
+			<Sidebar
+				header="Panneau de modification"
+				visible={visibleSidebar}
+				position="right"
+				onHide={() => setVisibleSidebar(false)}
+				pt={{ content: { className: "flex flex-col h-full" } }}
+			>
+                <div className="flex flex-col gap-2 h-full">
 					<div className="flex flex-col gap-1">
-						<p className="font-medium">Couleur</p>
+						<p className="my-0 font-semibold text-sm">Couleur</p>
 						{galleryReady ? (
 							<div className="flex flex-wrap gap-2 items-center">
 								{colors
@@ -551,11 +568,11 @@ export default function ModelList() {
 								/>
 							</div>
 						) : (
-							<p>Chargement des templates...</p>
+							<p className="my-0 text-xs text-muted-color">Chargement des templates...</p>
 						)}
 					</div>
 					<div className="flex flex-col gap-1">
-						<p className="font-medium">Photo</p>
+						<p className="my-0 font-semibold text-sm">Photo</p>
 						<div className="flex gap-2">
 							<Button
 								size="small"
@@ -621,7 +638,7 @@ export default function ModelList() {
 						</div>
 					</div>
 					<div className="flex flex-col gap-1">
-						<p className="font-medium">Sidebar</p>
+						<p className="my-0 font-semibold text-sm">Sidebar</p>
 						<div className="flex gap-2">
 							<Button
 								size="small"
@@ -645,7 +662,7 @@ export default function ModelList() {
 						</div>
 					</div>
 					<div className="flex flex-col gap-1">
-						<p className="font-medium">Marges</p>
+						<p className="my-0 font-semibold text-sm">Marges</p>
 						<div className="flex gap-2">
 							{(["sm", "md", "lg"] as const).map((size) => (
 								<Button
@@ -666,7 +683,7 @@ export default function ModelList() {
 						</div>
 					</div>
 					<div className="flex flex-col gap-1">
-						<p className="font-medium">Espaces</p>
+						<p className="my-0 font-semibold text-sm">Espaces</p>
 						<div className="flex gap-2">
 							{(["sm", "md", "lg"] as const).map((size) => (
 								<Button
@@ -686,6 +703,7 @@ export default function ModelList() {
 							/>
 						</div>
 					</div>
+					<GalleryModTips />
 				</div>
             </Sidebar>
 			<AppCard className="min-h-full flex flex-col gap-4 items-center py-8 px-16">

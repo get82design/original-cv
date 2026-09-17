@@ -8,6 +8,7 @@ import { trpc } from "@utils/trpc";
 import { DataView as PrimeDataView } from "primereact/dataview";
 import type { TemplateCv } from "@utils/trpc.types";
 import Image from "next/image";
+import { SiteBrandLogo } from "@/components/brand/SiteBrandLogo";
 
 export const HomeComponent = () => {
 	const breakpoint = useMediaQuery("(min-width: 1024px)");
@@ -60,22 +61,18 @@ export const HomeComponent = () => {
 		<div className={"w-full p-4 md:p-8 relative flex flex-col gap-8"}>
 			<div className="w-full" style={{ height: "calc(100vh - 134px)" }}>
 				<AppCard className="min-h-full flex gap-2">
-					<div className="w-full xl:w-1/2 lg:pl-8 xl:pl-40 min-h-full flex flex-col justify-center gap-3 sm:gap-6">
-						<div className="flex flex-col-reverse gap-3 sm:gap-6">
+					<div className="w-full xl:w-1/2 lg:pl-8 xl:pl-40 min-h-full flex flex-col justify-center gap-3 sm:gap-6 -ml-2 sm:-ml-4">
+						<div className="flex flex-col-reverse gap-1 sm:gap-2">
 							<h1 className="font-extrabold text-2xl sm:text-4xl lg:text-5xl leading-6 sm:leading-9 lg:leading-12">
 								Créer votre CV gratuitement en quelques minutes sur{" "}
 								<span className="font-light">Original</span>
 								<span className="text-primary dark:text-primary-dark">CV</span>
 							</h1>
-							<TitleAppTwo
-								firstPart="Original"
-								secondPart="CV"
-								size="text-4xl"
-							/>
+							<SiteBrandLogo className="h-20 sm:h-28 lg:h-32 w-auto self-start" />
 						</div>
 
 						{breakpoint && (
-							<Link href="/cv/0" className="mt-2">
+							<Link href="/cv/0" className="mt-2 self-start">
 								<Button
 									label="Créer votre CV gratuitement"
 									className="bg-primary hover:bg-primary-dark dark:bg-primary-dark hover:dark:bg-primary text-white dark:text-black font-bold"
@@ -85,7 +82,7 @@ export const HomeComponent = () => {
 						)}
 						{status !== "authenticated" && (
 							<Link
-								className="text-primary hover:text-primary-dark dark:text-primary-dark hover:dark:text-primary hover:underline"
+								className="text-primary hover:text-primary-dark dark:text-primary-dark hover:dark:text-primary hover:underline self-start"
 								href="/register"
 							>
 								Créer un compte gratuitement

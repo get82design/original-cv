@@ -4,6 +4,7 @@ import { GeneralSpace } from "./mise-en-page/GeneralSpace";
 import { TitleSectionTextTranform } from "./mise-en-page/TitleSectionTextTransform";
 import { TitleSectionIcon } from "./mise-en-page/TitleSectionIcon";
 import { TitleSectionLigne } from "./mise-en-page/TitleSectionLigne";
+import { TitleSectionDecorSwitch } from "./mise-en-page/TitleSectionDecorSwitch";
 import { GeneralPhoto } from "./mise-en-page/GeneralPhoto";
 import { GeneralFont } from "./mise-en-page/GeneralFont";
 import { FieldNameLayoutGeneral } from "../../utils/fields/fieldNameLayoutGeneral";
@@ -26,7 +27,7 @@ export const ModifMiseEnPage = () => {
 	const watchPhotoSide = watch(FieldNameLayoutGeneral.photoSide);
 	const watchLockPhotoSide = watch(FieldNameLayoutGeneral.lockPhotoSide);
 	return (
-		<div className="flex flex-col gap-3 px-1">
+		<div className="flex flex-col gap-1 px-1">
 			<GeneralColor />
 			<GeneralPhoto
 				watchWithPhoto={watchWithPhoto}
@@ -36,24 +37,24 @@ export const ModifMiseEnPage = () => {
 			/>
 			<GeneralFont />
 			<GeneralSidebar />
-			<div className="grid grid-cols-2 gap-4 items-start">
+			<div className="grid grid-cols-2 gap-1 items-start">
 				<GeneralMarge watchMarge={watchMarge} />
 				<GeneralSpace watchSpace={watchSpace} />
 			</div>
-			<TitleSectionTextTranform
-				watchTitleSectionTextTransform={watchTitleSectionTextTransform}
-			/>
+			<div className="grid grid-cols-[minmax(0,3fr)_minmax(0,2fr)] gap-1 items-start">
+				<TitleSectionTextTranform
+					watchTitleSectionTextTransform={watchTitleSectionTextTransform}
+				/>
+				<TitleSectionDecorSwitch watchWithIcon={watchWithIcon} />
+			</div>
 			{watchWithIcon ? (
 				<TitleSectionIcon watchIconStyle={watchIconStyle} />
-			) : watchLigneDessus ||
-				watchLigneDessus === false ||
-				watchLigneDessous ||
-				watchLigneDessous === false ? (
+			) : (
 				<TitleSectionLigne
 					watchLigneDessus={watchLigneDessus}
 					watchLigneDessous={watchLigneDessous}
 				/>
-			) : null}
+			)}
 		</div>
 	);
 };

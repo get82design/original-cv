@@ -8,6 +8,7 @@ import { useRef, useState } from "react";
 import { Menu } from "primereact/menu";
 import type { MenuItem } from "primereact/menuitem";
 import { Sidebar } from "primereact/sidebar";
+import { SiteBrandLogo } from "@/components/brand/SiteBrandLogo";
 
 export const AppBar = () => {
     const menu = useRef<Menu>(null)
@@ -27,7 +28,7 @@ export const AppBar = () => {
     return (
         <>
         <div
-            className={'sticky top-0 w-full z-20 bg-white dark:bg-black px-2 sm:px-4 py-3 flex justify-between items-center shadow-md'}
+            className={'sticky top-0 w-full z-20 bg-white dark:bg-black px-2 sm:px-4 py-2 flex justify-between items-center shadow-md'}
         >
             <div className="flex gap-4 items-center">
                 {!isSm && 
@@ -39,7 +40,9 @@ export const AppBar = () => {
                         <MdDehaze style={{ width: '24px', height: '24px' }} />
                     </Button>
                 }
-                <a href={'/'} className='text-2xl font-bold'>OriginalCV</a>
+                <Link href="/" className="inline-flex items-center" aria-label="OriginalCV">
+                    <SiteBrandLogo className="h-11 w-auto" />
+                </Link>
             </div>
             <div className='flex gap-1 items-center'>
                 {status === 'authenticated'
@@ -73,7 +76,11 @@ export const AppBar = () => {
             onHide={() => setVisibleTop(false)} 
             style={{ height: '50%' }}
             className='bg-white dark:bg-black'
-            header={<div className='text-2xl font-bold'>OriginalCV</div>}
+            header={
+                <Link href="/" className="inline-flex items-center" aria-label="OriginalCV">
+                    <SiteBrandLogo className="h-11 w-auto" />
+                </Link>
+            }
         >
             <div className='flex flex-col justify-between h-5/6'>
                 <div className='flex flex-col gap-2 pt-4'>
@@ -89,17 +96,6 @@ export const AppBar = () => {
                         </div>
                     </Link>
                     <div className='w-1'></div>
-                    {/* <Link href={`${appUrl}/cree-ton-cv?idCv=0`}>
-                    <div className='flex gap-3'>
-                        <Button
-                        variant='ghost'
-                        icon={<MdOutlineBadge style={{ width: '32px', height: '32px' }} />}
-                        />
-                        <Button variant='ghost' color='light' className='w-full'>
-                        Créer votre CV
-                        </Button>
-                    </div>
-                    </Link> */}
                 </div>
             </div>
             <div className='flex gap-3'>
@@ -108,7 +104,7 @@ export const AppBar = () => {
                     icon={<MdAccountCircle style={{ width: '40px', height: '40px' }} />}
                 />
                 <div>
-                    <p className='text-lg font-semibold my-0'>{session?.user?.name}</p>
+                    <p className='my-0 text-lg font-semibold'>{session?.user?.name}</p>
                     <p className='my-0'>{session?.user?.email}</p>
                 </div>
             </div>

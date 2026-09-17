@@ -8,7 +8,7 @@ import { FieldNameLayoutGeneral } from "../../utils/fields/fieldNameLayoutGenera
 export const GeneralColor = () => {
 	const { colors } = useModelAndColorContext();
 	return (
-		<div className="flex flex-col gap-1.5">
+		<div className="flex flex-col gap-1">
 			<div className="flex gap-1 items-center">
 				<p className="my-0 font-semibold text-xs">Couleur du thème</p>
 				<MdInfo className="infoColorPrincipale text-sm text-muted-color" />
@@ -17,7 +17,7 @@ export const GeneralColor = () => {
 					content="Couleur principale de votre CV"
 				/>
 			</div>
-			<div className="flex flex-wrap gap-x-1.5 gap-y-1.5 items-center">
+			<div className="flex flex-wrap gap-1 items-center">
 				{colors
 					?.filter((c) => c.name !== "black")
 					.map((color: Color, index) => (

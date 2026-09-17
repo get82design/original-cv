@@ -4,6 +4,7 @@ import { Button } from "primereact/button"
 import { Sidebar } from "primereact/sidebar"
 import { forwardRef } from "react"
 import { useMediaQuery } from "../../../utils/useWindowWidth"
+import { SiteBrandLogo } from "@/components/brand/SiteBrandLogo"
 
 interface SidebarMenuProps {
     visible: boolean
@@ -11,7 +12,7 @@ interface SidebarMenuProps {
 }
 
 export const SideBarMenu = forwardRef<HTMLDivElement | null, SidebarMenuProps>(
-    ({ visible, setVisible }, ref) => {
+    ({ visible, setVisible }, _ref) => {
         const {data: session} = useSession()
         const breakpoint = useMediaQuery('(min-width: 1024px)');
     return (
@@ -20,17 +21,22 @@ export const SideBarMenu = forwardRef<HTMLDivElement | null, SidebarMenuProps>(
             onHide={() => setVisible(false)}
             className='pl-16 bg-white dark:bg-black'
             onMouseLeave={() => setVisible(false)}
-            header={<p className='w-full text-2xl font-bold'>OriginalCV</p>}
-            // style={HeaderAppColor()}
+            header={
+                <Link
+                    href="/"
+                    className="inline-flex items-center ml-2 -mt-1"
+                    aria-label="OriginalCV"
+                >
+                    <SiteBrandLogo className="h-11 w-auto" />
+                </Link>
+            }
             showCloseIcon={false}
+            pt={{
+                header: {
+                    className: "items-center py-3",
+                },
+            }}
         >
-            {/* <InputText
-            name=''
-            className='w-full p-inputtext-sm mt-4 rounded-full'
-            placeholder='Rechercher'
-            iconLeft={<MdSearch style={{ width: '24px', height: '24px', marginTop: '-2px' }} />}
-            /> */}
-
             <div
                 className='flex flex-col justify-between h-full'
                 style={{ maxHeight: 'calc(100vh - 56px)', paddingTop: '1px' }}
@@ -48,15 +54,6 @@ export const SideBarMenu = forwardRef<HTMLDivElement | null, SidebarMenuProps>(
                             </Button>
                         </Link>
                     }
-                    {/* <Button variant='ghost' color='light'>
-                    Notre magasin
-                    </Button>
-                    <Button variant='ghost' color='light'>
-                    Nos outils
-                    </Button>
-                    <Button variant='ghost' color='light'>
-                    Dashbord
-                    </Button> */}
                 </div>
                 <div>
                     <p className='text-lg font-semibold'>
@@ -68,3 +65,5 @@ export const SideBarMenu = forwardRef<HTMLDivElement | null, SidebarMenuProps>(
         </Sidebar>
     )
 })
+
+SideBarMenu.displayName = "SideBarMenu"

@@ -196,8 +196,8 @@ export const CvEditor = () => {
 						>
 							<div className="w-full px-4 xl:px-0 flex justify-between items-center">
 								<TitleAppOne
-									firstPart="Créer"
-									secondPart="votre CV"
+									firstPart="Atelier"
+									secondPart="CV"
 									withSpace
 								/>
 							</div>

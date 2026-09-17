@@ -6,6 +6,7 @@ import { useFormContext } from "react-hook-form";
 import { useCvSectionItems } from "../shared/useCvSectionItems";
 import { useCvPageDnd } from "../shared/useCvPageDnd";
 import { GetPrimaryColor } from "@/features/cv-editor/utils/utilsCv/color";
+import { CvSignature } from "../../brand/CvSignature";
 import { HeaderRegister } from "../../template/register/header/HeaderRegister";
 import { DndContext, DragOverlay } from "@dnd-kit/core";
 import { ColumnDropZone } from "../shared/ColumnDropZone";
@@ -101,7 +102,7 @@ export function TwoColumnSideBar({ deleteSection }: TwoColumnSideBarProps) {
 							: "#fff",
 				}}
 			>
-				<div className="absolute bottom-6 right-8 z-10">Test signature</div>
+				<CvSignature />
 				<div ref={refTaille}>
 					{/* Header full-bleed (au-dessus des 2 colonnes) */}
 					{headerPlacement === "top" && (

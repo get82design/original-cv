@@ -10,13 +10,13 @@ export const NavBar = () => {
     const refPanelDashboard = useRef<HTMLDivElement>(null)
     const breakpoint = useMediaQuery('(min-width: 1024px)');
     return (
-        <div /*style={HeaderAppColor()}*/ className={'navbar h-screen lg:w-16 xl:w-20 py-4 fixed bg-white dark:bg-black'}>
+        <div className={'navbar h-screen lg:w-16 xl:w-20 py-4 fixed bg-white dark:bg-black z-30'}>
             <div
                 className='flex flex-col items-center justify-between h-full'
                 onMouseEnter={() => setVisible(true)}
             >
                 <div className='flex flex-col items-center gap-8'>
-                    <Link /*href={`${appUrl}/`}*/ href='#'>
+                    <Link href='#'>
                         <svg width='32' height='32' viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'>
                             <g fill='none' fillRule='evenodd'>
                                 <path
@@ -34,7 +34,6 @@ export const NavBar = () => {
                             </g>
                         </svg>
                     </Link>
-                    {/* <Button variant='ghost' icon={<MdSearch style={{ width: '32px', height: '32px' }} />} /> */}
                     <div className='flex flex-col items-center gap-2'>
                         <Link href={`/profile`} onClick={() => setVisible(false)} style={{ minHeight: '44px'}}>
                             <Button
@@ -46,7 +45,7 @@ export const NavBar = () => {
                         <div className='w-1'
                         ></div>
                         {breakpoint &&
-                            <Link href={`/cv/=0`} onClick={() => setVisible(false)} style={{ minHeight: '44px'}}>
+                            <Link href={`/cv/0`} onClick={() => setVisible(false)} style={{ minHeight: '44px'}}>
                                 <Button
                                     text
                                     icon={
@@ -56,18 +55,6 @@ export const NavBar = () => {
                                 />
                             </Link>
                         }
-
-            {/* <div className='w-1'></div>
-            <Button variant='ghost' icon={<MdStore style={{ width: '32px', height: '32px' }} />} />
-
-            <div className='w-1'></div>
-            <Button variant='ghost' icon={<MdBuild style={{ width: '32px', height: '32px' }} />} />
-
-            <div className='w-1'></div>
-            <Button
-              variant='ghost'
-              icon={<MdDashboard style={{ width: '32px', height: '32px' }} />}
-            /> */}
                     </div>
                 </div>
                 <Button
