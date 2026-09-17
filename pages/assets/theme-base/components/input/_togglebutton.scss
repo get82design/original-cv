@@ -97,3 +97,63 @@
         @include invalid-input();
     }
 }
+
+html.dark .p-togglebutton {
+    .p-togglebutton-input {
+        border: $toggleButtonBorderDark;
+    }
+
+    .p-button {
+        background: $toggleButtonBgDark;
+        border: $toggleButtonBorderDark;
+        color: $toggleButtonTextColorDark;
+
+        .p-button-icon-left,
+        .p-button-icon-right {
+            color: $toggleButtonIconColorDark;
+        }
+    }
+
+    &.p-highlight {
+        .p-button {
+            background: $toggleButtonActiveBgDark;
+            border-color: $toggleButtonActiveBorderColorDark;
+            color: $toggleButtonTextActiveColorDark;
+
+            .p-button-icon-left,
+            .p-button-icon-right {
+                color: $toggleButtonIconActiveColorDark;
+            }
+        }
+    }
+
+    &:not(.p-disabled) {
+        &:has(.p-togglebutton-input:hover) {
+            &:not(.p-highlight) {
+                .p-button {
+                    background: $toggleButtonHoverBgDark;
+                    border-color: $toggleButtonHoverBorderColorDark;
+                    color: $toggleButtonTextHoverColorDark;
+
+                    .p-button-icon-left,
+                    .p-button-icon-right {
+                        color: $toggleButtonIconHoverColorDark;
+                    }
+                }
+            }
+
+            &.p-highlight {
+                .p-button {
+                    background: $toggleButtonActiveHoverBgDark;
+                    border-color: $toggleButtonActiveHoverBorderColorDark;
+                    color: $toggleButtonTextActiveHoverColorDark;
+
+                    .p-button-icon-left,
+                    .p-button-icon-right {
+                        color: $toggleButtonIconActiveHoverColorDark;
+                    }
+                }
+            }
+        }
+    }
+}

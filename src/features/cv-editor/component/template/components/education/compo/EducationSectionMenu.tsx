@@ -3,6 +3,7 @@ import { moduleField } from "@/features/cv-editor/utils/fields/moduleField";
 import { Menu } from "primereact/menu";
 import { useRef } from "react";
 import { useFormContext } from "react-hook-form";
+import { ToolbarOptionsButton } from "@/features/cv-editor/component/template/components/common-compo/section/ToolbarOptionsButton";
 
 export const EducationSectionMenu = () => {
 	const menuRef = useRef<Menu>(null);
@@ -49,16 +50,7 @@ export const EducationSectionMenu = () => {
 	
 	return (
 		<>
-			<button
-				type="button"
-				className="p-2 cursor-pointer hover:bg-gray-100"
-				onClick={(e) => {
-					e.stopPropagation();
-					menuRef.current?.toggle(e);
-				}}
-			>
-				options
-			</button>
+			<ToolbarOptionsButton menuRef={menuRef} />
 			<Menu model={items} popup ref={menuRef} style={{ width: 300 }} />
 		</>
 	);

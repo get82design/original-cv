@@ -27,7 +27,7 @@ export const ModifMiseEnPage = () => {
 	const watchPhotoSide = watch(FieldNameLayoutGeneral.photoSide);
 	const watchLockPhotoSide = watch(FieldNameLayoutGeneral.lockPhotoSide);
 	return (
-		<div className="flex flex-col gap-1 px-1">
+		<div className="flex flex-col gap-2 px-1">
 			<GeneralColor />
 			<GeneralPhoto
 				watchWithPhoto={watchWithPhoto}

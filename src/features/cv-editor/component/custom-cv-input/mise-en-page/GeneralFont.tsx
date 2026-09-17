@@ -25,17 +25,18 @@ const fontOptionTemplate = (option: FontOption) =>
 
 export const GeneralFont = () => {
 	return (
-		<div className="flex gap-1 items-center">
-			<p className="my-0 font-semibold text-xs">Police</p>
+		<div className="flex gap-3 items-center">
+			<p className="my-0 font-semibold text-xs shrink-0">Police</p>
 			<SelectRhf
 				name={FieldNameLayoutGeneral.fontFamily}
 				options={options}
 				optionLabel="name"
 				optionValue="value"
-				className="w-full cv-font-select"
+				className="w-full cv-font-select p-inputtext-sm text-xs"
 				appendTo="self"
 				itemTemplate={fontOptionTemplate}
 				valueTemplate={fontOptionTemplate}
+				pt={{ root: { className: "text-xs" } }}
 			/>
 		</div>
 	);

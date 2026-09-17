@@ -103,12 +103,12 @@ export const FormCv = ({ children, idCv, template, color }: FormCvProviderProps)
 		});
 	};
 
-	const showError = () => {
+	const showError = (detail?: string) => {
 		toast?.current?.show({
 			severity: "error",
 			summary: "Erreur",
-			detail: "Une erreur est survenue lors de la sauvegarde du CV",
-			life: 3000,
+			detail: detail || "Une erreur est survenue lors de la sauvegarde du CV",
+			life: 4000,
 		});
 	};
 
@@ -230,7 +230,11 @@ export const FormCv = ({ children, idCv, template, color }: FormCvProviderProps)
 			showSuccess();
 		} catch (err) {
 			console.error(err);
-			showError();
+			const message =
+				err instanceof Error && err.message
+					? err.message
+					: undefined;
+			showError(message);
 		}
 	};
 
@@ -285,7 +289,7 @@ export const FormCv = ({ children, idCv, template, color }: FormCvProviderProps)
 		<FormProvider {...methods}>
 			<form onSubmit={handleSubmit(onSubmit, showValidationErrors)}>
 				{children}
-				<Toast ref={toast} />
+				<Toast ref={toast} position="top-center" />
 				{visibleSelectModel && (
 					<DialogSelectModel
 						visible={visibleSelectModel}

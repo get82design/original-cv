@@ -20,7 +20,7 @@ export const TitleSectionDecorSwitch = ({
 		{ name: "Lignes", value: false },
 	];
 	const decorTemplate = (option: DecorOption) => {
-		return <div className="text-sm">{option.name}</div>;
+		return <div className="text-xs">{option.name}</div>;
 	};
 
 	return (
@@ -35,6 +35,7 @@ export const TitleSectionDecorSwitch = ({
 				optionValue="value"
 				options={decorOptions}
 				unselectable={false}
+				pt={{ button: { className: "p-button-sm text-xs py-1 px-2.5 min-h-[2rem]" } }}
 				onChange={(e) => {
 					const next = e.value as boolean;
 					setValue(FieldNameLayoutGeneral.withIcon, next, {

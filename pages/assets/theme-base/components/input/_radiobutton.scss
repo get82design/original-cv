@@ -168,3 +168,45 @@
         }
     }
 }
+html.dark .p-radiobutton {
+    .p-radiobutton-input {
+        border: $radiobuttonBorderDark;
+    }
+
+    .p-radiobutton-box {
+        border: $radiobuttonBorderDark;
+        background: #18181b;
+        color: $textColorDark;
+
+        .p-radiobutton-icon {
+            background-color: $radiobuttonIconActiveColorDark;
+        }
+    }
+
+    &.p-highlight {
+        .p-radiobutton-box {
+            border-color: $radiobuttonActiveBorderColorDark;
+            background: $radiobuttonActiveBgDark;
+        }
+    }
+
+    &:not(.p-disabled) {
+        &:has(.p-radiobutton-input:hover) {
+            .p-radiobutton-box {
+                border-color: $radiobuttonActiveBorderColorDark;
+                background: #27272a;
+            }
+
+            &.p-highlight {
+                .p-radiobutton-box {
+                    border-color: $radiobuttonActiveHoverBorderColorDark;
+                    background: $radiobuttonActiveHoverBgDark;
+
+                    .p-radiobutton-icon {
+                        background-color: $radiobuttonIconActiveHoverColorDark;
+                    }
+                }
+            }
+        }
+    }
+}

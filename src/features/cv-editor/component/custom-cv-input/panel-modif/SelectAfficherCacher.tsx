@@ -17,7 +17,7 @@ interface SelectAfficherCacherProps {
     return input !== ''
       ? (
         <div className="flex flex-col gap-1">
-          <p className="font-semibold text-sm">
+          <p className="font-semibold text-xs">
             Afficher / cacher{' '}
             {selectInputForm === 'philosophie.content.withAuteur'
               ? 'auteur'
@@ -28,7 +28,7 @@ interface SelectAfficherCacherProps {
                   : null}{' '}
             :
           </p>
-          <ToggleAfficherCacher name={input} />
+          <ToggleAfficherCacher name={input} compact />
         </div>
       )
       : null

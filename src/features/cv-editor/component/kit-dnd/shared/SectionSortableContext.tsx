@@ -1,11 +1,18 @@
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { useCreateCvContext } from "../../context/CreateCvContext";
-import { MdDelete, MdOutlineOpenWith } from "react-icons/md";
+import {
+	MdCloudDownload,
+	MdDelete,
+	MdDragIndicator,
+} from "react-icons/md";
 import type { ItemGeneralProps } from "@utils/type";
-import { Divider } from "primereact/divider";
 import { useState } from "react";
 import { DialogDataSectionFromProfile } from "../../dialog/dataFromProfile/DialogDataSectionFromProfile";
+import {
+	CV_TOOLBAR_ICON_SIZE,
+	cvToolbarIconBtnClass,
+} from "../../template/components/common-compo/section/ToolbarOptionsButton";
 
 interface SectionSortableContextProps {
 	item: ItemGeneralProps;
@@ -17,7 +24,10 @@ export const SectionSortableContext = ({
 	deleteSection,
 	sectionMenu,
 }: SectionSortableContextProps) => {
-	const [visibleDialogDataSectionFromProfile, setVisibleDialogDataSectionFromProfile] = useState(false);
+	const [
+		visibleDialogDataSectionFromProfile,
+		setVisibleDialogDataSectionFromProfile,
+	] = useState(false);
 	const {
 		attributes,
 		listeners,
@@ -26,22 +36,14 @@ export const SectionSortableContext = ({
 		transition,
 		isDragging,
 	} = useSortable({
-		id: item.id, // 'section-education'
+		id: item.id,
 		data: {
 			type: "section",
-			column: item.column, // 0 | 1
+			column: item.column,
 		},
 	});
 
-	const {
-		// setListItemsUse,
-		// setListItemsNoUse,
-		// listItemsUse,
-		sectionSelected,
-		setSectionSelected,
-	} = useCreateCvContext();
-
-	console.log('sectionSelected', sectionSelected);
+	const { sectionSelected } = useCreateCvContext();
 
 	const ContentComponent = item.content;
 
@@ -51,62 +53,67 @@ export const SectionSortableContext = ({
 		opacity: isDragging ? 0.5 : 1,
 	};
 
-	const isSexionSelected = item.id === sectionSelected ? true : false;
+	const isSectionSelected = item.id === sectionSelected;
 
 	return (
 		<div
 			ref={setNodeRef}
 			style={style}
-			className={`section-card relative ${
-				// isSexionSelected ? "bg-gray-50 rounded-lg" : ""
-				isSexionSelected ? "rounded-lg ring-2 ring-gray-300" : ""
-			}`}
+			className="section-card relative"
 		>
-			{/* Poignée de déplacement de la section */}
-			{isSexionSelected ? (
-				<div className="absolute z-100 bg-white dark:bg-gray-800 w-auto left-0 -top-8 rounded-l-lg flex gap-0 justify-center items-center border-l-2 border-b-2 border-t-2 border-gray-100">
-					<div className="p-2" {...attributes} {...listeners}>
-						<MdOutlineOpenWith
-							style={{ width: "20px", height: "20px" }}
+			{isSectionSelected ? (
+				<div className="absolute z-100 bg-white dark:bg-gray-800 w-auto left-0 -top-7 rounded-md flex gap-0 items-center border border-gray-200 dark:border-gray-600 shadow-sm">
+					<div
+						className={cvToolbarIconBtnClass}
+						title="Déplacer"
+						aria-label="Déplacer"
+						{...attributes}
+						{...listeners}
+					>
+						<MdDragIndicator
+							size={CV_TOOLBAR_ICON_SIZE}
 							className="cursor-move"
 						/>
 					</div>
 					{sectionMenu ? (
 						<>
-							<Divider layout="vertical" className="h-full m-0" />
+							<span className="w-px self-stretch bg-gray-200 dark:bg-gray-600" />
 							{sectionMenu}
 						</>
 					) : null}
-					<Divider layout="vertical" className="h-full m-0" />
+					<span className="w-px self-stretch bg-gray-200 dark:bg-gray-600" />
 					<button
 						type="button"
-						className="p-2 cursor-pointer hover:bg-gray-100" 
+						className={cvToolbarIconBtnClass}
+						title="Récupérer les données"
+						aria-label="Récupérer les données"
 						onClick={() => setVisibleDialogDataSectionFromProfile(true)}
 					>
-						Récupérer les données
+						<MdCloudDownload size={CV_TOOLBAR_ICON_SIZE} />
 					</button>
-					<Divider layout="vertical" className="h-full m-0" />
+					<span className="w-px self-stretch bg-gray-200 dark:bg-gray-600" />
 					<button
 						type="button"
-						className="p-2 cursor-pointer hover:bg-gray-100"
+						className={cvToolbarIconBtnClass}
+						title="Supprimer"
+						aria-label="Supprimer"
 						onClick={() => deleteSection(item)}
 					>
 						<MdDelete
-							style={{
-								width: "20px",
-								height: "20px",
-								color: "var(--red-500)",
-							}}
+							size={CV_TOOLBAR_ICON_SIZE}
+							style={{ color: "var(--red-500)" }}
 						/>
 					</button>
 				</div>
 			) : null}
 			{ContentComponent && <ContentComponent />}
-			{visibleDialogDataSectionFromProfile && <DialogDataSectionFromProfile 
-			  visible={visibleDialogDataSectionFromProfile} 
-			  onHide={() => setVisibleDialogDataSectionFromProfile(false)} 
-			  sectionSelected={sectionSelected} 
-			/>}
+			{visibleDialogDataSectionFromProfile && (
+				<DialogDataSectionFromProfile
+					visible={visibleDialogDataSectionFromProfile}
+					onHide={() => setVisibleDialogDataSectionFromProfile(false)}
+					sectionSelected={sectionSelected}
+				/>
+			)}
 		</div>
 	);
 };

@@ -10,6 +10,7 @@ import { SectionItemShell } from "../../common-compo/section/SectionItemShell";
 import { SelectSocialIcon } from "@/components/icon/SelectIcon";
 import { InputTextCv } from "@/components/input-writer/input-text-cv/InputTextCv";
 import type { TemplateLayout } from "@/services/schemas/cvTemplate.schema";
+import { ToolbarOptionsButton } from "@/features/cv-editor/component/template/components/common-compo/section/ToolbarOptionsButton";
 
 export interface CardSocialMediaOneProps {
 	item: ListItem<SocialMediaItemContentInput>;
@@ -75,16 +76,7 @@ export const CardSocialMediaOne = ({
 			toolbarExtra={
 				itemsMenu ? (
 					<>
-						<button
-							type="button"
-							className="p-2 cursor-pointer"
-							onClick={(e) => {
-								e.stopPropagation();
-								menuLeft.current?.toggle(e);
-							}}
-						>
-							options
-						</button>
+						<ToolbarOptionsButton menuRef={menuLeft} />
 						<Menu
 							model={itemsMenu(index)}
 							popup

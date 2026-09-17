@@ -6,6 +6,10 @@ $inputPadding: 0.5rem 0.5rem;
 /// @group form
 $inputBg: #ffffff;
 
+/// Background of an input field in dark mode
+/// @group form
+$inputBgDark: #18181b;
+
 /// Font size of an input field
 /// @group form
 $inputTextFontSize: 1rem;
@@ -14,17 +18,33 @@ $inputTextFontSize: 1rem;
 /// @group form
 $inputTextColor: $textColor;
 
+/// Text color of an input field in dark mode
+/// @group form
+$inputTextColorDark: $textColorDark;
+
 /// Color of an icon inside an input field
 /// @group form
 $inputIconColor: $textColor;
+
+/// Color of an icon inside an input field in dark mode
+/// @group form
+$inputIconColorDark: $textSecondaryColorDark;
 
 /// Border of an input field
 /// @group form
 $inputBorder: 1px solid #ced4da;
 
+/// Border of an input field in dark mode
+/// @group form
+$inputBorderDark: 1px solid #3f3f46;
+
 /// Border of an input field in hover state
 /// @group form
 $inputHoverBorderColor: $primaryColor;
+
+/// Border of an input field in hover state in dark mode
+/// @group form
+$inputHoverBorderColorDark: $primaryDarkColor;
 
 /// Border of an input field in focus state
 /// @group form
@@ -37,6 +57,10 @@ $inputErrorBorderColor: #ced4da #ced4da #ced4da $errorColor;
 /// Text color of a placeholder
 /// @group form
 $inputPlaceholderTextColor: #6c757d;
+
+/// Text color of a placeholder in dark mode
+/// @group form
+$inputPlaceholderTextColorDark: #71717a;
 
 /// Background of a filled input
 /// @group form
@@ -66,9 +90,17 @@ $inputGroupAddOnMinWidth: 2.357rem;
 /// @group form
 $inputListBg: #ffffff;
 
+/// Background of an input list in dark mode
+/// @group form
+$inputListBgDark: #18181b;
+
 /// Text color of an input list
 /// @group form
 $inputListTextColor: $textColor;
+
+/// Text color of an input list in dark mode
+/// @group form
+$inputListTextColorDark: $textColorDark;
 
 /// Border of an input list
 /// @group form
@@ -90,13 +122,25 @@ $inputListItemBg: transparent;
 /// @group form
 $inputListItemTextColor: $textColor;
 
+/// Text color for an individual itrem of an input list in dark mode
+/// @group form
+$inputListItemTextColorDark: $textColorDark;
+
 /// Hover state background for an individual itrem of an input list
 /// @group form
 $inputListItemHoverBg: #e9ecef;
 
+/// Hover state background for an individual itrem of an input list in dark mode
+/// @group form
+$inputListItemHoverBgDark: #27272a;
+
 /// Hover state text color for an individual itrem of an input list
 /// @group form
 $inputListItemTextHoverColor: $textColor;
+
+/// Hover state text color for an individual itrem of an input list in dark mode
+/// @group form
+$inputListItemTextHoverColorDark: $textColorDark;
 
 /// Focus state text color for an individual itrem of an input list
 /// @group form
@@ -146,6 +190,10 @@ $inputListHeaderBorder: 0 none;
 /// @group form
 $inputOverlayBg: $inputListBg;
 
+/// Background for an overlay of an input in dark mode
+/// @group form
+$inputOverlayBgDark: $inputListBgDark;
+
 /// Background for an overlay header of an input such as autocomplete or dropdown
 /// @group form
 $inputOverlayHeaderBg: $inputListHeaderBg;
@@ -154,9 +202,17 @@ $inputOverlayHeaderBg: $inputListHeaderBg;
 /// @group form
 $inputOverlayBorder: 0 none;
 
+/// Border for an overlay of an input in dark mode
+/// @group form
+$inputOverlayBorderDark: 1px solid #3f3f46;
+
 /// Shadow for an overlay of an input such as autocomplete or dropdown
 /// @group form
 $inputOverlayShadow: 0 3px 6px 0 rgba(0, 0, 0, 0.1);
+
+/// Shadow for an overlay of an input in dark mode
+/// @group form
+$inputOverlayShadowDark: 0 4px 16px 0 rgba(0, 0, 0, 0.45);
 
 /// Width of a checkbox
 /// @group form
@@ -210,6 +266,10 @@ $radiobuttonHeight: 20px;
 /// @group form
 $radiobuttonBorder: 2px solid #ced4da;
 
+/// Border of a radiobutton in dark mode
+/// @group form
+$radiobuttonBorderDark: 2px solid #52525b;
+
 /// Font size of a radiobutton icon
 /// @group form
 $radiobuttonIconSize: 12px;
@@ -218,25 +278,49 @@ $radiobuttonIconSize: 12px;
 /// @group form
 $radiobuttonActiveBorderColor: $primaryColor;
 
+/// Border color of a selected radiobutton in dark mode
+/// @group form
+$radiobuttonActiveBorderColorDark: $primaryDarkColor;
+
 /// Background of a selected radiobutton
 /// @group form
 $radiobuttonActiveBg: $primaryColor;
+
+/// Background of a selected radiobutton in dark mode
+/// @group form
+$radiobuttonActiveBgDark: $primaryDarkColor;
 
 /// Icon color of a selected radiobutton
 /// @group form
 $radiobuttonIconActiveColor: $primaryTextColor;
 
+/// Icon color of a selected radiobutton in dark mode
+/// @group form
+$radiobuttonIconActiveColorDark: $primaryTextColorDark;
+
 /// Background of a selected radiobutton in hover state
 /// @group form
 $radiobuttonActiveHoverBg: $primaryDarkerColor;
+
+/// Background of a selected radiobutton in hover state in dark mode
+/// @group form
+$radiobuttonActiveHoverBgDark: $primaryColor;
 
 /// Icon color of a selected radiobutton in hover state
 /// @group form
 $radiobuttonIconActiveHoverColor: $primaryTextColor;
 
+/// Icon color of a selected radiobutton in hover state in dark mode
+/// @group form
+$radiobuttonIconActiveHoverColorDark: $primaryTextColorDark;
+
 /// Border color of a selected radiobutton in hover state
 /// @group form
 $radiobuttonActiveHoverBorderColor: $primaryDarkerColor;
+
+/// Border color of a selected radiobutton in hover state in dark mode
+/// @group form
+$radiobuttonActiveHoverBorderColorDark: $primaryColor;
 
 /// Width of a color picker preview element
 /// @group form

@@ -1,8 +1,12 @@
-import { MdDelete, MdOutlineOpenWith } from "react-icons/md"
+import { MdDelete, MdDragIndicator } from "react-icons/md"
 import { CSS } from "@dnd-kit/utilities";
 import { useSortable } from "@dnd-kit/sortable";
 import { useCreateCvContext } from "@/features/cv-editor/component/context/CreateCvContext";
 import { useColumnFg } from "@/features/cv-editor/component/kit-dnd/shared/ColumnFgContext";
+import {
+  CV_TOOLBAR_ICON_SIZE,
+  cvToolbarIconBtnClass,
+} from "./ToolbarOptionsButton";
 
 type SectionItemShellProps = {
     clientKey: string
@@ -94,22 +98,39 @@ export function SectionItemShell({
           }}
         >
           {showToolbar && (
-            <div className="absolute w-auto right-0 -top-10 flex justify-center">
-              <div className="rounded-lg bg-white border-2 border-gray-100 flex">
-                <div className="p-2" {...listeners} {...attributes}>
-                  <MdOutlineOpenWith className="cursor-pointer" style={{ width: 20, height: 20 }} />
+            <div className="absolute w-auto right-0 -top-8 flex justify-center z-20">
+              <div className="rounded-md bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 shadow-sm flex items-center">
+                <div
+                  className={cvToolbarIconBtnClass}
+                  title="Déplacer"
+                  aria-label="Déplacer"
+                  {...listeners}
+                  {...attributes}
+                >
+                  <MdDragIndicator size={CV_TOOLBAR_ICON_SIZE} className="cursor-move" />
                 </div>
-                {toolbarExtra}
+                {toolbarExtra ? (
+                  <>
+                    <span className="w-px self-stretch bg-gray-200 dark:bg-gray-600" />
+                    {toolbarExtra}
+                  </>
+                ) : null}
                 {onDelete && (
-                  <div
-                    className="p-2 cursor-pointer"
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      onDelete()
-                    }}
-                  >
-                    <MdDelete style={{ width: 20, height: 20, color: "var(--red-500)" }} />
-                  </div>
+                  <>
+                    <span className="w-px self-stretch bg-gray-200 dark:bg-gray-600" />
+                    <button
+                      type="button"
+                      className={cvToolbarIconBtnClass}
+                      title="Supprimer"
+                      aria-label="Supprimer"
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        onDelete()
+                      }}
+                    >
+                      <MdDelete size={CV_TOOLBAR_ICON_SIZE} style={{ color: "var(--red-500)" }} />
+                    </button>
+                  </>
                 )}
               </div>
             </div>

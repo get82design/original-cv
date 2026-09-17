@@ -9,7 +9,7 @@ interface SelectColorProps {
 }
 
 export const SelectColor = ({ watchSelectInput, select }: SelectColorProps) => {
-	const { watch, setValue } = useFormContext();
+	const { watch } = useFormContext();
 	const watchPrimaryColor = watch(FieldNameLayoutGeneral.primaryColor);
 	const [primaryColor, setPrimaryColor] = useState("");
 	useEffect(() => {
@@ -20,15 +20,16 @@ export const SelectColor = ({ watchSelectInput, select }: SelectColorProps) => {
 		}
 	}, [watchPrimaryColor]);
 	return (
-		<div className="flex flex-col gap-0">
-			<p className="font-semibold text-sm">Couleur :</p>
-			<div className="w-full flex gap-2">
+		<div className="flex flex-col gap-2.5">
+			<p className="font-semibold text-xs">Couleur :</p>
+			<div className="w-full flex gap-1.5 items-center">
 				<RadioColorRhf
 					index={4}
 					name={select + ".colorSelect"}
 					color={"--white"}
 					value={"white"}
 					checked={watchSelectInput?.colorSelect === "white"}
+					swatchSize="sm"
 				/>
 				<RadioColorRhf
 					index={1}
@@ -36,6 +37,7 @@ export const SelectColor = ({ watchSelectInput, select }: SelectColorProps) => {
 					color={"--black"}
 					value={"black"}
 					checked={watchSelectInput?.colorSelect === "black"}
+					swatchSize="sm"
 				/>
 				<RadioColorRhf
 					index={2}
@@ -43,6 +45,7 @@ export const SelectColor = ({ watchSelectInput, select }: SelectColorProps) => {
 					color={"--gray-700"}
 					value={"gray"}
 					checked={watchSelectInput?.colorSelect === "gray"}
+					swatchSize="sm"
 				/>
 				{watch(select + ".withPrimaryColor") && watchPrimaryColor && (
 					<RadioColorRhf
@@ -51,6 +54,7 @@ export const SelectColor = ({ watchSelectInput, select }: SelectColorProps) => {
 						color={primaryColor}
 						value={"primaryColor"}
 						checked={watchSelectInput?.colorSelect === "primaryColor"}
+						swatchSize="sm"
 					/>
 				)}
 			</div>

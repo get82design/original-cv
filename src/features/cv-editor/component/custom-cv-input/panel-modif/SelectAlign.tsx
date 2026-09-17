@@ -21,11 +21,15 @@ interface SelectAlignProps {
       { icon: 'pi pi-align-justify', value: 'justify' }
     ]
     const justifyTemplate = (option: JustifyOption) => {
-      return <i className={option.icon}></i>
+      return (
+        <span className="inline-flex items-center justify-center leading-none">
+          <i className={`${option.icon} text-sm`}></i>
+        </span>
+      )
     }
     return (
       <div className="flex flex-col gap-1">
-        <p className="font-semibold text-sm">Alignement :</p>
+        <p className="font-semibold text-xs">Alignement :</p>
         <SelectButtonRhf
           className='shadow-none panel-modification'
           value={watchSelectInput?.textAlign}
@@ -33,6 +37,7 @@ interface SelectAlignProps {
           itemTemplate={justifyTemplate}
           optionLabel={'value'}
           options={justifyOptions}
+          pt={{ button: { className: "p-button-sm text-xs py-1.5 px-2.5 min-h-[2rem]" } }}
         />
       </div>
     )

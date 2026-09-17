@@ -18,7 +18,7 @@ export const TitleSectionIcon = ({ watchIconStyle }: TitleSectionIconProps) => {
 		{ value: "rounded", name: "Rond" },
 	];
 	const iconTemplate = (option: TitleIconOption) => {
-		return <div className="text-sm">{option.name}</div>;
+		return <div className="text-xs">{option.name}</div>;
 	};
 
 	return (
@@ -39,6 +39,7 @@ export const TitleSectionIcon = ({ watchIconStyle }: TitleSectionIconProps) => {
 				optionValue="value"
 				options={iconOptions}
 				unselectable={false}
+				pt={{ button: { className: "p-button-sm text-xs py-1 px-2.5 min-h-[2rem]" } }}
 			/>
 		</div>
 	);

@@ -14,13 +14,12 @@ interface TitlTransformOption {
 export const TitleSectionTextTranform = ({
 	watchTitleSectionTextTransform,
 }: TitleSectionTextTranformProps) => {
-	// const primaryColor = PrimaryTextColorStyle()
 	const titleTransformOptions: TitlTransformOption[] = [
 		{ name: "Normales", value: "capitalize" },
 		{ name: "Majuscules", value: "uppercase" },
 	];
 	const titleTransformTemplate = (option: TitlTransformOption) => {
-		return <div className="text-sm">{option.name}</div>;
+		return <div className="text-xs">{option.name}</div>;
 	};
 	return (
 		<div className="flex flex-col gap-1">
@@ -41,6 +40,7 @@ export const TitleSectionTextTranform = ({
 				optionValue="value"
 				options={titleTransformOptions}
 				unselectable={false}
+				pt={{ button: { className: "p-button-sm text-xs py-1 px-2.5 min-h-[2rem]" } }}
 			/>
 		</div>
 	);

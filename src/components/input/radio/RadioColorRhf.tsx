@@ -6,7 +6,7 @@ interface FormRadioColorProps extends RadioButtonProps {
 	index: number;
 	color: string;
 	general?: boolean;
-	swatchSize?: "sm" | "md";
+	swatchSize?: "xs" | "sm" | "md";
 }
 
 export const RadioColorRhf = ({
@@ -18,8 +18,8 @@ export const RadioColorRhf = ({
 	...props
 }: FormRadioColorProps) => {
 	const { control, setValue } = useFormContext();
-	const isWhite = color === "--white";
-	const sizeClass = swatchSize === "sm" ? "w-5 h-5" : "w-8 h-8";
+	const sizeClass =
+		swatchSize === "xs" ? "w-4 h-4" : swatchSize === "sm" ? "w-5 h-5" : "w-8 h-8";
 	return (
 		<Controller
 			name={name}
@@ -51,7 +51,7 @@ export const RadioColorRhf = ({
 							>
 								<button
 									type="button"
-									className={`${sizeClass} rounded-full`}
+									className={`${sizeClass} rounded-full ring-1 ring-inset ring-gray-400 dark:ring-gray-500`}
 									onClick={() => setValue(name, props.value)}
 									style={{
 										backgroundColor: `var(${color})`,
@@ -59,9 +59,6 @@ export const RadioColorRhf = ({
 											? "2px solid var(--teal-500)"
 											: "2px solid transparent",
 										outlineOffset: "1px",
-										boxShadow: isWhite
-											? "inset 0 0 0 1px var(--gray-300)"
-											: undefined,
 										cursor: "pointer",
 									}}
 								></button>

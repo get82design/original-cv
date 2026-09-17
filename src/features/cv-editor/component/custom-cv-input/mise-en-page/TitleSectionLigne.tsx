@@ -14,7 +14,6 @@ export const TitleSectionLigne = ({
 	watchLigneDessus,
 	watchLigneDessous,
 }: TitleSectionLigneProps) => {
-	// const primaryColor = PrimaryTextColorStyle()
 	const { setValue } = useFormContext();
 	const [iconStyle, setIconStyle] = useState<
 		"Aucun" | "Dessus" | "Dessous" | "Les 2"
@@ -57,7 +56,7 @@ export const TitleSectionLigne = ({
 		}
 	}, [iconStyle]);
 	const titleTransformTemplate = (option: string) => {
-		return <div className="text-sm">{option}</div>;
+		return <div className="text-xs">{option}</div>;
 	};
 	return (
 		<div className="flex flex-col gap-1">
@@ -70,12 +69,13 @@ export const TitleSectionLigne = ({
 				/>
 			</div>
 			<SelectButton
-				className="shadow-none text-sm panel-modification"
+				className="shadow-none text-xs panel-modification"
 				value={iconStyle}
 				onChange={(e) => setIconStyle(e.value)}
 				options={iconOptions}
 				unselectable={false}
 				itemTemplate={titleTransformTemplate}
+				pt={{ button: { className: "p-button-sm text-xs py-1 px-2.5 min-h-[2rem]" } }}
 			/>
 		</div>
 	);

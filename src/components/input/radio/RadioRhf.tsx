@@ -26,7 +26,11 @@ interface FormRadioProps extends RadioButtonProps {
               }}
               checked={field.value === props.value}
             />
-            {label && <label htmlFor={name}>{label}</label>}
+            {label && (
+              <label htmlFor={name} className="text-xs cursor-pointer">
+                {label}
+              </label>
+            )}
           </div>
         )}
       />

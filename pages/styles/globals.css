@@ -12,6 +12,40 @@ html.dark body {
   @apply bg-zinc-900 text-zinc-100;
 }
 
+/* Scrollbars — dark mode (Firefox + Chromium/WebKit) */
+html.dark {
+  scrollbar-width: thin;
+  scrollbar-color: var(--zinc-600) var(--zinc-800);
+}
+
+html.dark * {
+  scrollbar-width: thin;
+  scrollbar-color: var(--zinc-600) var(--zinc-800);
+}
+
+html.dark ::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+html.dark ::-webkit-scrollbar-track {
+  background: var(--zinc-800);
+}
+
+html.dark ::-webkit-scrollbar-thumb {
+  background: var(--zinc-600);
+  border-radius: 9999px;
+  border: 2px solid var(--zinc-800);
+}
+
+html.dark ::-webkit-scrollbar-thumb:hover {
+  background: var(--zinc-500);
+}
+
+html.dark ::-webkit-scrollbar-corner {
+  background: var(--zinc-800);
+}
+
 :root {
     --white: #ffffff;
     --black: #000000;
@@ -369,18 +403,81 @@ html.dark #panel-modif-cv.cv-modif-tabview {
 
 /* Police select — compact, scoped to this control only */
 .p-dropdown.cv-font-select {
-    height: 2rem;
-    min-height: 2rem;
+    height: 1.75rem;
+    min-height: 1.75rem;
 
     .p-dropdown-label {
-        padding: 0.25rem 0.5rem;
-        font-size: 0.8125rem;
-        line-height: 1.5rem;
+        padding: 0.15rem 0.4rem;
+        font-size: 0.75rem;
+        line-height: 1.45rem;
         display: flex;
         align-items: center;
     }
 
     .p-dropdown-trigger {
-        width: 2rem;
+        width: 1.75rem;
+    }
+}
+
+/* Modal « Données du profil » — light/dark (scoped) */
+.p-dialog.dialog-data-from-profile {
+    background: #ffffff;
+    border: 1px solid #e4e4e7;
+    color: #18181b;
+
+    .p-dialog-header {
+        background: #ffffff;
+        color: #18181b;
+        border-bottom-color: #e4e4e7;
+    }
+
+    .p-dialog-header-icon {
+        color: #52525b;
+
+        &:hover {
+            background: #f4f4f5;
+            color: #18181b;
+        }
+    }
+
+    .p-dialog-content,
+    .p-dialog-footer {
+        background: #ffffff;
+        color: #18181b;
+    }
+
+    .p-dialog-footer {
+        border-top-color: #e4e4e7;
+    }
+}
+
+html.dark .p-dialog.dialog-data-from-profile {
+    background: #18181b;
+    border-color: #3f3f46;
+    color: #f4f4f5;
+
+    .p-dialog-header {
+        background: #18181b;
+        color: #f4f4f5;
+        border-bottom-color: #3f3f46;
+    }
+
+    .p-dialog-header-icon {
+        color: #a1a1aa;
+
+        &:hover {
+            background: #27272a;
+            color: #f4f4f5;
+        }
+    }
+
+    .p-dialog-content,
+    .p-dialog-footer {
+        background: #18181b;
+        color: #f4f4f5;
+    }
+
+    .p-dialog-footer {
+        border-top-color: #3f3f46;
     }
 }

@@ -252,3 +252,63 @@ input.p-dropdown-label {
         }
     }
 }
+
+html.dark .p-dropdown {
+    background: $inputBgDark;
+    border: $inputBorderDark;
+    color: $inputTextColorDark;
+
+    &:not(.p-disabled):hover {
+        border-color: $inputHoverBorderColorDark;
+    }
+
+    .p-dropdown-label {
+        color: $inputTextColorDark;
+
+        &.p-placeholder {
+            color: $inputPlaceholderTextColorDark;
+        }
+    }
+
+    .p-dropdown-trigger {
+        color: $inputIconColorDark;
+    }
+
+    .p-dropdown-clear-icon {
+        color: $inputIconColorDark;
+    }
+}
+
+html.dark .p-dropdown-panel {
+    background: $inputOverlayBgDark;
+    color: $inputListTextColorDark;
+    border: $inputOverlayBorderDark;
+    box-shadow: $inputOverlayShadowDark;
+
+    .p-dropdown-items {
+        .p-dropdown-item {
+            color: $inputListItemTextColorDark;
+            background: $inputListItemBg;
+
+            &.p-highlight {
+                color: $highlightTextColor;
+                background: $highlightBg;
+
+                &.p-focus {
+                    background: $highlightBg;
+                }
+            }
+
+            &:not(.p-highlight):not(.p-disabled) {
+                &.p-focus {
+                    color: $inputListItemTextHoverColorDark;
+                    background: $inputListItemHoverBgDark;
+                }
+            }
+        }
+
+        .p-dropdown-empty-message {
+            color: $inputListItemTextColorDark;
+        }
+    }
+}

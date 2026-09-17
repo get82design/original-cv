@@ -13,6 +13,13 @@ interface GeneralPhotoProps {
 	watchLockPhotoSide: boolean;
 }
 
+const compactButtonPt = {
+	button: {
+		className:
+			"p-button-sm text-xs py-0 px-2.5 h-8 min-h-[2rem] inline-flex items-center justify-center",
+	},
+};
+
 export const GeneralPhoto = ({
 	watchWithPhoto,
 	watchStylePhoto,
@@ -28,14 +35,17 @@ export const GeneralPhoto = ({
 		{ value: "right", name: "Droite" },
 	];
 	const photoTemplate = (option: TitleIconOption) => {
-		return <div className="text-sm">{option.name}</div>;
+		return <div className="text-xs">{option.name}</div>;
 	};
 	return (
-		(watchWithPhoto || watchWithPhoto === false) && !watchLockPhotoSide && (
+		(watchWithPhoto || watchWithPhoto === false) && (
 			<div className="flex flex-col gap-1">
 				<p className="my-0 font-semibold text-xs">Photo</p>
-				<div className="flex gap-1 items-center justify-between general-photo">
-					<ToggleAfficherCacher name="layoutGeneral.layout.withPhoto" />
+				<div className="flex gap-1 items-center general-photo">
+					<ToggleAfficherCacher
+						name="layoutGeneral.layout.withPhoto"
+						compact
+					/>
 					{watchWithPhoto && (
 						<SelectButtonRhf
 							className="shadow-none"
@@ -45,9 +55,10 @@ export const GeneralPhoto = ({
 							optionValue="value"
 							options={photoOptions}
 							unselectable={false}
+							pt={compactButtonPt}
 						/>
 					)}
-					{watchPhotoSide && (
+					{watchWithPhoto && watchPhotoSide && !watchLockPhotoSide && (
 						<SelectButtonRhf
 							className="shadow-none"
 							value={watchPhotoSide}
@@ -55,7 +66,8 @@ export const GeneralPhoto = ({
 							itemTemplate={photoTemplate}
 							optionValue="value"
 							options={photoSideOptions}
-							unselectable={false}					
+							unselectable={false}
+							pt={compactButtonPt}
 						/>
 					)}
 				</div>

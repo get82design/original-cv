@@ -1,17 +1,14 @@
 import { SelectButtonRhf } from "@/components/input/select-button/SelectButton";
 import { FieldNameLayoutGeneral } from "@/features/cv-editor/utils/fields/fieldNameLayoutGeneral";
-import { Tooltip } from "primereact/tooltip";
-import { MdInfo } from "react-icons/md";
 
 interface GeneralSpaceProps {
 	watchSpace: "sm" | "md" | "lg";
 }
 
 export const GeneralSpace = ({ watchSpace }: GeneralSpaceProps) => {
-	// const primaryColor = PrimaryTextColorStyle()
 	const spaceOptions: string[] = ["sm", "md", "lg"];
 	const spaceTemplate = (option: string) => {
-		return <div className="text-sm">{option}</div>;
+		return <div className="text-xs">{option}</div>;
 	};
 	return (
 		<div className="flex flex-col gap-1">
@@ -23,6 +20,7 @@ export const GeneralSpace = ({ watchSpace }: GeneralSpaceProps) => {
 				itemTemplate={spaceTemplate}
 				options={spaceOptions}
 				unselectable={false}
+				pt={{ button: { className: "p-button-sm text-xs py-1 px-2.5 min-h-[2rem]" } }}
 			/>
 		</div>
 	);

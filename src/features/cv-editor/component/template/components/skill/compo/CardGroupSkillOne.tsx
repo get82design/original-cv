@@ -15,6 +15,7 @@ import { InputTextCv } from "@/components/input-writer/input-text-cv/InputTextCv
 import { SkillDnd } from "./SkillDnd";
 import { CommonPointList } from "../../common-compo/list/CommonPointList";
 import type { TemplateLayout } from "@/services/schemas/cvTemplate.schema";
+import { ToolbarOptionsButton } from "@/features/cv-editor/component/template/components/common-compo/section/ToolbarOptionsButton";
 
 export type CardGroupSkillOneProps = {
 	index: number;
@@ -108,16 +109,7 @@ export const CardGroupSkillOne = ({
 			toolbarExtra={
 				itemsMenu ? (
 					<>
-						<button
-							type="button"
-							className="p-2 cursor-pointer"
-							onClick={(e) => {
-								e.stopPropagation();
-								menuLeft.current?.toggle(e);
-							}}
-						>
-							options
-						</button>
+						<ToolbarOptionsButton menuRef={menuLeft} />
 						<Menu
 							model={itemsMenu(index)}
 							popup

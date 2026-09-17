@@ -16,6 +16,7 @@ import { InputTextCv } from "@/components/input-writer/input-text-cv/InputTextCv
 import { ListInSection } from "../../input-cv/section/ListInSection";
 import type { TemplateLayout } from "@/services/schemas/cvTemplate.schema";
 import { CommonPointList } from "../../common-compo/list/CommonPointList";
+import { ToolbarOptionsButton } from "@/features/cv-editor/component/template/components/common-compo/section/ToolbarOptionsButton";
 
 export interface CardProjectOneProps {
 	index: number;
@@ -140,16 +141,7 @@ export const CardProjectOne = ({
 			toolbarExtra={
 				itemsMenu ? (
 					<>
-						<button
-							type="button"
-							className="p-2 cursor-pointer"
-							onClick={(e) => {
-								e.stopPropagation();
-								menuLeft.current?.toggle(e);
-							}}
-						>
-							options
-						</button>
+						<ToolbarOptionsButton menuRef={menuLeft} />
 						<Menu
 							model={itemsMenu(index)}
 							popup

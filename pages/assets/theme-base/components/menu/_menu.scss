@@ -31,3 +31,95 @@
 		margin: $menuSeparatorMargin;
 	}
 }
+
+html.dark .p-menu {
+	background: $menuBgDark;
+	color: $menuTextColorDark;
+	border: $menuBorderDark;
+
+	&.p-menu-overlay {
+		background: $overlayMenuBgDark;
+		border: $menuBorderDark;
+		box-shadow: $overlayMenuShadowDark;
+	}
+
+	.p-submenu-header {
+		color: $submenuHeaderTextColorDark;
+		background: $submenuHeaderBgDark;
+	}
+
+	.p-menuitem {
+		> .p-menuitem-content {
+			color: $menuitemTextColorDark;
+
+			.p-menuitem-link {
+				color: $menuitemTextColorDark;
+
+				.p-menuitem-text {
+					color: $menuitemTextColorDark;
+				}
+
+				.p-menuitem-icon,
+				.p-submenu-icon {
+					color: $menuitemIconColorDark;
+				}
+			}
+		}
+
+		&.p-highlight {
+			> .p-menuitem-content {
+				color: $menuitemTextColorDark;
+				background: $menuitemHoverBgDark;
+
+				.p-menuitem-link {
+					.p-menuitem-text {
+						color: $menuitemTextColorDark;
+					}
+
+					.p-menuitem-icon,
+					.p-submenu-icon {
+						color: $menuitemIconColorDark;
+					}
+				}
+			}
+
+			&.p-focus > .p-menuitem-content {
+				background: $menuitemFocusBgDark;
+			}
+		}
+
+		&:not(.p-highlight):not(.p-disabled) {
+			&.p-focus > .p-menuitem-content {
+				color: $menuitemTextColorDark;
+				background: $menuitemFocusBgDark;
+
+				.p-menuitem-link {
+					.p-menuitem-text {
+						color: $menuitemTextColorDark;
+					}
+
+					.p-menuitem-icon,
+					.p-submenu-icon {
+						color: $menuitemIconColorDark;
+					}
+				}
+			}
+
+			> .p-menuitem-content:hover {
+				color: $menuitemTextHoverColorDark;
+				background: $menuitemHoverBgDark;
+
+				.p-menuitem-link {
+					.p-menuitem-text {
+						color: $menuitemTextHoverColorDark;
+					}
+
+					.p-menuitem-icon,
+					.p-submenu-icon {
+						color: $menuitemIconHoverColorDark;
+					}
+				}
+			}
+		}
+	}
+}

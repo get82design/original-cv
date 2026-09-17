@@ -179,12 +179,12 @@ export const CvEditor = () => {
 							position="left"
 						/>
 						<SpeedDial
-							className="speeddial-bottom-right"
+							className="speeddial-bottom-right z-50"
 							model={items}
 							radius={120}
 							type="quarter-circle"
 							direction="down-left"
-							style={{ position: "fixed", right: 10, top: 88 }}
+							style={{ position: "fixed", right: 10, top: 72, zIndex: 50 }}
 						/>
 					</>
 				)}

@@ -1,9 +1,152 @@
 /* Customizations to the designer theme should be defined here */
 .general-photo {
+    align-items: center;
+
+    .p-togglebutton.photo-toggle-compact,
     .p-togglebutton {
-        height: 35px;
+        display: inline-flex;
+        align-items: stretch;
+        height: 2rem !important;
+        min-height: 2rem !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        vertical-align: middle;
+        box-sizing: border-box;
+
         .p-togglebutton-input {
-            font-size: .75rem;
+            font-size: 0.75rem;
+        }
+
+        .p-button {
+            display: inline-flex !important;
+            align-items: center;
+            justify-content: center;
+            height: 2rem !important;
+            min-height: 2rem !important;
+            padding: 0 0.625rem !important;
+            margin: 0 !important;
+            font-size: 0.75rem !important;
+            line-height: 1 !important;
+            box-sizing: border-box;
+        }
+    }
+
+    .p-selectbutton {
+        display: inline-flex;
+        align-items: center;
+        height: 2rem;
+
+        .p-button {
+            height: 2rem;
+            min-height: 2rem;
+            box-sizing: border-box;
+        }
+    }
+}
+
+/* Menus Options (section / item) — densifiés */
+.p-menu {
+    font-size: 0.75rem;
+
+    .p-submenu-header {
+        font-size: 0.75rem !important;
+        padding: 0.4rem 0.75rem !important;
+        line-height: 1.25;
+    }
+
+    p,
+    label {
+        font-size: 0.75rem !important;
+        line-height: 1.25;
+        margin: 0;
+    }
+
+    .p-menuitem-content {
+        > div.flex {
+            padding-top: 0.2rem !important;
+            padding-bottom: 0.2rem !important;
+            padding-left: 0.75rem !important;
+            padding-right: 0.75rem !important;
+            gap: 0.5rem !important;
+        }
+    }
+
+    /* 2 colonnes si ≥2 entrées de toggles ; 1 seule entrée ou menus radios → 1 col */
+    .p-menu-list:has(> .p-menuitem + .p-menuitem):has(.p-togglebutton):not(
+            :has(.p-radiobutton)
+        ) {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        align-items: start;
+        column-gap: 0;
+        row-gap: 0;
+        min-width: 18rem;
+
+        > .p-submenu-header {
+            grid-column: 1 / -1;
+        }
+
+        > .p-menuitem {
+            width: 100%;
+            min-width: 0;
+        }
+
+        .p-menuitem-content > div.flex {
+            padding-top: 0.1rem !important;
+            padding-bottom: 0.1rem !important;
+            padding-left: 0.5rem !important;
+            padding-right: 0.15rem !important;
+        }
+
+        > .p-menuitem:nth-child(even of .p-menuitem)
+            .p-menuitem-content
+            > div.flex {
+            padding-left: 0.15rem !important;
+            padding-right: 0.5rem !important;
+        }
+
+        .p-menuitem-content > div.flex.justify-between {
+            flex-direction: column;
+            align-items: stretch;
+            gap: 0.15rem !important;
+        }
+
+        .p-togglebutton {
+            width: 100%;
+
+            .p-button {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    }
+
+    .p-togglebutton {
+        height: 1.75rem !important;
+        min-height: 1.75rem !important;
+        margin: 0 !important;
+
+        .p-button {
+            height: 1.75rem !important;
+            min-height: 1.75rem !important;
+            padding: 0 0.5rem !important;
+            font-size: 0.75rem !important;
+            line-height: 1 !important;
+        }
+    }
+
+    .p-radiobutton {
+        width: 16px;
+        height: 16px;
+
+        .p-radiobutton-box {
+            width: 16px;
+            height: 16px;
+
+            .p-radiobutton-icon {
+                width: 8px;
+                height: 8px;
+            }
         }
     }
 }
@@ -11,15 +154,68 @@
 .p-speeddial-action {
     width: 3rem;
     height: 3rem;
+    background: #e5e7eb;
+    color: #111827;
+
+    &:hover {
+        background: #d1d5db;
+        color: #111827;
+    }
 }
 .p-speeddial-button.p-button.p-button-icon-only {
     width: 3rem;
     height: 3rem;
-  }
+    background: #fff;
+    border-color: #e5e7eb;
+    color: var(--primary-color);
+
+    &:not(:disabled):hover {
+        background: #f9fafb;
+        border-color: #d1d5db;
+        color: var(--primary-color);
+    }
+
+    &:not(:disabled):active {
+        background: #f3f4f6;
+        border-color: #d1d5db;
+        color: var(--primary-color);
+    }
+}
 .p-speeddial-button.p-button.p-button-icon-only .p-button-icon.p-icon {
     width: 1.3rem;
     height: 1.3rem;
 }
+
+html.dark {
+    .p-speeddial-button.p-button.p-button-icon-only {
+        background: #1f2937;
+        border-color: #374151;
+        color: var(--primary-color-dark);
+
+        &:not(:disabled):hover {
+            background: #374151;
+            border-color: #4b5563;
+            color: var(--primary-color-dark);
+        }
+
+        &:not(:disabled):active {
+            background: #4b5563;
+            border-color: #4b5563;
+            color: var(--primary-color-dark);
+        }
+    }
+
+    .p-speeddial-action {
+        background: #374151;
+        color: #f3f4f6;
+
+        &:hover {
+            background: #4b5563;
+            color: #fff;
+        }
+    }
+}
+
 .mini-speeddial .p-speeddial-button.p-button.p-button-icon-only {
   width: 2rem;
   height: 2rem;

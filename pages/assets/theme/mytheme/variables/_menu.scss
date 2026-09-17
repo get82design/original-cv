@@ -58,6 +58,10 @@ $menuBorderDark: 1px solid #3f3f46;
 /// @group menu
 $menuTextColor: $textColor;
 
+/// Text color of a menu in dark mode
+/// @group menu
+$menuTextColorDark: $textColorDark;
+
 /// Padding of a menuitem
 /// @group menu
 $menuitemPadding: 0.75rem 1rem;
@@ -94,6 +98,18 @@ $menuitemIconHoverColor: $textSecondaryColor;
 /// @group menu
 $menuitemHoverBg: #e9ecef;
 
+/// Background of a menuitem in hover state in dark mode
+/// @group menu
+$menuitemHoverBgDark: #27272a;
+
+/// Text color of a menuitrem in hover state in dark mode
+/// @group menu
+$menuitemTextHoverColorDark: $textColorDark;
+
+/// Icon color of a menuitrem in hover state in dark mode
+/// @group menu
+$menuitemIconHoverColorDark: $textSecondaryColorDark;
+
 /// Text color of a menuitem in focus state
 /// @group menu
 $menuitemTextFocusColor: $textColor;
@@ -105,6 +121,10 @@ $menuitemIconFocusColor: $textColor;
 /// Background of a menuitem in focus state
 /// @group menu
 $menuitemFocusBg: #f8f9fa;
+
+/// Background of a menuitem in focus state in dark mode
+/// @group menu
+$menuitemFocusBgDark: #27272a;
 
 /// Text color of a menuitrem in active state
 /// @group menu
@@ -138,9 +158,17 @@ $submenuHeaderPadding: 0.75rem 1rem;
 /// @group menu
 $submenuHeaderBg: #ffffff;
 
+/// Background of a submenu header in dark mode
+/// @group menu
+$submenuHeaderBgDark: #18181b;
+
 /// Text color of a submenu header
 /// @group menu
 $submenuHeaderTextColor: $textColor;
+
+/// Text color of a submenu header in dark mode
+/// @group menu
+$submenuHeaderTextColorDark: $textColorDark;
 
 /// Border radius of a submenu header
 /// @group menu
@@ -154,6 +182,10 @@ $submenuHeaderFontWeight: 600;
 /// @group menu
 $overlayMenuBg: $menuBg;
 
+/// Background of an overlay menu in dark mode
+/// @group menu
+$overlayMenuBgDark: $menuBgDark;
+
 /// Border of an overlay menu
 /// @group menu
 $overlayMenuBorder: 0 none;
@@ -161,6 +193,10 @@ $overlayMenuBorder: 0 none;
 /// Box shadow of an overlay menu
 /// @group menu
 $overlayMenuShadow: 0 1px 6px 0 rgba(0, 0, 0, 0.1);
+
+/// Box shadow of an overlay menu in dark mode
+/// @group menu
+$overlayMenuShadowDark: 0 4px 16px 0 rgba(0, 0, 0, 0.45);
 
 /// Padding of a vertical menu e.g. tieredmenu, contextmenu
 /// @group menu

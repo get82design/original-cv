@@ -37,6 +37,13 @@ function getTemplateColumns(template: TemplateCv): number {
 	return layout?.layout?.columns ?? 1;
 }
 
+function templateImageAlt(template: TemplateCv): string {
+	const name =
+		template.name.charAt(0).toUpperCase() + template.name.slice(1);
+	const columns = getTemplateColumns(template);
+	return `Modèle de CV ${name} — ${columns} colonne${columns > 1 ? "s" : ""}`;
+}
+
 function GalleryMiniCv({
 	template,
 	color,
@@ -267,7 +274,7 @@ function GalleryCard({
 			</button>
 			<Image
 				src={`/assets/img/${template.name}.png`}
-				alt={template.name}
+				alt={templateImageAlt(template)}
 				fill
 				sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
 				className="object-cover object-top"

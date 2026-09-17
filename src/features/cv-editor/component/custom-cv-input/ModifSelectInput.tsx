@@ -63,12 +63,26 @@ export const ModifSelectInput = () => {
         <div className="w-full flex flex-col gap-2">
             {selectModifInput !== '' ? (
                 <>
-                    <div className="w-full flex item-center justify-between">
-                        <BreadCrumb model={modelBreadCrumb} className="text-sm mt-2 min-w-3/4" />
+                    <div className="w-full flex items-center justify-between gap-2">
+                        <BreadCrumb
+                            model={modelBreadCrumb}
+                            className="text-xs mt-1 min-w-0 flex-1 p-0 border-none bg-transparent"
+                            pt={{
+                                root: { className: "text-xs py-0" },
+                                menu: { className: "text-xs gap-0" },
+                                menuitem: { className: "text-xs" },
+                                action: { className: "text-xs py-0 px-1" },
+                                separator: { className: "text-xs mx-0" },
+                            }}
+                        />
                         {canSync && (
-                            <div className="flex flex-col items-center gap-0">
-                                <span>Sync</span>
-                            <InputSwitch checked={sync} onChange={(e) => setSync(!!e.value)} />
+                            <div className="flex flex-col items-center gap-0 shrink-0">
+                                <span className="text-xs leading-none mb-0.5">Sync</span>
+                                <InputSwitch
+                                    checked={sync}
+                                    onChange={(e) => setSync(!!e.value)}
+                                    className="scale-75 origin-center"
+                                />
                             </div>
                         )}
                     </div>
