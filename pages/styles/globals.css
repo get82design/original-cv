@@ -422,7 +422,8 @@ html.dark #panel-modif-cv.cv-modif-tabview {
 /* Modal « Données du profil » / limite CV — light/dark (scoped) */
 .p-dialog.dialog-data-from-profile,
 .p-dialog.dialog-cv-limit,
-.p-dialog.dialog-select-model {
+.p-dialog.dialog-select-model,
+.p-dialog.dialog-download-cv {
     background: #ffffff;
     border: 1px solid #e4e4e7;
     color: #18181b;
@@ -455,7 +456,8 @@ html.dark #panel-modif-cv.cv-modif-tabview {
 
 html.dark .p-dialog.dialog-data-from-profile,
 html.dark .p-dialog.dialog-cv-limit,
-html.dark .p-dialog.dialog-select-model {
+html.dark .p-dialog.dialog-select-model,
+html.dark .p-dialog.dialog-download-cv {
     background: #18181b;
     border-color: #3f3f46;
     color: #f4f4f5;
@@ -537,4 +539,61 @@ html.dark .p-sidebar.sidebar-model-list {
         background: #18181b;
         color: #f4f4f5;
     }
+}
+
+/* Auth forms — InputText / FloatLabel light & dark */
+.auth-form .p-inputtext {
+    background: #ffffff;
+    color: #18181b;
+    border-color: #d4d4d8;
+}
+
+.auth-form .p-inputtext:enabled:hover {
+    border-color: #a1a1aa;
+}
+
+.auth-form .p-inputtext::placeholder {
+    color: #a1a1aa;
+}
+
+.auth-form .p-float-label > label,
+.auth-form .p-floatlabel > label {
+    color: #71717a;
+}
+
+.auth-form .p-checkbox .p-checkbox-box {
+    background: #ffffff;
+    border-color: #d4d4d8;
+}
+
+html.dark .auth-form .p-inputtext {
+    background: #18181b;
+    color: #f4f4f5;
+    border-color: #3f3f46;
+}
+
+html.dark .auth-form .p-inputtext:enabled:hover {
+    border-color: #52525b;
+}
+
+html.dark .auth-form .p-inputtext::placeholder {
+    color: #71717a;
+}
+
+html.dark .auth-form .p-float-label > label,
+html.dark .auth-form .p-floatlabel > label {
+    color: #a1a1aa;
+}
+
+html.dark .auth-form .p-checkbox .p-checkbox-box {
+    background: #18181b;
+    border-color: #3f3f46;
+}
+
+html.dark .auth-form .p-inputtext:-webkit-autofill,
+html.dark .auth-form .p-inputtext:-webkit-autofill:hover,
+html.dark .auth-form .p-inputtext:-webkit-autofill:focus {
+    -webkit-text-fill-color: #f4f4f5;
+    box-shadow: 0 0 0 1000px #18181b inset;
+    transition: background-color 99999s ease-in-out 0s;
 }

@@ -14,6 +14,22 @@ export const userRouter = router({
 			userService.updateProfile(ctx.session.user.id, input),
 		),
 
+	/** Statut free/paid pour la modal de téléchargement */
+	getDownloadStatus: protectedProcedure.query(({ ctx }) =>
+		userService.getDownloadStatus(ctx.session.user.id),
+	),
+
+	/** Export gratuit (avec logo) */
+	consumeFreeDownload: protectedProcedure.mutation(({ ctx }) =>
+		userService.consumeFreeDownload(ctx.session.user.id),
+	),
+
+	/** Export payant (sans logo) */
+	consumePaidDownload: protectedProcedure.mutation(({ ctx }) =>
+		userService.consumePaidDownload(ctx.session.user.id),
+	),
+
+	/** @deprecated alias de consumePaidDownload — garder pour compat */
 	consumeDownloadCredit: protectedProcedure.mutation(({ ctx }) =>
 		userService.consumeDownloadCredit(ctx.session.user.id),
 	),
@@ -45,7 +61,8 @@ export const userRouter = router({
 		),
 });
 
-//! Retiré volontairement (à faire plus tard avec un adminProcedure) :
+//! Retiré volontairement (à faire plus tard avec un adminProcedure / webhook) :
 
 // all, byId, byEmail
 // resetIaRequests, updateMaxCvs, updatePlan
+// grantFreeDownload, grantPaidDownloadCredits — appelés côté service (pas exposés : abus)

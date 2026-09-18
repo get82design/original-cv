@@ -25,6 +25,8 @@ import {
 	CV_MODIF_DOCK_WIDTH,
 	CvModifDock,
 } from "./component/custom-cv-input/CvModifDock";
+import { DialogDownloadCv } from "@/components/dialog/DialogDownloadCv";
+import { captureDownloadPreviews } from "./utils/captureCvPreview";
 
 export const CvEditor = () => {
 	const { data } = trpc.cv.allByUser.useQuery();
@@ -34,7 +36,18 @@ export const CvEditor = () => {
 	const [itemNoUse, setItemNoUse] = useState<TemplateModule[]>([]);
 	const [visibleDialogDataFromProfile, setVisibleDialogDataFromProfile] =
 		useState(false);
+	const [visibleDownloadDialog, setVisibleDownloadDialog] = useState(false);
+	const [downloadPreviewWithLogo, setDownloadPreviewWithLogo] = useState<
+		string | null
+	>(null);
+	const [downloadPreviewWithoutLogo, setDownloadPreviewWithoutLogo] =
+		useState<string | null>(null);
+	const [downloadPreviewLoading, setDownloadPreviewLoading] = useState(false);
 	const [dockOpen, setDockOpen] = useState(false);
+	const { data: downloadStatus } = trpc.user.getDownloadStatus.useQuery(
+		undefined,
+		{ enabled: visibleDownloadDialog && status === "authenticated" },
+	);
 	const {
 		getValues,
 		setValue,
@@ -161,12 +174,46 @@ export const CvEditor = () => {
 				? "calc(100vw - 110px)"
 				: "100vw";
 
+	const openDownloadDialog = async () => {
+		setDownloadPreviewWithLogo(null);
+		setDownloadPreviewWithoutLogo(null);
+		setDownloadPreviewLoading(true);
+		setVisibleDownloadDialog(true);
+		try {
+			const { withLogo, withoutLogo } = await captureDownloadPreviews();
+			setDownloadPreviewWithLogo(withLogo);
+			setDownloadPreviewWithoutLogo(withoutLogo);
+		} catch {
+			setDownloadPreviewWithLogo(null);
+			setDownloadPreviewWithoutLogo(null);
+		} finally {
+			setDownloadPreviewLoading(false);
+		}
+	};
+
+	const closeDownloadDialog = () => {
+		setVisibleDownloadDialog(false);
+		setDownloadPreviewWithLogo(null);
+		setDownloadPreviewWithoutLogo(null);
+		setDownloadPreviewLoading(false);
+	};
+
 	return (
 		<>
 			<div className="my-8 px-8 lg:hidden">
 				Pour l&apos;instant vous ne pouvez pas créer de CV en mode mobile.
 			</div>
 			<div className="hidden w-full lg:flex flex-row-reverse justify-end gap-8 relative">
+				<DialogDownloadCv
+					visible={visibleDownloadDialog}
+					onHide={closeDownloadDialog}
+					previewUrlWithLogo={downloadPreviewWithLogo}
+					previewUrlWithoutLogo={downloadPreviewWithoutLogo}
+					previewLoading={downloadPreviewLoading}
+					title={(getValues("title") as string) || "Votre CV"}
+					freeDownloadsRemaining={downloadStatus?.freeDownloadsRemaining ?? 0}
+					downloadCredits={downloadStatus?.downloadCredits ?? 0}
+				/>
 				{profile && (
 					<>
 						<DialogDataFromProfile
@@ -223,6 +270,7 @@ export const CvEditor = () => {
 								status={status}
 								isSubmitting={isSubmitting}
 								getValues={() => getValues() as CvFormValues}
+								onDownloadClick={openDownloadDialog}
 							/>
 						)}
 					</div>

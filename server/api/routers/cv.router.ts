@@ -52,6 +52,11 @@ export const cvRouter = router({
 	setPreview: protectedProcedure
 		.input(setCvPreviewSchema)
 		.mutation(({ input, ctx }) =>
-			cvService.setPreview(input.cvId, ctx.session.user.id, input.previewUrl),
+			cvService.setPreview(
+				input.cvId,
+				ctx.session.user.id,
+				input.previewUrl,
+				input.previewUrlClean,
+			),
 		),
 });

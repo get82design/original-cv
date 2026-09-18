@@ -56,6 +56,7 @@ describe("User model", () => {
 			expect(user.image).toBe("https://example.com/image.jpg");
 			expect(user.plan).toBe(PlanRole.FREE);
 			expect(user.downloadCredits).toBe(0);
+			expect(user.freeDownloadsRemaining).toBe(0);
 			expect(user.maxCvs).toBe(1);
 			expect(user.iaRequestsUsed).toBe(0);
 			expect(user.isActive).toBe(true);

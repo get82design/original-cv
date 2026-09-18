@@ -3,15 +3,15 @@ import { TitleAppOne } from "@/components/title/TitleAppOne";
 import { TitleAppTwo } from "@/components/title/TitleAppTwo";
 import { useMediaQuery } from "@utils/useWindowWidth";
 import { Button } from "primereact/button";
-import { SpeedDial } from "primereact/speeddial";
-import { Tooltip } from "primereact/tooltip";
-import { CompoPage } from "./CompoPage";
+import { CompoPage, type CV } from "./CompoPage";
 import { FormProfile } from "./form/FormProfile";
 import { ProfileProvider } from "./contexte/ProfileContext";
 import { trpc } from "@utils/trpc";
 import { ProgressSpinner } from "primereact/progressspinner";
 import { PreviewImage } from "./compo/common/PreviewImage";
 import Link from "next/link";
+import { useState } from "react";
+import { DialogDownloadCv } from "@/components/dialog/DialogDownloadCv";
 
 export const ProfilePage = () => {
 	const { data: cvs, isLoading } = trpc.cv.allByUser.useQuery();
@@ -19,67 +19,36 @@ export const ProfilePage = () => {
 	const isLg = useMediaQuery("(min-width: 1024px)");
 	const isMd = useMediaQuery("(min-width: 768px)");
 	const isSm = useMediaQuery("(min-width: 640px)");
-	const isXs = useMediaQuery("(min-width: 576px)");
-	const isXl = useMediaQuery("(min-width: 1200px)");
+	const [downloadCv, setDownloadCv] = useState<CV | null>(null);
+	const { data: downloadStatus } = trpc.user.getDownloadStatus.useQuery(
+		undefined,
+		{ enabled: downloadCv != null },
+	);
 
-	const items = [
-		{
-			label: "Add",
-			icon: "pi pi-pencil",
-			// command: () => {
-			//     toast.current.show({ severity: 'info', summary: 'Add', detail: 'Data Added' });
-			// }
-		},
-		{
-			label: "Update",
-			icon: "pi pi-refresh",
-			// command: () => {
-			//     toast.current.show({ severity: 'success', summary: 'Update', detail: 'Data Updated' });
-			// }
-		},
-		{
-			label: "Delete",
-			icon: "pi pi-trash",
-			// command: () => {
-			//     toast.current.show({ severity: 'error', summary: 'Delete', detail: 'Data Deleted' });
-			// }
-		},
-		{
-			label: "Upload",
-			icon: "pi pi-upload",
-			// command: () => {
-			//     router.push('/fileupload');
-			// }
-		},
-		{
-			label: "React Website",
-			icon: "pi pi-external-link",
-			// command: () => {
-			//     window.location.href = 'https://react.dev/';
-			// }
-		},
-	];
+	const downloadPreviewWithLogo = downloadCv
+		? (downloadCv.previewUrl ??
+			(downloadCv.template?.name
+				? `/assets/img/${downloadCv.template.name}.png`
+				: null))
+		: null;
+	const downloadPreviewWithoutLogo =
+		downloadCv?.previewUrlClean ?? downloadPreviewWithLogo;
 
 	return (
 		<FormProfile>
+			<DialogDownloadCv
+				visible={downloadCv != null}
+				onHide={() => setDownloadCv(null)}
+				title={downloadCv?.title || "Votre CV"}
+				previewUrlWithLogo={downloadPreviewWithLogo}
+				previewUrlWithoutLogo={downloadPreviewWithoutLogo}
+				freeDownloadsRemaining={downloadStatus?.freeDownloadsRemaining ?? 0}
+				downloadCredits={downloadStatus?.downloadCredits ?? 0}
+			/>
 			<div
 				className={"w-full p-4 md:p-8 relative"}
 				style={{ /*...ClassikAppColor(),*/ minHeight: "calc(100vh - 70px)" }}
 			>
-				{/* {isMd &&
-                <>
-                    <Tooltip target=".speeddial-bottom-right .p-speeddial-action" position="left" />
-                    <SpeedDial
-                        model={items}
-                        radius={150}
-                        type="quarter-circle"
-                        className="speeddial-bottom-right right-0 bottom-0"
-                        direction="down-left"
-                        style={{ right: 24, top: 24 }}
-                        // buttonStyle={PrimaryOutlinedButtonColorStyle()}
-                    />
-                </>
-            } */}
 				<div className="w-full flex flex-col-reverse lg:flex-row lg:justify-end gap-6">
 					<div
 						className="w-full hidden sm:flex flex-col gap-6"
@@ -87,7 +56,6 @@ export const ProfilePage = () => {
 					>
 						<div className="w-full hidden lg:flex justify-between items-center relative">
 							<TitleAppOne firstPart="DASH" secondPart="BOARD" />
-							{/* <Button color="light" icon="pi pi-angle-down" iconPos='right'>Options</Button> */}
 						</div>
 						<ProfileProvider>
 							<CompoPage cvs={cvs ?? []} /*nbCv={nbCv} cv={cv}*/ />
@@ -147,22 +115,11 @@ export const ProfilePage = () => {
 																		{isMd && (
 																			<Button
 																				size="small"
-																				// onClick={() => {
-																				// 	setIdCv(cv?.id as string);
-																				// 	setVisibleApercu(true);
-																				// }}
+																				onClick={() => setDownloadCv(cv)}
 																			>
 																				Visionner
 																			</Button>
 																		)}
-																		{/* {cv?.preview && (
-																			<Button
-																				size="small"
-																				disabled={!cv?.isReadyPreview}
-																			>
-																				Télécharger
-																			</Button>
-																		)} */}
 																		{isMd && (
 																			<Link href={`/cv/${cv?.id}`}>
 																				<Button size="small">Modifier</Button>
@@ -176,8 +133,6 @@ export const ProfilePage = () => {
 																	<Button
 																		onClick={(e) => {
 																			e.preventDefault();
-																			// setIdCv(cv?.id as string)
-																			// setVisibleSearchDatas(true)
 																		}}
 																	>
 																		Récupérer les données du CV

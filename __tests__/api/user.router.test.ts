@@ -74,6 +74,78 @@ describe("userRouter", () => {
 		expect(await caller.user.countUserCvs()).toBe(1);
 	});
 
+	it("getDownloadStatus returns free/paid flags", async () => {
+		const user = await createTestUser();
+		await prismaTest.user.update({
+			where: { id: user.id },
+			data: { freeDownloadsRemaining: 1, downloadCredits: 2 },
+		});
+		const caller = await createTestCaller(createTestSession(user));
+
+		const status = await caller.user.getDownloadStatus();
+
+		expect(status).toEqual({
+			freeDownloadsRemaining: 1,
+			downloadCredits: 2,
+			canDownloadFree: true,
+			canDownloadPaid: true,
+		});
+	});
+
+	it("getDownloadStatus returns UNAUTHORIZED without session", async () => {
+		const caller = await createTestCaller();
+
+		await expect(caller.user.getDownloadStatus()).rejects.toMatchObject({
+			code: "UNAUTHORIZED",
+		});
+	});
+
+	it("consumeFreeDownload decrements free stock only", async () => {
+		const user = await createTestUser();
+		await prismaTest.user.update({
+			where: { id: user.id },
+			data: { freeDownloadsRemaining: 2, downloadCredits: 5 },
+		});
+		const caller = await createTestCaller(createTestSession(user));
+
+		const updated = await caller.user.consumeFreeDownload();
+
+		expect(updated.freeDownloadsRemaining).toBe(1);
+		expect(updated.downloadCredits).toBe(5);
+	});
+
+	it("consumeFreeDownload returns BAD_REQUEST when empty", async () => {
+		const user = await createTestUser();
+		const caller = await createTestCaller(createTestSession(user));
+
+		await expect(caller.user.consumeFreeDownload()).rejects.toMatchObject({
+			code: "BAD_REQUEST",
+		});
+	});
+
+	it("consumePaidDownload decrements paid credits only", async () => {
+		const user = await createTestUser();
+		await prismaTest.user.update({
+			where: { id: user.id },
+			data: { freeDownloadsRemaining: 3, downloadCredits: 2 },
+		});
+		const caller = await createTestCaller(createTestSession(user));
+
+		const updated = await caller.user.consumePaidDownload();
+
+		expect(updated.downloadCredits).toBe(1);
+		expect(updated.freeDownloadsRemaining).toBe(3);
+	});
+
+	it("consumePaidDownload returns BAD_REQUEST when empty", async () => {
+		const user = await createTestUser();
+		const caller = await createTestCaller(createTestSession(user));
+
+		await expect(caller.user.consumePaidDownload()).rejects.toMatchObject({
+			code: "BAD_REQUEST",
+		});
+	});
+
 	it("consumeDownloadCredit decrements credits", async () => {
 		const user = await createTestUser();
 		await prismaTest.user.update({

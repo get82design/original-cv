@@ -200,6 +200,27 @@ export const HomeComponent = () => {
 				</div>
 			</section>
 
+			{status !== "authenticated" && (
+				<section className="w-full rounded-xl bg-white dark:bg-black px-6 py-8 sm:px-10 md:px-14 shadow-md">
+					<div className="max-w-3xl mx-auto flex flex-col items-center gap-4 text-center">
+						<h2 className="m-0 font-bold text-xl sm:text-2xl text-zinc-900 dark:text-zinc-50">
+							Créez un compte gratuit
+						</h2>
+						<p className="m-0 text-sm sm:text-base text-zinc-600 dark:text-zinc-400 leading-relaxed">
+							Sauvegardez vos CV, revenez y travailler plus tard, et
+							débloquez des avantages au fil de votre utilisation.
+						</p>
+						<Link href="/register">
+							<Button
+								label="Créer un compte"
+								className="bg-primary hover:bg-primary-dark dark:bg-primary-dark hover:dark:bg-primary text-white dark:text-black font-bold"
+								size={!isSm ? "small" : "large"}
+							/>
+						</Link>
+					</div>
+				</section>
+			)}
+
 			<section className="w-full rounded-xl bg-primary dark:bg-primary-dark px-6 py-8 sm:px-10 md:px-14">
 				<div className="max-w-3xl mx-auto flex flex-col items-center gap-4 text-center">
 					<h2 className="m-0 font-bold text-xl sm:text-2xl text-white dark:text-black">
@@ -208,23 +229,13 @@ export const HomeComponent = () => {
 					<p className="m-0 text-sm sm:text-base text-white/90 dark:text-black/80">
 						Choisissez un modèle et composez un CV clair en quelques minutes.
 					</p>
-					<div className="flex flex-col sm:flex-row items-center gap-3 mt-1">
-						<Link href="/cv/0">
-							<Button
-								label="Créer votre CV gratuitement"
-								className="bg-white hover:bg-zinc-100 dark:bg-black dark:hover:bg-zinc-900 text-primary dark:text-primary-dark font-bold border-0"
-								size={!isSm ? "small" : "large"}
-							/>
-						</Link>
-						{status !== "authenticated" && (
-							<Link
-								href="/register"
-								className="text-sm font-medium text-white/90 dark:text-black/80 hover:underline"
-							>
-								Créer un compte
-							</Link>
-						)}
-					</div>
+					<Link href="/cv/0">
+						<Button
+							label="Créer votre CV gratuitement"
+							className="bg-white hover:bg-zinc-100 dark:bg-black dark:hover:bg-zinc-900 text-primary dark:text-primary-dark font-bold border-0"
+							size={!isSm ? "small" : "large"}
+						/>
+					</Link>
 				</div>
 			</section>
 		</div>

@@ -50,7 +50,7 @@ export const ResetPasswordCompo = () => {
                 className="flex flex-col items-center justify-center"
                 style={{ height: "calc(100vh - 58px)" }}
             >
-                <AppCard className="w-1/2 flex flex-col gap-3 p-8">
+                <AppCard className="auth-form w-1/2 flex flex-col gap-3 p-8">
                     <h1 className="font-light text-4xl text-center mt-4">
                         Original
                         <span className="text-primary dark:text-primary-dark font-bold">
@@ -73,7 +73,7 @@ export const ResetPasswordCompo = () => {
             className="flex flex-col items-center justify-center"
             style={{ height: "calc(100vh - 58px)" }}
         >
-            <AppCard className="w-1/2 flex flex-col gap-3 p-8">
+            <AppCard className="auth-form w-1/2 flex flex-col gap-3 p-8">
                 <h1 className="font-light text-4xl text-center mt-4">
                     Original
                     <span className="text-primary dark:text-primary-dark font-bold">

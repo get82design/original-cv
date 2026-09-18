@@ -17,7 +17,7 @@ import { Toast } from "primereact/toast";
 import { useSession } from "next-auth/react";
 import { switchTemplate } from "../../utils/applyTemplateToForm";
 import { clearTemplateCache } from "../../utils/templateCache";
-import { captureCvPreview } from "../../utils/captureCvPreview";
+import { captureDownloadPreviews } from "../../utils/captureCvPreview";
 import { useModelAndColorContext } from "../context/ModelAndColorContext";
 import type { inferRouterOutputs } from "@trpc/server";
 import type { AppRouter } from "@server/api/root";
@@ -229,9 +229,13 @@ export const FormCv = ({ children, idCv, template, color }: FormCvProviderProps)
 	const persistCv = async (cv: CvFormValues) => {
 		const saved = await saveCv.mutateAsync(mapFormToSaveInput(cv));
 		try {
-			const previewUrl = await captureCvPreview();
-			if (previewUrl) {
-				await setPreview.mutateAsync({ cvId: saved.id, previewUrl });
+			const { withLogo, withoutLogo } = await captureDownloadPreviews();
+			if (withLogo && withoutLogo) {
+				await setPreview.mutateAsync({
+					cvId: saved.id,
+					previewUrl: withLogo,
+					previewUrlClean: withoutLogo,
+				});
 			}
 		} catch {
 			// le save a déjà réussi

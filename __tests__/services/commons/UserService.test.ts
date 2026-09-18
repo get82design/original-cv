@@ -32,6 +32,7 @@ describe("UserService.findById", () => {
 		expect(user.plan).toBe(PlanRole.FREE);
 		expect(user.maxCvs).toBe(1);
 		expect(user.downloadCredits).toBe(0);
+		expect(user.freeDownloadsRemaining).toBe(0);
 		expect(user.iaRequestsUsed).toBe(0);
 		expect(user.isActive).toBe(true);
 		const userExisting = await userService.findById(user.id);
@@ -123,6 +124,187 @@ describe("UserService.consumeDownloadCredit", () => {
 		await expect(userService.consumeDownloadCredit(user.id)).rejects.toThrow(
 			ValidationError,
 		);
+	});
+});
+
+describe("UserService.getDownloadStatus / canDownload*", () => {
+	it("returns false flags when stocks are empty", async () => {
+		const user = await createTestUser();
+		const status = await userService.getDownloadStatus(user.id);
+
+		expect(status).toEqual({
+			freeDownloadsRemaining: 0,
+			downloadCredits: 0,
+			canDownloadFree: false,
+			canDownloadPaid: false,
+		});
+		await expect(userService.canDownloadFree(user.id)).resolves.toBe(false);
+		await expect(userService.canDownloadPaid(user.id)).resolves.toBe(false);
+	});
+
+	it("reflects free and paid stocks independently", async () => {
+		const user = await createTestUser();
+		await prisma.user.update({
+			where: { id: user.id },
+			data: { freeDownloadsRemaining: 2, downloadCredits: 3 },
+		});
+
+		const status = await userService.getDownloadStatus(user.id);
+		expect(status.canDownloadFree).toBe(true);
+		expect(status.canDownloadPaid).toBe(true);
+		expect(status.freeDownloadsRemaining).toBe(2);
+		expect(status.downloadCredits).toBe(3);
+	});
+
+	it("throws if the user is not found", async () => {
+		await expect(userService.getDownloadStatus("123")).rejects.toThrow(
+			NotFoundError,
+		);
+		await expect(userService.canDownloadFree("123")).rejects.toThrow(
+			NotFoundError,
+		);
+		await expect(userService.canDownloadPaid("123")).rejects.toThrow(
+			NotFoundError,
+		);
+	});
+});
+
+describe("UserService.consumeFreeDownload", () => {
+	it("decrements freeDownloadsRemaining without touching downloadCredits", async () => {
+		const user = await createTestUser();
+		await prisma.user.update({
+			where: { id: user.id },
+			data: { freeDownloadsRemaining: 2, downloadCredits: 5 },
+		});
+
+		const updated = await userService.consumeFreeDownload(user.id);
+		expect(updated.freeDownloadsRemaining).toBe(1);
+		expect(updated.downloadCredits).toBe(5);
+	});
+
+	it("refuses when no free downloads remain", async () => {
+		const user = await createTestUser();
+		await expect(userService.consumeFreeDownload(user.id)).rejects.toThrow(
+			ValidationError,
+		);
+	});
+
+	it("throws if the user is not found", async () => {
+		await expect(userService.consumeFreeDownload("123")).rejects.toThrow(
+			NotFoundError,
+		);
+	});
+});
+
+describe("UserService.consumePaidDownload", () => {
+	it("decrements downloadCredits without touching freeDownloadsRemaining", async () => {
+		const user = await createTestUser();
+		await prisma.user.update({
+			where: { id: user.id },
+			data: { freeDownloadsRemaining: 4, downloadCredits: 2 },
+		});
+
+		const updated = await userService.consumePaidDownload(user.id);
+		expect(updated.downloadCredits).toBe(1);
+		expect(updated.freeDownloadsRemaining).toBe(4);
+	});
+
+	it("refuses when no paid credits remain", async () => {
+		const user = await createTestUser();
+		await expect(userService.consumePaidDownload(user.id)).rejects.toThrow(
+			ValidationError,
+		);
+	});
+});
+
+describe("UserService.grantFreeDownload", () => {
+	it("grants free downloads once and records the grant", async () => {
+		const user = await createTestUser();
+
+		const updated = await userService.grantFreeDownload(
+			user.id,
+			"PROFILE_CREATED",
+			1,
+		);
+		expect(updated.freeDownloadsRemaining).toBe(1);
+
+		const grants = await prisma.downloadGrant.findMany({
+			where: { userId: user.id },
+		});
+		const [grant] = grants;
+		expect(grant).toBeDefined();
+		expect(grant).toMatchObject({
+			reason: "PROFILE_CREATED",
+			amount: 1,
+		});
+	});
+
+	it("accepts a custom amount", async () => {
+		const user = await createTestUser();
+		const updated = await userService.grantFreeDownload(
+			user.id,
+			"TEMPLATE_PURCHASED",
+			3,
+		);
+		expect(updated.freeDownloadsRemaining).toBe(3);
+	});
+
+	it("refuses a second grant for the same reason", async () => {
+		const user = await createTestUser();
+		await userService.grantFreeDownload(user.id, "FIRST_CV_SAVED");
+
+		await expect(
+			userService.grantFreeDownload(user.id, "FIRST_CV_SAVED"),
+		).rejects.toThrow(ConflictError);
+
+		const reloaded = await prisma.user.findUniqueOrThrow({
+			where: { id: user.id },
+		});
+		expect(reloaded.freeDownloadsRemaining).toBe(1);
+	});
+
+	it("allows different reasons on the same user", async () => {
+		const user = await createTestUser();
+		await userService.grantFreeDownload(user.id, "PROFILE_CREATED");
+		const updated = await userService.grantFreeDownload(
+			user.id,
+			"FIRST_CV_SAVED",
+		);
+		expect(updated.freeDownloadsRemaining).toBe(2);
+	});
+
+	it("rejects amount < 1", async () => {
+		const user = await createTestUser();
+		await expect(
+			userService.grantFreeDownload(user.id, "PROFILE_CREATED", 0),
+		).rejects.toThrow(ValidationError);
+	});
+
+	it("throws if the user is not found", async () => {
+		await expect(
+			userService.grantFreeDownload("123", "PROFILE_CREATED"),
+		).rejects.toThrow(NotFoundError);
+	});
+});
+
+describe("UserService.grantPaidDownloadCredits", () => {
+	it("increments downloadCredits", async () => {
+		const user = await createTestUser();
+		const updated = await userService.grantPaidDownloadCredits(user.id, 3);
+		expect(updated.downloadCredits).toBe(3);
+	});
+
+	it("rejects amount < 1", async () => {
+		const user = await createTestUser();
+		await expect(
+			userService.grantPaidDownloadCredits(user.id, 0),
+		).rejects.toThrow(ValidationError);
+	});
+
+	it("throws if the user is not found", async () => {
+		await expect(
+			userService.grantPaidDownloadCredits("123", 1),
+		).rejects.toThrow(NotFoundError);
 	});
 });
 

@@ -179,16 +179,34 @@ export class CvService {
 				createdAt: true,
 				updatedAt: true,
 				previewUrl: true,
+				previewUrlClean: true,
 			},
 		});
 	}
 
-	async setPreview(cvId: string, userId: string, previewUrl: string) {
-		// findUnique → 404 / 403 si pas à toi
+	async setPreview(
+		cvId: string,
+		userId: string,
+		previewUrl: string,
+		previewUrlClean: string,
+	) {
+		const cv = await prisma.cV.findUnique({
+			where: { id: cvId },
+			select: { id: true, userId: true },
+		});
+
+		if (!cv) {
+			throw new NotFoundError("CV", cvId);
+		}
+
+		if (cv.userId !== userId) {
+			throw new ForbiddenError("You cannot update this CV");
+		}
+
 		return prisma.cV.update({
 			where: { id: cvId },
-			data: { previewUrl },
-			select: { id: true, previewUrl: true },
+			data: { previewUrl, previewUrlClean },
+			select: { id: true, previewUrl: true, previewUrlClean: true },
 		});
 	}
 }

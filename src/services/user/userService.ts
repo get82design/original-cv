@@ -7,6 +7,16 @@ import type { UpdateUserInput } from "../schemas/user.schema";
 import { createHash, randomBytes } from "crypto";
 import { sendPasswordResetEmail } from "../mail/mailService";
 
+/** Raisons de cadeau free download — one-shot par user */
+export const FREE_DOWNLOAD_GRANT_REASONS = [
+	"PROFILE_CREATED",
+	"TEMPLATE_PURCHASED",
+	"FIRST_CV_SAVED",
+] as const;
+
+export type FreeDownloadGrantReason =
+	(typeof FREE_DOWNLOAD_GRANT_REASONS)[number];
+
 export class UserService {
 	async findAll() {
 		return prisma.user.findMany();
@@ -51,20 +61,107 @@ export class UserService {
 	}
 
 	async consumeDownloadCredit(id: string) {
-		const user = await prisma.user.findUnique({
-			where: {
-				id,
-			},
-		});
-		if (!user) {
-			throw new NotFoundError("USER", id);
+		return this.consumePaidDownload(id);
+	}
+
+	/** Export gratuit (avec logo) possible ? */
+	async canDownloadFree(id: string) {
+		const user = await this.findById(id);
+		return user.freeDownloadsRemaining > 0;
+	}
+
+	/** Export payant (sans logo) possible ? */
+	async canDownloadPaid(id: string) {
+		const user = await this.findById(id);
+		return user.downloadCredits > 0;
+	}
+
+	/** Statut pour la modal de téléchargement */
+	async getDownloadStatus(id: string) {
+		const user = await this.findById(id);
+		return {
+			freeDownloadsRemaining: user.freeDownloadsRemaining,
+			downloadCredits: user.downloadCredits,
+			canDownloadFree: user.freeDownloadsRemaining > 0,
+			canDownloadPaid: user.downloadCredits > 0,
+		};
+	}
+
+	/** Consomme 1 téléchargement gratuit (avec logo) */
+	async consumeFreeDownload(id: string) {
+		const user = await this.findById(id);
+		if (user.freeDownloadsRemaining <= 0) {
+			throw new ValidationError("No free downloads available");
 		}
+		return prisma.user.update({
+			where: { id },
+			data: { freeDownloadsRemaining: { decrement: 1 } },
+		});
+	}
+
+	/** Consomme 1 crédit payant (sans logo) */
+	async consumePaidDownload(id: string) {
+		const user = await this.findById(id);
 		if (user.downloadCredits <= 0) {
 			throw new ValidationError("No download credits available");
 		}
 		return prisma.user.update({
 			where: { id },
-			data: { downloadCredits: user.downloadCredits - 1 },
+			data: { downloadCredits: { decrement: 1 } },
+		});
+	}
+
+	/**
+	 * Accorde des téléchargements gratuits (one-shot par reason).
+	 * Si la raison a déjà été accordée → ConflictError, pas de double cadeau.
+	 */
+	async grantFreeDownload(
+		id: string,
+		reason: FreeDownloadGrantReason,
+		amount = 1,
+	) {
+		if (amount < 1) {
+			throw new ValidationError("Grant amount must be at least 1");
+		}
+		await this.findById(id);
+
+		try {
+			const [, user] = await prisma.$transaction([
+				prisma.downloadGrant.create({
+					data: { userId: id, reason, amount },
+				}),
+				prisma.user.update({
+					where: { id },
+					data: { freeDownloadsRemaining: { increment: amount } },
+				}),
+			]);
+			return user;
+		} catch (err) {
+			// unique (userId, reason) → déjà accordé
+			if (
+				err &&
+				typeof err === "object" &&
+				"code" in err &&
+				(err as { code: string }).code === "P2002"
+			) {
+				throw new ConflictError(
+					"DOWNLOAD_GRANT_ALREADY_USED",
+					`Free download already granted for reason: ${reason}`,
+				);
+			}
+			throw err;
+		}
+	}
+
+	/** Ajoute des crédits payants (achat pack, etc.) */
+	async grantPaidDownloadCredits(id: string, amount: number) {
+		if (amount < 1) {
+			throw new ValidationError("Credit amount must be at least 1");
+		}
+		await this.findById(id);
+		return prisma.user.update({
+			where: { id },
+			data: { downloadCredits: { increment: amount } },
 		});
 	}
 

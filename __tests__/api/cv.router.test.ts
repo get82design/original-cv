@@ -280,3 +280,56 @@ describe("cvRouter.save", () => {
 		).rejects.toBeInstanceOf(TRPCError);
 	});
 });
+
+describe("cvRouter.setPreview", () => {
+	const SAMPLE_WITH = "data:image/jpeg;base64,withlogo";
+	const SAMPLE_CLEAN = "data:image/jpeg;base64,clean";
+
+	it("stores both preview URLs", async () => {
+		const user = await createTestUser();
+		const caller = await createTestCaller(createTestSession(user));
+		const template = await createTestTemplate();
+		const cv = await createCV(user.id, template.id, "Mon CV");
+
+		const updated = await caller.cv.setPreview({
+			cvId: cv.id,
+			previewUrl: SAMPLE_WITH,
+			previewUrlClean: SAMPLE_CLEAN,
+		});
+
+		expect(updated.previewUrl).toBe(SAMPLE_WITH);
+		expect(updated.previewUrlClean).toBe(SAMPLE_CLEAN);
+	});
+
+	it("returns FORBIDDEN for another user's CV", async () => {
+		const owner = await createTestUser();
+		const other = await createTestUser();
+		const caller = await createTestCaller(createTestSession(other));
+		const template = await createTestTemplate();
+		const cv = await createCV(owner.id, template.id);
+
+		await expect(
+			caller.cv.setPreview({
+				cvId: cv.id,
+				previewUrl: SAMPLE_WITH,
+				previewUrlClean: SAMPLE_CLEAN,
+			}),
+		).rejects.toMatchObject({ code: "FORBIDDEN" });
+	});
+
+	it("rejects missing previewUrlClean (Zod)", async () => {
+		const user = await createTestUser();
+		const caller = await createTestCaller(createTestSession(user));
+		const template = await createTestTemplate();
+		const cv = await createCV(user.id, template.id);
+
+		await expect(
+			caller.cv.setPreview({
+				cvId: cv.id,
+				previewUrl: SAMPLE_WITH,
+				// @ts-expect-error — test validation runtime
+				previewUrlClean: undefined,
+			}),
+		).rejects.toBeInstanceOf(TRPCError);
+	});
+});

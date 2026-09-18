@@ -583,3 +583,42 @@ describe("CvService.findAllByUser", () => {
 		expect(list).toEqual([]);
 	});
 });
+
+describe("CvService.setPreview", () => {
+	const SAMPLE_WITH = "data:image/jpeg;base64,withlogo";
+	const SAMPLE_CLEAN = "data:image/jpeg;base64,clean";
+
+	it("stores both preview URLs", async () => {
+		const user = await createTestUser();
+		const template = await createTestTemplate();
+		const cv = await createCV(user.id, template.id);
+
+		const updated = await cvService.setPreview(
+			cv.id,
+			user.id,
+			SAMPLE_WITH,
+			SAMPLE_CLEAN,
+		);
+
+		expect(updated.previewUrl).toBe(SAMPLE_WITH);
+		expect(updated.previewUrlClean).toBe(SAMPLE_CLEAN);
+	});
+
+	it("throws NotFoundError for unknown CV", async () => {
+		const user = await createTestUser();
+		await expect(
+			cvService.setPreview("unknown", user.id, SAMPLE_WITH, SAMPLE_CLEAN),
+		).rejects.toThrow(NotFoundError);
+	});
+
+	it("throws ForbiddenError when CV belongs to another user", async () => {
+		const owner = await createTestUser();
+		const other = await createTestUser();
+		const template = await createTestTemplate();
+		const cv = await createCV(owner.id, template.id);
+
+		await expect(
+			cvService.setPreview(cv.id, other.id, SAMPLE_WITH, SAMPLE_CLEAN),
+		).rejects.toThrow(ForbiddenError);
+	});
+});

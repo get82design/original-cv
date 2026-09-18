@@ -85,8 +85,9 @@ model User {
   subscriptionEnd   DateTime?                 // Date d'expiration du forfait (gère le 1 mois, 3 mois, 1 an)
 
   // --- Gestion du "Pay-per-use" (Consommables) ---
-  downloadCredits   Int               @default(0)  // +3 quand il paye 5€, -1 au téléchargement
-  maxCvs            Int @default(1)    // Nombre de CVs que l'utilisateur peut créer
+  downloadCredits         Int @default(0)  // crédits payants (export sans logo) — ex. +3 pour 5€
+  freeDownloadsRemaining  Int @default(0)  // stock de téléchargements gratuits (export avec logo) — cadeaux d'actions
+  maxCvs                  Int @default(1)  // Nombre de CVs que l'utilisateur peut créer
 
   // --- Quotas Mensuels (IA) ---
   iaRequestsUsed    Int               @default(0)  // Compteur de requêtes IA ce mois-ci
@@ -98,6 +99,20 @@ model User {
   profile           Profile?                    // relation 1:1 avec le profil détaillé
   cvs               CV[]                        // relation 1:N avec les CVs
   unlockedTemplates UnlockedTemplate[]
+  downloadGrants    DownloadGrant[]
+}
+
+// Cadeaux de téléchargements gratuits (one-shot par raison)
+model DownloadGrant {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  reason    String   // ex. PROFILE_CREATED, TEMPLATE_PURCHASED, FIRST_CV_SAVED
+  amount    Int      @default(1)
+  createdAt DateTime @default(now())
+
+  @@unique([userId, reason])
+  @@index([userId])
 }
 
 // === La Table de Liaison : Pour savoir quel utilisateur a acheté quel Template Premium ===
@@ -975,7 +990,8 @@ model CV {
   isPublic   Boolean @default(false) // si le CV est public
 
   isDefault Boolean @default(false) // si le CV est le CV par défaut de l'utilisateur
-  previewUrl String?
+  previewUrl      String? // aperçu avec logo (export gratuit / liste profil)
+  previewUrlClean String? // aperçu sans logo (export payant)
   pdfUrl     String?
   pdfVersion Int @default(0) // version du PDF
   pdfGeneratedAt DateTime?

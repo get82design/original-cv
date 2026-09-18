@@ -23,6 +23,7 @@ interface CvModifDockProps {
 	status: string;
 	isSubmitting: boolean;
 	getValues: () => CvFormValues;
+	onDownloadClick?: () => void;
 }
 
 export function CvModifDock({
@@ -34,6 +35,7 @@ export function CvModifDock({
 	status,
 	isSubmitting,
 	getValues,
+	onDownloadClick,
 }: CvModifDockProps) {
 	const router = useRouter();
 	const showPanel = open || !collapsible;
@@ -142,6 +144,7 @@ export function CvModifDock({
 					<Button
 						type="button"
 						className="flex justify-center bg-primary hover:bg-primary-dark dark:bg-primary-dark dark:hover:bg-primary text-white dark:text-black font-semibold"
+						onClick={onDownloadClick}
 					>
 						Télécharger votre CV
 					</Button>

@@ -14,7 +14,10 @@ export const CvSignature = () => {
 	const tokens = logoTokensForCv(primary);
 
 	return (
-		<div className="absolute bottom-3 right-5 z-10 pointer-events-none">
+		<div
+			data-cv-signature
+			className="absolute bottom-3 right-7 z-10 pointer-events-none"
+		>
 			<OriginalCvLogo className="h-7 w-auto" tokens={tokens} />
 		</div>
 	);
