@@ -33,7 +33,7 @@ export const AppBar = () => {
 
 	return (
 		<>
-			<div className="sticky top-0 w-full z-20 bg-white dark:bg-black px-2 sm:px-4 py-2 flex justify-between items-center shadow-md">
+			<div className="sticky top-0 w-full z-40 bg-white dark:bg-black px-2 sm:px-4 py-2 flex justify-between items-center shadow-md">
 				<div className="flex gap-4 items-center">
 					{!isSm && (
 						<Button

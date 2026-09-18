@@ -419,8 +419,10 @@ html.dark #panel-modif-cv.cv-modif-tabview {
     }
 }
 
-/* Modal « Données du profil » — light/dark (scoped) */
-.p-dialog.dialog-data-from-profile {
+/* Modal « Données du profil » / limite CV — light/dark (scoped) */
+.p-dialog.dialog-data-from-profile,
+.p-dialog.dialog-cv-limit,
+.p-dialog.dialog-select-model {
     background: #ffffff;
     border: 1px solid #e4e4e7;
     color: #18181b;
@@ -451,7 +453,9 @@ html.dark #panel-modif-cv.cv-modif-tabview {
     }
 }
 
-html.dark .p-dialog.dialog-data-from-profile {
+html.dark .p-dialog.dialog-data-from-profile,
+html.dark .p-dialog.dialog-cv-limit,
+html.dark .p-dialog.dialog-select-model {
     background: #18181b;
     border-color: #3f3f46;
     color: #f4f4f5;
@@ -479,5 +483,58 @@ html.dark .p-dialog.dialog-data-from-profile {
 
     .p-dialog-footer {
         border-top-color: #3f3f46;
+    }
+}
+
+/* Sidebar ModelList — light/dark */
+.p-sidebar.sidebar-model-list {
+    background: #ffffff;
+    color: #18181b;
+    border-left: 1px solid #e4e4e7;
+
+    .p-sidebar-header {
+        background: #ffffff;
+        color: #18181b;
+    }
+
+    .p-sidebar-close,
+    .p-sidebar-icon {
+        color: #52525b;
+
+        &:hover {
+            background: #f4f4f5;
+            color: #18181b;
+        }
+    }
+
+    .p-sidebar-content {
+        background: #ffffff;
+        color: #18181b;
+    }
+}
+
+html.dark .p-sidebar.sidebar-model-list {
+    background: #18181b;
+    color: #f4f4f5;
+    border-left-color: #3f3f46;
+
+    .p-sidebar-header {
+        background: #18181b;
+        color: #f4f4f5;
+    }
+
+    .p-sidebar-close,
+    .p-sidebar-icon {
+        color: #a1a1aa;
+
+        &:hover {
+            background: #27272a;
+            color: #f4f4f5;
+        }
+    }
+
+    .p-sidebar-content {
+        background: #18181b;
+        color: #f4f4f5;
     }
 }

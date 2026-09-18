@@ -24,9 +24,13 @@ import type { AppRouter } from "@server/api/root";
 import { mapProfileToCvDatas } from "./mapProfileToCvDatas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { cvValidationSchema } from "./validationSchema";
+import { DialogCvLimitReached } from "../dialog/DialogCvLimitReached";
 
 type RouterOutputs = inferRouterOutputs<AppRouter>;
 export type ProfileComplete = NonNullable<RouterOutputs["profile"]["completeMe"]>;
+
+const isCvLimitError = (err: unknown) =>
+	err instanceof Error && err.message.includes("Limite de CV atteinte");
 
 interface FormCvProviderProps extends PropsWithChildren {
 	idCv: string | null;
@@ -53,6 +57,8 @@ export const FormCv = ({ children, idCv, template, color }: FormCvProviderProps)
 	const { modeles, colors } = useModelAndColorContext();
 	const appliedFromUrl = useRef(false);
 	const [visibleSelectModel, setVisibleSelectModel] = useState(false);
+	const [visibleLimitDialog, setVisibleLimitDialog] = useState(false);
+	const [replacingCv, setReplacingCv] = useState(false);
 	const [modelSelect, setModelSelect] = useState<TemplateCv>();
 	const [draft, setDraft] = useState<CvFormValues | undefined>(undefined);
 	const loadedStampRef = useRef<string | null>(null);
@@ -61,6 +67,10 @@ export const FormCv = ({ children, idCv, template, color }: FormCvProviderProps)
 		{ id: idCv as string },
 		{ enabled: idCv !== "0", refetchOnMount: "always" },
 	);
+	const { data: userCvs, isLoading: loadingUserCvs } =
+		trpc.cv.allByUser.useQuery(undefined, {
+			enabled: visibleLimitDialog && status === "authenticated",
+		});
 	const needsTemplate =
 		!!dataCv &&
 		(dataCv.layoutGeneral == null ||
@@ -90,6 +100,7 @@ export const FormCv = ({ children, idCv, template, color }: FormCvProviderProps)
 		reset,
 		watch,
 		getValues,
+		setValue,
 	} = methods;
 
 	const watchAll = watch();
@@ -108,6 +119,15 @@ export const FormCv = ({ children, idCv, template, color }: FormCvProviderProps)
 			severity: "error",
 			summary: "Erreur",
 			detail: detail || "Une erreur est survenue lors de la sauvegarde du CV",
+			life: 4000,
+		});
+	};
+
+	const showInfo = (detail: string) => {
+		toast?.current?.show({
+			severity: "info",
+			summary: "Bientôt",
+			detail,
 			life: 4000,
 		});
 	};
@@ -206,35 +226,57 @@ export const FormCv = ({ children, idCv, template, color }: FormCvProviderProps)
 		}
 	};
 
+	const persistCv = async (cv: CvFormValues) => {
+		const saved = await saveCv.mutateAsync(mapFormToSaveInput(cv));
+		try {
+			const previewUrl = await captureCvPreview();
+			if (previewUrl) {
+				await setPreview.mutateAsync({ cvId: saved.id, previewUrl });
+			}
+		} catch {
+			// le save a déjà réussi
+		}
+		reset(mapCvToSaveInput(saved));
+		loadedStampRef.current = `${saved.id}:${new Date(saved.updatedAt).toISOString()}`;
+		utils.cv.byId.setData({ id: saved.id }, saved);
+		await Promise.all([
+			utils.cv.byId.invalidate({ id: saved.id }),
+			utils.cv.allByUser.invalidate(),
+		]);
+		clearGuestCvDraft();
+		clearTemplateCache();
+		if (idCv !== saved.id) await router.replace(`/cv/${saved.id}`);
+		showSuccess();
+	};
+
 	const onSubmit = async (cv: CvFormValues) => {
 		try {
-			const saved = await saveCv.mutateAsync(mapFormToSaveInput(cv));
-			try {
-				const previewUrl = await captureCvPreview();
-				if (previewUrl) {
-					await setPreview.mutateAsync({ cvId: saved.id, previewUrl });
-				}
-			} catch {
-				// le save a déjà réussi
+			await persistCv(cv);
+		} catch (err) {
+			console.error(err);
+			if (isCvLimitError(err)) {
+				setVisibleLimitDialog(true);
+				return;
 			}
-			reset(mapCvToSaveInput(saved));
-			loadedStampRef.current = `${saved.id}:${new Date(saved.updatedAt).toISOString()}`;
-			utils.cv.byId.setData({ id: saved.id }, saved);
-			await Promise.all([
-				utils.cv.byId.invalidate({ id: saved.id }),
-				utils.cv.allByUser.invalidate(),
-			]);
-			clearGuestCvDraft();
-			clearTemplateCache();
-			if (idCv !== saved.id) await router.replace(`/cv/${saved.id}`);
-			showSuccess();
+			const message =
+				err instanceof Error && err.message ? err.message : undefined;
+			showError(message);
+		}
+	};
+
+	const onReplaceExistingCv = async (targetCvId: string) => {
+		setReplacingCv(true);
+		try {
+			setValue("cvId", targetCvId, { shouldDirty: true });
+			await persistCv({ ...getValues(), cvId: targetCvId });
+			setVisibleLimitDialog(false);
 		} catch (err) {
 			console.error(err);
 			const message =
-				err instanceof Error && err.message
-					? err.message
-					: undefined;
+				err instanceof Error && err.message ? err.message : undefined;
 			showError(message);
+		} finally {
+			setReplacingCv(false);
 		}
 	};
 
@@ -305,6 +347,19 @@ export const FormCv = ({ children, idCv, template, color }: FormCvProviderProps)
 						profile={profile ?? undefined}
 					/>
 				)}
+				<DialogCvLimitReached
+					visible={visibleLimitDialog}
+					onHide={() => setVisibleLimitDialog(false)}
+					cvs={userCvs ?? []}
+					loading={loadingUserCvs}
+					replacing={replacingCv}
+					onReplace={onReplaceExistingCv}
+					onBuySlot={() =>
+						showInfo(
+							"L'achat d'emplacement de CV sera bientôt disponible.",
+						)
+					}
+				/>
 			</form>
 		</FormProvider>
 	);

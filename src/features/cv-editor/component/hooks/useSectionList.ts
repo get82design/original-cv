@@ -2,6 +2,8 @@ import { useEffect, useRef, useState } from "react"
 import { useFormContext } from "react-hook-form"
 import { moduleField } from "@/features/cv-editor/utils/fields/moduleField"
 import type { ListItem } from "@utils/type"
+import { useCreateCvContext } from "../context/CreateCvContext"
+
 type UseSectionListArgs<TItem, TSettings> = {
   contentField: string           // FieldNameX.content
   moduleType: string             // 'language' | 'socialMedia' | 'skill' ...
@@ -16,6 +18,7 @@ export function useSectionList<TItem, TSettings>({
   createInit,
 }: UseSectionListArgs<TItem, TSettings>) {
   const { watch, setValue } = useFormContext()
+  const { sectionSelected } = useCreateCvContext()
   const hasSeededRef = useRef(false)
   const [itemSelected, setItemSelected] = useState("")
   const items: ListItem<TItem>[] = watch(contentField) || []
@@ -45,6 +48,14 @@ export function useSectionList<TItem, TSettings>({
     }
     if (items.length > 0) hasSeededRef.current = true
   }, [items, setValue, settingsContent, contentField, createInit])
+
+  // Clic hors section / autre section → reset la sélection d’item
+  // (sinon le champ « ajouter une mission » reste affiché)
+  useEffect(() => {
+    if (sectionSelected !== `section-${moduleType}`) {
+      setItemSelected("")
+    }
+  }, [sectionSelected, moduleType])
 
   return {
     items,

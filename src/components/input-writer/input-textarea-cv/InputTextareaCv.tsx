@@ -20,6 +20,8 @@ interface TextareaRhfProps extends InputTextareaProps {
 	dataInput: DataInputProps
 	textColor?: string
 	textAlign: "left" | "right" | "center" | "justify" | undefined
+	/** Autorise Entrée pour un vrai retour à la ligne (défaut : Shift+Entrée). */
+	allowNewline?: boolean
 }
 
 /** Event name to force a height recalc (e.g. after gallery scale is ready). */
@@ -44,6 +46,7 @@ export const TextareaCv = ({
 	dataInput,
 	textColor = "000000",
 	textAlign,
+	allowNewline = false,
 	...props
 }: TextareaRhfProps) => {
 	const ref = useRef<HTMLTextAreaElement>(null)
@@ -119,7 +122,7 @@ export const TextareaCv = ({
 								overflow: "hidden",
 							}}
 							onKeyDown={(e) => {
-								if (e.key === "Enter" && !e.shiftKey) {
+								if (!allowNewline && e.key === "Enter" && !e.shiftKey) {
 									if (e.preventDefault) e.preventDefault()
 									return false
 								}

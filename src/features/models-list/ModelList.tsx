@@ -529,9 +529,10 @@ export default function ModelList() {
 				visible={visibleSidebar}
 				position="right"
 				onHide={() => setVisibleSidebar(false)}
+				className="sidebar-model-list"
 				pt={{ content: { className: "flex flex-col h-full" } }}
 			>
-                <div className="flex flex-col gap-2 h-full">
+                <div className="flex flex-col gap-2 h-full text-zinc-900 dark:text-zinc-100">
 					<div className="flex flex-col gap-1">
 						<p className="my-0 font-semibold text-sm">Couleur</p>
 						{galleryReady ? (

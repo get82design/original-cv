@@ -69,7 +69,7 @@ export const DialogSelectModel = ({
 		return (
 			<div className="w-full flex justify-center">
 				<Button
-					className="resume-setup-modal__submit-button"
+					className="resume-setup-modal__submit-button bg-primary hover:bg-primary-dark dark:bg-primary-dark dark:hover:bg-primary text-white dark:text-black font-semibold"
 					label={
 						draftOption === "Nouveau CV" || !draft
 							? "Selectionner ce modèle"
@@ -121,12 +121,12 @@ export const DialogSelectModel = ({
 			style={{ minWidth: "1200px", maxWidth: "85vw" }}
 			visible={visible}
 			onHide={onHide}
-			className="bg-white dark:bg-gray-900"
+			className="dialog-select-model"
 			header="Modèle de votre CV"
 			closable={false}
 			footer={footerTemplate}
 		>
-			<div className="flex flex-col gap-4 py-4">
+			<div className="flex flex-col gap-4 py-4 text-zinc-900 dark:text-zinc-100">
 				{draft ? (
 					<div className="w-full flex flex-col justify-center items-center gap-2">
 						<p className="text-center font-semibold">
@@ -141,29 +141,18 @@ export const DialogSelectModel = ({
 						</div>
 					</div>
 				) : null}
-				{profile && <div className="w-full flex justify-center items-center gap-2">
-					<p>Voulez-vous charger les données de votre profil ?</p>
-					<SelectButton 
-					    value={withProfileValue} 
-						onChange={(e) => setWithProfileValue(!!e.value)} 
-						optionLabel="label"
-                        optionValue="value" 
-						options={optionsProfile} 
-					/>
-				</div>}
-				{/* <div className='w-full flex justify-center gap-2'>
-            <InputTextRhf 
-                //! penser à remettre le fieldName
-                // name={FieldNameCvHeader.nom} 
-                name={"datas.header.nom"} 
-                label='Nom' 
-            />
-            <InputTextRhf 
-                // name={FieldNameCvHeader.prenom} 
-                name={"datas.header.prenom"} 
-                label='Prénom' 
-            />
-          </div> */}
+				{profile && (
+					<div className="w-full flex justify-center items-center gap-2">
+						<p>Voulez-vous charger les données de votre profil ?</p>
+						<SelectButton
+							value={withProfileValue}
+							onChange={(e) => setWithProfileValue(!!e.value)}
+							optionLabel="label"
+							optionValue="value"
+							options={optionsProfile}
+						/>
+					</div>
+				)}
 				{draftOption === "Nouveau CV" || !draft ? (
 					<>
 						<p className="-mb-2 text-center font-semibold">
@@ -179,7 +168,6 @@ export const DialogSelectModel = ({
 												className="col"
 												key={color.name}
 												name={FieldNameLayoutGeneral.primaryColor}
-												// name='layoutGeneral.defaultStyles.primaryColor'
 												color={`--${color.name}${color.primary}`}
 												value={color}
 											/>

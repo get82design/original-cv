@@ -120,6 +120,7 @@ export const CardTagOne = ({
 						{isSelected ? (
 							<InputTextCv
 								placeholder="Tag"
+								autoFocus
 								onClick={() => {
 									setSelectModifInput(
 										`datas.tagGroup.content.${groupIndex}.content.settings.tags`,
