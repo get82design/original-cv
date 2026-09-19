@@ -1,6 +1,15 @@
 import { defineConfig } from "vitest/config";
+import path from "node:path";
 
 export default defineConfig({
+	resolve: {
+		alias: {
+			"@": path.resolve(__dirname, "./src"),
+			"@utils": path.resolve(__dirname, "./utils"),
+			"@server": path.resolve(__dirname, "./server"),
+			"@generated": path.resolve(__dirname, "./generated"),
+		},
+	},
 	test: {
 		environment: "node",
 		globals: true,
@@ -14,7 +23,7 @@ export default defineConfig({
 			include: ["src/**/*.ts", "server/api/**/*.ts"],
 			exclude: [
 				"src/**/*.d.ts",
-				"src/**/dto/**", // optionnel : exclure les DTOs
+				"src/**/dto/**",
 			],
 		},
 	},

@@ -33,3 +33,6 @@ Thumbs.db
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# sorties locales (pdf→images, etc.)
+.tmp/

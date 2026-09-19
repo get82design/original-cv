@@ -25,6 +25,11 @@ import { mapProfileToCvDatas } from "./mapProfileToCvDatas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { cvValidationSchema } from "./validationSchema";
 import { DialogCvLimitReached } from "../dialog/DialogCvLimitReached";
+import { DialogStartContent } from "./DialogStartContent";
+import { DialogImportReview } from "./DialogImportReview";
+import { fileToBase64 } from "../../utils/fileToBase64";
+import type { CvImportDraft } from "@/services/schemas/cvImportDraft.schema";
+import { applyImportDraftToForm } from "./mapImportDraftToCvDatas";
 
 type RouterOutputs = inferRouterOutputs<AppRouter>;
 export type ProfileComplete = NonNullable<RouterOutputs["profile"]["completeMe"]>;
@@ -57,6 +62,12 @@ export const FormCv = ({ children, idCv, template, color }: FormCvProviderProps)
 	const { modeles, colors } = useModelAndColorContext();
 	const appliedFromUrl = useRef(false);
 	const [visibleSelectModel, setVisibleSelectModel] = useState(false);
+	/** Stub : source de contenu quand template déjà dans l’URL (`/cv/0?template=…`) */
+	const [visibleStartContent, setVisibleStartContent] = useState(false);
+	/** Draft Gemini — revue / apply */
+	const [importDraft, setImportDraft] = useState<CvImportDraft | null>(null);
+	/** Couvre file→base64 + API (isPending ne couvre que la mutation). */
+	const [importBusy, setImportBusy] = useState(false);
 	const [visibleLimitDialog, setVisibleLimitDialog] = useState(false);
 	const [replacingCv, setReplacingCv] = useState(false);
 	const [modelSelect, setModelSelect] = useState<TemplateCv>();
@@ -82,6 +93,7 @@ export const FormCv = ({ children, idCv, template, color }: FormCvProviderProps)
 	const router = useRouter();
 	const saveCv = trpc.cv.save.useMutation();
 	const setPreview = trpc.cv.setPreview.useMutation();
+	const importCvFromPdf = trpc.ai.importCvFromPdf.useMutation();
 	const toast = useRef<Toast>(null);
 	const optionsProfile = [{label: 'Non', value: false}, {label: 'Oui', value: true}];
     const [withProfileValue, setWithProfileValue] = useState(false);
@@ -178,10 +190,9 @@ export const FormCv = ({ children, idCv, template, color }: FormCvProviderProps)
 			    next.layoutGeneral.defaultStyles.primaryColor = fromUrl;
 			}
 		}
-		if (profile) {
-			applyProfileToNext(next, profile, model);
-		}
+		// Profil / import : plus d’auto-apply — stub DialogStartContent à la place
 		reset(next);
+		setVisibleStartContent(true);
 	}, [idCv, template, modeles, reset, color, colors]);
 
 	useEffect(() => {
@@ -199,22 +210,31 @@ export const FormCv = ({ children, idCv, template, color }: FormCvProviderProps)
 	}, [dataCv, dataTemplate, needsTemplate, reset]);
 
 	const onSelectModel = (withProfile: boolean) => {
-		console.log("withProfile", withProfile);
 		if (modelSelect) {
-			clearGuestCvDraft();
-			clearTemplateCache();
-			setDraft(undefined);
-			const picked = getValues("layoutGeneral.defaultStyles.primaryColor");
-			const next = switchTemplate(formCvDefaultValue, modelSelect, {
-				updateModules: true,
-			});
-			if (next.layoutGeneral?.defaultStyles && picked) {
-				next.layoutGeneral.defaultStyles.primaryColor = picked;
-			}
-			if (profile && withProfile) {
-				applyProfileToNext(next, profile, modelSelect);
-			}
-			reset(next);
+			applyModelToForm(modelSelect, withProfile);
+		}
+	};
+
+	const applyModelToForm = (
+		model: TemplateCv,
+		withProfile: boolean,
+		opts?: { closeSelectModel?: boolean },
+	) => {
+		clearGuestCvDraft();
+		clearTemplateCache();
+		setDraft(undefined);
+		const picked = getValues("layoutGeneral.defaultStyles.primaryColor");
+		const next = switchTemplate(formCvDefaultValue, model, {
+			updateModules: true,
+		});
+		if (next.layoutGeneral?.defaultStyles && picked) {
+			next.layoutGeneral.defaultStyles.primaryColor = picked;
+		}
+		if (profile && withProfile) {
+			applyProfileToNext(next, profile, model);
+		}
+		reset(next);
+		if (opts?.closeSelectModel !== false) {
 			setVisibleSelectModel(false);
 		}
 	};
@@ -224,6 +244,102 @@ export const FormCv = ({ children, idCv, template, color }: FormCvProviderProps)
 			reset(draft);
 			setVisibleSelectModel(false);
 		}
+	};
+
+	const onStartContentChoose = (choice: "empty" | "profile") => {
+		if (choice === "profile" && profile) {
+			const current = getValues();
+			const model =
+				modeles.find((m) => m.id === current.templateId) ??
+				modeles.find((m) => m.name === template);
+			if (model) {
+				const next = structuredClone(current);
+				applyProfileToNext(next, profile, model);
+				reset(next);
+			}
+		}
+		setVisibleStartContent(false);
+	};
+
+	/**
+	 * PDF → API → revue.
+	 * Depuis DialogSelectModel : pose le modèle sans fermer la modal
+	 * (sinon elle unmount avant l’appel Gemini).
+	 */
+	const onImportPdf = async (
+		file: File,
+		options?: { model?: TemplateCv },
+	) => {
+		if (status !== "authenticated") {
+			showError("Connectez-vous pour importer un CV.");
+			return;
+		}
+		if (
+			file.type !== "application/pdf" &&
+			!file.name.toLowerCase().endsWith(".pdf")
+		) {
+			showError("Seuls les fichiers PDF sont acceptés.");
+			return;
+		}
+		if (file.size === 0) {
+			showError("Fichier PDF invalide ou vide.");
+			return;
+		}
+		setImportBusy(true);
+		try {
+			if (options?.model) {
+				applyModelToForm(options.model, false, {
+					closeSelectModel: false,
+				});
+			}
+			const pdfBase64 = await fileToBase64(file);
+			const result = await importCvFromPdf.mutateAsync({ pdfBase64 });
+			setImportDraft(result.draft);
+			setVisibleStartContent(false);
+			setVisibleSelectModel(false);
+		} catch (err) {
+			showError(
+				err instanceof Error
+					? err.message
+					: "Échec de l’import du CV",
+			);
+		} finally {
+			setImportBusy(false);
+		}
+	};
+
+	const onImportPdfFromSelectModel = (file: File) => {
+		if (!modelSelect) {
+			showError("Choisissez un modèle avant d’importer.");
+			return;
+		}
+		void onImportPdf(file, { model: modelSelect });
+	};
+
+	const onCancelImportReview = () => {
+		setImportDraft(null);
+	};
+
+	/** Applique le draft Gemini dans le formulaire (template déjà posé). */
+	const onConfirmImportReview = () => {
+		if (!importDraft) return;
+		const current = getValues();
+		const model =
+			modeles.find((m) => m.id === current.templateId) ??
+			modeles.find((m) => m.name === template);
+		if (!model) {
+			showError("Modèle introuvable — impossible d’appliquer l’import.");
+			return;
+		}
+		const next = applyImportDraftToForm(current, importDraft, model);
+		reset(next);
+		setImportDraft(null);
+		toast?.current?.show({
+			severity: "success",
+			summary: "Import appliqué",
+			detail: "Les données extraites ont été injectées dans le CV.",
+			life: 4000,
+		});
 	};
 
 	const persistCv = async (cv: CvFormValues) => {
@@ -336,10 +452,11 @@ export const FormCv = ({ children, idCv, template, color }: FormCvProviderProps)
 			<form onSubmit={handleSubmit(onSubmit, showValidationErrors)}>
 				{children}
 				<Toast ref={toast} position="top-center" />
-				{visibleSelectModel && (
-					<DialogSelectModel
+				<DialogSelectModel
 						visible={visibleSelectModel}
-						onHide={() => setVisibleSelectModel(false)}
+						onHide={() =>
+							!importBusy && setVisibleSelectModel(false)
+						}
 						modelSelect={modelSelect}
 						setModelSelect={setModelSelect}
 						onSelectModel={onSelectModel}
@@ -349,8 +466,32 @@ export const FormCv = ({ children, idCv, template, color }: FormCvProviderProps)
 						setWithProfileValue={setWithProfileValue}
 						optionsProfile={optionsProfile}
 						profile={profile ?? undefined}
+						importing={importBusy}
+						onImportPdf={onImportPdfFromSelectModel}
+						onImportWithoutModel={() =>
+							showError(
+								"Choisissez un modèle avant d’importer un CV.",
+							)
+						}
 					/>
-				)}
+				{/* /cv/0?template=… — choix source. Import PDF → API. */}
+				<DialogStartContent
+					visible={visibleStartContent}
+					onHide={() =>
+						!importBusy && setVisibleStartContent(false)
+					}
+					hasProfile={!!profile}
+					importing={importBusy}
+					onChoose={onStartContentChoose}
+					onImportPdf={onImportPdf}
+				/>
+				{/* Revue du draft puis apply. */}
+				<DialogImportReview
+					visible={!!importDraft}
+					draft={importDraft}
+					onHide={onCancelImportReview}
+					onConfirm={onConfirmImportReview}
+				/>
 				<DialogCvLimitReached
 					visible={visibleLimitDialog}
 					onHide={() => setVisibleLimitDialog(false)}

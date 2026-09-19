@@ -61,9 +61,11 @@ import { cvTagRouter } from "./routers/cvTag.router";
 import { cvTagGroupRouter } from "./routers/cvTagGroup.router";
 import { profileTagRouter } from "./routers/profileTag.router";
 import { profileTagGroupRouter } from "./routers/profileTagGroup.router";
+import { aiRouter } from "./routers/ai.router";
 
 export const appRouter = router({
 	user: userRouter,
+	ai: aiRouter,
 	profile: profileRouter,
 	cv: cvRouter,
 	color: colorRouter,

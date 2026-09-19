@@ -20,6 +20,8 @@ export interface DialogDownloadCvProps {
 	onDownloadFree?: () => void;
 	onDownloadPaid?: () => void;
 	onBuyCredits?: () => void;
+	/** Ouvre l’assistant IA pour peaufiner avant export */
+	onAdjust?: () => void;
 }
 
 export const DialogDownloadCv = ({
@@ -35,6 +37,7 @@ export const DialogDownloadCv = ({
 	onDownloadFree,
 	onDownloadPaid,
 	onBuyCredits,
+	onAdjust,
 }: DialogDownloadCvProps) => {
 	const [mode, setMode] = useState<DownloadCvMode | null>(null);
 	const canFree = freeDownloadsRemaining > 0;
@@ -50,6 +53,11 @@ export const DialogDownloadCv = ({
 		onHide();
 	};
 
+	const handleAdjust = () => {
+		handleHide();
+		onAdjust?.();
+	};
+
 	const handleConfirm = () => {
 		if (mode === "free") onDownloadFree?.();
 		if (mode === "paid") onDownloadPaid?.();
@@ -62,39 +70,53 @@ export const DialogDownloadCv = ({
 		(mode === "paid" && !canPaid);
 
 	const footer = (
-		<div className="flex flex-wrap justify-end gap-2">
-			<Button
-				type="button"
-				label="Annuler"
-				outlined
-				onClick={handleHide}
-				disabled={loading}
-				className="!text-zinc-600 dark:!text-zinc-300 !border-zinc-300 dark:!border-zinc-600 hover:!bg-zinc-100 dark:hover:!bg-zinc-800"
-			/>
-			{!canPaid && (
+		<div className="flex w-full flex-wrap items-center justify-between gap-2">
+			<div>
+				{onAdjust && (
+					<Button
+						type="button"
+						label="Ajustements IA"
+						text
+						onClick={handleAdjust}
+						disabled={loading}
+						className="!text-zinc-600 dark:!text-zinc-300 hover:!bg-zinc-100 dark:hover:!bg-zinc-800"
+					/>
+				)}
+			</div>
+			<div className="flex flex-wrap justify-end gap-2">
 				<Button
 					type="button"
-					label="Acheter des crédits"
+					label="Annuler"
 					outlined
-					onClick={onBuyCredits}
+					onClick={handleHide}
 					disabled={loading}
-					className="!border-primary !text-primary dark:!border-primary-dark dark:!text-primary-dark"
+					className="!text-zinc-600 dark:!text-zinc-300 !border-zinc-300 dark:!border-zinc-600 hover:!bg-zinc-100 dark:hover:!bg-zinc-800"
 				/>
-			)}
-			<Button
-				type="button"
-				label={
-					mode === "free"
-						? "Télécharger avec logo"
-						: mode === "paid"
-							? "Télécharger sans logo"
-							: "Choisir une option"
-				}
-				disabled={confirmDisabled}
-				loading={loading}
-				onClick={handleConfirm}
-				className="bg-primary hover:bg-primary-dark dark:bg-primary-dark dark:hover:bg-primary text-white dark:text-black font-semibold"
-			/>
+				{!canPaid && (
+					<Button
+						type="button"
+						label="Acheter des crédits"
+						outlined
+						onClick={onBuyCredits}
+						disabled={loading}
+						className="!border-primary !text-primary dark:!border-primary-dark dark:!text-primary-dark"
+					/>
+				)}
+				<Button
+					type="button"
+					label={
+						mode === "free"
+							? "Télécharger avec logo"
+							: mode === "paid"
+								? "Télécharger sans logo"
+								: "Choisir une option"
+					}
+					disabled={confirmDisabled}
+					loading={loading}
+					onClick={handleConfirm}
+					className="bg-primary hover:bg-primary-dark dark:bg-primary-dark dark:hover:bg-primary text-white dark:text-black font-semibold"
+				/>
+			</div>
 		</div>
 	);
 

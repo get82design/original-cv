@@ -1,6 +1,12 @@
 import type { Color, TemplateCv } from "@utils/trpc.types";
 import { Dialog, type DialogProps } from "primereact/dialog";
-import { useEffect, useState, type Dispatch, type SetStateAction } from "react";
+import {
+	useEffect,
+	useRef,
+	useState,
+	type Dispatch,
+	type SetStateAction,
+} from "react";
 import { useFormContext } from "react-hook-form";
 import { useModelAndColorContext } from "../context/ModelAndColorContext";
 import { Button } from "primereact/button";
@@ -21,8 +27,12 @@ interface DialogSelectModelProp extends DialogProps {
 	onResumeDraft: () => void;
 	withProfileValue: boolean;
 	setWithProfileValue: Dispatch<SetStateAction<boolean>>;
-	optionsProfile: {label: string, value: boolean}[];
+	optionsProfile: { label: string; value: boolean }[];
 	profile: ProfileComplete | undefined;
+	importing?: boolean;
+	onImportPdf?: (file: File) => void;
+	/** Toast / feedback si import sans modèle sélectionné */
+	onImportWithoutModel?: () => void;
 }
 
 export const DialogSelectModel = ({
@@ -37,19 +47,22 @@ export const DialogSelectModel = ({
 	setWithProfileValue,
 	optionsProfile,
 	profile,
+	importing = false,
+	onImportPdf,
+	onImportWithoutModel,
 }: DialogSelectModelProp) => {
 	const { colors, modeles } = useModelAndColorContext();
 	const { setValue } = useFormContext<CvFormValues>();
 	const options = ["Reprendre brouillon", "Nouveau CV"];
-	const [draftOption, setDraftOption] = useState<string | undefined>(undefined);
-	// const {data: profile} = trpc.profile.me.useQuery();
-	// const optionsProfile = ['Non', 'Oui'];
-    // const [valueProfile, setValueProfile] = useState(optionsProfile[0]);
+	const [draftOption, setDraftOption] = useState<string | undefined>(
+		undefined,
+	);
+	const fileInputRef = useRef<HTMLInputElement>(null);
 
 	const [idModele, setIdModele] = useState("");
 	const { data: dataTemplate } = trpc.cvTemplate.findById.useQuery(
 		{ id: idModele },
-		{ enabled: idModele !== "" }, // staleTime 1h
+		{ enabled: idModele !== "" },
 	);
 
 	useEffect(() => {
@@ -64,6 +77,13 @@ export const DialogSelectModel = ({
 			});
 		}
 	}, [dataTemplate, setModelSelect, setValue]);
+
+	const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		const file = e.target.files?.[0];
+		e.target.value = "";
+		if (!file) return;
+		onImportPdf?.(file);
+	};
 
 	const footerTemplate = () => {
 		return (
@@ -80,7 +100,10 @@ export const DialogSelectModel = ({
 							? () => onSelectModel(!!withProfileValue)
 							: onResumeDraft
 					}
-					disabled={(draftOption === "Nouveau CV" || !draft) && !modelSelect}
+					disabled={
+						importing ||
+						((draftOption === "Nouveau CV" || !draft) && !modelSelect)
+					}
 				/>
 			</div>
 		);
@@ -91,7 +114,8 @@ export const DialogSelectModel = ({
 			<button
 				type="button"
 				className="w-full h-66 py-3 relative rounded-lg flex flex-col gap-2 items-center"
-				onClick={() => setIdModele(model.id)}
+				onClick={() => !importing && setIdModele(model.id)}
+				disabled={importing}
 			>
 				<label
 					htmlFor={model.id}
@@ -116,6 +140,8 @@ export const DialogSelectModel = ({
 		);
 	};
 
+	const showNewCv = draftOption === "Nouveau CV" || !draft;
+
 	return (
 		<Dialog
 			style={{ minWidth: "1200px", maxWidth: "85vw" }}
@@ -127,6 +153,13 @@ export const DialogSelectModel = ({
 			footer={footerTemplate}
 		>
 			<div className="flex flex-col gap-4 py-4 text-zinc-900 dark:text-zinc-100">
+				<input
+					ref={fileInputRef}
+					type="file"
+					accept="application/pdf,.pdf"
+					className="hidden"
+					onChange={onFileChange}
+				/>
 				{draft ? (
 					<div className="w-full flex flex-col justify-center items-center gap-2">
 						<p className="text-center font-semibold">
@@ -137,11 +170,12 @@ export const DialogSelectModel = ({
 								value={draftOption}
 								onChange={(e) => setDraftOption(e.value)}
 								options={options}
+								disabled={importing}
 							/>
 						</div>
 					</div>
 				) : null}
-				{profile && (
+				{profile && showNewCv && (
 					<div className="w-full flex justify-center items-center gap-2">
 						<p>Voulez-vous charger les données de votre profil ?</p>
 						<SelectButton
@@ -150,10 +184,40 @@ export const DialogSelectModel = ({
 							optionLabel="label"
 							optionValue="value"
 							options={optionsProfile}
+							disabled={importing}
 						/>
 					</div>
 				)}
-				{draftOption === "Nouveau CV" || !draft ? (
+				{showNewCv && !withProfileValue && (
+					<div className="w-full flex flex-col items-center gap-2 rounded-lg border border-dashed border-zinc-300 px-4 py-3 dark:border-zinc-600">
+						<p className="m-0 text-center font-semibold">
+							Ou importer un CV existant (PDF)
+						</p>
+						<p className="m-0 text-center text-xs text-zinc-500 dark:text-zinc-400">
+							Choisissez un modèle ci-dessous, puis importez.
+						</p>
+						<Button
+							type="button"
+							outlined={!importing}
+							icon={
+								importing ? "pi pi-spin pi-spinner" : "pi pi-upload"
+							}
+							label={
+								importing ? "Import en cours…" : "Importer un CV"
+							}
+							disabled={importing}
+							onClick={() => {
+								if (!modelSelect) {
+									onImportWithoutModel?.();
+									return;
+								}
+								fileInputRef.current?.click();
+							}}
+							className="!text-zinc-700 dark:!text-zinc-200 !border-zinc-300 dark:!border-zinc-600"
+						/>
+					</div>
+				)}
+				{showNewCv ? (
 					<>
 						<p className="-mb-2 text-center font-semibold">
 							Sélectionner une couleur pour votre CV

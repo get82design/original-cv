@@ -21,6 +21,7 @@ import { trpc } from "@utils/trpc";
 import { SpeedDial } from "primereact/speeddial";
 import { Tooltip } from "primereact/tooltip";
 import { DialogDataFromProfile } from "./component/dialog/dataFromProfile/DialogDataFromProfile";
+import { DialogAssistantIa } from "@/components/dialog/DialogAssistantIa";
 import {
 	CV_MODIF_DOCK_WIDTH,
 	CvModifDock,
@@ -36,6 +37,7 @@ export const CvEditor = () => {
 	const [itemNoUse, setItemNoUse] = useState<TemplateModule[]>([]);
 	const [visibleDialogDataFromProfile, setVisibleDialogDataFromProfile] =
 		useState(false);
+	const [visibleAssistantIa, setVisibleAssistantIa] = useState(false);
 	const [visibleDownloadDialog, setVisibleDownloadDialog] = useState(false);
 	const [downloadPreviewWithLogo, setDownloadPreviewWithLogo] = useState<
 		string | null
@@ -142,6 +144,13 @@ export const CvEditor = () => {
 
 	const items = [
 		{
+			label: "Assistant IA",
+			icon: "pi pi-sparkles",
+			command: () => {
+				setVisibleAssistantIa(true);
+			},
+		},
+		{
 			label: "Générer mon QR Code",
 			icon: "pi pi-qrcode",
 			command: () => {},
@@ -213,6 +222,11 @@ export const CvEditor = () => {
 					title={(getValues("title") as string) || "Votre CV"}
 					freeDownloadsRemaining={downloadStatus?.freeDownloadsRemaining ?? 0}
 					downloadCredits={downloadStatus?.downloadCredits ?? 0}
+					onAdjust={() => setVisibleAssistantIa(true)}
+				/>
+				<DialogAssistantIa
+					visible={visibleAssistantIa}
+					onHide={() => setVisibleAssistantIa(false)}
 				/>
 				{profile && (
 					<>
@@ -228,7 +242,7 @@ export const CvEditor = () => {
 						<SpeedDial
 							className="speeddial-bottom-right z-50"
 							model={items}
-							radius={120}
+							radius={180}
 							type="quarter-circle"
 							direction="down-left"
 							style={{ position: "fixed", right: 10, top: 72, zIndex: 50 }}

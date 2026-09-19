@@ -12,6 +12,7 @@ import { PreviewImage } from "./compo/common/PreviewImage";
 import Link from "next/link";
 import { useState } from "react";
 import { DialogDownloadCv } from "@/components/dialog/DialogDownloadCv";
+import { DialogAssistantIa } from "@/components/dialog/DialogAssistantIa";
 
 export const ProfilePage = () => {
 	const { data: cvs, isLoading } = trpc.cv.allByUser.useQuery();
@@ -20,6 +21,7 @@ export const ProfilePage = () => {
 	const isMd = useMediaQuery("(min-width: 768px)");
 	const isSm = useMediaQuery("(min-width: 640px)");
 	const [downloadCv, setDownloadCv] = useState<CV | null>(null);
+	const [visibleAssistantIa, setVisibleAssistantIa] = useState(false);
 	const { data: downloadStatus } = trpc.user.getDownloadStatus.useQuery(
 		undefined,
 		{ enabled: downloadCv != null },
@@ -44,6 +46,11 @@ export const ProfilePage = () => {
 				previewUrlWithoutLogo={downloadPreviewWithoutLogo}
 				freeDownloadsRemaining={downloadStatus?.freeDownloadsRemaining ?? 0}
 				downloadCredits={downloadStatus?.downloadCredits ?? 0}
+				onAdjust={() => setVisibleAssistantIa(true)}
+			/>
+			<DialogAssistantIa
+				visible={visibleAssistantIa}
+				onHide={() => setVisibleAssistantIa(false)}
 			/>
 			<div
 				className={"w-full p-4 md:p-8 relative"}
