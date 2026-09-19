@@ -23,6 +23,7 @@ import { Tooltip } from "primereact/tooltip";
 import { DialogDataFromProfile } from "./component/dialog/dataFromProfile/DialogDataFromProfile";
 import { DialogAssistantIa, type AiActionId } from "@/components/dialog/DialogAssistantIa";
 import { DialogCvReviewResult } from "@/components/dialog/DialogCvReviewResult";
+import { DialogRewriteSection } from "@/components/dialog/DialogRewriteSection";
 import {
 	CV_MODIF_DOCK_WIDTH,
 	CvModifDock,
@@ -30,8 +31,15 @@ import {
 import { DialogDownloadCv } from "@/components/dialog/DialogDownloadCv";
 import { captureDownloadPreviews } from "./utils/captureCvPreview";
 import type { CvReview } from "@/services/schemas/cvReview.schema";
+import type { CvRewriteSection as CvRewriteResult } from "@/services/schemas/cvRewriteSection.schema";
+import type { CvRewriteSectionType } from "@/services/schemas/cvRewriteSection.schema";
 import { Toast } from "primereact/toast";
 import { flattenCvFormToText } from "./utils/flattenCvFormToText";
+import {
+	extractCvSectionSourceText,
+	listRewriteableSections,
+} from "./utils/extractCvSectionForRewrite";
+import { applyCvRewriteToForm } from "./utils/applyCvRewriteToForm";
 import { useAiAdvice } from "./component/context/AiAdviceContext";
 
 export const CvEditor = () => {
@@ -45,6 +53,12 @@ export const CvEditor = () => {
 	const [visibleAssistantIa, setVisibleAssistantIa] = useState(false);
 	const [visibleCvReview, setVisibleCvReview] = useState(false);
 	const [cvReview, setCvReview] = useState<CvReview | null>(null);
+	const [visibleRewrite, setVisibleRewrite] = useState(false);
+	const [rewriteResult, setRewriteResult] = useState<CvRewriteResult | null>(
+		null,
+	);
+	const [rewriteSectionType, setRewriteSectionType] =
+		useState<CvRewriteSectionType | null>(null);
 	const [visibleDownloadDialog, setVisibleDownloadDialog] = useState(false);
 	const [downloadPreviewWithLogo, setDownloadPreviewWithLogo] = useState<
 		string | null
@@ -58,11 +72,13 @@ export const CvEditor = () => {
 		{ enabled: visibleDownloadDialog && status === "authenticated" },
 	);
 	const reviewCvMutation = trpc.ai.reviewCv.useMutation();
+	const rewriteSectionMutation = trpc.ai.rewriteSection.useMutation();
 	const toast = useRef<Toast>(null);
 	const { pushAdvice } = useAiAdvice();
 	const {
 		getValues,
 		setValue,
+		reset,
 		watch,
 		formState: { isSubmitting },
 	} = useFormContext();
@@ -261,9 +277,97 @@ export const CvEditor = () => {
 		}
 	};
 
+	const closeRewriteDialog = () => {
+		if (rewriteSectionMutation.isPending) return;
+		setVisibleRewrite(false);
+		setRewriteResult(null);
+		setRewriteSectionType(null);
+	};
+
+	const openRewriteDialog = () => {
+		setRewriteResult(null);
+		setRewriteSectionType(null);
+		setVisibleRewrite(true);
+	};
+
+	const onPickRewriteSection = async (section: {
+		sectionType: CvRewriteSectionType;
+		label: string;
+	}) => {
+		const cv = getValues() as CvFormValues;
+		const extracted = extractCvSectionSourceText(cv, section.sectionType);
+		if (!extracted) {
+			toast.current?.show({
+				severity: "warn",
+				summary: "Section vide",
+				detail: "Cette section n’a pas de contenu à reformuler.",
+				life: 4000,
+			});
+			return;
+		}
+		setRewriteSectionType(section.sectionType);
+		setRewriteResult(null);
+		try {
+			const { rewrite } = await rewriteSectionMutation.mutateAsync({
+				sectionType: section.sectionType,
+				sectionLabel: extracted.sectionLabel,
+				sourceText: extracted.sourceText,
+			});
+			setRewriteResult(rewrite);
+		} catch (err) {
+			setRewriteSectionType(null);
+			toast.current?.show({
+				severity: "error",
+				summary: "Reformulation impossible",
+				detail:
+					err instanceof Error
+						? err.message
+						: "Une erreur est survenue.",
+				life: 5000,
+			});
+		}
+	};
+
+	const onApplyRewrite = () => {
+		if (!rewriteResult || !rewriteSectionType) return;
+		const cv = getValues() as CvFormValues;
+		const next = applyCvRewriteToForm(
+			cv,
+			rewriteSectionType,
+			rewriteResult,
+		);
+		reset(next);
+		const sectionLabel =
+			listRewriteableSections(cv).find(
+				(s) => s.sectionType === rewriteSectionType,
+			)?.label ?? rewriteSectionType;
+		pushAdvice({
+			kind: "rewrite-section",
+			title: `Reformulation · ${sectionLabel}`,
+			review: {
+				summary: rewriteResult.rationale,
+				strengths: [],
+				improvements: [],
+				quickWins: [],
+				score: null,
+			},
+		});
+		toast.current?.show({
+			severity: "success",
+			summary: "Section mise à jour",
+			detail: "La reformulation a été appliquée au CV.",
+			life: 3500,
+		});
+		closeRewriteDialog();
+	};
+
 	const onSelectAiAction = (action: AiActionId) => {
 		if (action === "review-cv") {
 			void runCvReview();
+			return;
+		}
+		if (action === "rewrite-section") {
+			openRewriteDialog();
 			return;
 		}
 		toast.current?.show({
@@ -305,6 +409,24 @@ export const CvEditor = () => {
 						if (reviewCvMutation.isPending) return;
 						setVisibleCvReview(false);
 						setCvReview(null);
+					}}
+				/>
+				<DialogRewriteSection
+					visible={visibleRewrite}
+					sections={listRewriteableSections(
+						getValues() as CvFormValues,
+					)}
+					loading={rewriteSectionMutation.isPending}
+					rewrite={rewriteResult}
+					selectedType={rewriteSectionType}
+					onHide={closeRewriteDialog}
+					onPickSection={(section) => {
+						void onPickRewriteSection(section);
+					}}
+					onApply={onApplyRewrite}
+					onBackToPick={() => {
+						setRewriteResult(null);
+						setRewriteSectionType(null);
 					}}
 				/>
 				{profile && (

@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { cvImportService } from "../../../src/services/ai/cvImportService";
 import { geminiService } from "../../../src/services/ai/geminiService";
+import { cvRewriteSectionTypeSchema } from "../../../src/services/schemas/cvRewriteSection.schema";
 import { protectedProcedure, router } from "../trpc";
 
 export const aiRouter = router({
@@ -39,5 +40,25 @@ export const aiRouter = router({
 		.mutation(async ({ input }) => {
 			const review = await geminiService.reviewCv(input.cvText);
 			return { review };
+		}),
+
+	/**
+	 * Reformulation d’une section — le client envoie le texte source extrait.
+	 */
+	rewriteSection: protectedProcedure
+		.input(
+			z.object({
+				sectionType: cvRewriteSectionTypeSchema,
+				sectionLabel: z.string().trim().min(1).max(120),
+				sourceText: z.string().trim().min(1).max(50_000),
+			}),
+		)
+		.mutation(async ({ input }) => {
+			const rewrite = await geminiService.rewriteSection({
+				sectionType: input.sectionType,
+				sectionLabel: input.sectionLabel,
+				sourceText: input.sourceText,
+			});
+			return { rewrite };
 		}),
 });

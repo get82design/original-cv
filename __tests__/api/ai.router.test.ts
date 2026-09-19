@@ -53,35 +53,41 @@ describe("ai.router", () => {
 		});
 	});
 
-	describe("reviewCv", () => {
-		it("returns the review from geminiService", async () => {
-			vi.spyOn(geminiService, "reviewCv").mockResolvedValue({
-				summary: "CV solide.",
-				score: 8,
-				strengths: ["Clarté"],
-				improvements: [],
-				quickWins: ["Titre"],
+	describe("rewriteSection", () => {
+		it("returns the rewrite from geminiService", async () => {
+			vi.spyOn(geminiService, "rewriteSection").mockResolvedValue({
+				rationale: "Plus clair.",
+				rewrittenText: "Dev produit.",
+				items: [],
 			});
 
 			const caller = await createTestCaller(
 				createTestSession({ id: "u1", email: "a@b.c" }),
 			);
 
-			const result = await caller.ai.reviewCv({
-				cvText: "Ada Lovelace — Analyste",
+			const result = await caller.ai.rewriteSection({
+				sectionType: "description",
+				sectionLabel: "Profil",
+				sourceText: "Dev motivé",
 			});
 
-			expect(result.review.score).toBe(8);
-			expect(geminiService.reviewCv).toHaveBeenCalledWith(
-				"Ada Lovelace — Analyste",
-			);
+			expect(result.rewrite.rewrittenText).toBe("Dev produit.");
+			expect(geminiService.rewriteSection).toHaveBeenCalledWith({
+				sectionType: "description",
+				sectionLabel: "Profil",
+				sourceText: "Dev motivé",
+			});
 		});
 
 		it("rejects unauthenticated callers", async () => {
 			const caller = await createTestCaller(null);
 
 			await expect(
-				caller.ai.reviewCv({ cvText: "x" }),
+				caller.ai.rewriteSection({
+					sectionType: "experience",
+					sectionLabel: "Expériences",
+					sourceText: "x",
+				}),
 			).rejects.toMatchObject({ code: "UNAUTHORIZED" });
 		});
 	});

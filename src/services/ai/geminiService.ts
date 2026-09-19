@@ -10,10 +10,20 @@ import {
 	cvReviewSchema,
 	type CvReview,
 } from "../schemas/cvReview.schema";
+import {
+	buildCvRewriteSectionSystemPrompt,
+	cvRewriteSectionSchema,
+	type CvRewriteSection,
+	type CvRewriteSectionType,
+} from "../schemas/cvRewriteSection.schema";
 import { ValidationError } from "../errors";
 
 const DEFAULT_MODEL = "gemini-3.6-flash";
+/** Retry Zod / JSON invalide (re-prompt avec les erreurs). */
 const MAX_ATTEMPTS = 2; // 1 appel + 1 retry
+/** Retry HTTP transitoires (503 / 429 / overload) avant d’abandonner. */
+const TRANSIENT_MAX_ATTEMPTS = 3; // 1 appel + 2 retries
+const TRANSIENT_BASE_DELAY_MS = 500;
 
 export type CvImportImageInput = {
 	mimeType: "image/png" | "image/jpeg" | "image/webp";
@@ -72,17 +82,69 @@ function parseJsonWithSchema<T>(
 	return { ok: true, data: parsed.data };
 }
 
+function sleep(ms: number) {
+	return new Promise<void>((resolve) => {
+		setTimeout(resolve, ms);
+	});
+}
+
+/** Erreurs Gemini souvent intermittentes (capacité / rate limit). */
+export function isTransientGeminiError(err: unknown): boolean {
+	if (err == null || typeof err !== "object") return false;
+	const e = err as {
+		status?: number;
+		statusCode?: number;
+		code?: number | string;
+		message?: string;
+	};
+	const status = e.status ?? e.statusCode;
+	if (status === 429 || status === 503 || status === 500) return true;
+	if (e.code === 429 || e.code === 503 || e.code === "UNAVAILABLE") return true;
+
+	const msg = (e.message ?? "").toLowerCase();
+	return (
+		msg.includes("503") ||
+		msg.includes("429") ||
+		msg.includes("unavailable") ||
+		msg.includes("overloaded") ||
+		msg.includes("resource exhausted") ||
+		msg.includes("high demand") ||
+		msg.includes("try again later")
+	);
+}
+
+async function withTransientRetry<T>(fn: () => Promise<T>): Promise<T> {
+	let lastError: unknown;
+	for (let attempt = 0; attempt < TRANSIENT_MAX_ATTEMPTS; attempt++) {
+		try {
+			return await fn();
+		} catch (err) {
+			lastError = err;
+			const canRetry =
+				isTransientGeminiError(err) &&
+				attempt < TRANSIENT_MAX_ATTEMPTS - 1;
+			if (!canRetry) throw err;
+			// Vitest : pas d’attente réelle pour garder les tests rapides
+			const delayMs = process.env.VITEST
+				? 0
+				: TRANSIENT_BASE_DELAY_MS * 2 ** attempt;
+			await sleep(delayMs);
+		}
+	}
+	throw lastError;
+}
+
 export class GeminiService {
 	private client() {
 		return new GoogleGenerativeAI(getApiKey());
 	}
 
-	private jsonModel(model: string) {
+	private jsonModel(model: string, temperature = 0.2) {
 		return this.client().getGenerativeModel({
 			model,
 			generationConfig: {
 				responseMimeType: "application/json",
-				temperature: 0.2,
+				temperature,
 			},
 		});
 	}
@@ -90,8 +152,10 @@ export class GeminiService {
 	/** Ping minimal — valide la clé API. */
 	async ping(model = DEFAULT_MODEL) {
 		const generativeModel = this.client().getGenerativeModel({ model });
-		const result = await generativeModel.generateContent(
-			"Réponds uniquement par le mot OK",
+		const result = await withTransientRetry(() =>
+			generativeModel.generateContent(
+				"Réponds uniquement par le mot OK",
+			),
 		);
 		const text = result.response.text().trim();
 		return { ok: text.toUpperCase().includes("OK"), text, model };
@@ -134,10 +198,12 @@ export class GeminiService {
 				attempt === 0 ? undefined : { validationErrors: lastReason },
 			);
 
-			const result = await generativeModel.generateContent([
-				{ text: prompt },
-				...imageParts,
-			]);
+			const result = await withTransientRetry(() =>
+				generativeModel.generateContent([
+					{ text: prompt },
+					...imageParts,
+				]),
+			);
 			const outcome = parseJsonWithSchema(
 				result.response.text(),
 				cvImportDraftSchema,
@@ -176,7 +242,9 @@ export class GeminiService {
 					: { validationErrors: lastReason }),
 			});
 
-			const result = await generativeModel.generateContent(prompt);
+			const result = await withTransientRetry(() =>
+				generativeModel.generateContent(prompt),
+			);
 			const outcome = parseJsonWithSchema(
 				result.response.text(),
 				cvReviewSchema,
@@ -188,6 +256,54 @@ export class GeminiService {
 
 		throw new ValidationError(
 			`CV review validation failed after retry: ${lastReason}`,
+		);
+	}
+
+	/**
+	 * Reformule une section de CV (texte source + type).
+	 * safeParse → retry 1× avec les erreurs de validation dans le prompt.
+	 */
+	async rewriteSection(
+		input: {
+			sectionType: CvRewriteSectionType;
+			sectionLabel: string;
+			sourceText: string;
+		},
+		options: { model?: string } = {},
+	): Promise<CvRewriteSection> {
+		const sourceText = input.sourceText.trim();
+		if (!sourceText) {
+			throw new ValidationError("Section source text is empty");
+		}
+
+		const generativeModel = this.jsonModel(
+			options.model ?? DEFAULT_MODEL,
+			0.35,
+		);
+		let lastReason = "Unknown validation error";
+
+		for (let attempt = 0; attempt < MAX_ATTEMPTS; attempt++) {
+			const prompt = buildCvRewriteSectionSystemPrompt({
+				sectionType: input.sectionType,
+				sectionLabel: input.sectionLabel,
+				sourceText,
+				...(attempt === 0 ? {} : { validationErrors: lastReason }),
+			});
+
+			const result = await withTransientRetry(() =>
+				generativeModel.generateContent(prompt),
+			);
+			const outcome = parseJsonWithSchema(
+				result.response.text(),
+				cvRewriteSectionSchema,
+			);
+
+			if (outcome.ok) return outcome.data;
+			lastReason = outcome.reason;
+		}
+
+		throw new ValidationError(
+			`CV rewrite validation failed after retry: ${lastReason}`,
 		);
 	}
 }

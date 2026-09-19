@@ -105,4 +105,40 @@ describe("geminiService.reviewCv", () => {
 		).rejects.toBeInstanceOf(ValidationError);
 		expect(generateContent).toHaveBeenCalledTimes(2);
 	});
+
+	it("retries on transient 503 then succeeds", async () => {
+		const overloaded = Object.assign(
+			new Error("[503 Service Unavailable] The model is overloaded"),
+			{ status: 503 },
+		);
+		generateContent
+			.mockRejectedValueOnce(overloaded)
+			.mockResolvedValueOnce({
+				response: { text: () => validReviewJson },
+			});
+
+		const { geminiService } = await import(
+			"../../../src/services/ai/geminiService"
+		);
+
+		const review = await geminiService.reviewCv("CV minimal");
+		expect(review.score).toBe(7);
+		expect(generateContent).toHaveBeenCalledTimes(2);
+	});
+
+	it("does not retry non-transient errors", async () => {
+		const badKey = Object.assign(new Error("[401 Unauthorized]"), {
+			status: 401,
+		});
+		generateContent.mockRejectedValueOnce(badKey);
+
+		const { geminiService } = await import(
+			"../../../src/services/ai/geminiService"
+		);
+
+		await expect(geminiService.reviewCv("CV")).rejects.toThrow(
+			"401 Unauthorized",
+		);
+		expect(generateContent).toHaveBeenCalledOnce();
+	});
 });
