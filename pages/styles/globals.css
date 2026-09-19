@@ -367,14 +367,19 @@ html.dark ::-webkit-scrollbar-corner {
     }
 
     .p-tabview-nav {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 0.5rem;
-        justify-content: center;
-        align-items: center;
+        display: flex;
+        flex-wrap: nowrap;
+        gap: 0.25rem;
+        justify-content: stretch;
+        align-items: stretch;
         width: 100%;
         margin: 0;
         background: var(--white, #fff);
+
+        > li {
+            flex: 1 1 0;
+            min-width: 0;
+        }
 
         .p-unselectable-text {
             width: 100%;
@@ -383,6 +388,10 @@ html.dark ::-webkit-scrollbar-corner {
             width: 100%;
             display: flex;
             justify-content: center;
+            align-items: center;
+            white-space: nowrap;
+            padding-inline: 0.35rem;
+            font-size: 0.8rem;
         }
     }
 
@@ -426,7 +435,8 @@ html.dark #panel-modif-cv.cv-modif-tabview {
 .p-dialog.dialog-download-cv,
 .p-dialog.dialog-assistant-ia,
 .p-dialog.dialog-start-content,
-.p-dialog.dialog-import-review {
+.p-dialog.dialog-import-review,
+.p-dialog.dialog-cv-review-result {
     background: #ffffff;
     border: 1px solid #e4e4e7;
     color: #18181b;
@@ -464,7 +474,8 @@ html.dark .p-dialog.dialog-select-model,
 html.dark .p-dialog.dialog-download-cv,
 html.dark .p-dialog.dialog-assistant-ia,
 html.dark .p-dialog.dialog-start-content,
-html.dark .p-dialog.dialog-import-review {
+html.dark .p-dialog.dialog-import-review,
+html.dark .p-dialog.dialog-cv-review-result {
     background: #18181b;
     border-color: #3f3f46;
     color: #f4f4f5;

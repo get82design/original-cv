@@ -3,6 +3,8 @@ import { ModifSelectInput } from "@/features/cv-editor/component/custom-cv-input
 import { ModifMiseEnPage } from "@/features/cv-editor/component/custom-cv-input/ModifMiseEnPAge";
 import { SelectTemplate } from "@/features/cv-editor/component/custom-cv-input/SelectTemplate";
 import { SectionNoUse } from "@/features/cv-editor/component/custom-cv-input/SectionNoUse";
+import { AiAdvicePanel } from "@/features/cv-editor/component/custom-cv-input/AiAdvicePanel";
+import { useAiAdvice } from "@/features/cv-editor/component/context/AiAdviceContext";
 import type { TemplateModule } from "@/services/schemas/cvTemplate.schema";
 import type { CvFormValues } from "@/services/schemas/cvSave.schema";
 import { saveGuestCvDraft } from "@/features/cv-editor/utils/guestCvDraft";
@@ -10,8 +12,10 @@ import { Button } from "primereact/button";
 import { TabPanel, TabView } from "primereact/tabview";
 import { MdInfoOutline } from "react-icons/md";
 import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 
 const DOCK_WIDTH = 400;
+const TAB_IA_INDEX = 3; // Page=0, Sections=1, Modèles=2, IA=3
 
 interface CvModifDockProps {
 	open: boolean;
@@ -39,6 +43,22 @@ export function CvModifDock({
 }: CvModifDockProps) {
 	const router = useRouter();
 	const showPanel = open || !collapsible;
+	const { entries, iaTabNonce } = useAiAdvice();
+	const showIaTab = entries.length > 0;
+	const [activeIndex, setActiveIndex] = useState(0);
+
+	useEffect(() => {
+		if (iaTabNonce > 0 && showIaTab) {
+			setActiveIndex(TAB_IA_INDEX);
+			onOpenChange(true);
+		}
+	}, [iaTabNonce, showIaTab, onOpenChange]);
+
+	useEffect(() => {
+		if (!showIaTab && activeIndex === TAB_IA_INDEX) {
+			setActiveIndex(0);
+		}
+	}, [showIaTab, activeIndex]);
 
 	return (
 		<>
@@ -94,28 +114,39 @@ export function CvModifDock({
 					<TabView
 						className="cv-modif-tabview flex flex-col h-full min-h-0 rounded-xl"
 						id="panel-modif-cv"
+						activeIndex={activeIndex}
+						onTabChange={(e) => setActiveIndex(e.index)}
 					>
 						<TabPanel
 							header="Page"
-							headerClassName="text-sm flex justify-center text-center"
+							headerClassName="text-sm flex justify-center text-center whitespace-nowrap"
 							contentClassName="py-2 px-1"
 						>
 							<ModifMiseEnPage />
 						</TabPanel>
 						<TabPanel
 							header="Sections"
-							headerClassName="text-sm flex justify-center text-center"
+							headerClassName="text-sm flex justify-center text-center whitespace-nowrap"
 							contentClassName="py-2 px-1"
 						>
 							<SectionNoUse itemNoUse={itemNoUse} addItem={addItem} />
 						</TabPanel>
 						<TabPanel
 							header="Modèles"
-							headerClassName="text-sm flex justify-center text-center"
+							headerClassName="text-sm flex justify-center text-center whitespace-nowrap"
 							contentClassName="py-2 px-1"
 						>
 							<SelectTemplate />
 						</TabPanel>
+						{showIaTab ? (
+							<TabPanel
+								header={`IA (${entries.length})`}
+								headerClassName="text-sm flex justify-center text-center whitespace-nowrap"
+								contentClassName="py-2 px-1"
+							>
+								<AiAdvicePanel />
+							</TabPanel>
+						) : null}
 					</TabView>
 				</div>
 

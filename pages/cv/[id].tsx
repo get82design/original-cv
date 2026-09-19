@@ -8,6 +8,7 @@ import { ModelAndColorProvider } from "../../src/features/cv-editor/component/co
 import { FormCv } from "../../src/features/cv-editor/component/form/FormCv";
 import { CvEditor } from "../../src/features/cv-editor/CvEditor";
 import { CreateCvProvider } from "../../src/features/cv-editor/component/context/CreateCvContext";
+import { AiAdviceProvider } from "../../src/features/cv-editor/component/context/AiAdviceContext";
 
 export default function CvPage() {
 	const router = useRouter();
@@ -53,7 +54,9 @@ export default function CvPage() {
 				<ModelAndColorProvider>
 					<FormCv idCv={id} template={template} color={color}>
 						<CreateCvProvider>
-							<CvEditor />
+							<AiAdviceProvider>
+								<CvEditor />
+							</AiAdviceProvider>
 						</CreateCvProvider>
 					</FormCv>
 				</ModelAndColorProvider>

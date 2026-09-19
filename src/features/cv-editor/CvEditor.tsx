@@ -3,7 +3,7 @@ import { useMediaQuery } from "@utils/useWindowWidth";
 import { TitleAppOne } from "@/components/title/TitleAppOne";
 import { useFormContext } from "react-hook-form";
 import type { TemplateModule } from "@/services/schemas/cvTemplate.schema";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { OneColumnModel } from "./component/kit-dnd/one-column-model/OneColumnModel";
 import {
 	clearEditorSelection,
@@ -21,13 +21,18 @@ import { trpc } from "@utils/trpc";
 import { SpeedDial } from "primereact/speeddial";
 import { Tooltip } from "primereact/tooltip";
 import { DialogDataFromProfile } from "./component/dialog/dataFromProfile/DialogDataFromProfile";
-import { DialogAssistantIa } from "@/components/dialog/DialogAssistantIa";
+import { DialogAssistantIa, type AiActionId } from "@/components/dialog/DialogAssistantIa";
+import { DialogCvReviewResult } from "@/components/dialog/DialogCvReviewResult";
 import {
 	CV_MODIF_DOCK_WIDTH,
 	CvModifDock,
 } from "./component/custom-cv-input/CvModifDock";
 import { DialogDownloadCv } from "@/components/dialog/DialogDownloadCv";
 import { captureDownloadPreviews } from "./utils/captureCvPreview";
+import type { CvReview } from "@/services/schemas/cvReview.schema";
+import { Toast } from "primereact/toast";
+import { flattenCvFormToText } from "./utils/flattenCvFormToText";
+import { useAiAdvice } from "./component/context/AiAdviceContext";
 
 export const CvEditor = () => {
 	const { data } = trpc.cv.allByUser.useQuery();
@@ -38,6 +43,8 @@ export const CvEditor = () => {
 	const [visibleDialogDataFromProfile, setVisibleDialogDataFromProfile] =
 		useState(false);
 	const [visibleAssistantIa, setVisibleAssistantIa] = useState(false);
+	const [visibleCvReview, setVisibleCvReview] = useState(false);
+	const [cvReview, setCvReview] = useState<CvReview | null>(null);
 	const [visibleDownloadDialog, setVisibleDownloadDialog] = useState(false);
 	const [downloadPreviewWithLogo, setDownloadPreviewWithLogo] = useState<
 		string | null
@@ -50,6 +57,9 @@ export const CvEditor = () => {
 		undefined,
 		{ enabled: visibleDownloadDialog && status === "authenticated" },
 	);
+	const reviewCvMutation = trpc.ai.reviewCv.useMutation();
+	const toast = useRef<Toast>(null);
+	const { pushAdvice } = useAiAdvice();
 	const {
 		getValues,
 		setValue,
@@ -207,8 +217,66 @@ export const CvEditor = () => {
 		setDownloadPreviewLoading(false);
 	};
 
+	const runCvReview = async () => {
+		if (status !== "authenticated") {
+			toast.current?.show({
+				severity: "error",
+				summary: "Connexion requise",
+				detail: "Connectez-vous pour utiliser la relecture IA.",
+				life: 4000,
+			});
+			return;
+		}
+		const cvText = flattenCvFormToText(getValues() as CvFormValues);
+		if (!cvText.trim()) {
+			toast.current?.show({
+				severity: "warn",
+				summary: "CV vide",
+				detail: "Ajoutez du contenu avant de lancer une relecture.",
+				life: 4000,
+			});
+			return;
+		}
+		setCvReview(null);
+		setVisibleCvReview(true);
+		try {
+			const { review } = await reviewCvMutation.mutateAsync({ cvText });
+			setCvReview(review);
+			pushAdvice({
+				kind: "review-cv",
+				title: "Relecture générale",
+				review,
+			});
+		} catch (err) {
+			setVisibleCvReview(false);
+			toast.current?.show({
+				severity: "error",
+				summary: "Relecture impossible",
+				detail:
+					err instanceof Error
+						? err.message
+						: "Une erreur est survenue.",
+				life: 5000,
+			});
+		}
+	};
+
+	const onSelectAiAction = (action: AiActionId) => {
+		if (action === "review-cv") {
+			void runCvReview();
+			return;
+		}
+		toast.current?.show({
+			severity: "info",
+			summary: "Bientôt",
+			detail: "Cette action IA sera disponible prochainement.",
+			life: 3500,
+		});
+	};
+
 	return (
 		<>
+			<Toast ref={toast} position="top-center" />
 			<div className="my-8 px-8 lg:hidden">
 				Pour l&apos;instant vous ne pouvez pas créer de CV en mode mobile.
 			</div>
@@ -227,6 +295,17 @@ export const CvEditor = () => {
 				<DialogAssistantIa
 					visible={visibleAssistantIa}
 					onHide={() => setVisibleAssistantIa(false)}
+					onSelectAction={onSelectAiAction}
+				/>
+				<DialogCvReviewResult
+					visible={visibleCvReview}
+					review={cvReview}
+					loading={reviewCvMutation.isPending}
+					onHide={() => {
+						if (reviewCvMutation.isPending) return;
+						setVisibleCvReview(false);
+						setCvReview(null);
+					}}
 				/>
 				{profile && (
 					<>

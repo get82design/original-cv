@@ -1,9 +1,15 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import type { z } from "zod";
 import {
 	buildCvImportSystemPrompt,
 	cvImportDraftSchema,
 	type CvImportDraft,
 } from "../schemas/cvImportDraft.schema";
+import {
+	buildCvReviewSystemPrompt,
+	cvReviewSchema,
+	type CvReview,
+} from "../schemas/cvReview.schema";
 import { ValidationError } from "../errors";
 
 const DEFAULT_MODEL = "gemini-3.6-flash";
@@ -44,11 +50,14 @@ function formatZodIssues(
 		.join("\n");
 }
 
-type AttemptResult =
-	| { ok: true; draft: CvImportDraft }
+type ParseOutcome<T> =
+	| { ok: true; data: T }
 	| { ok: false; reason: string };
 
-function parseAndValidate(raw: string): AttemptResult {
+function parseJsonWithSchema<T>(
+	raw: string,
+	schema: z.ZodType<T>,
+): ParseOutcome<T> {
 	let json: unknown;
 	try {
 		json = JSON.parse(extractJsonText(raw));
@@ -56,11 +65,11 @@ function parseAndValidate(raw: string): AttemptResult {
 		return { ok: false, reason: "Invalid JSON (parse failed)" };
 	}
 
-	const parsed = cvImportDraftSchema.safeParse(json);
+	const parsed = schema.safeParse(json);
 	if (!parsed.success) {
 		return { ok: false, reason: formatZodIssues(parsed.error.issues) };
 	}
-	return { ok: true, draft: parsed.data };
+	return { ok: true, data: parsed.data };
 }
 
 export class GeminiService {
@@ -68,10 +77,19 @@ export class GeminiService {
 		return new GoogleGenerativeAI(getApiKey());
 	}
 
+	private jsonModel(model: string) {
+		return this.client().getGenerativeModel({
+			model,
+			generationConfig: {
+				responseMimeType: "application/json",
+				temperature: 0.2,
+			},
+		});
+	}
+
 	/** Ping minimal — valide la clé API. */
 	async ping(model = DEFAULT_MODEL) {
-		const genAI = this.client();
-		const generativeModel = genAI.getGenerativeModel({ model });
+		const generativeModel = this.client().getGenerativeModel({ model });
 		const result = await generativeModel.generateContent(
 			"Réponds uniquement par le mot OK",
 		);
@@ -91,15 +109,7 @@ export class GeminiService {
 			throw new ValidationError("At least one CV page image is required");
 		}
 
-		const model = options.model ?? DEFAULT_MODEL;
-		const genAI = this.client();
-		const generativeModel = genAI.getGenerativeModel({
-			model,
-			generationConfig: {
-				responseMimeType: "application/json",
-				temperature: 0.2,
-			},
-		});
+		const generativeModel = this.jsonModel(options.model ?? DEFAULT_MODEL);
 
 		const imageParts: Array<{
 			inlineData: { mimeType: string; data: string };
@@ -128,14 +138,56 @@ export class GeminiService {
 				{ text: prompt },
 				...imageParts,
 			]);
-			const outcome = parseAndValidate(result.response.text());
+			const outcome = parseJsonWithSchema(
+				result.response.text(),
+				cvImportDraftSchema,
+			);
 
-			if (outcome.ok) return outcome.draft;
+			if (outcome.ok) return outcome.data;
 			lastReason = outcome.reason;
 		}
 
 		throw new ValidationError(
 			`CV import draft validation failed after retry: ${lastReason}`,
+		);
+	}
+
+	/**
+	 * Relecture générale d’un CV (texte aplati).
+	 * safeParse → retry 1× avec les erreurs de validation dans le prompt.
+	 */
+	async reviewCv(
+		cvText: string,
+		options: { model?: string } = {},
+	): Promise<CvReview> {
+		const text = cvText.trim();
+		if (!text) {
+			throw new ValidationError("CV text is empty");
+		}
+
+		const generativeModel = this.jsonModel(options.model ?? DEFAULT_MODEL);
+		let lastReason = "Unknown validation error";
+
+		for (let attempt = 0; attempt < MAX_ATTEMPTS; attempt++) {
+			const prompt = buildCvReviewSystemPrompt({
+				cvText: text,
+				...(attempt === 0
+					? {}
+					: { validationErrors: lastReason }),
+			});
+
+			const result = await generativeModel.generateContent(prompt);
+			const outcome = parseJsonWithSchema(
+				result.response.text(),
+				cvReviewSchema,
+			);
+
+			if (outcome.ok) return outcome.data;
+			lastReason = outcome.reason;
+		}
+
+		throw new ValidationError(
+			`CV review validation failed after retry: ${lastReason}`,
 		);
 	}
 }

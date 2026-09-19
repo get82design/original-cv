@@ -26,4 +26,18 @@ export const aiRouter = router({
 				maxPages: input.maxPages ?? 3,
 			});
 		}),
+
+	/**
+	 * Relecture générale IA — le client envoie le CV déjà aplati en texte.
+	 */
+	reviewCv: protectedProcedure
+		.input(
+			z.object({
+				cvText: z.string().trim().min(1).max(50_000),
+			}),
+		)
+		.mutation(async ({ input }) => {
+			const review = await geminiService.reviewCv(input.cvText);
+			return { review };
+		}),
 });
