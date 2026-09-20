@@ -180,6 +180,12 @@ describe("UserService.consumeFreeDownload", () => {
 		const updated = await userService.consumeFreeDownload(user.id);
 		expect(updated.freeDownloadsRemaining).toBe(1);
 		expect(updated.downloadCredits).toBe(5);
+
+		const events = await prisma.downloadEvent.findMany({
+			where: { userId: user.id },
+		});
+		expect(events).toHaveLength(1);
+		expect(events[0]?.variant).toBe("WITH_LOGO");
 	});
 
 	it("refuses when no free downloads remain", async () => {
@@ -207,6 +213,11 @@ describe("UserService.consumePaidDownload", () => {
 		const updated = await userService.consumePaidDownload(user.id);
 		expect(updated.downloadCredits).toBe(1);
 		expect(updated.freeDownloadsRemaining).toBe(4);
+
+		const events = await prisma.downloadEvent.findMany({
+			where: { userId: user.id, variant: "WITHOUT_LOGO" },
+		});
+		expect(events).toHaveLength(1);
 	});
 
 	it("refuses when no paid credits remain", async () => {

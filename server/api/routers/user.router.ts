@@ -2,6 +2,14 @@ import { userService } from "../../../src/services/user/userService";
 import { updateUserSchema } from "../../../src/services/schemas/user.schema";
 import { protectedProcedure, publicProcedure, router } from "../trpc";
 import { forgotPasswordSchema, registerSchema, resetPasswordSchema } from "../../../src/services/schemas/auth.schema";
+import { z } from "zod";
+
+const consumeDownloadMetaSchema = z
+	.object({
+		cvId: z.string().min(1).optional(),
+		templateId: z.string().min(1).optional(),
+	})
+	.optional();
 
 export const userRouter = router({
 	me: protectedProcedure.query(({ ctx }) =>
@@ -20,14 +28,18 @@ export const userRouter = router({
 	),
 
 	/** Export gratuit (avec logo) */
-	consumeFreeDownload: protectedProcedure.mutation(({ ctx }) =>
-		userService.consumeFreeDownload(ctx.session.user.id),
-	),
+	consumeFreeDownload: protectedProcedure
+		.input(consumeDownloadMetaSchema)
+		.mutation(({ ctx, input }) =>
+			userService.consumeFreeDownload(ctx.session.user.id, input),
+		),
 
 	/** Export payant (sans logo) */
-	consumePaidDownload: protectedProcedure.mutation(({ ctx }) =>
-		userService.consumePaidDownload(ctx.session.user.id),
-	),
+	consumePaidDownload: protectedProcedure
+		.input(consumeDownloadMetaSchema)
+		.mutation(({ ctx, input }) =>
+			userService.consumePaidDownload(ctx.session.user.id, input),
+		),
 
 	/** @deprecated alias de consumePaidDownload — garder pour compat */
 	consumeDownloadCredit: protectedProcedure.mutation(({ ctx }) =>

@@ -10,9 +10,10 @@ import { trpc } from "@utils/trpc";
 import { ProgressSpinner } from "primereact/progressspinner";
 import { PreviewImage } from "./compo/common/PreviewImage";
 import Link from "next/link";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { DialogDownloadCv } from "@/components/dialog/DialogDownloadCv";
 import { DialogAssistantIa } from "@/components/dialog/DialogAssistantIa";
+import { Toast } from "primereact/toast";
 
 export const ProfilePage = () => {
 	const { data: cvs, isLoading } = trpc.cv.allByUser.useQuery();
@@ -22,10 +23,14 @@ export const ProfilePage = () => {
 	const isSm = useMediaQuery("(min-width: 640px)");
 	const [downloadCv, setDownloadCv] = useState<CV | null>(null);
 	const [visibleAssistantIa, setVisibleAssistantIa] = useState(false);
+	const toast = useRef<Toast>(null);
+	const utils = trpc.useUtils();
 	const { data: downloadStatus } = trpc.user.getDownloadStatus.useQuery(
 		undefined,
 		{ enabled: downloadCv != null },
 	);
+	const consumeFreeDownloadMutation = trpc.user.consumeFreeDownload.useMutation();
+	const consumePaidDownloadMutation = trpc.user.consumePaidDownload.useMutation();
 
 	const downloadPreviewWithLogo = downloadCv
 		? (downloadCv.previewUrl ??
@@ -36,8 +41,67 @@ export const ProfilePage = () => {
 	const downloadPreviewWithoutLogo =
 		downloadCv?.previewUrlClean ?? downloadPreviewWithLogo;
 
+	const downloadMeta = () => {
+		if (!downloadCv) return {};
+		return {
+			cvId: downloadCv.id,
+			...(downloadCv.templateId
+				? { templateId: downloadCv.templateId }
+				: {}),
+		};
+	};
+
+	const onDownloadFree = async () => {
+		try {
+			await consumeFreeDownloadMutation.mutateAsync(downloadMeta());
+			await utils.user.getDownloadStatus.invalidate();
+			toast.current?.show({
+				severity: "success",
+				summary: "Téléchargement enregistré",
+				detail: "1 export avec logo consommé (PDF bientôt).",
+				life: 3500,
+			});
+			setDownloadCv(null);
+		} catch (err) {
+			toast.current?.show({
+				severity: "error",
+				summary: "Export impossible",
+				detail:
+					err instanceof Error
+						? err.message
+						: "Une erreur est survenue.",
+				life: 5000,
+			});
+		}
+	};
+
+	const onDownloadPaid = async () => {
+		try {
+			await consumePaidDownloadMutation.mutateAsync(downloadMeta());
+			await utils.user.getDownloadStatus.invalidate();
+			toast.current?.show({
+				severity: "success",
+				summary: "Téléchargement enregistré",
+				detail: "1 crédit sans logo consommé (PDF bientôt).",
+				life: 3500,
+			});
+			setDownloadCv(null);
+		} catch (err) {
+			toast.current?.show({
+				severity: "error",
+				summary: "Export impossible",
+				detail:
+					err instanceof Error
+						? err.message
+						: "Une erreur est survenue.",
+				life: 5000,
+			});
+		}
+	};
+
 	return (
 		<FormProfile>
+			<Toast ref={toast} position="top-center" />
 			<DialogDownloadCv
 				visible={downloadCv != null}
 				onHide={() => setDownloadCv(null)}
@@ -46,6 +110,16 @@ export const ProfilePage = () => {
 				previewUrlWithoutLogo={downloadPreviewWithoutLogo}
 				freeDownloadsRemaining={downloadStatus?.freeDownloadsRemaining ?? 0}
 				downloadCredits={downloadStatus?.downloadCredits ?? 0}
+				loading={
+					consumeFreeDownloadMutation.isPending ||
+					consumePaidDownloadMutation.isPending
+				}
+				onDownloadFree={() => {
+					void onDownloadFree();
+				}}
+				onDownloadPaid={() => {
+					void onDownloadPaid();
+				}}
 				onAdjust={() => setVisibleAssistantIa(true)}
 			/>
 			<DialogAssistantIa

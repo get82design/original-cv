@@ -87,28 +87,60 @@ export class UserService {
 		};
 	}
 
-	/** Consomme 1 téléchargement gratuit (avec logo) */
-	async consumeFreeDownload(id: string) {
+	/** Consomme 1 téléchargement gratuit (avec logo) + log stats */
+	async consumeFreeDownload(
+		id: string,
+		meta?: { cvId?: string; templateId?: string },
+	) {
 		const user = await this.findById(id);
 		if (user.freeDownloadsRemaining <= 0) {
 			throw new ValidationError("No free downloads available");
 		}
-		return prisma.user.update({
-			where: { id },
-			data: { freeDownloadsRemaining: { decrement: 1 } },
-		});
+
+		const [updated] = await prisma.$transaction([
+			prisma.user.update({
+				where: { id },
+				data: { freeDownloadsRemaining: { decrement: 1 } },
+			}),
+			prisma.downloadEvent.create({
+				data: {
+					variant: "WITH_LOGO",
+					hadAccount: true,
+					userId: id,
+					...(meta?.cvId ? { cvId: meta.cvId } : {}),
+					...(meta?.templateId ? { templateId: meta.templateId } : {}),
+				},
+			}),
+		]);
+		return updated;
 	}
 
-	/** Consomme 1 crédit payant (sans logo) */
-	async consumePaidDownload(id: string) {
+	/** Consomme 1 crédit payant (sans logo) + log stats */
+	async consumePaidDownload(
+		id: string,
+		meta?: { cvId?: string; templateId?: string },
+	) {
 		const user = await this.findById(id);
 		if (user.downloadCredits <= 0) {
 			throw new ValidationError("No download credits available");
 		}
-		return prisma.user.update({
-			where: { id },
-			data: { downloadCredits: { decrement: 1 } },
-		});
+
+		const [updated] = await prisma.$transaction([
+			prisma.user.update({
+				where: { id },
+				data: { downloadCredits: { decrement: 1 } },
+			}),
+			prisma.downloadEvent.create({
+				data: {
+					variant: "WITHOUT_LOGO",
+					hadAccount: true,
+					userId: id,
+					...(meta?.cvId ? { cvId: meta.cvId } : {}),
+					...(meta?.templateId ? { templateId: meta.templateId } : {}),
+				},
+			}),
+		]);
+		return updated;
 	}
 
 	/**

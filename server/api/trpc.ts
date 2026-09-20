@@ -68,4 +68,15 @@ export const protectedProcedure = t.procedure.use(appErrorMiddleware).use(
 		return next({ ctx: { ...ctx, session: ctx.session } });
 	}),
 );
+
+/** Session requise + rôle ADMIN. */
+export const adminProcedure = protectedProcedure.use(
+	t.middleware(({ ctx, next }) => {
+		if (ctx.session?.user.role !== "ADMIN") {
+			throw new TRPCError({ code: "FORBIDDEN" });
+		}
+		return next({ ctx });
+	}),
+);
+
 export const router = t.router;

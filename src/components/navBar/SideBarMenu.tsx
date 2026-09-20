@@ -47,6 +47,13 @@ export const SideBarMenu = forwardRef<HTMLDivElement | null, SidebarMenuProps>(
                             Dashboard
                         </Button>
                     </Link>
+                    {/* {session?.user?.role === "ADMIN" && (
+                        <Link href={`/admin`} onClick={() => setVisible(false)}>
+                            <Button text color='light' className='w-full text-black dark:text-white' style={{ minHeight: '44px'}}>
+                                Admin
+                            </Button>
+                        </Link>
+                    )} */}
                     {breakpoint &&
                         <Link href={`/cv/0`} onClick={() => setVisible(false)}>
                             <Button text color='light' className='w-full text-black dark:text-white' style={{ minHeight: '44px'}}>

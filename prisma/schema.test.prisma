@@ -67,6 +67,12 @@ enum PlanRole {
   PREMIUM_PLUS_IA
 }
 
+/** Accès applicatif (admin site ≠ plan d’abonnement) */
+enum UserRole {
+  USER
+  ADMIN
+}
+
 model User {
   id                String    @id @default(cuid())
   email             String    @unique      // email unique
@@ -78,6 +84,7 @@ model User {
   updatedAt         DateTime          @updatedAt
   isActive          Boolean @default(true) // si l'utilisateur est actif
   lastLoginAt       DateTime?             // date de la dernière connexion
+  role              UserRole          @default(USER)
 
   // --- Gestion des Abonnements ---
   plan              PlanRole          @default(FREE)
@@ -100,6 +107,7 @@ model User {
   cvs               CV[]                        // relation 1:N avec les CVs
   unlockedTemplates UnlockedTemplate[]
   downloadGrants    DownloadGrant[]
+  downloadEvents    DownloadEvent[]
 }
 
 // Cadeaux de téléchargements gratuits (one-shot par raison)
@@ -113,6 +121,30 @@ model DownloadGrant {
 
   @@unique([userId, reason])
   @@index([userId])
+}
+
+/** Log d’un téléchargement CV (stats admin) */
+enum DownloadVariant {
+  WITH_LOGO
+  WITHOUT_LOGO
+}
+
+model DownloadEvent {
+  id         String          @id @default(cuid())
+  createdAt  DateTime        @default(now())
+  variant    DownloadVariant
+  /** false si un jour on autorise un export guest */
+  hadAccount Boolean         @default(true)
+  userId     String?
+  user       User?           @relation(fields: [userId], references: [id], onDelete: SetNull)
+  cvId       String?
+  cv         CV?             @relation(fields: [cvId], references: [id], onDelete: SetNull)
+  templateId String?
+
+  @@index([createdAt])
+  @@index([variant, createdAt])
+  @@index([userId])
+  @@index([cvId])
 }
 
 // === La Table de Liaison : Pour savoir quel utilisateur a acheté quel Template Premium ===
@@ -994,6 +1026,7 @@ model CV {
   pdfUrl     String?
   pdfVersion Int @default(0) // version du PDF
   pdfGeneratedAt DateTime?
+  downloadEvents DownloadEvent[]
 
   @@index([userId])
   @@index([templateId])

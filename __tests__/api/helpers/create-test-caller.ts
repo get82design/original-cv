@@ -11,12 +11,16 @@ export function createTestSession(user: {
 	id: string;
 	email: string;
 	name?: string | null;
+	role?: "USER" | "ADMIN";
+	plan?: "FREE" | "STANDARD" | "PREMIUM" | "PREMIUM_PLUS_IA";
 }): AppSession {
 	return {
 		user: {
 			id: user.id,
 			email: user.email,
 			name: user.name ?? null,
+			...(user.role != null ? { role: user.role } : {}),
+			...(user.plan != null ? { plan: user.plan } : {}),
 		},
 	};
 }

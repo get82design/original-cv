@@ -17,9 +17,19 @@ export const AppBar = () => {
 	const menu = useRef<Menu>(null);
 	const isSm = useMediaQuery("(min-width: 640px)");
 	const [visibleTop, setVisibleTop] = useState(false);
-	const { status } = useSession();
+	const { data: session, status } = useSession();
+	const isAdmin = session?.user?.role === "ADMIN";
 
 	const items: MenuItem[] = [
+		...(isAdmin
+			? [
+					{
+						label: "Admin",
+						icon: "pi pi-chart-bar",
+						url: "/admin",
+					} satisfies MenuItem,
+				]
+			: []),
 		{
 			label: "Se déconnecter",
 			icon: "pi pi-sign-out",
@@ -54,6 +64,11 @@ export const AppBar = () => {
 					</Link>
 					{isSm && (
 						<nav className="flex gap-4 items-center ml-8">
+                            {isAdmin ? (
+                                <Link href="/admin" className={navLinkClass}>
+                                    Admin
+                                </Link>
+                            ) : null}
 							<Link href="/modeles" className={navLinkClass}>
 								Modèles
 							</Link>
@@ -135,6 +150,17 @@ export const AppBar = () => {
 							Créer un CV
 						</Button>
 					</Link>
+					{isAdmin ? (
+						<Link href="/admin" onClick={closeMobileNav}>
+							<Button
+								text
+								className="w-full justify-start text-black dark:text-white"
+								style={{ minHeight: "44px" }}
+							>
+								Admin
+							</Button>
+						</Link>
+					) : null}
 				</nav>
 			</Sidebar>
 		</>

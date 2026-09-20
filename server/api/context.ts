@@ -1,5 +1,5 @@
 import type { CreateNextContextOptions } from "@trpc/server/adapters/next";
-import type { PlanRole } from "../../generated/prisma/enums";
+import type { PlanRole, UserRole } from "../../generated/prisma/enums";
 import { prisma } from "../../lib/prisma";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth";
@@ -10,6 +10,7 @@ export type AppSession = {
 		email: string;
 		name?: string | null;
 		plan?: PlanRole;
+		role?: UserRole;
 	};
 };
 

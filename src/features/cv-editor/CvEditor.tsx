@@ -73,7 +73,10 @@ export const CvEditor = () => {
 	);
 	const reviewCvMutation = trpc.ai.reviewCv.useMutation();
 	const rewriteSectionMutation = trpc.ai.rewriteSection.useMutation();
+	const utils = trpc.useUtils();
 	const toast = useRef<Toast>(null);
+	const consumeFreeDownloadMutation = trpc.user.consumeFreeDownload.useMutation();
+	const consumePaidDownloadMutation = trpc.user.consumePaidDownload.useMutation();
 	const { pushAdvice } = useAiAdvice();
 	const {
 		getValues,
@@ -231,6 +234,82 @@ export const CvEditor = () => {
 		setDownloadPreviewWithLogo(null);
 		setDownloadPreviewWithoutLogo(null);
 		setDownloadPreviewLoading(false);
+	};
+
+	const downloadMeta = () => {
+		const cv = getValues() as CvFormValues;
+		const cvId = cv.cvId?.trim();
+		const templateId = cv.templateId?.trim();
+		return {
+			...(cvId && cvId !== "0" ? { cvId } : {}),
+			...(templateId ? { templateId } : {}),
+		};
+	};
+
+	const onDownloadFree = async () => {
+		if (status !== "authenticated") {
+			toast.current?.show({
+				severity: "error",
+				summary: "Connexion requise",
+				detail: "Connectez-vous pour télécharger.",
+				life: 4000,
+			});
+			return;
+		}
+		try {
+			await consumeFreeDownloadMutation.mutateAsync(downloadMeta());
+			await utils.user.getDownloadStatus.invalidate();
+			toast.current?.show({
+				severity: "success",
+				summary: "Téléchargement enregistré",
+				detail: "1 export avec logo consommé (PDF bientôt).",
+				life: 3500,
+			});
+			closeDownloadDialog();
+		} catch (err) {
+			toast.current?.show({
+				severity: "error",
+				summary: "Export impossible",
+				detail:
+					err instanceof Error
+						? err.message
+						: "Une erreur est survenue.",
+				life: 5000,
+			});
+		}
+	};
+
+	const onDownloadPaid = async () => {
+		if (status !== "authenticated") {
+			toast.current?.show({
+				severity: "error",
+				summary: "Connexion requise",
+				detail: "Connectez-vous pour télécharger.",
+				life: 4000,
+			});
+			return;
+		}
+		try {
+			await consumePaidDownloadMutation.mutateAsync(downloadMeta());
+			await utils.user.getDownloadStatus.invalidate();
+			toast.current?.show({
+				severity: "success",
+				summary: "Téléchargement enregistré",
+				detail: "1 crédit sans logo consommé (PDF bientôt).",
+				life: 3500,
+			});
+			closeDownloadDialog();
+		} catch (err) {
+			toast.current?.show({
+				severity: "error",
+				summary: "Export impossible",
+				detail:
+					err instanceof Error
+						? err.message
+						: "Une erreur est survenue.",
+				life: 5000,
+			});
+		}
 	};
 
 	const runCvReview = async () => {
@@ -394,6 +473,16 @@ export const CvEditor = () => {
 					title={(getValues("title") as string) || "Votre CV"}
 					freeDownloadsRemaining={downloadStatus?.freeDownloadsRemaining ?? 0}
 					downloadCredits={downloadStatus?.downloadCredits ?? 0}
+					loading={
+						consumeFreeDownloadMutation.isPending ||
+						consumePaidDownloadMutation.isPending
+					}
+					onDownloadFree={() => {
+						void onDownloadFree();
+					}}
+					onDownloadPaid={() => {
+						void onDownloadPaid();
+					}}
 					onAdjust={() => setVisibleAssistantIa(true)}
 				/>
 				<DialogAssistantIa

@@ -4,7 +4,7 @@ import GoogleProvider from "next-auth/providers/google";
 import GitHubProvider from "next-auth/providers/github";
 import { compare } from "bcrypt";
 import { userService } from "../src/services/user/userService";
-import type { PlanRole } from "../generated/prisma/client";
+import type { PlanRole, UserRole } from "../generated/prisma/client";
 import { prisma } from "../lib/prisma";
 import type { GetServerSidePropsContext, NextApiRequest, NextApiResponse } from "next";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
@@ -64,6 +64,7 @@ export const authOptions: NextAuthOptions = {
                     name: user.name,
                     image: user.image,
                     plan: user.plan,
+                    role: user.role,
                 };
             }
 		}),
@@ -84,15 +85,27 @@ export const authOptions: NextAuthOptions = {
 		strategy: "jwt",
 	},
 
+    events: {
+        async signIn({ user }) {
+            if (!user.id) return;
+            // Couvre OAuth (Google / GitHub) ; Credentials a déjà maj lastLoginAt
+            await prisma.user.update({
+                where: { id: user.id },
+                data: { lastLoginAt: new Date() },
+            });
+        },
+    },
+
     callbacks: {
         async jwt({ token, user }) {
             if (user?.id) {
                 token.id = user.id;
                 const dbUser = await prisma.user.findUnique({
                   where: { id: user.id },
-                  select: { plan: true },
+                  select: { plan: true, role: true },
                 });
                 token.plan = dbUser?.plan ?? "FREE";
+                token.role = dbUser?.role ?? "USER";
             }
             return token;
         },
@@ -101,6 +114,7 @@ export const authOptions: NextAuthOptions = {
             if (session.user) {
                 session.user.id = token.id as string;
                 session.user.plan = token.plan as PlanRole;
+                session.user.role = (token.role as UserRole) ?? "USER";
             }
     
             return session;
