@@ -667,3 +667,106 @@ html.dark .admin-filters .p-dropdown .p-dropdown-trigger {
 html.dark .admin-filters .p-dropdown .p-dropdown-label {
     color: #f4f4f5;
 }
+
+/* Admin user actions — InputNumber light & dark */
+.admin-user-actions .p-inputnumber .p-inputtext {
+    background: #ffffff;
+    color: #18181b;
+    border-color: #d4d4d8;
+}
+
+.admin-user-actions .p-inputnumber .p-inputtext:enabled:hover {
+    border-color: #a1a1aa;
+}
+
+.admin-user-actions .p-inputnumber .p-button.admin-inputnumber-btn {
+    background: #f4f4f5;
+    color: #3f3f46;
+    border-color: #d4d4d8;
+}
+
+.admin-user-actions .p-inputnumber .p-button.admin-inputnumber-btn:enabled:hover {
+    background: #e4e4e7;
+    color: #18181b;
+    border-color: #a1a1aa;
+}
+
+.admin-user-actions .p-inputnumber .p-button.admin-inputnumber-btn:enabled:active {
+    background: #d4d4d8;
+    color: #18181b;
+    border-color: #a1a1aa;
+}
+
+html.dark .admin-user-actions .p-inputnumber .p-inputtext {
+    background: #18181b;
+    color: #f4f4f5;
+    border-color: #3f3f46;
+}
+
+html.dark .admin-user-actions .p-inputnumber .p-inputtext:enabled:hover {
+    border-color: #52525b;
+}
+
+html.dark .admin-user-actions .p-inputnumber .p-button.admin-inputnumber-btn {
+    background: #27272a;
+    color: #d4d4d8;
+    border-color: #3f3f46;
+}
+
+html.dark .admin-user-actions .p-inputnumber .p-button.admin-inputnumber-btn:enabled:hover {
+    background: #3f3f46;
+    color: #f4f4f5;
+    border-color: #52525b;
+}
+
+html.dark .admin-user-actions .p-inputnumber .p-button.admin-inputnumber-btn:enabled:active {
+    background: #52525b;
+    color: #f4f4f5;
+    border-color: #71717a;
+}
+
+.admin-user-actions .p-dropdown,
+.admin-user-actions .p-calendar .p-inputtext {
+    background: #ffffff;
+    color: #18181b;
+    border-color: #d4d4d8;
+}
+
+.admin-user-actions .p-dropdown:not(.p-disabled):hover,
+.admin-user-actions .p-calendar .p-inputtext:enabled:hover {
+    border-color: #a1a1aa;
+}
+
+.admin-user-actions .p-dropdown .p-dropdown-label,
+.admin-user-actions .p-dropdown .p-dropdown-trigger {
+    color: #18181b;
+}
+
+.admin-user-actions .p-calendar .p-datepicker-trigger {
+    background: #f4f4f5;
+    color: #3f3f46;
+    border-color: #d4d4d8;
+}
+
+html.dark .admin-user-actions .p-dropdown,
+html.dark .admin-user-actions .p-calendar .p-inputtext {
+    background: #18181b;
+    color: #f4f4f5;
+    border-color: #3f3f46;
+}
+
+html.dark .admin-user-actions .p-dropdown:not(.p-disabled):hover,
+html.dark .admin-user-actions .p-calendar .p-inputtext:enabled:hover {
+    border-color: #52525b;
+}
+
+html.dark .admin-user-actions .p-dropdown .p-dropdown-label,
+html.dark .admin-user-actions .p-dropdown .p-dropdown-trigger {
+    color: #f4f4f5;
+}
+
+html.dark .admin-user-actions .p-calendar .p-datepicker-trigger {
+    background: #27272a;
+    color: #d4d4d8;
+    border-color: #3f3f46;
+}

@@ -2,6 +2,7 @@ import { z } from "zod";
 import { cvImportService } from "../../../src/services/ai/cvImportService";
 import { geminiService } from "../../../src/services/ai/geminiService";
 import { cvRewriteSectionTypeSchema } from "../../../src/services/schemas/cvRewriteSection.schema";
+import { userService } from "../../../src/services/user/userService";
 import { protectedProcedure, router } from "../trpc";
 
 export const aiRouter = router({
@@ -19,13 +20,15 @@ export const aiRouter = router({
 				maxPages: z.number().int().min(1).max(5).optional(),
 			}),
 		)
-		.mutation(async ({ input }) => {
+		.mutation(async ({ ctx, input }) => {
 			const bytes = Uint8Array.from(
 				Buffer.from(input.pdfBase64, "base64"),
 			);
-			return cvImportService.importCvFromPdf(bytes, {
+			const result = await cvImportService.importCvFromPdf(bytes, {
 				maxPages: input.maxPages ?? 3,
 			});
+			await userService.logAiUsage(ctx.session.user.id, "IMPORT_CV");
+			return result;
 		}),
 
 	/**
@@ -37,8 +40,9 @@ export const aiRouter = router({
 				cvText: z.string().trim().min(1).max(50_000),
 			}),
 		)
-		.mutation(async ({ input }) => {
+		.mutation(async ({ ctx, input }) => {
 			const review = await geminiService.reviewCv(input.cvText);
+			await userService.logAiUsage(ctx.session.user.id, "REVIEW_CV");
 			return { review };
 		}),
 
@@ -53,12 +57,17 @@ export const aiRouter = router({
 				sourceText: z.string().trim().min(1).max(50_000),
 			}),
 		)
-		.mutation(async ({ input }) => {
+		.mutation(async ({ ctx, input }) => {
 			const rewrite = await geminiService.rewriteSection({
 				sectionType: input.sectionType,
 				sectionLabel: input.sectionLabel,
 				sourceText: input.sourceText,
 			});
+			await userService.logAiUsage(
+				ctx.session.user.id,
+				"REWRITE_SECTION",
+				input.sectionLabel,
+			);
 			return { rewrite };
 		}),
 });

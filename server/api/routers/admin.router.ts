@@ -5,14 +5,34 @@ import {
 } from "../../../src/services/admin/adminDashboardService";
 import { adminUserService } from "../../../src/services/admin/adminUserService";
 import { PlanRole } from "../../../generated/prisma/enums";
+import { ValidationError } from "../../../src/services/errors";
 import { adminProcedure, router } from "../trpc";
 
 export type { AdminDashboardPeriod } from "../../../src/services/admin/adminDashboardService";
 export { adminDashboardPeriodSchema };
 
+const updateUserInputSchema = z
+	.object({
+		id: z.string().min(1),
+		isActive: z.boolean().optional(),
+		downloadCredits: z.number().int().min(0).max(10_000).optional(),
+		freeDownloadsRemaining: z.number().int().min(0).max(10_000).optional(),
+		plan: z.nativeEnum(PlanRole).optional(),
+		subscriptionEnd: z.date().nullable().optional(),
+	})
+	.refine(
+		(v) =>
+			typeof v.isActive === "boolean" ||
+			typeof v.downloadCredits === "number" ||
+			typeof v.freeDownloadsRemaining === "number" ||
+			v.plan != null ||
+			v.subscriptionEnd !== undefined,
+		{ message: "Au moins un champ à mettre à jour" },
+	);
+
 /**
  * Dashboard admin — users + CV + downloads ; ventes / funnel en placeholder.
- * Liste users admin.
+ * Liste users admin + actions fiche.
  */
 export const adminRouter = router({
 	dashboardOverview: adminProcedure
@@ -55,4 +75,28 @@ export const adminRouter = router({
 			}),
 		)
 		.query(({ input }) => adminUserService.listUsers(input)),
+
+	getUser: adminProcedure
+		.input(z.object({ id: z.string().min(1) }))
+		.query(({ input }) => adminUserService.getUserDetail(input.id)),
+
+	updateUser: adminProcedure
+		.input(updateUserInputSchema)
+		.mutation(async ({ ctx, input }) => {
+			if (
+				input.isActive === false &&
+				ctx.session.user.id === input.id
+			) {
+				throw new ValidationError(
+					"Impossible de désactiver votre propre compte",
+				);
+			}
+
+			const { id, ...patch } = input;
+			return adminUserService.updateUser(id, patch);
+		}),
+
+	softResetUser: adminProcedure
+		.input(z.object({ id: z.string().min(1) }))
+		.mutation(({ input }) => adminUserService.softResetUser(input.id)),
 });

@@ -108,6 +108,7 @@ model User {
   unlockedTemplates UnlockedTemplate[]
   downloadGrants    DownloadGrant[]
   downloadEvents    DownloadEvent[]
+  aiEvents          AiEvent[]
 }
 
 // Cadeaux de téléchargements gratuits (one-shot par raison)
@@ -145,6 +146,27 @@ model DownloadEvent {
   @@index([variant, createdAt])
   @@index([userId])
   @@index([cvId])
+}
+
+/** Log d’une requête IA (stats admin + fiche user) */
+enum AiFeature {
+  IMPORT_CV
+  REVIEW_CV
+  REWRITE_SECTION
+}
+
+model AiEvent {
+  id        String    @id @default(cuid())
+  createdAt DateTime  @default(now())
+  feature   AiFeature
+  /** ex. label de section pour REWRITE_SECTION */
+  detail    String?
+  userId    String?
+  user      User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([createdAt])
+  @@index([feature, createdAt])
+  @@index([userId])
 }
 
 // === La Table de Liaison : Pour savoir quel utilisateur a acheté quel Template Premium ===

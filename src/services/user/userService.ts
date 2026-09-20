@@ -209,6 +209,30 @@ export class UserService {
 		});
 	}
 
+	/** Compteur mensuel + log admin (feature + détail optionnel) */
+	async logAiUsage(
+		id: string,
+		feature: "IMPORT_CV" | "REVIEW_CV" | "REWRITE_SECTION",
+		detail?: string,
+	) {
+		await this.findById(id);
+		const trimmed = detail?.trim();
+		const [updated] = await prisma.$transaction([
+			prisma.user.update({
+				where: { id },
+				data: { iaRequestsUsed: { increment: 1 } },
+			}),
+			prisma.aiEvent.create({
+				data: {
+					userId: id,
+					feature,
+					...(trimmed ? { detail: trimmed.slice(0, 120) } : {}),
+				},
+			}),
+		]);
+		return updated;
+	}
+
 	async resetIaRequests(id: string) {
 		await this.findById(id);
 		return prisma.user.update({

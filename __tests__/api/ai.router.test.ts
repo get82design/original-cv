@@ -1,6 +1,8 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
+import { prismaTest } from "../../lib/prismaTest";
 import { cvImportService } from "../../src/services/ai/cvImportService";
 import { geminiService } from "../../src/services/ai/geminiService";
+import { createTestUser } from "../utils/create-test-user";
 import {
 	createTestCaller,
 	createTestSession,
@@ -12,7 +14,8 @@ describe("ai.router", () => {
 	});
 
 	describe("importCvFromPdf", () => {
-		it("returns the draft from the import service", async () => {
+		it("returns the draft from the import service and logs AI usage", async () => {
+			const user = await createTestUser();
 			vi.spyOn(cvImportService, "importCvFromPdf").mockResolvedValue({
 				draft: {
 					identity: { firstName: "Ada" },
@@ -28,9 +31,7 @@ describe("ai.router", () => {
 				pageCount: 1,
 			});
 
-			const caller = await createTestCaller(
-				createTestSession({ id: "u1", email: "a@b.c" }),
-			);
+			const caller = await createTestCaller(createTestSession(user));
 
 			const result = await caller.ai.importCvFromPdf({
 				pdfBase64: Buffer.from("%PDF").toString("base64"),
@@ -40,6 +41,17 @@ describe("ai.router", () => {
 			expect(result.pageCount).toBe(1);
 			expect(result.draft.identity.firstName).toBe("Ada");
 			expect(cvImportService.importCvFromPdf).toHaveBeenCalledOnce();
+
+			const events = await prismaTest.aiEvent.findMany({
+				where: { userId: user.id },
+			});
+			expect(events).toHaveLength(1);
+			expect(events[0]?.feature).toBe("IMPORT_CV");
+
+			const refreshed = await prismaTest.user.findUniqueOrThrow({
+				where: { id: user.id },
+			});
+			expect(refreshed.iaRequestsUsed).toBe(1);
 		});
 
 		it("rejects unauthenticated callers", async () => {
@@ -54,16 +66,15 @@ describe("ai.router", () => {
 	});
 
 	describe("rewriteSection", () => {
-		it("returns the rewrite from geminiService", async () => {
+		it("returns the rewrite from geminiService and logs AI usage", async () => {
+			const user = await createTestUser();
 			vi.spyOn(geminiService, "rewriteSection").mockResolvedValue({
 				rationale: "Plus clair.",
 				rewrittenText: "Dev produit.",
 				items: [],
 			});
 
-			const caller = await createTestCaller(
-				createTestSession({ id: "u1", email: "a@b.c" }),
-			);
+			const caller = await createTestCaller(createTestSession(user));
 
 			const result = await caller.ai.rewriteSection({
 				sectionType: "description",
@@ -77,6 +88,13 @@ describe("ai.router", () => {
 				sectionLabel: "Profil",
 				sourceText: "Dev motivé",
 			});
+
+			const events = await prismaTest.aiEvent.findMany({
+				where: { userId: user.id },
+			});
+			expect(events).toHaveLength(1);
+			expect(events[0]?.feature).toBe("REWRITE_SECTION");
+			expect(events[0]?.detail).toBe("Profil");
 		});
 
 		it("rejects unauthenticated callers", async () => {

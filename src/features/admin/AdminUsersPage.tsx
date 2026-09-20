@@ -5,10 +5,10 @@ import Link from "next/link";
 import { InputText } from "primereact/inputtext";
 import { Dropdown } from "primereact/dropdown";
 import { Button } from "primereact/button";
+import { Tooltip } from "primereact/tooltip";
 import { TitleAppOne } from "@/components/title/TitleAppOne";
 import { AppCard } from "@/components/card/AppCard";
 import { trpc } from "@utils/trpc";
-import { Tooltip } from "primereact/tooltip";
 import { PlanRole } from "../../../generated/prisma/enums";
 
 const PLAN_OPTIONS: { label: string; value: PlanRole | null }[] = [
@@ -183,6 +183,7 @@ export function AdminUsersPage() {
 							<th className="px-3 py-3 font-semibold">Free DL</th>
 							<th className="px-3 py-3 font-semibold">CV</th>
 							<th className="px-3 py-3 font-semibold">Downloads</th>
+							<th className="px-3 py-3 font-semibold">Profil</th>
 							<th className="px-3 py-3 font-semibold">Dernière co.</th>
 							<th className="px-3 py-3 font-semibold">Créé</th>
 							<th className="px-3 py-3 font-semibold">
@@ -200,7 +201,7 @@ export function AdminUsersPage() {
 						{listQuery.isLoading ? (
 							<tr>
 								<td
-									colSpan={10}
+									colSpan={11}
 									className="px-4 py-8 text-center text-zinc-500"
 								>
 									Chargement…
@@ -209,7 +210,7 @@ export function AdminUsersPage() {
 						) : (listQuery.data?.items.length ?? 0) === 0 ? (
 							<tr>
 								<td
-									colSpan={10}
+									colSpan={11}
 									className="px-4 py-8 text-center text-zinc-500"
 								>
 									Aucun utilisateur.
@@ -219,15 +220,20 @@ export function AdminUsersPage() {
 							listQuery.data?.items.map((u) => (
 								<tr
 									key={u.id}
-									className="border-b border-zinc-100 text-zinc-800 dark:border-zinc-800 dark:text-zinc-200"
+									className="border-b border-zinc-100 text-zinc-800 dark:border-zinc-800 dark:text-zinc-200 hover:bg-zinc-50 dark:hover:bg-zinc-900/40"
 								>
 									<td className="px-4 py-3">
-										<p className="m-0 font-medium">{u.email}</p>
-										{u.name ? (
-											<p className="m-0 text-xs text-zinc-500">
-												{u.name}
-											</p>
-										) : null}
+										<Link
+											href={`/admin/users/${u.id}`}
+											className="block hover:text-primary dark:hover:text-primary-dark"
+										>
+											<p className="m-0 font-medium">{u.email}</p>
+											{u.name ? (
+												<p className="m-0 text-xs text-zinc-500">
+													{u.name}
+												</p>
+											) : null}
+										</Link>
 									</td>
 									<td className="px-3 py-3 text-xs">{u.plan}</td>
 									<td className="px-3 py-3 text-xs">{u.role}</td>
@@ -237,6 +243,15 @@ export function AdminUsersPage() {
 									</td>
 									<td className="px-3 py-3">{u.cvCount}</td>
 									<td className="px-3 py-3">{u.downloadCount}</td>
+									<td className="px-3 py-3 text-xs">
+										{u.hasProfile ? (
+											<span className="font-medium text-emerald-600 dark:text-emerald-400">
+												Oui
+											</span>
+										) : (
+											<span className="text-zinc-400">Non</span>
+										)}
+									</td>
 									<td className="px-3 py-3 text-xs whitespace-nowrap">
 										{formatDate(u.lastLoginAt)}
 									</td>
