@@ -3,6 +3,8 @@ import {
 	adminDashboardPeriodSchema,
 	adminDashboardService,
 } from "../../../src/services/admin/adminDashboardService";
+import { adminUserService } from "../../../src/services/admin/adminUserService";
+import { PlanRole } from "../../../generated/prisma/enums";
 import { adminProcedure, router } from "../trpc";
 
 export type { AdminDashboardPeriod } from "../../../src/services/admin/adminDashboardService";
@@ -10,6 +12,7 @@ export { adminDashboardPeriodSchema };
 
 /**
  * Dashboard admin — users + CV + downloads ; ventes / funnel en placeholder.
+ * Liste users admin.
  */
 export const adminRouter = router({
 	dashboardOverview: adminProcedure
@@ -40,4 +43,16 @@ export const adminRouter = router({
 				},
 			};
 		}),
+
+	listUsers: adminProcedure
+		.input(
+			z.object({
+				search: z.string().trim().max(120).optional(),
+				isActive: z.boolean().optional(),
+				plan: z.nativeEnum(PlanRole).optional(),
+				page: z.number().int().min(1).default(1),
+				pageSize: z.number().int().min(1).max(50).default(20),
+			}),
+		)
+		.query(({ input }) => adminUserService.listUsers(input)),
 });

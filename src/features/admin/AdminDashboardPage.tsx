@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
+import Link from "next/link";
 import { SelectButton } from "primereact/selectbutton";
 import { TitleAppOne } from "@/components/title/TitleAppOne";
 import { AppCard } from "@/components/card/AppCard";
@@ -23,7 +24,7 @@ function MetricValue({
 }: {
 	ready: boolean;
 	value: number | null;
-	suffix?: string;
+	suffix?: string | undefined;
 }) {
 	if (!ready) {
 		return (
@@ -52,10 +53,10 @@ function MetricCard({
 	suffix,
 }: {
 	title: string;
-	hint?: string;
+	hint?: string | undefined;
 	ready: boolean;
 	value: number | null;
-	suffix?: string;
+	suffix?: string | undefined;
 }) {
 	return (
 		<AppCard className="flex min-h-[7.5rem] flex-col justify-between gap-2">
@@ -156,9 +157,17 @@ export function AdminDashboardPage() {
 			</p>
 
 			<section className="mb-8">
-				<h3 className="mb-3 m-0 text-sm font-semibold uppercase tracking-wide text-zinc-500">
-					Utilisateurs
-				</h3>
+				<div className="mb-3 flex items-center justify-between gap-3">
+					<h3 className="m-0 text-sm font-semibold uppercase tracking-wide text-zinc-500">
+						Utilisateurs
+					</h3>
+					<Link
+						href="/admin/users"
+						className="text-xs font-medium text-primary hover:underline dark:text-primary-dark"
+					>
+						Voir la liste →
+					</Link>
+				</div>
 				<div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
 					<MetricCard
 						title="Nouveaux"
