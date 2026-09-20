@@ -78,11 +78,11 @@ export type AdminUserDetail = {
 
 export class AdminUserService {
 	async listUsers(input: {
-		search?: string;
-		isActive?: boolean;
-		plan?: PlanRole;
-		page?: number;
-		pageSize?: number;
+		search?: string | undefined;
+		isActive?: boolean | undefined;
+		plan?: PlanRole | undefined;
+		page?: number | undefined;
+		pageSize?: number | undefined;
 	}): Promise<AdminUserListResult> {
 		const page = Math.max(1, input.page ?? 1);
 		const pageSize = Math.min(50, Math.max(1, input.pageSize ?? 20));
@@ -311,11 +311,11 @@ export class AdminUserService {
 	async updateUser(
 		id: string,
 		input: {
-			isActive?: boolean;
-			downloadCredits?: number;
-			freeDownloadsRemaining?: number;
-			plan?: PlanRole;
-			subscriptionEnd?: Date | null;
+			isActive?: boolean | undefined;
+			downloadCredits?: number | undefined;
+			freeDownloadsRemaining?: number | undefined;
+			plan?: PlanRole | undefined;
+			subscriptionEnd?: Date | null | undefined;
 		},
 	): Promise<{
 		id: string;
@@ -376,21 +376,22 @@ export class AdminUserService {
 			);
 		}
 
+		const data: {
+			isActive?: boolean;
+			downloadCredits?: number;
+			freeDownloadsRemaining?: number;
+			plan?: PlanRole;
+			subscriptionEnd?: Date | null;
+		} = {};
+		if (hasIsActive) data.isActive = input.isActive!;
+		if (hasCredits) data.downloadCredits = input.downloadCredits!;
+		if (hasFree) data.freeDownloadsRemaining = input.freeDownloadsRemaining!;
+		if (hasPlan) data.plan = nextPlan;
+		if (nextSubEnd !== undefined) data.subscriptionEnd = nextSubEnd;
+
 		const updated = await prisma.user.update({
 			where: { id },
-			data: {
-				...(hasIsActive ? { isActive: input.isActive } : {}),
-				...(hasCredits
-					? { downloadCredits: input.downloadCredits }
-					: {}),
-				...(hasFree
-					? { freeDownloadsRemaining: input.freeDownloadsRemaining }
-					: {}),
-				...(hasPlan ? { plan: nextPlan } : {}),
-				...(nextSubEnd !== undefined
-					? { subscriptionEnd: nextSubEnd }
-					: {}),
-			},
+			data,
 			select: {
 				id: true,
 				isActive: true,

@@ -7,12 +7,17 @@ import type { TemplateModule } from "../schemas/cvTemplate.schema";
 import { compactActiveOrders } from "../../utils/moduleOrder";
 import { userService } from "../user/userService";
 import { cvService } from "./cvService";
+import { extractPrimaryColorName } from "./extractPrimaryColorName";
 
 export class CvSaveService {
 	async save(userId: string, input: CvSaveInput) {
 		const cvId = await prisma.$transaction(async (tx) => {
 			// ——— 1. CV ———
 			let id = input.cvId;
+			const primaryColorName =
+				input.layoutGeneral !== undefined
+					? extractPrimaryColorName(input.layoutGeneral)
+					: undefined;
 
 			if (id) {
 				const cv = await tx.cV.findUnique({ where: { id } });
@@ -28,8 +33,11 @@ export class CvSaveService {
 						photo: input.photo ?? null,
 						templateId: input.templateId,
 						...(input.layoutGeneral !== undefined
-							? { layoutGeneral: input.layoutGeneral }
-							: null),
+							? {
+									layoutGeneral: input.layoutGeneral,
+									primaryColorName,
+								}
+							: {}),
 					},
 				});
 			} else {
@@ -45,8 +53,12 @@ export class CvSaveService {
 						title: input.title,
 						photo: input.photo ?? null,
 						...(input.layoutGeneral !== undefined
-							? { layoutGeneral: input.layoutGeneral }
-							: null),
+							? {
+									layoutGeneral: input.layoutGeneral,
+									primaryColorName:
+										primaryColorName ?? null,
+								}
+							: {}),
 					},
 				});
 				id = created.id;

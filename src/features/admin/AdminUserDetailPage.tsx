@@ -24,6 +24,9 @@ const PREMIUM_PLANS: PlanRole[] = [
 	PlanRole.PREMIUM_PLUS_IA,
 ];
 
+//! Abonnement admin : UI visible mais disabled — V1 pas encore figée sur le modèle abo (plan / subscriptionEnd). Remettre à false (et retirer disabled) quand l’abonnement produit est certain.
+const SUBSCRIPTION_ACTIONS_DISABLED = true;
+
 function formatDate(d: Date | string | null | undefined) {
 	if (!d) return "—";
 	const date = typeof d === "string" ? new Date(d) : d;
@@ -242,6 +245,12 @@ export function AdminUserDetailPage() {
 									<p className="m-0 text-sm font-medium text-zinc-900 dark:text-zinc-100">
 										Abonnement
 									</p>
+									{SUBSCRIPTION_ACTIONS_DISABLED ? (
+										<p className="m-0 text-xs text-zinc-500">
+											Désactivé tant que le modèle d’abo
+											V1 n’est pas figé.
+										</p>
+									) : null}
 									<div className="flex flex-wrap items-end gap-2">
 										<div className="w-[7.5rem]">
 											<label className="mb-1 block text-xs text-zinc-500">
@@ -263,7 +272,10 @@ export function AdminUserDetailPage() {
 													}
 												}}
 												className="w-full"
-												disabled={busy}
+												disabled={
+													busy ||
+													SUBSCRIPTION_ACTIONS_DISABLED
+												}
 											/>
 										</div>
 										<div className="w-36">
@@ -280,7 +292,11 @@ export function AdminUserDetailPage() {
 												}
 												dateFormat="dd/mm/yy"
 												showIcon
-												disabled={busy || !planNeedsEnd}
+												disabled={
+													busy ||
+													SUBSCRIPTION_ACTIONS_DISABLED ||
+													!planNeedsEnd
+												}
 												className="w-full"
 												inputClassName="w-full text-sm"
 											/>
@@ -291,6 +307,7 @@ export function AdminUserDetailPage() {
 											label="Appliquer"
 											disabled={
 												busy ||
+												SUBSCRIPTION_ACTIONS_DISABLED ||
 												!planDirty ||
 												(planNeedsEnd && !subEndDraft)
 											}

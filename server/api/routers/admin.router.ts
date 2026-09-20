@@ -1,12 +1,15 @@
-import { z } from "zod";
+import { DownloadVariant, PlanRole, AiFeature } from "../../../generated/prisma/enums";
+import { ValidationError } from "../../../src/services/errors";
+import { adminProcedure, router } from "../trpc";
+import { adminAiService } from "../../../src/services/admin/adminAiService";
+import { adminCvService } from "../../../src/services/admin/adminCvService";
+import { adminDownloadService } from "../../../src/services/admin/adminDownloadService";
+import { adminUserService } from "../../../src/services/admin/adminUserService";
 import {
 	adminDashboardPeriodSchema,
 	adminDashboardService,
 } from "../../../src/services/admin/adminDashboardService";
-import { adminUserService } from "../../../src/services/admin/adminUserService";
-import { PlanRole } from "../../../generated/prisma/enums";
-import { ValidationError } from "../../../src/services/errors";
-import { adminProcedure, router } from "../trpc";
+import { z } from "zod";
 
 export type { AdminDashboardPeriod } from "../../../src/services/admin/adminDashboardService";
 export { adminDashboardPeriodSchema };
@@ -32,7 +35,7 @@ const updateUserInputSchema = z
 
 /**
  * Dashboard admin — users + CV + downloads ; ventes / funnel en placeholder.
- * Liste users admin + actions fiche.
+ * Liste users + fiche + feed downloads.
  */
 export const adminRouter = router({
 	dashboardOverview: adminProcedure
@@ -42,10 +45,11 @@ export const adminRouter = router({
 			}),
 		)
 		.query(async ({ input }) => {
-			const [users, cvs, downloads] = await Promise.all([
+			const [users, cvs, downloads, ai] = await Promise.all([
 				adminDashboardService.getUserStats(input.period),
 				adminDashboardService.getCvStats(input.period),
 				adminDashboardService.getDownloadStats(input.period),
+				adminDashboardService.getAiStats(input.period),
 			]);
 
 			return {
@@ -53,6 +57,11 @@ export const adminRouter = router({
 				users,
 				cvs,
 				downloads,
+				ai,
+				// TODO(admin-sales): après intégration Stripe (Checkout + webhooks →
+				// table locale Order/Payment). Brancher ici CA, commandes, panier moyen,
+				// refunds, échecs paiement, liens Stripe (statut/montant/produit),
+				// cohortes free → payant. Puis feed commandes + cards dashboard.
 				sales: {
 					ready: false as const,
 					revenueCents: null as number | null,
@@ -85,7 +94,7 @@ export const adminRouter = router({
 		.mutation(async ({ ctx, input }) => {
 			if (
 				input.isActive === false &&
-				ctx.session.user.id === input.id
+				ctx.session?.user.id === input.id
 			) {
 				throw new ValidationError(
 					"Impossible de désactiver votre propre compte",
@@ -99,4 +108,67 @@ export const adminRouter = router({
 	softResetUser: adminProcedure
 		.input(z.object({ id: z.string().min(1) }))
 		.mutation(({ input }) => adminUserService.softResetUser(input.id)),
+
+	listDownloads: adminProcedure
+		.input(
+			z.object({
+				period: adminDashboardPeriodSchema.default("7d"),
+				variant: z.nativeEnum(DownloadVariant).optional(),
+				search: z.string().trim().max(120).optional(),
+				page: z.number().int().min(1).default(1),
+				pageSize: z.number().int().min(1).max(50).default(20),
+			}),
+		)
+		.query(({ input }) => adminDownloadService.listDownloads(input)),
+
+	listCvs: adminProcedure
+		.input(
+			z.object({
+				period: adminDashboardPeriodSchema.default("7d"),
+				templateId: z.string().min(1).optional(),
+				primaryColorName: z.string().min(1).max(64).optional(),
+				search: z.string().trim().max(120).optional(),
+				page: z.number().int().min(1).default(1),
+				pageSize: z.number().int().min(1).max(50).default(20),
+			}),
+		)
+		.query(({ input }) => adminCvService.listCvs(input)),
+
+	listCvFilters: adminProcedure.query(() => adminCvService.listFilters()),
+
+	listTopTemplates: adminProcedure
+		.input(
+			z.object({
+				period: adminDashboardPeriodSchema.default("7d"),
+				sortBy: z
+					.enum([
+						"cvCount",
+						"downloadCount",
+						"freeDownloadCount",
+						"paidDownloadCount",
+					])
+					.default("cvCount"),
+			}),
+		)
+		.query(({ input }) => adminCvService.listTopTemplates(input)),
+
+	listTopColors: adminProcedure
+		.input(
+			z.object({
+				period: adminDashboardPeriodSchema.default("7d"),
+			}),
+		)
+		.query(({ input }) => adminCvService.listTopColors(input)),
+
+	listAiEvents: adminProcedure
+		.input(
+			z.object({
+				period: adminDashboardPeriodSchema.default("7d"),
+				feature: z.nativeEnum(AiFeature).optional(),
+				search: z.string().trim().max(120).optional(),
+				page: z.number().int().min(1).default(1),
+				pageSize: z.number().int().min(1).max(50).default(20),
+			}),
+		)
+		.query(({ input }) => adminAiService.listAiEvents(input)),
 });

@@ -1014,6 +1014,8 @@ model CV {
   updatedAt DateTime @updatedAt
   modules  CVModule[]                           // modules qui composent le CV (Skills, Experiences, Education)
   layoutGeneral Json? // layout general du CV
+  /** Dénormalisé depuis layoutGeneral.defaultStyles.primaryColor.name — stats admin */
+  primaryColorName String?
   // Le reste passera par modules mais ça peut me permettre de faire des appels pour récupérer les données
   headerCv CvHeader?
   skillGroups CvSkillGroup[]
@@ -1052,6 +1054,7 @@ model CV {
 
   @@index([userId])
   @@index([templateId])
+  @@index([primaryColorName])
 }
 
 enum CVStatus {

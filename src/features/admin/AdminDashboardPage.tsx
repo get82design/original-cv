@@ -191,9 +191,17 @@ export function AdminDashboardPage() {
 			</section>
 
 			<section className="mb-8">
-				<h3 className="mb-3 m-0 text-sm font-semibold uppercase tracking-wide text-zinc-500">
-					CV & modèles
-				</h3>
+				<div className="mb-3 flex items-center justify-between gap-3">
+					<h3 className="m-0 text-sm font-semibold uppercase tracking-wide text-zinc-500">
+						CV & modèles
+					</h3>
+					<Link
+						href="/admin/cvs?view=feed"
+						className="text-xs font-medium text-primary hover:underline dark:text-primary-dark"
+					>
+						Voir le détail →
+					</Link>
+				</div>
 				<div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
 					<MetricCard
 						title="CV créés"
@@ -213,10 +221,25 @@ export function AdminDashboardPage() {
 						ready={data?.cvs.ready ?? false}
 						value={data?.cvs.templatesUsed ?? null}
 					/>
+				</div>
+				<div className="mt-3 grid gap-3 sm:grid-cols-2">
 					<AppCard className="flex min-h-[7.5rem] flex-col gap-2">
-						<p className="m-0 text-sm font-semibold text-zinc-800 dark:text-zinc-100">
-							Top 3 modèles
-						</p>
+						<div className="flex items-start justify-between gap-2">
+							<div>
+								<p className="m-0 text-sm font-semibold text-zinc-800 dark:text-zinc-100">
+									Top modèles
+								</p>
+								<p className="m-0 text-xs text-zinc-500 dark:text-zinc-400">
+									Classés par CV créés · DL sur la période
+								</p>
+							</div>
+							<Link
+								href="/admin/cvs?view=templates"
+								className="shrink-0 text-xs font-medium text-primary hover:underline dark:text-primary-dark"
+							>
+								Tout →
+							</Link>
+						</div>
 						{!(data?.cvs.ready ?? false) ? (
 							<p className="m-0 text-sm text-zinc-400">—</p>
 						) : (data?.cvs.topTemplates.length ?? 0) === 0 ? (
@@ -224,7 +247,7 @@ export function AdminDashboardPage() {
 								Aucun CV sur cette période.
 							</p>
 						) : (
-							<ol className="m-0 flex list-decimal flex-col gap-1 pl-4 text-sm text-zinc-700 dark:text-zinc-300">
+							<ol className="m-0 flex list-decimal flex-col gap-1.5 pl-4 text-sm text-zinc-700 dark:text-zinc-300">
 								{data?.cvs.topTemplates.map((t) => (
 									<li key={t.templateId}>
 										<span className="font-medium text-zinc-900 dark:text-zinc-100">
@@ -232,7 +255,56 @@ export function AdminDashboardPage() {
 										</span>
 										<span className="text-zinc-500 dark:text-zinc-400">
 											{" "}
-											· {t.count}
+											· {t.cvCount} CV · {t.downloadCount}{" "}
+											DL
+										</span>
+									</li>
+								))}
+							</ol>
+						)}
+					</AppCard>
+					<AppCard className="flex min-h-[7.5rem] flex-col gap-2">
+						<div className="flex items-start justify-between gap-2">
+							<div>
+								<p className="m-0 text-sm font-semibold text-zinc-800 dark:text-zinc-100">
+									Top couleurs
+								</p>
+								<p className="m-0 text-xs text-zinc-500 dark:text-zinc-400">
+									CV créés sur la période (primaryColorName)
+								</p>
+							</div>
+							<Link
+								href="/admin/cvs?view=colors"
+								className="shrink-0 text-xs font-medium text-primary hover:underline dark:text-primary-dark"
+							>
+								Tout →
+							</Link>
+						</div>
+						{!(data?.cvs.ready ?? false) ? (
+							<p className="m-0 text-sm text-zinc-400">—</p>
+						) : (data?.cvs.topColors.length ?? 0) === 0 ? (
+							<p className="m-0 text-sm text-zinc-500 dark:text-zinc-400">
+								Aucune couleur renseignée sur cette période.
+							</p>
+						) : (
+							<ol className="m-0 flex list-decimal flex-col gap-1.5 pl-4 text-sm text-zinc-700 dark:text-zinc-300">
+								{data?.cvs.topColors.map((c) => (
+									<li
+										key={c.name}
+										className="flex items-center gap-2"
+									>
+										<span
+											className="inline-block h-3 w-3 shrink-0 rounded-full border border-zinc-200 dark:border-zinc-600"
+											style={{
+												backgroundColor: `var(--${c.name}${c.primary ?? "-600"})`,
+											}}
+											title={`${c.name}${c.primary ?? ""}`}
+										/>
+										<span className="font-medium text-zinc-900 dark:text-zinc-100">
+											{c.name}
+										</span>
+										<span className="text-zinc-500 dark:text-zinc-400">
+											· {c.cvCount} CV
 										</span>
 									</li>
 								))}
@@ -243,9 +315,17 @@ export function AdminDashboardPage() {
 			</section>
 
 			<section className="mb-8">
-				<h3 className="mb-3 m-0 text-sm font-semibold uppercase tracking-wide text-zinc-500">
-					Téléchargements
-				</h3>
+				<div className="mb-3 flex items-center justify-between gap-3">
+					<h3 className="m-0 text-sm font-semibold uppercase tracking-wide text-zinc-500">
+						Téléchargements
+					</h3>
+					<Link
+						href="/admin/downloads"
+						className="text-xs font-medium text-primary hover:underline dark:text-primary-dark"
+					>
+						Voir le feed →
+					</Link>
+				</div>
 				<div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
 					<AppCard className="flex min-h-[7.5rem] flex-col gap-2">
 						<div>
@@ -291,6 +371,66 @@ export function AdminDashboardPage() {
 						hint="Exports crédits sur la période"
 						ready={data?.downloads.ready ?? false}
 						value={data?.downloads.withoutLogo ?? null}
+					/>
+				</div>
+			</section>
+
+			<section className="mb-8">
+				<div className="mb-3 flex items-center justify-between gap-3">
+					<h3 className="m-0 text-sm font-semibold uppercase tracking-wide text-zinc-500">
+						IA
+					</h3>
+					<Link
+						href="/admin/ai"
+						className="text-xs font-medium text-primary hover:underline dark:text-primary-dark"
+					>
+						Voir le feed →
+					</Link>
+				</div>
+				<div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+					<AppCard className="flex min-h-[7.5rem] flex-col gap-2">
+						<div>
+							<p className="m-0 text-sm font-semibold text-zinc-800 dark:text-zinc-100">
+								Requêtes IA
+							</p>
+							<p className="m-0 mt-0.5 text-xs text-zinc-500 dark:text-zinc-400">
+								Sur la période ·{" "}
+								{data?.ai.totalAllTime ?? 0} depuis toujours
+							</p>
+						</div>
+						{!(data?.ai.ready ?? false) ? (
+							<span className="text-2xl font-semibold text-zinc-400 dark:text-zinc-500">
+								—
+							</span>
+						) : (
+							<span className="text-2xl font-semibold text-zinc-900 dark:text-white">
+								{data?.ai.total ?? 0}
+							</span>
+						)}
+					</AppCard>
+					<MetricCard
+						title="Import PDF"
+						hint="Sur la période"
+						ready={data?.ai.ready ?? false}
+						value={data?.ai.importCv ?? null}
+					/>
+					<MetricCard
+						title="Relecture"
+						hint="Sur la période"
+						ready={data?.ai.ready ?? false}
+						value={data?.ai.reviewCv ?? null}
+					/>
+					<MetricCard
+						title="Reformulation"
+						hint="Sur la période"
+						ready={data?.ai.ready ?? false}
+						value={data?.ai.rewriteSection ?? null}
+					/>
+					<MetricCard
+						title="Users IA"
+						hint="Utilisateurs distincts sur la période"
+						ready={data?.ai.ready ?? false}
+						value={data?.ai.uniqueUsers ?? null}
 					/>
 				</div>
 			</section>

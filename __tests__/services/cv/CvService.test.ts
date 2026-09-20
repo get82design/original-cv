@@ -52,6 +52,28 @@ describe("CvService.create", () => {
 		expect(dbCV!.title).toBe("Mon CV");
 	});
 
+	it("sets primaryColorName from template defaultStyles when present", async () => {
+		const user = await createTestUser();
+		const template = await prismaTest.cVTemplate.create({
+			data: {
+				name: `Template_color_${Date.now()}`,
+				structure: { sections: ["header"] },
+				defaultStyles: {
+					primaryColor: { name: "violet", primary: "-600" },
+					slugTemplate: "test",
+				},
+			},
+		});
+
+		const cv = await cvService.create({
+			userId: user.id,
+			templateId: template.id,
+			title: "CV couleur",
+		});
+
+		expect(cv.primaryColorName).toBe("violet");
+	});
+
 	// TEST 2 : Lancer une erreur si l'utilisateur n'existe pas
 	it("throws if user does not exist", async () => {
 		const template = await createTestTemplate();

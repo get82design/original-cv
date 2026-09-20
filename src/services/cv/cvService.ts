@@ -3,6 +3,7 @@ import { ForbiddenError, NotFoundError, ValidationError } from "../errors";
 import { AppError } from "../errors/AppError";
 import type { CreateCvInput, UpdateCvInput } from "../schemas/cv.schema";
 import { userService } from "../user/userService";
+import { extractPrimaryColorName } from "./extractPrimaryColorName";
 
 export class CvService {
 	// CREATE
@@ -44,8 +45,15 @@ export class CvService {
 			throw new AppError("CV_ALREADY_EXISTS", "Le CV existe déjà");
 		}
 
+		const primaryColorName = extractPrimaryColorName(
+			template.defaultStyles,
+		);
+
 		return prisma.cV.create({
-			data,
+			data: {
+				...data,
+				primaryColorName,
+			},
 		});
 	}
 

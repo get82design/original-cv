@@ -3474,4 +3474,35 @@ describe("CvSaveService.save", () => {
 		});
 		expect(saved.id).toBe(created.id);
 	});
+
+	it("persists primaryColorName from layoutGeneral on create and update", async () => {
+		const user = await createTestUser();
+		const template = await createTestTemplate();
+
+		const withColor = (
+			name: string,
+			cvId?: string,
+		): CvSaveInput =>
+			({
+				...buildSaveInput(template.id, cvId ? { cvId } : {}),
+				layoutGeneral: {
+					defaultStyles: {
+						primaryColor: { name, primary: "-600" },
+						slugTemplate: "test",
+					},
+				},
+			}) as CvSaveInput;
+
+		const created = await cvSaveService.save(
+			user.id,
+			withColor("emerald"),
+		);
+		expect(created.primaryColorName).toBe("emerald");
+
+		const updated = await cvSaveService.save(
+			user.id,
+			withColor("blue", created.id),
+		);
+		expect(updated.primaryColorName).toBe("blue");
+	});
 });

@@ -40,7 +40,17 @@ export type AdminUserStats = {
 export type AdminTopTemplate = {
 	templateId: string;
 	name: string;
-	count: number;
+	/** CV créés avec ce modèle sur la période */
+	cvCount: number;
+	/** Téléchargements de ce modèle sur la période */
+	downloadCount: number;
+};
+
+export type AdminTopColor = {
+	name: string;
+	/** Shade Tailwind stockée en base Color.primary (ex. "-600") */
+	primary: string | null;
+	cvCount: number;
 };
 
 export type AdminCvStats = {
@@ -49,6 +59,7 @@ export type AdminCvStats = {
 	existingCount: number;
 	templatesUsed: number;
 	topTemplates: AdminTopTemplate[];
+	topColors: AdminTopColor[];
 };
 
 export type AdminDownloadStats = {
@@ -60,6 +71,16 @@ export type AdminDownloadStats = {
 	/** Totaux depuis toujours (hors filtre période) */
 	withLogoAllTime: number;
 	withoutLogoAllTime: number;
+};
+
+export type AdminAiStats = {
+	ready: true;
+	total: number;
+	importCv: number;
+	reviewCv: number;
+	rewriteSection: number;
+	uniqueUsers: number;
+	totalAllTime: number;
 };
 
 export class AdminDashboardService {
@@ -110,21 +131,68 @@ export class AdminDashboardService {
 			}),
 		]);
 
-		const topGroups = templateGroups.slice(0, 3);
+		const topGroups = templateGroups.slice(0, 5);
 		const topIds = topGroups.map((g) => g.templateId);
-		const templates =
+
+		const [templates, downloadGroups] = await Promise.all([
 			topIds.length === 0
-				? []
-				: await prisma.cVTemplate.findMany({
+				? Promise.resolve([] as Array<{ id: string; name: string }>)
+				: prisma.cVTemplate.findMany({
 						where: { id: { in: topIds } },
 						select: { id: true, name: true },
-					});
+					}),
+			prisma.downloadEvent.groupBy({
+				by: ["templateId"],
+				where: {
+					...(since ? { createdAt: { gte: since } } : {}),
+					templateId: { not: null },
+				},
+				_count: { _all: true },
+			}),
+		]);
+
 		const nameById = new Map(templates.map((t) => [t.id, t.name]));
+		const downloadsById = new Map(
+			downloadGroups
+				.filter((g) => g.templateId != null)
+				.map((g) => [g.templateId as string, g._count._all]),
+		);
 
 		const topTemplates: AdminTopTemplate[] = topGroups.map((g) => ({
 			templateId: g.templateId,
 			name: nameById.get(g.templateId) ?? g.templateId,
-			count: g._count._all,
+			cvCount: g._count._all,
+			downloadCount: downloadsById.get(g.templateId) ?? 0,
+		}));
+
+		const colorGroups = await prisma.cV.groupBy({
+			by: ["primaryColorName"],
+			where: {
+				...createdWhere,
+				primaryColorName: { not: null },
+			},
+			_count: { _all: true },
+			orderBy: { _count: { primaryColorName: "desc" } },
+		});
+		const topColorGroups = colorGroups.slice(0, 5);
+		const colorNames = topColorGroups
+			.map((g) => g.primaryColorName)
+			.filter((n): n is string => n != null);
+		const colorRows =
+			colorNames.length === 0
+				? []
+				: await prisma.color.findMany({
+						where: { name: { in: colorNames } },
+						select: { name: true, primary: true },
+					});
+		const shadeByName = new Map(
+			colorRows.map((c) => [c.name, c.primary]),
+		);
+
+		const topColors: AdminTopColor[] = topColorGroups.map((g) => ({
+			name: g.primaryColorName as string,
+			primary: shadeByName.get(g.primaryColorName as string) ?? null,
+			cvCount: g._count._all,
 		}));
 
 		return {
@@ -133,6 +201,7 @@ export class AdminDashboardService {
 			existingCount,
 			templatesUsed: templateGroups.length,
 			topTemplates,
+			topColors,
 		};
 	}
 
@@ -166,6 +235,52 @@ export class AdminDashboardService {
 			total: withLogo + withoutLogo,
 			withLogoAllTime,
 			withoutLogoAllTime,
+		};
+	}
+
+	async getAiStats(
+		period: AdminDashboardPeriod,
+		now = new Date(),
+	): Promise<AdminAiStats> {
+		const since = periodStart(period, now);
+		const whereBase = since ? { createdAt: { gte: since } } : {};
+
+		const [
+			importCv,
+			reviewCv,
+			rewriteSection,
+			totalAllTime,
+			uniqueGroups,
+		] = await Promise.all([
+			prisma.aiEvent.count({
+				where: { ...whereBase, feature: "IMPORT_CV" },
+			}),
+			prisma.aiEvent.count({
+				where: { ...whereBase, feature: "REVIEW_CV" },
+			}),
+			prisma.aiEvent.count({
+				where: { ...whereBase, feature: "REWRITE_SECTION" },
+			}),
+			prisma.aiEvent.count(),
+			prisma.aiEvent.groupBy({
+				by: ["userId"],
+				where: {
+					...whereBase,
+					userId: { not: null },
+				},
+			}),
+		]);
+
+		const total = importCv + reviewCv + rewriteSection;
+
+		return {
+			ready: true,
+			total,
+			importCv,
+			reviewCv,
+			rewriteSection,
+			uniqueUsers: uniqueGroups.length,
+			totalAllTime,
 		};
 	}
 }
