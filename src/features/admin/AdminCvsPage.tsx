@@ -539,14 +539,18 @@ export function AdminCvsPage() {
 								<th className="px-3 py-3 font-semibold">
 									Couleur
 								</th>
+								<th className="px-3 py-3 font-semibold">
+									Popularité
+								</th>
 								<th className="px-3 py-3 font-semibold">CV</th>
+								<th className="px-3 py-3 font-semibold">DL</th>
 							</tr>
 						</thead>
 						<tbody>
 							{topColorsQuery.isLoading ? (
 								<tr>
 									<td
-										colSpan={3}
+										colSpan={5}
 										className="px-4 py-8 text-center text-zinc-500"
 									>
 										Chargement…
@@ -555,7 +559,7 @@ export function AdminCvsPage() {
 							) : (topColorsQuery.data?.length ?? 0) === 0 ? (
 								<tr>
 									<td
-										colSpan={3}
+										colSpan={5}
 										className="px-4 py-8 text-center text-zinc-500"
 									>
 										Aucune couleur.
@@ -582,8 +586,14 @@ export function AdminCvsPage() {
 												{c.name}
 											</span>
 										</td>
+										<td className="px-3 py-3 font-medium text-zinc-800 dark:text-zinc-200">
+											{c.popularityScore.toFixed(1)}
+										</td>
 										<td className="px-3 py-3 text-zinc-700 dark:text-zinc-300">
 											{c.cvCount}
+										</td>
+										<td className="px-3 py-3 text-zinc-700 dark:text-zinc-300">
+											{c.downloadCount}
 										</td>
 									</tr>
 								))

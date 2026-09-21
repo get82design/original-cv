@@ -30,11 +30,31 @@ export function periodStart(
 	return new Date(now.getTime() - PERIOD_MS[period]);
 }
 
+/**
+ * Fenêtre immédiatement précédente, même durée.
+ * Ex. période 7j courante → [now−14j, now−7j).
+ * `null` si période = all.
+ */
+export function previousPeriodWindow(
+	period: AdminDashboardPeriod,
+	now = new Date(),
+): { start: Date; end: Date } | null {
+	if (period === "all") return null;
+	const duration = PERIOD_MS[period];
+	return {
+		start: new Date(now.getTime() - 2 * duration),
+		end: new Date(now.getTime() - duration),
+	};
+}
+
 export type AdminUserStats = {
 	ready: true;
 	newCount: number;
 	activeCount: number;
 	connectedCount: number;
+	/** Écart vs période précédente ; `null` si période = all */
+	newCountDelta: number | null;
+	activeCountDelta: number | null;
 };
 
 export type AdminTopTemplate = {
@@ -55,6 +75,20 @@ export type AdminTopColor = {
 	/** Shade Tailwind stockée en base Color.primary (ex. "-600") */
 	primary: string | null;
 	cvCount: number;
+	downloadCount: number;
+	/** Popularité = (cvCount + downloadCount) / 2 */
+	popularityScore: number;
+};
+
+/** Ancien top (période précédente) — noms seulement côté UI */
+export type AdminPreviousTopTemplate = {
+	templateId: string;
+	name: string;
+};
+
+export type AdminPreviousTopColor = {
+	name: string;
+	primary: string | null;
 };
 
 export type AdminCvStats = {
@@ -62,9 +96,29 @@ export type AdminCvStats = {
 	createdCount: number;
 	existingCount: number;
 	templatesUsed: number;
+	/** Écart vs période précédente ; `null` si période = all */
+	createdCountDelta: number | null;
+	templatesUsedDelta: number | null;
 	topTemplates: AdminTopTemplate[];
 	topColors: AdminTopColor[];
+	/** `null` si période = all */
+	previousTopTemplates: AdminPreviousTopTemplate[] | null;
+	previousTopColors: AdminPreviousTopColor[] | null;
 };
+
+type DateWindow = { start: Date | null; end: Date | null };
+
+function dateInWindow(
+	start: Date | null,
+	end: Date | null,
+): { gte?: Date; lt?: Date } | undefined {
+	if (!start && !end) return undefined;
+	return {
+		...(start ? { gte: start } : {}),
+		...(end ? { lt: end } : {}),
+	};
+}
+
 
 export type AdminDownloadStats = {
 	ready: true;
@@ -75,6 +129,9 @@ export type AdminDownloadStats = {
 	/** Totaux depuis toujours (hors filtre période) */
 	withLogoAllTime: number;
 	withoutLogoAllTime: number;
+	/** Écart vs période précédente ; `null` si période = all */
+	withLogoDelta: number | null;
+	withoutLogoDelta: number | null;
 };
 
 export type AdminAiStats = {
@@ -85,6 +142,12 @@ export type AdminAiStats = {
 	rewriteSection: number;
 	uniqueUsers: number;
 	totalAllTime: number;
+	/** Écart vs période précédente ; `null` si période = all */
+	totalDelta: number | null;
+	importCvDelta: number | null;
+	reviewCvDelta: number | null;
+	rewriteSectionDelta: number | null;
+	uniqueUsersDelta: number | null;
 };
 
 export type AdminApiErrorStats = {
@@ -95,6 +158,12 @@ export type AdminApiErrorStats = {
 	timeout: number;
 	uniqueUsers: number;
 	totalAllTime: number;
+	/** Écart vs période précédente ; `null` si période = all */
+	totalDelta: number | null;
+	internalServerErrorDelta: number | null;
+	tooManyRequestsDelta: number | null;
+	timeoutDelta: number | null;
+	uniqueUsersDelta: number | null;
 };
 
 export class AdminDashboardService {
@@ -103,27 +172,47 @@ export class AdminDashboardService {
 		now = new Date(),
 	): Promise<AdminUserStats> {
 		const since = periodStart(period, now);
+		const previous = previousPeriodWindow(period, now);
 		const connectedSince = new Date(now.getTime() - CONNECTED_WINDOW_MS);
 
-		const [newCount, activeCount, connectedCount] = await Promise.all([
-			prisma.user.count({
-				where: since ? { createdAt: { gte: since } } : {},
-			}),
-			prisma.user.count({
-				where: since
-					? { lastLoginAt: { gte: since } }
-					: { lastLoginAt: { not: null } },
-			}),
-			prisma.user.count({
-				where: { lastLoginAt: { gte: connectedSince } },
-			}),
-		]);
+		const [newCount, activeCount, connectedCount, prevNewCount, prevActiveCount] =
+			await Promise.all([
+				prisma.user.count({
+					where: since ? { createdAt: { gte: since } } : {},
+				}),
+				prisma.user.count({
+					where: since
+						? { lastLoginAt: { gte: since } }
+						: { lastLoginAt: { not: null } },
+				}),
+				prisma.user.count({
+					where: { lastLoginAt: { gte: connectedSince } },
+				}),
+				previous
+					? prisma.user.count({
+							where: {
+								createdAt: { gte: previous.start, lt: previous.end },
+							},
+						})
+					: Promise.resolve(null),
+				previous
+					? prisma.user.count({
+							where: {
+								lastLoginAt: { gte: previous.start, lt: previous.end },
+							},
+						})
+					: Promise.resolve(null),
+			]);
 
 		return {
 			ready: true,
 			newCount,
 			activeCount,
 			connectedCount,
+			newCountDelta:
+				prevNewCount === null ? null : newCount - prevNewCount,
+			activeCountDelta:
+				prevActiveCount === null ? null : activeCount - prevActiveCount,
 		};
 	}
 
@@ -132,76 +221,233 @@ export class AdminDashboardService {
 		now = new Date(),
 	): Promise<AdminCvStats> {
 		const since = periodStart(period, now);
-		const createdWhere = since ? { createdAt: { gte: since } } : {};
-		const unlockWhere = since ? { unlockedAt: { gte: since } } : {};
+		const previous = previousPeriodWindow(period, now);
+		const currentWindow: DateWindow = { start: since, end: null };
+		const previousWindow: DateWindow | null = previous
+			? { start: previous.start, end: previous.end }
+			: null;
 
-		const [createdCount, existingCount, templateGroups, unlockGroups, downloadGroups] =
-			await Promise.all([
-				prisma.cV.count({ where: createdWhere }),
-				prisma.cV.count(),
-				prisma.cV.groupBy({
-					by: ["templateId"],
-					where: createdWhere,
-					_count: { _all: true },
-				}),
-				prisma.unlockedTemplate.groupBy({
-					by: ["templateId"],
-					where: unlockWhere,
-					_count: { _all: true },
-				}),
-				prisma.downloadEvent.groupBy({
-					by: ["templateId"],
-					where: {
-						...(since ? { createdAt: { gte: since } } : {}),
-						templateId: { not: null },
-					},
-					_count: { _all: true },
-				}),
-			]);
+		const createdWhere = dateInWindow(currentWindow.start, currentWindow.end);
+		const unlockWhere = dateInWindow(currentWindow.start, currentWindow.end);
 
-		const cvById = new Map(
-			templateGroups.map((g) => [g.templateId, g._count._all]),
-		);
-		const unlockById = new Map(
-			unlockGroups.map((g) => [g.templateId, g._count._all]),
-		);
-		const downloadsById = new Map(
-			downloadGroups
-				.filter((g) => g.templateId != null)
-				.map((g) => [g.templateId as string, g._count._all]),
-		);
-
-		const allTemplateIds = new Set([
-			...cvById.keys(),
-			...unlockById.keys(),
-			...downloadsById.keys(),
+		const [
+			createdCount,
+			existingCount,
+			templateGroups,
+			unlockGroups,
+			downloadGroups,
+			prevTemplateGroups,
+			prevUnlockGroups,
+			prevDownloadGroups,
+			colorGroups,
+			downloadColorGroups,
+			prevColorGroups,
+			prevDownloadColorGroups,
+		] = await Promise.all([
+			prisma.cV.count({
+				where: createdWhere ? { createdAt: createdWhere } : {},
+			}),
+			prisma.cV.count(),
+			prisma.cV.groupBy({
+				by: ["templateId"],
+				where: createdWhere ? { createdAt: createdWhere } : {},
+				_count: { _all: true },
+			}),
+			prisma.unlockedTemplate.groupBy({
+				by: ["templateId"],
+				where: unlockWhere ? { unlockedAt: unlockWhere } : {},
+				_count: { _all: true },
+			}),
+			prisma.downloadEvent.groupBy({
+				by: ["templateId"],
+				where: {
+					...(createdWhere ? { createdAt: createdWhere } : {}),
+					templateId: { not: null },
+				},
+				_count: { _all: true },
+			}),
+			previousWindow
+				? prisma.cV.groupBy({
+						by: ["templateId"],
+						where: {
+							createdAt: dateInWindow(
+								previousWindow.start,
+								previousWindow.end,
+							),
+						},
+						_count: { _all: true },
+					})
+				: Promise.resolve([]),
+			previousWindow
+				? prisma.unlockedTemplate.groupBy({
+						by: ["templateId"],
+						where: {
+							unlockedAt: dateInWindow(
+								previousWindow.start,
+								previousWindow.end,
+							),
+						},
+						_count: { _all: true },
+					})
+				: Promise.resolve([]),
+			previousWindow
+				? prisma.downloadEvent.groupBy({
+						by: ["templateId"],
+						where: {
+							createdAt: dateInWindow(
+								previousWindow.start,
+								previousWindow.end,
+							),
+							templateId: { not: null },
+						},
+						_count: { _all: true },
+					})
+				: Promise.resolve([]),
+			prisma.cV.groupBy({
+				by: ["primaryColorName"],
+				where: {
+					...(createdWhere ? { createdAt: createdWhere } : {}),
+					primaryColorName: { not: null },
+				},
+				_count: { _all: true },
+			}),
+			prisma.downloadEvent.groupBy({
+				by: ["primaryColorName"],
+				where: {
+					...(createdWhere ? { createdAt: createdWhere } : {}),
+					primaryColorName: { not: null },
+				},
+				_count: { _all: true },
+			}),
+			previousWindow
+				? prisma.cV.groupBy({
+						by: ["primaryColorName"],
+						where: {
+							createdAt: dateInWindow(
+								previousWindow.start,
+								previousWindow.end,
+							),
+							primaryColorName: { not: null },
+						},
+						_count: { _all: true },
+					})
+				: Promise.resolve([]),
+			previousWindow
+				? prisma.downloadEvent.groupBy({
+						by: ["primaryColorName"],
+						where: {
+							createdAt: dateInWindow(
+								previousWindow.start,
+								previousWindow.end,
+							),
+							primaryColorName: { not: null },
+						},
+						_count: { _all: true },
+					})
+				: Promise.resolve([]),
 		]);
 
-		const ranked = [...allTemplateIds].map((templateId) => {
-			const unlockCount = unlockById.get(templateId) ?? 0;
-			const cvCount = cvById.get(templateId) ?? 0;
-			const downloadCount = downloadsById.get(templateId) ?? 0;
-			return {
-				templateId,
-				unlockCount,
-				cvCount,
-				downloadCount,
-				popularityScore: (unlockCount + cvCount + downloadCount) / 3,
-			};
-		});
-		ranked.sort((a, b) => {
-			const diff = b.popularityScore - a.popularityScore;
-			if (diff !== 0) return diff;
-			return b.cvCount - a.cvCount;
-		});
-		const topGroups = ranked.slice(0, 5);
-		const topIds = topGroups.map((g) => g.templateId);
+		const rankTemplates = (
+			cvGroups: typeof templateGroups,
+			uGroups: typeof unlockGroups,
+			dGroups: typeof downloadGroups,
+		) => {
+			const cvById = new Map(
+				cvGroups.map((g) => [g.templateId, g._count._all]),
+			);
+			const unlockById = new Map(
+				uGroups.map((g) => [g.templateId, g._count._all]),
+			);
+			const downloadsById = new Map(
+				dGroups
+					.filter((g) => g.templateId != null)
+					.map((g) => [g.templateId as string, g._count._all]),
+			);
+			const allTemplateIds = new Set([
+				...cvById.keys(),
+				...unlockById.keys(),
+				...downloadsById.keys(),
+			]);
+			const ranked = [...allTemplateIds].map((templateId) => {
+				const unlockCount = unlockById.get(templateId) ?? 0;
+				const cvCount = cvById.get(templateId) ?? 0;
+				const downloadCount = downloadsById.get(templateId) ?? 0;
+				return {
+					templateId,
+					unlockCount,
+					cvCount,
+					downloadCount,
+					popularityScore: (unlockCount + cvCount + downloadCount) / 3,
+				};
+			});
+			ranked.sort((a, b) => {
+				const diff = b.popularityScore - a.popularityScore;
+				if (diff !== 0) return diff;
+				return b.cvCount - a.cvCount;
+			});
+			return ranked.slice(0, 5);
+		};
 
+		const rankColors = (
+			cvColorGroups: typeof colorGroups,
+			dlColorGroups: typeof downloadColorGroups,
+		) => {
+			const cvByColor = new Map(
+				cvColorGroups
+					.filter((g) => g.primaryColorName != null)
+					.map((g) => [g.primaryColorName as string, g._count._all]),
+			);
+			const dlByColor = new Map(
+				dlColorGroups
+					.filter((g) => g.primaryColorName != null)
+					.map((g) => [g.primaryColorName as string, g._count._all]),
+			);
+			return [...new Set([...cvByColor.keys(), ...dlByColor.keys()])]
+				.map((name) => {
+					const cvCount = cvByColor.get(name) ?? 0;
+					const downloadCount = dlByColor.get(name) ?? 0;
+					return {
+						name,
+						cvCount,
+						downloadCount,
+						popularityScore: (cvCount + downloadCount) / 2,
+					};
+				})
+				.sort((a, b) => {
+					const diff = b.popularityScore - a.popularityScore;
+					if (diff !== 0) return diff;
+					return a.name.localeCompare(b.name, "fr");
+				})
+				.slice(0, 5);
+		};
+
+		const topGroups = rankTemplates(
+			templateGroups,
+			unlockGroups,
+			downloadGroups,
+		);
+		const prevTopGroups = previousWindow
+			? rankTemplates(
+					prevTemplateGroups,
+					prevUnlockGroups,
+					prevDownloadGroups,
+				)
+			: null;
+		const topColorGroups = rankColors(colorGroups, downloadColorGroups);
+		const prevTopColorGroups = previousWindow
+			? rankColors(prevColorGroups, prevDownloadColorGroups)
+			: null;
+
+		const allTemplateIdsForNames = [
+			...topGroups.map((g) => g.templateId),
+			...(prevTopGroups?.map((g) => g.templateId) ?? []),
+		];
+		const uniqueTemplateIds = [...new Set(allTemplateIdsForNames)];
 		const templates =
-			topIds.length === 0
+			uniqueTemplateIds.length === 0
 				? ([] as Array<{ id: string; name: string }>)
 				: await prisma.cVTemplate.findMany({
-						where: { id: { in: topIds } },
+						where: { id: { in: uniqueTemplateIds } },
 						select: { id: true, name: true },
 					});
 		const nameById = new Map(templates.map((t) => [t.id, t.name]));
@@ -214,25 +460,24 @@ export class AdminDashboardService {
 			downloadCount: g.downloadCount,
 			popularityScore: g.popularityScore,
 		}));
+		const previousTopTemplates: AdminPreviousTopTemplate[] | null =
+			prevTopGroups
+				? prevTopGroups.map((g) => ({
+						templateId: g.templateId,
+						name: nameById.get(g.templateId) ?? g.templateId,
+					}))
+				: null;
 
-		const colorGroups = await prisma.cV.groupBy({
-			by: ["primaryColorName"],
-			where: {
-				...createdWhere,
-				primaryColorName: { not: null },
-			},
-			_count: { _all: true },
-			orderBy: { _count: { primaryColorName: "desc" } },
-		});
-		const topColorGroups = colorGroups.slice(0, 5);
-		const colorNames = topColorGroups
-			.map((g) => g.primaryColorName)
-			.filter((n): n is string => n != null);
+		const allColorNames = [
+			...topColorGroups.map((g) => g.name),
+			...(prevTopColorGroups?.map((g) => g.name) ?? []),
+		];
+		const uniqueColorNames = [...new Set(allColorNames)];
 		const colorRows =
-			colorNames.length === 0
+			uniqueColorNames.length === 0
 				? []
 				: await prisma.color.findMany({
-						where: { name: { in: colorNames } },
+						where: { name: { in: uniqueColorNames } },
 						select: { name: true, primary: true },
 					});
 		const shadeByName = new Map(
@@ -240,18 +485,45 @@ export class AdminDashboardService {
 		);
 
 		const topColors: AdminTopColor[] = topColorGroups.map((g) => ({
-			name: g.primaryColorName as string,
-			primary: shadeByName.get(g.primaryColorName as string) ?? null,
-			cvCount: g._count._all,
+			name: g.name,
+			primary: shadeByName.get(g.name) ?? null,
+			cvCount: g.cvCount,
+			downloadCount: g.downloadCount,
+			popularityScore: g.popularityScore,
 		}));
+		const previousTopColors: AdminPreviousTopColor[] | null =
+			prevTopColorGroups
+				? prevTopColorGroups.map((g) => ({
+						name: g.name,
+						primary: shadeByName.get(g.name) ?? null,
+					}))
+				: null;
+
+		const templatesUsed = templateGroups.length;
+		const prevCreatedCount = previousWindow
+			? prevTemplateGroups.reduce((sum, g) => sum + g._count._all, 0)
+			: null;
+		const prevTemplatesUsed = previousWindow
+			? prevTemplateGroups.length
+			: null;
 
 		return {
 			ready: true,
 			createdCount,
 			existingCount,
-			templatesUsed: templateGroups.length,
+			templatesUsed,
+			createdCountDelta:
+				prevCreatedCount === null
+					? null
+					: createdCount - prevCreatedCount,
+			templatesUsedDelta:
+				prevTemplatesUsed === null
+					? null
+					: templatesUsed - prevTemplatesUsed,
 			topTemplates,
 			topColors,
+			previousTopTemplates,
+			previousTopColors,
 		};
 	}
 
@@ -260,23 +532,46 @@ export class AdminDashboardService {
 		now = new Date(),
 	): Promise<AdminDownloadStats> {
 		const since = periodStart(period, now);
+		const previous = previousPeriodWindow(period, now);
 		const whereBase = since ? { createdAt: { gte: since } } : {};
 
-		const [withLogo, withoutLogo, withLogoAllTime, withoutLogoAllTime] =
-			await Promise.all([
-				prisma.downloadEvent.count({
-					where: { ...whereBase, variant: "WITH_LOGO" },
-				}),
-				prisma.downloadEvent.count({
-					where: { ...whereBase, variant: "WITHOUT_LOGO" },
-				}),
-				prisma.downloadEvent.count({
-					where: { variant: "WITH_LOGO" },
-				}),
-				prisma.downloadEvent.count({
-					where: { variant: "WITHOUT_LOGO" },
-				}),
-			]);
+		const [
+			withLogo,
+			withoutLogo,
+			withLogoAllTime,
+			withoutLogoAllTime,
+			prevWithLogo,
+			prevWithoutLogo,
+		] = await Promise.all([
+			prisma.downloadEvent.count({
+				where: { ...whereBase, variant: "WITH_LOGO" },
+			}),
+			prisma.downloadEvent.count({
+				where: { ...whereBase, variant: "WITHOUT_LOGO" },
+			}),
+			prisma.downloadEvent.count({
+				where: { variant: "WITH_LOGO" },
+			}),
+			prisma.downloadEvent.count({
+				where: { variant: "WITHOUT_LOGO" },
+			}),
+			previous
+				? prisma.downloadEvent.count({
+						where: {
+							variant: "WITH_LOGO",
+							createdAt: { gte: previous.start, lt: previous.end },
+						},
+					})
+				: Promise.resolve(null),
+			previous
+				? prisma.downloadEvent.count({
+						where: {
+							variant: "WITHOUT_LOGO",
+							createdAt: { gte: previous.start, lt: previous.end },
+						},
+					})
+				: Promise.resolve(null),
+		]);
 
 		return {
 			ready: true,
@@ -285,6 +580,10 @@ export class AdminDashboardService {
 			total: withLogo + withoutLogo,
 			withLogoAllTime,
 			withoutLogoAllTime,
+			withLogoDelta:
+				prevWithLogo === null ? null : withLogo - prevWithLogo,
+			withoutLogoDelta:
+				prevWithoutLogo === null ? null : withoutLogo - prevWithoutLogo,
 		};
 	}
 
@@ -293,7 +592,11 @@ export class AdminDashboardService {
 		now = new Date(),
 	): Promise<AdminAiStats> {
 		const since = periodStart(period, now);
+		const previous = previousPeriodWindow(period, now);
 		const whereBase = since ? { createdAt: { gte: since } } : {};
+		const prevWhere = previous
+			? { createdAt: { gte: previous.start, lt: previous.end } }
+			: null;
 
 		const [
 			importCv,
@@ -301,6 +604,10 @@ export class AdminDashboardService {
 			rewriteSection,
 			totalAllTime,
 			uniqueGroups,
+			prevImportCv,
+			prevReviewCv,
+			prevRewriteSection,
+			prevUniqueGroups,
 		] = await Promise.all([
 			prisma.aiEvent.count({
 				where: { ...whereBase, feature: "IMPORT_CV" },
@@ -319,9 +626,42 @@ export class AdminDashboardService {
 					userId: { not: null },
 				},
 			}),
+			prevWhere
+				? prisma.aiEvent.count({
+						where: { ...prevWhere, feature: "IMPORT_CV" },
+					})
+				: Promise.resolve(null),
+			prevWhere
+				? prisma.aiEvent.count({
+						where: { ...prevWhere, feature: "REVIEW_CV" },
+					})
+				: Promise.resolve(null),
+			prevWhere
+				? prisma.aiEvent.count({
+						where: { ...prevWhere, feature: "REWRITE_SECTION" },
+					})
+				: Promise.resolve(null),
+			prevWhere
+				? prisma.aiEvent.groupBy({
+						by: ["userId"],
+						where: {
+							...prevWhere,
+							userId: { not: null },
+						},
+					})
+				: Promise.resolve(null),
 		]);
 
 		const total = importCv + reviewCv + rewriteSection;
+		const uniqueUsers = uniqueGroups.length;
+		const prevTotal =
+			prevImportCv === null ||
+			prevReviewCv === null ||
+			prevRewriteSection === null
+				? null
+				: prevImportCv + prevReviewCv + prevRewriteSection;
+		const prevUniqueUsers =
+			prevUniqueGroups === null ? null : prevUniqueGroups.length;
 
 		return {
 			ready: true,
@@ -329,8 +669,21 @@ export class AdminDashboardService {
 			importCv,
 			reviewCv,
 			rewriteSection,
-			uniqueUsers: uniqueGroups.length,
+			uniqueUsers,
 			totalAllTime,
+			totalDelta: prevTotal === null ? null : total - prevTotal,
+			importCvDelta:
+				prevImportCv === null ? null : importCv - prevImportCv,
+			reviewCvDelta:
+				prevReviewCv === null ? null : reviewCv - prevReviewCv,
+			rewriteSectionDelta:
+				prevRewriteSection === null
+					? null
+					: rewriteSection - prevRewriteSection,
+			uniqueUsersDelta:
+				prevUniqueUsers === null
+					? null
+					: uniqueUsers - prevUniqueUsers,
 		};
 	}
 
@@ -339,7 +692,11 @@ export class AdminDashboardService {
 		now = new Date(),
 	): Promise<AdminApiErrorStats> {
 		const since = periodStart(period, now);
+		const previous = previousPeriodWindow(period, now);
 		const whereBase = since ? { createdAt: { gte: since } } : {};
+		const prevWhere = previous
+			? { createdAt: { gte: previous.start, lt: previous.end } }
+			: null;
 
 		const [
 			total,
@@ -348,6 +705,11 @@ export class AdminDashboardService {
 			timeout,
 			totalAllTime,
 			uniqueGroups,
+			prevTotal,
+			prevInternalServerError,
+			prevTooManyRequests,
+			prevTimeout,
+			prevUniqueGroups,
 		] = await Promise.all([
 			prisma.apiErrorEvent.count({ where: whereBase }),
 			prisma.apiErrorEvent.count({
@@ -367,7 +729,44 @@ export class AdminDashboardService {
 					userId: { not: null },
 				},
 			}),
+			prevWhere
+				? prisma.apiErrorEvent.count({ where: prevWhere })
+				: Promise.resolve(null),
+			prevWhere
+				? prisma.apiErrorEvent.count({
+						where: {
+							...prevWhere,
+							code: "INTERNAL_SERVER_ERROR",
+						},
+					})
+				: Promise.resolve(null),
+			prevWhere
+				? prisma.apiErrorEvent.count({
+						where: {
+							...prevWhere,
+							code: "TOO_MANY_REQUESTS",
+						},
+					})
+				: Promise.resolve(null),
+			prevWhere
+				? prisma.apiErrorEvent.count({
+						where: { ...prevWhere, code: "TIMEOUT" },
+					})
+				: Promise.resolve(null),
+			prevWhere
+				? prisma.apiErrorEvent.groupBy({
+						by: ["userId"],
+						where: {
+							...prevWhere,
+							userId: { not: null },
+						},
+					})
+				: Promise.resolve(null),
 		]);
+
+		const uniqueUsers = uniqueGroups.length;
+		const prevUniqueUsers =
+			prevUniqueGroups === null ? null : prevUniqueGroups.length;
 
 		return {
 			ready: true,
@@ -375,8 +774,23 @@ export class AdminDashboardService {
 			internalServerError,
 			tooManyRequests,
 			timeout,
-			uniqueUsers: uniqueGroups.length,
+			uniqueUsers,
 			totalAllTime,
+			totalDelta: prevTotal === null ? null : total - prevTotal,
+			internalServerErrorDelta:
+				prevInternalServerError === null
+					? null
+					: internalServerError - prevInternalServerError,
+			tooManyRequestsDelta:
+				prevTooManyRequests === null
+					? null
+					: tooManyRequests - prevTooManyRequests,
+			timeoutDelta:
+				prevTimeout === null ? null : timeout - prevTimeout,
+			uniqueUsersDelta:
+				prevUniqueUsers === null
+					? null
+					: uniqueUsers - prevUniqueUsers,
 		};
 	}
 }

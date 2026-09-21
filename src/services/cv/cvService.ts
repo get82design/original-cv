@@ -210,6 +210,7 @@ export class CvService {
 				updatedAt: true,
 				previewUrl: true,
 				previewUrlClean: true,
+				primaryColorName: true,
 			},
 		});
 	}

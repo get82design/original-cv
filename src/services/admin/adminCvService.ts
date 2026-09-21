@@ -57,6 +57,9 @@ export type AdminTopColorRankItem = {
 	name: string;
 	primary: string | null;
 	cvCount: number;
+	downloadCount: number;
+	/** Popularité = (cvCount + downloadCount) / 2 */
+	popularityScore: number;
 };
 
 export class AdminCvService {
@@ -247,10 +250,7 @@ export class AdminCvService {
 
 	/**
 	 * Classement complet des couleurs (catalogue + noms orphelins utilisés).
-	 *
-	 * TODO(admin-colors): stats basées uniquement sur CV.primaryColorName
-	 * (CV → compte obligatoire). Prévoir plus tard un tracking guest
-	 * (ex. couleur au DL / event dédié) pour compter l’usage sans compte.
+	 * Popularité = (CV créés avec cette couleur + DL snapshot) / 2.
 	 */
 	async listTopColors(input: {
 		period?: AdminDashboardPeriod | undefined;
@@ -258,7 +258,7 @@ export class AdminCvService {
 		const since = periodStart(input.period ?? "7d");
 		const createdWhere = since ? { createdAt: { gte: since } } : {};
 
-		const [colors, colorGroups] = await Promise.all([
+		const [colors, colorGroups, downloadColorGroups] = await Promise.all([
 			prisma.color.findMany({
 				select: { name: true, primary: true, order: true },
 				orderBy: { order: "asc" },
@@ -271,10 +271,23 @@ export class AdminCvService {
 				},
 				_count: { _all: true },
 			}),
+			prisma.downloadEvent.groupBy({
+				by: ["primaryColorName"],
+				where: {
+					...createdWhere,
+					primaryColorName: { not: null },
+				},
+				_count: { _all: true },
+			}),
 		]);
 
-		const countByName = new Map(
+		const cvByName = new Map(
 			colorGroups
+				.filter((g) => g.primaryColorName != null)
+				.map((g) => [g.primaryColorName as string, g._count._all]),
+		);
+		const dlByName = new Map(
+			downloadColorGroups
 				.filter((g) => g.primaryColorName != null)
 				.map((g) => [g.primaryColorName as string, g._count._all]),
 		);
@@ -284,17 +297,24 @@ export class AdminCvService {
 
 		const names = new Set<string>([
 			...colors.map((c) => c.name),
-			...countByName.keys(),
+			...cvByName.keys(),
+			...dlByName.keys(),
 		]);
 
-		const items: AdminTopColorRankItem[] = [...names].map((name) => ({
-			name,
-			primary: shadeByName.get(name) ?? null,
-			cvCount: countByName.get(name) ?? 0,
-		}));
+		const items: AdminTopColorRankItem[] = [...names].map((name) => {
+			const cvCount = cvByName.get(name) ?? 0;
+			const downloadCount = dlByName.get(name) ?? 0;
+			return {
+				name,
+				primary: shadeByName.get(name) ?? null,
+				cvCount,
+				downloadCount,
+				popularityScore: (cvCount + downloadCount) / 2,
+			};
+		});
 
 		items.sort((a, b) => {
-			const diff = b.cvCount - a.cvCount;
+			const diff = b.popularityScore - a.popularityScore;
 			if (diff !== 0) return diff;
 			return a.name.localeCompare(b.name, "fr");
 		});

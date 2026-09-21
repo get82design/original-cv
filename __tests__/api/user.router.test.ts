@@ -100,18 +100,22 @@ describe("userRouter", () => {
 		});
 	});
 
-	it("consumeFreeDownload decrements free stock only", async () => {
+	it("consumeFreeDownload snapshots primaryColorName", async () => {
 		const user = await createTestUser();
 		await prismaTest.user.update({
 			where: { id: user.id },
-			data: { freeDownloadsRemaining: 2, downloadCredits: 5 },
+			data: { freeDownloadsRemaining: 1 },
 		});
 		const caller = await createTestCaller(createTestSession(user));
 
-		const updated = await caller.user.consumeFreeDownload();
+		await caller.user.consumeFreeDownload({
+			primaryColorName: "blue",
+		});
 
-		expect(updated.freeDownloadsRemaining).toBe(1);
-		expect(updated.downloadCredits).toBe(5);
+		const event = await prismaTest.downloadEvent.findFirstOrThrow({
+			where: { userId: user.id },
+		});
+		expect(event.primaryColorName).toBe("blue");
 	});
 
 	it("consumeFreeDownload returns BAD_REQUEST when empty", async () => {

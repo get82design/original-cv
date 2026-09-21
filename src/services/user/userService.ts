@@ -91,7 +91,11 @@ export class UserService {
 	/** Consomme 1 téléchargement gratuit (avec logo) + log stats */
 	async consumeFreeDownload(
 		id: string,
-		meta?: { cvId?: string; templateId?: string },
+		meta?: {
+			cvId?: string;
+			templateId?: string;
+			primaryColorName?: string;
+		},
 	) {
 		const user = await this.findById(id);
 		if (user.freeDownloadsRemaining <= 0) {
@@ -99,6 +103,8 @@ export class UserService {
 		}
 
 		await this.assertPremiumDownloadAllowed(id, meta);
+
+		const color = meta?.primaryColorName?.trim() || null;
 
 		const [updated] = await prisma.$transaction([
 			prisma.user.update({
@@ -112,6 +118,7 @@ export class UserService {
 					userId: id,
 					...(meta?.cvId ? { cvId: meta.cvId } : {}),
 					...(meta?.templateId ? { templateId: meta.templateId } : {}),
+					...(color ? { primaryColorName: color } : {}),
 				},
 			}),
 		]);
@@ -121,7 +128,11 @@ export class UserService {
 	/** Consomme 1 crédit payant (sans logo) + log stats */
 	async consumePaidDownload(
 		id: string,
-		meta?: { cvId?: string; templateId?: string },
+		meta?: {
+			cvId?: string;
+			templateId?: string;
+			primaryColorName?: string;
+		},
 	) {
 		const user = await this.findById(id);
 		if (user.downloadCredits <= 0) {
@@ -129,6 +140,8 @@ export class UserService {
 		}
 
 		await this.assertPremiumDownloadAllowed(id, meta);
+
+		const color = meta?.primaryColorName?.trim() || null;
 
 		const [updated] = await prisma.$transaction([
 			prisma.user.update({
@@ -142,6 +155,7 @@ export class UserService {
 					userId: id,
 					...(meta?.cvId ? { cvId: meta.cvId } : {}),
 					...(meta?.templateId ? { templateId: meta.templateId } : {}),
+					...(color ? { primaryColorName: color } : {}),
 				},
 			}),
 		]);

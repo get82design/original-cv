@@ -188,6 +188,23 @@ describe("UserService.consumeFreeDownload", () => {
 		expect(events[0]?.variant).toBe("WITH_LOGO");
 	});
 
+	it("snapshots primaryColorName on free download", async () => {
+		const user = await createTestUser();
+		await prisma.user.update({
+			where: { id: user.id },
+			data: { freeDownloadsRemaining: 1 },
+		});
+
+		await userService.consumeFreeDownload(user.id, {
+			primaryColorName: "olive",
+		});
+
+		const event = await prisma.downloadEvent.findFirstOrThrow({
+			where: { userId: user.id },
+		});
+		expect(event.primaryColorName).toBe("olive");
+	});
+
 	it("refuses when no free downloads remain", async () => {
 		const user = await createTestUser();
 		await expect(userService.consumeFreeDownload(user.id)).rejects.toThrow(

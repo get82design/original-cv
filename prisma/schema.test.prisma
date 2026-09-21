@@ -144,11 +144,14 @@ model DownloadEvent {
   cvId       String?
   cv         CV?             @relation(fields: [cvId], references: [id], onDelete: SetNull)
   templateId String?
+  /** Snapshot couleur au clic DL (indépendant des changements ultérieurs du CV) */
+  primaryColorName String?
 
   @@index([createdAt])
   @@index([variant, createdAt])
   @@index([userId])
   @@index([cvId])
+  @@index([primaryColorName, createdAt])
 }
 
 /** Log d’une requête IA (stats admin + fiche user) */

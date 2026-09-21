@@ -30,6 +30,65 @@ describe("adminDashboardService.getUserStats", () => {
 		expect(stats.newCount).toBeGreaterThanOrEqual(1);
 		expect(stats.activeCount).toBeGreaterThanOrEqual(1);
 		expect(stats.connectedCount).toBeGreaterThanOrEqual(1);
+		expect(typeof stats.newCountDelta).toBe("number");
+		expect(typeof stats.activeCountDelta).toBe("number");
+	});
+
+	it("computes delta vs previous period window", async () => {
+		const now = new Date("2026-09-21T12:00:00.000Z");
+		const day = 24 * 60 * 60 * 1000;
+
+		const currentUser = await createTestUser();
+		await prismaTest.user.update({
+			where: { id: currentUser.id },
+			data: {
+				createdAt: new Date(now.getTime() - 2 * day),
+				lastLoginAt: new Date(now.getTime() - 1 * day),
+			},
+		});
+
+		const previousUser = await createTestUser();
+		await prismaTest.user.update({
+			where: { id: previousUser.id },
+			data: {
+				createdAt: new Date(now.getTime() - 10 * day),
+				lastLoginAt: new Date(now.getTime() - 10 * day),
+			},
+		});
+
+		const olderUser = await createTestUser();
+		await prismaTest.user.update({
+			where: { id: olderUser.id },
+			data: {
+				createdAt: new Date(now.getTime() - 20 * day),
+				lastLoginAt: new Date(now.getTime() - 20 * day),
+			},
+		});
+
+		const stats = await adminDashboardService.getUserStats("7d", now);
+		expect(stats.newCountDelta).not.toBeNull();
+		expect(stats.activeCountDelta).not.toBeNull();
+		// Au moins +1 nouveau (current) vs previous window (previousUser)
+		expect(stats.newCount).toBeGreaterThanOrEqual(1);
+		expect(stats.newCountDelta!).toBe(
+			stats.newCount -
+				(
+					await prismaTest.user.count({
+						where: {
+							createdAt: {
+								gte: new Date(now.getTime() - 14 * day),
+								lt: new Date(now.getTime() - 7 * day),
+							},
+						},
+					})
+				),
+		);
+	});
+
+	it("returns null deltas for all-time period", async () => {
+		const stats = await adminDashboardService.getUserStats("all");
+		expect(stats.newCountDelta).toBeNull();
+		expect(stats.activeCountDelta).toBeNull();
 	});
 
 	it("periodStart returns rolling windows and null for all", () => {
@@ -50,6 +109,56 @@ describe("adminDashboardService.getUserStats", () => {
 			"2025-09-20T12:00:00.000Z",
 		);
 		expect(periodStart("all", now)).toBeNull();
+	});
+});
+
+describe("adminDashboardService.getDownloadStats", () => {
+	it("computes with/without logo deltas vs previous period", async () => {
+		const now = new Date("2026-09-21T12:00:00.000Z");
+		const day = 24 * 60 * 60 * 1000;
+		const user = await createTestUser();
+
+		await prismaTest.downloadEvent.createMany({
+			data: [
+				{
+					variant: "WITH_LOGO",
+					userId: user.id,
+					createdAt: new Date(now.getTime() - 2 * day),
+				},
+				{
+					variant: "WITHOUT_LOGO",
+					userId: user.id,
+					createdAt: new Date(now.getTime() - 1 * day),
+				},
+				{
+					variant: "WITH_LOGO",
+					userId: user.id,
+					createdAt: new Date(now.getTime() - 10 * day),
+				},
+			],
+		});
+
+		const stats = await adminDashboardService.getDownloadStats("7d", now);
+		expect(stats.withLogoDelta).not.toBeNull();
+		expect(stats.withoutLogoDelta).not.toBeNull();
+		expect(stats.withLogoDelta!).toBe(
+			stats.withLogo -
+				(
+					await prismaTest.downloadEvent.count({
+						where: {
+							variant: "WITH_LOGO",
+							createdAt: {
+								gte: new Date(now.getTime() - 14 * day),
+								lt: new Date(now.getTime() - 7 * day),
+							},
+						},
+					})
+				),
+		);
+
+		const allStats = await adminDashboardService.getDownloadStats("all", now);
+		expect(allStats.withLogoDelta).toBeNull();
+		expect(allStats.withoutLogoDelta).toBeNull();
 	});
 });
 
@@ -105,7 +214,7 @@ describe("adminDashboardService.getCvStats top templates downloads", () => {
 		expect(hit!.downloadCount).toBeGreaterThanOrEqual(2);
 	});
 
-	it("ranks top colors by primaryColorName", async () => {
+	it("ranks top colors by popularity (cv + dl) / 2", async () => {
 		const user = await createTestUser();
 		const template = await createTestTemplate();
 		await prismaTest.color.upsert({
@@ -119,11 +228,23 @@ describe("adminDashboardService.getCvStats top templates downloads", () => {
 			where: { id: cv.id },
 			data: { primaryColorName: "emerald" },
 		});
+		await prismaTest.downloadEvent.create({
+			data: {
+				variant: "WITHOUT_LOGO",
+				userId: user.id,
+				cvId: cv.id,
+				primaryColorName: "emerald",
+			},
+		});
 
 		const stats = await adminDashboardService.getCvStats("7d");
 		const hit = stats.topColors.find((c) => c.name === "emerald");
 		expect(hit).toBeTruthy();
 		expect(hit!.cvCount).toBeGreaterThanOrEqual(1);
+		expect(hit!.downloadCount).toBeGreaterThanOrEqual(1);
+		expect(hit!.popularityScore).toBe(
+			(hit!.cvCount + hit!.downloadCount) / 2,
+		);
 		expect(hit!.primary).toBe("-600");
 	});
 });
@@ -160,6 +281,8 @@ describe("admin.router users metrics", () => {
 		expect(typeof overview.downloads.total).toBe("number");
 		expect(typeof overview.downloads.withLogoAllTime).toBe("number");
 		expect(typeof overview.downloads.withoutLogoAllTime).toBe("number");
+		expect(typeof overview.downloads.withLogoDelta).toBe("number");
+		expect(typeof overview.downloads.withoutLogoDelta).toBe("number");
 		expect(overview.ai.ready).toBe(true);
 		expect(typeof overview.ai.total).toBe("number");
 		expect(typeof overview.ai.importCv).toBe("number");

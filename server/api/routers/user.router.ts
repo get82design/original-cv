@@ -8,6 +8,7 @@ const consumeDownloadMetaSchema = z
 	.object({
 		cvId: z.string().min(1).optional(),
 		templateId: z.string().min(1).optional(),
+		primaryColorName: z.string().trim().min(1).max(64).optional(),
 	})
 	.optional();
 

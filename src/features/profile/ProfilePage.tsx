@@ -71,6 +71,9 @@ export const ProfilePage = () => {
 			...(downloadCv.templateId
 				? { templateId: downloadCv.templateId }
 				: {}),
+			...(downloadCv.primaryColorName
+				? { primaryColorName: downloadCv.primaryColorName }
+				: {}),
 		};
 	};
 

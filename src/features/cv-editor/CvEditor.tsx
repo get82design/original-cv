@@ -35,6 +35,7 @@ import type { CvRewriteSection as CvRewriteResult } from "@/services/schemas/cvR
 import type { CvRewriteSectionType } from "@/services/schemas/cvRewriteSection.schema";
 import { Toast } from "primereact/toast";
 import { flattenCvFormToText } from "./utils/flattenCvFormToText";
+import { extractPrimaryColorName } from "@/services/cv/extractPrimaryColorName";
 import {
 	getClientErrorMessage,
 	isTooManyRequestsError,
@@ -272,9 +273,13 @@ export const CvEditor = () => {
 		const cv = getValues() as CvFormValues;
 		const cvId = cv.cvId?.trim();
 		const templateId = cv.templateId?.trim();
+		const primaryColorName = extractPrimaryColorName(
+			cv.layoutGeneral ?? null,
+		);
 		return {
 			...(cvId && cvId !== "0" ? { cvId } : {}),
 			...(templateId ? { templateId } : {}),
+			...(primaryColorName ? { primaryColorName } : {}),
 		};
 	};
 

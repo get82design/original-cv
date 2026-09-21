@@ -256,7 +256,7 @@ describe("admin.listTopColors", () => {
 		).rejects.toMatchObject({ code: "FORBIDDEN" });
 	});
 
-	it("ranks colors by CV count including catalog zeros", async () => {
+	it("ranks colors by popularity (cv + dl) / 2", async () => {
 		const user = await createTestUser();
 		const template = await createTestTemplate();
 		const cv = await createCV(user.id, template.id, "Color ranked");
@@ -273,6 +273,14 @@ describe("admin.listTopColors", () => {
 			},
 			update: { primary: "-600" },
 		});
+		await prismaTest.downloadEvent.create({
+			data: {
+				variant: "WITH_LOGO",
+				userId: user.id,
+				cvId: cv.id,
+				primaryColorName: "teal",
+			},
+		});
 
 		const admin = await createTestUser();
 		const caller = await createTestCaller(
@@ -287,9 +295,13 @@ describe("admin.listTopColors", () => {
 		const teal = ranks.find((c) => c.name === "teal");
 		expect(teal).toBeTruthy();
 		expect(teal?.cvCount).toBeGreaterThanOrEqual(1);
+		expect(teal?.downloadCount).toBeGreaterThanOrEqual(1);
+		expect(teal?.popularityScore).toBe(
+			((teal?.cvCount ?? 0) + (teal?.downloadCount ?? 0)) / 2,
+		);
 		expect(teal?.primary).toBe("-600");
-		expect(ranks[0]!.cvCount).toBeGreaterThanOrEqual(
-			ranks[ranks.length - 1]!.cvCount,
+		expect(ranks[0]!.popularityScore).toBeGreaterThanOrEqual(
+			ranks[ranks.length - 1]!.popularityScore,
 		);
 	});
 });
