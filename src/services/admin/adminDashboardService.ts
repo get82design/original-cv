@@ -87,6 +87,16 @@ export type AdminAiStats = {
 	totalAllTime: number;
 };
 
+export type AdminApiErrorStats = {
+	ready: true;
+	total: number;
+	internalServerError: number;
+	tooManyRequests: number;
+	timeout: number;
+	uniqueUsers: number;
+	totalAllTime: number;
+};
+
 export class AdminDashboardService {
 	async getUserStats(
 		period: AdminDashboardPeriod,
@@ -319,6 +329,52 @@ export class AdminDashboardService {
 			importCv,
 			reviewCv,
 			rewriteSection,
+			uniqueUsers: uniqueGroups.length,
+			totalAllTime,
+		};
+	}
+
+	async getApiErrorStats(
+		period: AdminDashboardPeriod,
+		now = new Date(),
+	): Promise<AdminApiErrorStats> {
+		const since = periodStart(period, now);
+		const whereBase = since ? { createdAt: { gte: since } } : {};
+
+		const [
+			total,
+			internalServerError,
+			tooManyRequests,
+			timeout,
+			totalAllTime,
+			uniqueGroups,
+		] = await Promise.all([
+			prisma.apiErrorEvent.count({ where: whereBase }),
+			prisma.apiErrorEvent.count({
+				where: { ...whereBase, code: "INTERNAL_SERVER_ERROR" },
+			}),
+			prisma.apiErrorEvent.count({
+				where: { ...whereBase, code: "TOO_MANY_REQUESTS" },
+			}),
+			prisma.apiErrorEvent.count({
+				where: { ...whereBase, code: "TIMEOUT" },
+			}),
+			prisma.apiErrorEvent.count(),
+			prisma.apiErrorEvent.groupBy({
+				by: ["userId"],
+				where: {
+					...whereBase,
+					userId: { not: null },
+				},
+			}),
+		]);
+
+		return {
+			ready: true,
+			total,
+			internalServerError,
+			tooManyRequests,
+			timeout,
 			uniqueUsers: uniqueGroups.length,
 			totalAllTime,
 		};

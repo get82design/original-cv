@@ -6,6 +6,7 @@ import {
 	ConflictError,
 	ForbiddenError,
 	NotFoundError,
+	TooManyRequestsError,
 	ValidationError,
 } from "../../src/services/errors";
 
@@ -63,6 +64,13 @@ describe("toTrpcError", () => {
 	it("maps ValidationError to BAD_REQUEST", () => {
 		const err = new ValidationError("invalid");
 		expect(toTrpcError(err).code).toBe("BAD_REQUEST");
+	});
+
+	it("maps TooManyRequestsError to TOO_MANY_REQUESTS", () => {
+		const err = new TooManyRequestsError();
+		const trpcErr = toTrpcError(err);
+		expect(trpcErr.code).toBe("TOO_MANY_REQUESTS");
+		expect(trpcErr.message).toMatch(/saturé/i);
 	});
 
 	it("unwraps TRPCError.cause when it is an AppError", () => {

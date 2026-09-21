@@ -43,6 +43,18 @@ describe("admin.updateUser", () => {
 		expect(row.isActive).toBe(false);
 		expect(row.downloadCredits).toBe(7);
 		expect(row.freeDownloadsRemaining).toBe(2);
+
+		const logs = await prismaTest.adminCreditLog.findMany({
+			where: { targetUserId: target.id },
+			orderBy: { kind: "asc" },
+		});
+		expect(logs).toHaveLength(2);
+		expect(logs.map((l) => l.kind).sort()).toEqual([
+			"DOWNLOAD_CREDITS",
+			"FREE_DOWNLOADS",
+		]);
+		expect(logs.every((l) => l.actorUserId === admin.id)).toBe(true);
+		expect(logs.every((l) => l.reason === "ADMIN_SET")).toBe(true);
 	});
 
 	it("blocks self-deactivation", async () => {
@@ -149,5 +161,12 @@ describe("admin.softResetUser", () => {
 		expect(row.downloadCredits).toBe(0);
 		expect(row.freeDownloadsRemaining).toBe(0);
 		expect(row.iaRequestsUsed).toBe(0);
+
+		const logs = await prismaTest.adminCreditLog.findMany({
+			where: { targetUserId: target.id, reason: "ADMIN_SOFT_RESET" },
+		});
+		expect(logs.length).toBeGreaterThanOrEqual(2);
+		expect(logs.every((l) => l.actorUserId === admin.id)).toBe(true);
+		expect(logs.every((l) => l.after === 0)).toBe(true);
 	});
 });

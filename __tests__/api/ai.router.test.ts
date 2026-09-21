@@ -63,6 +63,45 @@ describe("ai.router", () => {
 				}),
 			).rejects.toMatchObject({ code: "UNAUTHORIZED" });
 		});
+
+		it("rejects when daily import quota is reached", async () => {
+			const user = await createTestUser();
+			const importSpy = vi
+				.spyOn(cvImportService, "importCvFromPdf")
+				.mockResolvedValue({
+					draft: {
+						identity: {},
+						experiences: [],
+						educations: [],
+						formations: [],
+						languages: [],
+						skills: [],
+						certifications: [],
+						socialMedias: [],
+						warnings: [],
+					},
+					pageCount: 1,
+				});
+
+			await prismaTest.aiEvent.createMany({
+				data: [
+					{ feature: "IMPORT_CV", userId: user.id },
+					{ feature: "IMPORT_CV", userId: user.id },
+				],
+			});
+
+			const caller = await createTestCaller(createTestSession(user));
+
+			await expect(
+				caller.ai.importCvFromPdf({
+					pdfBase64: Buffer.from("%PDF").toString("base64"),
+				}),
+			).rejects.toMatchObject({
+				code: "BAD_REQUEST",
+				message: expect.stringContaining("Limite d’imports"),
+			});
+			expect(importSpy).not.toHaveBeenCalled();
+		});
 	});
 
 	describe("rewriteSection", () => {

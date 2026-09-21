@@ -680,6 +680,66 @@ html.dark .admin-filters .p-dropdown .p-dropdown-label {
     color: #f4f4f5;
 }
 
+/* Admin user actions — Panel dépliant light & dark */
+.admin-user-actions-panel.p-panel {
+    background: transparent;
+    border: 1px solid #e4e4e7;
+    border-radius: 0.75rem;
+    overflow: hidden;
+}
+
+.admin-user-actions-panel.p-panel .p-panel-header {
+    background: #fafafa;
+    color: #18181b;
+    border: none;
+    border-bottom: 1px solid #e4e4e7;
+    padding: 0.75rem 1rem;
+}
+
+.admin-user-actions-panel.p-panel .p-panel-title {
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: #71717a;
+}
+
+.admin-user-actions-panel.p-panel .p-panel-header-icon {
+    color: #71717a;
+    width: 1.75rem;
+    height: 1.75rem;
+}
+
+.admin-user-actions-panel.p-panel .p-panel-content {
+    background: #ffffff;
+    color: #18181b;
+    border: none;
+    padding: 1.25rem;
+}
+
+html.dark .admin-user-actions-panel.p-panel {
+    border-color: #3f3f46;
+}
+
+html.dark .admin-user-actions-panel.p-panel .p-panel-header {
+    background: #27272a;
+    border-bottom-color: #3f3f46;
+    color: #f4f4f5;
+}
+
+html.dark .admin-user-actions-panel.p-panel .p-panel-title {
+    color: #a1a1aa;
+}
+
+html.dark .admin-user-actions-panel.p-panel .p-panel-header-icon {
+    color: #a1a1aa;
+}
+
+html.dark .admin-user-actions-panel.p-panel .p-panel-content {
+    background: #000000;
+    color: #f4f4f5;
+}
+
 /* Admin user actions — InputNumber light & dark */
 .admin-user-actions .p-inputnumber .p-inputtext {
     background: #ffffff;

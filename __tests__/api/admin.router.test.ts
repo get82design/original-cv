@@ -164,6 +164,10 @@ describe("admin.router users metrics", () => {
 		expect(typeof overview.ai.total).toBe("number");
 		expect(typeof overview.ai.importCv).toBe("number");
 		expect(typeof overview.ai.uniqueUsers).toBe("number");
+		expect(overview.apiErrors.ready).toBe(true);
+		expect(typeof overview.apiErrors.total).toBe("number");
+		expect(typeof overview.apiErrors.internalServerError).toBe("number");
+		expect(typeof overview.apiErrors.tooManyRequests).toBe("number");
 	});
 });
 
@@ -186,6 +190,45 @@ describe("adminDashboardService.getAiStats", () => {
 		expect(stats.importCv).toBeGreaterThanOrEqual(1);
 		expect(stats.reviewCv).toBeGreaterThanOrEqual(1);
 		expect(stats.rewriteSection).toBeGreaterThanOrEqual(1);
+		expect(stats.uniqueUsers).toBeGreaterThanOrEqual(2);
+		expect(stats.totalAllTime).toBeGreaterThanOrEqual(3);
+	});
+});
+
+describe("adminDashboardService.getApiErrorStats", () => {
+	it("counts API errors by code and unique users", async () => {
+		const u1 = await createTestUser();
+		const u2 = await createTestUser();
+
+		await prismaTest.apiErrorEvent.createMany({
+			data: [
+				{
+					path: "cv.save",
+					code: "INTERNAL_SERVER_ERROR",
+					message: "boom",
+					userId: u1.id,
+				},
+				{
+					path: "ai.reviewCv",
+					code: "TOO_MANY_REQUESTS",
+					message: "429",
+					userId: u1.id,
+				},
+				{
+					path: "ai.importCv",
+					code: "TIMEOUT",
+					message: "slow",
+					userId: u2.id,
+				},
+			],
+		});
+
+		const stats = await adminDashboardService.getApiErrorStats("7d");
+		expect(stats.ready).toBe(true);
+		expect(stats.total).toBeGreaterThanOrEqual(3);
+		expect(stats.internalServerError).toBeGreaterThanOrEqual(1);
+		expect(stats.tooManyRequests).toBeGreaterThanOrEqual(1);
+		expect(stats.timeout).toBeGreaterThanOrEqual(1);
 		expect(stats.uniqueUsers).toBeGreaterThanOrEqual(2);
 		expect(stats.totalAllTime).toBeGreaterThanOrEqual(3);
 	});

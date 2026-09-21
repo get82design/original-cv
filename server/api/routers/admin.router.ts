@@ -1,7 +1,9 @@
-import { DownloadVariant, PlanRole, AiFeature, UnlockMethod } from "../../../generated/prisma/enums";
+import { DownloadVariant, PlanRole, AiFeature, UnlockMethod, AdminCreditKind } from "../../../generated/prisma/enums";
 import { ValidationError } from "../../../src/services/errors";
 import { adminProcedure, router } from "../trpc";
 import { adminAiService } from "../../../src/services/admin/adminAiService";
+import { adminApiErrorService } from "../../../src/services/admin/adminApiErrorService";
+import { adminCreditLogService } from "../../../src/services/admin/adminCreditLogService";
 import { adminCvService } from "../../../src/services/admin/adminCvService";
 import { adminDownloadService } from "../../../src/services/admin/adminDownloadService";
 import { adminTemplateService } from "../../../src/services/admin/adminTemplateService";
@@ -77,11 +79,12 @@ export const adminRouter = router({
 			}),
 		)
 		.query(async ({ input }) => {
-			const [users, cvs, downloads, ai] = await Promise.all([
+			const [users, cvs, downloads, ai, apiErrors] = await Promise.all([
 				adminDashboardService.getUserStats(input.period),
 				adminDashboardService.getCvStats(input.period),
 				adminDashboardService.getDownloadStats(input.period),
 				adminDashboardService.getAiStats(input.period),
+				adminDashboardService.getApiErrorStats(input.period),
 			]);
 
 			return {
@@ -90,6 +93,7 @@ export const adminRouter = router({
 				cvs,
 				downloads,
 				ai,
+				apiErrors,
 				// TODO(admin-sales): après intégration Stripe (Checkout + webhooks →
 				// table locale Order/Payment). Brancher ici CA, commandes, panier moyen,
 				// refunds, échecs paiement, liens Stripe (statut/montant/produit),
@@ -134,12 +138,18 @@ export const adminRouter = router({
 			}
 
 			const { id, ...patch } = input;
-			return adminUserService.updateUser(id, patch);
+			return adminUserService.updateUser(
+				id,
+				patch,
+				ctx.session.user.id,
+			);
 		}),
 
 	softResetUser: adminProcedure
 		.input(z.object({ id: z.string().min(1) }))
-		.mutation(({ input }) => adminUserService.softResetUser(input.id)),
+		.mutation(({ ctx, input }) =>
+			adminUserService.softResetUser(input.id, ctx.session.user.id),
+		),
 
 	unlockTemplateForUser: adminProcedure
 		.input(
@@ -253,4 +263,29 @@ export const adminRouter = router({
 			}),
 		)
 		.query(({ input }) => adminAiService.listAiEvents(input)),
+
+	listApiErrors: adminProcedure
+		.input(
+			z.object({
+				period: adminDashboardPeriodSchema.default("7d"),
+				code: z.string().trim().max(80).optional(),
+				path: z.string().trim().max(200).optional(),
+				search: z.string().trim().max(120).optional(),
+				page: z.number().int().min(1).default(1),
+				pageSize: z.number().int().min(1).max(50).default(20),
+			}),
+		)
+		.query(({ input }) => adminApiErrorService.listApiErrors(input)),
+
+	listCreditLogs: adminProcedure
+		.input(
+			z.object({
+				period: adminDashboardPeriodSchema.default("7d"),
+				kind: z.nativeEnum(AdminCreditKind).optional(),
+				search: z.string().trim().max(120).optional(),
+				page: z.number().int().min(1).default(1),
+				pageSize: z.number().int().min(1).max(50).default(20),
+			}),
+		)
+		.query(({ input }) => adminCreditLogService.listCreditLogs(input)),
 });

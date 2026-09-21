@@ -453,6 +453,87 @@ export function AdminDashboardPage() {
 			</section>
 
 			<section className="mb-8">
+				<div className="mb-3 flex items-center justify-between gap-3">
+					<h3 className="m-0 text-sm font-semibold uppercase tracking-wide text-zinc-500">
+						Erreurs API
+					</h3>
+					<Link
+						href="/admin/errors"
+						className="text-xs font-medium text-primary hover:underline dark:text-primary-dark"
+					>
+						Voir le feed →
+					</Link>
+				</div>
+				<div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+					<AppCard className="flex min-h-[7.5rem] flex-col gap-2">
+						<div>
+							<p className="m-0 text-sm font-semibold text-zinc-800 dark:text-zinc-100">
+								Erreurs
+							</p>
+							<p className="m-0 mt-0.5 text-xs text-zinc-500 dark:text-zinc-400">
+								Sur la période ·{" "}
+								{data?.apiErrors.totalAllTime ?? 0} depuis
+								toujours
+							</p>
+						</div>
+						{!(data?.apiErrors.ready ?? false) ? (
+							<span className="text-2xl font-semibold text-zinc-400 dark:text-zinc-500">
+								—
+							</span>
+						) : (
+							<span className="text-2xl font-semibold text-zinc-900 dark:text-white">
+								{data?.apiErrors.total ?? 0}
+							</span>
+						)}
+					</AppCard>
+					<MetricCard
+						title="5xx / interne"
+						hint="INTERNAL_SERVER_ERROR"
+						ready={data?.apiErrors.ready ?? false}
+						value={data?.apiErrors.internalServerError ?? null}
+					/>
+					<MetricCard
+						title="429"
+						hint="TOO_MANY_REQUESTS"
+						ready={data?.apiErrors.ready ?? false}
+						value={data?.apiErrors.tooManyRequests ?? null}
+					/>
+					<MetricCard
+						title="Timeouts"
+						hint="Sur la période"
+						ready={data?.apiErrors.ready ?? false}
+						value={data?.apiErrors.timeout ?? null}
+					/>
+					<MetricCard
+						title="Users impactés"
+						hint="Utilisateurs distincts sur la période"
+						ready={data?.apiErrors.ready ?? false}
+						value={data?.apiErrors.uniqueUsers ?? null}
+					/>
+				</div>
+			</section>
+
+			<section className="mb-8">
+				<div className="mb-3 flex items-center justify-between gap-3">
+					<h3 className="m-0 text-sm font-semibold uppercase tracking-wide text-zinc-500">
+						Crédits admin
+					</h3>
+					<Link
+						href="/admin/credit-logs"
+						className="text-xs font-medium text-primary hover:underline dark:text-primary-dark"
+					>
+						Voir le journal →
+					</Link>
+				</div>
+				<AppCard>
+					<p className="m-0 text-sm text-zinc-600 dark:text-zinc-400">
+						Qui a réglé / remis à zéro les crédits ou free DL de
+						qui (fiche user).
+					</p>
+				</AppCard>
+			</section>
+
+			<section className="mb-8">
 				<h3 className="mb-3 m-0 text-sm font-semibold uppercase tracking-wide text-zinc-500">
 					Ventes
 				</h3>

@@ -282,10 +282,10 @@ describe("cvRouter.save", () => {
 });
 
 describe("cvRouter.setPreview", () => {
-	const SAMPLE_WITH = "data:image/jpeg;base64,withlogo";
-	const SAMPLE_CLEAN = "data:image/jpeg;base64,clean";
+	const SAMPLE_WITH = `data:image/jpeg;base64,${Buffer.from("withlogo").toString("base64")}`;
+	const SAMPLE_CLEAN = `data:image/jpeg;base64,${Buffer.from("clean").toString("base64")}`;
 
-	it("stores both preview URLs", async () => {
+	it("stores both preview URLs as uploaded file paths", async () => {
 		const user = await createTestUser();
 		const caller = await createTestCaller(createTestSession(user));
 		const template = await createTestTemplate();
@@ -297,8 +297,14 @@ describe("cvRouter.setPreview", () => {
 			previewUrlClean: SAMPLE_CLEAN,
 		});
 
-		expect(updated.previewUrl).toBe(SAMPLE_WITH);
-		expect(updated.previewUrlClean).toBe(SAMPLE_CLEAN);
+		expect(updated.previewUrl).toMatch(
+			new RegExp(`^/uploads/cv-previews/${user.id}/${cv.id}-with\\.jpg$`),
+		);
+		expect(updated.previewUrlClean).toMatch(
+			new RegExp(
+				`^/uploads/cv-previews/${user.id}/${cv.id}-clean\\.jpg$`,
+			),
+		);
 	});
 
 	it("returns FORBIDDEN for another user's CV", async () => {

@@ -109,6 +109,9 @@ model User {
   downloadGrants    DownloadGrant[]
   downloadEvents    DownloadEvent[]
   aiEvents          AiEvent[]
+  apiErrorEvents    ApiErrorEvent[]
+  adminCreditLogsAsTarget AdminCreditLog[] @relation("AdminCreditLogTarget")
+  adminCreditLogsAsActor  AdminCreditLog[] @relation("AdminCreditLogActor")
 }
 
 // Cadeaux de téléchargements gratuits (one-shot par raison)
@@ -167,6 +170,56 @@ model AiEvent {
   @@index([createdAt])
   @@index([feature, createdAt])
   @@index([userId])
+}
+
+/** Log d’une erreur API / tRPC (ops admin) */
+model ApiErrorEvent {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  /** procédure tRPC, ex. "cv.save" */
+  path      String
+  /** code TRPC / HTTP sémantique, ex. INTERNAL_SERVER_ERROR */
+  code      String
+  message   String
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([createdAt])
+  @@index([code, createdAt])
+  @@index([path, createdAt])
+  @@index([userId])
+}
+
+/** Journal admin : qui a modifié les crédits / free DL de qui */
+enum AdminCreditKind {
+  DOWNLOAD_CREDITS
+  FREE_DOWNLOADS
+}
+
+enum AdminCreditReason {
+  ADMIN_SET
+  ADMIN_SOFT_RESET
+}
+
+model AdminCreditLog {
+  id        String            @id @default(cuid())
+  createdAt DateTime          @default(now())
+  kind      AdminCreditKind
+  reason    AdminCreditReason
+  /** after - before (peut être négatif) */
+  delta     Int
+  before    Int
+  after     Int
+
+  targetUserId String
+  targetUser   User  @relation("AdminCreditLogTarget", fields: [targetUserId], references: [id], onDelete: Cascade)
+  actorUserId  String?
+  actorUser    User? @relation("AdminCreditLogActor", fields: [actorUserId], references: [id], onDelete: SetNull)
+
+  @@index([createdAt])
+  @@index([kind, createdAt])
+  @@index([targetUserId, createdAt])
+  @@index([actorUserId, createdAt])
 }
 
 // === La Table de Liaison : Pour savoir quel utilisateur a acheté quel Template Premium ===
@@ -1055,8 +1108,8 @@ model CV {
   isPublic   Boolean @default(false) // si le CV est public
 
   isDefault Boolean @default(false) // si le CV est le CV par défaut de l'utilisateur
-  previewUrl      String? // aperçu avec logo (export gratuit / liste profil)
-  previewUrlClean String? // aperçu sans logo (export payant)
+  previewUrl      String? // aperçu avec logo — URL fichier (/uploads/… ou S3), plus data URL
+  previewUrlClean String? // aperçu sans logo — idem
   pdfUrl     String?
   pdfVersion Int @default(0) // version du PDF
   pdfGeneratedAt DateTime?

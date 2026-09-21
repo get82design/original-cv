@@ -1,5 +1,7 @@
 import { prisma } from "../../../lib/prisma";
 import { ForbiddenError, NotFoundError, ValidationError } from "../errors";
+import { parseDataImageUrl } from "../storage/parseDataImageUrl";
+import { getPreviewStorage } from "../storage/previewStorage";
 import { AppError } from "../errors/AppError";
 import type { CreateCvInput, UpdateCvInput } from "../schemas/cv.schema";
 import { templateAccessService } from "../commons/templateAccessService";
@@ -220,7 +222,12 @@ export class CvService {
 	) {
 		const cv = await prisma.cV.findUnique({
 			where: { id: cvId },
-			select: { id: true, userId: true },
+			select: {
+				id: true,
+				userId: true,
+				previewUrl: true,
+				previewUrlClean: true,
+			},
 		});
 
 		if (!cv) {
@@ -231,11 +238,44 @@ export class CvService {
 			throw new ForbiddenError("You cannot update this CV");
 		}
 
-		return prisma.cV.update({
+		const withLogo = parseDataImageUrl(previewUrl);
+		const clean = parseDataImageUrl(previewUrlClean);
+		const storage = getPreviewStorage();
+
+		const [storedWith, storedClean] = await Promise.all([
+			storage.put({
+				key: `${userId}/${cvId}-with.${withLogo.ext}`,
+				body: withLogo.buffer,
+				contentType: withLogo.mimeType,
+			}),
+			storage.put({
+				key: `${userId}/${cvId}-clean.${clean.ext}`,
+				body: clean.buffer,
+				contentType: clean.mimeType,
+			}),
+		]);
+
+		const updated = await prisma.cV.update({
 			where: { id: cvId },
-			data: { previewUrl, previewUrlClean },
+			data: {
+				previewUrl: storedWith.publicUrl,
+				previewUrlClean: storedClean.publicUrl,
+			},
 			select: { id: true, previewUrl: true, previewUrlClean: true },
 		});
+
+		// Ne pas supprimer si c’est la même clé (re-save écrase déjà le fichier).
+		await Promise.all([
+			cv.previewUrl && cv.previewUrl !== storedWith.publicUrl
+				? storage.deleteIfManaged(cv.previewUrl)
+				: Promise.resolve(),
+			cv.previewUrlClean &&
+			cv.previewUrlClean !== storedClean.publicUrl
+				? storage.deleteIfManaged(cv.previewUrlClean)
+				: Promise.resolve(),
+		]);
+
+		return updated;
 	}
 }
 

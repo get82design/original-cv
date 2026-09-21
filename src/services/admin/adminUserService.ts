@@ -351,6 +351,7 @@ export class AdminUserService {
 	/**
 	 * Ajuste statut / quotas / abo (valeurs absolues).
 	 * Au moins un champ doit être fourni.
+	 * @param actorUserId admin qui effectue l’action (journal crédits)
 	 */
 	async updateUser(
 		id: string,
@@ -361,6 +362,7 @@ export class AdminUserService {
 			plan?: PlanRole | undefined;
 			subscriptionEnd?: Date | null | undefined;
 		},
+		actorUserId?: string | null,
 	): Promise<{
 		id: string;
 		isActive: boolean;
@@ -393,7 +395,13 @@ export class AdminUserService {
 
 		const existing = await prisma.user.findUnique({
 			where: { id },
-			select: { id: true, plan: true, subscriptionEnd: true },
+			select: {
+				id: true,
+				plan: true,
+				subscriptionEnd: true,
+				downloadCredits: true,
+				freeDownloadsRemaining: true,
+			},
 		});
 		if (!existing) {
 			throw new NotFoundError("USER", id);
@@ -433,17 +441,52 @@ export class AdminUserService {
 		if (hasPlan) data.plan = nextPlan;
 		if (nextSubEnd !== undefined) data.subscriptionEnd = nextSubEnd;
 
-		const updated = await prisma.user.update({
-			where: { id },
-			data,
-			select: {
-				id: true,
-				isActive: true,
-				downloadCredits: true,
-				freeDownloadsRemaining: true,
-				plan: true,
-				subscriptionEnd: true,
-			},
+		const creditLogs: Prisma.AdminCreditLogCreateManyInput[] = [];
+		if (hasCredits && input.downloadCredits! !== existing.downloadCredits) {
+			creditLogs.push({
+				kind: "DOWNLOAD_CREDITS",
+				reason: "ADMIN_SET",
+				before: existing.downloadCredits,
+				after: input.downloadCredits!,
+				delta: input.downloadCredits! - existing.downloadCredits,
+				targetUserId: id,
+				actorUserId: actorUserId ?? null,
+			});
+		}
+		if (
+			hasFree &&
+			input.freeDownloadsRemaining! !== existing.freeDownloadsRemaining
+		) {
+			creditLogs.push({
+				kind: "FREE_DOWNLOADS",
+				reason: "ADMIN_SET",
+				before: existing.freeDownloadsRemaining,
+				after: input.freeDownloadsRemaining!,
+				delta:
+					input.freeDownloadsRemaining! -
+					existing.freeDownloadsRemaining,
+				targetUserId: id,
+				actorUserId: actorUserId ?? null,
+			});
+		}
+
+		const updated = await prisma.$transaction(async (tx) => {
+			const row = await tx.user.update({
+				where: { id },
+				data,
+				select: {
+					id: true,
+					isActive: true,
+					downloadCredits: true,
+					freeDownloadsRemaining: true,
+					plan: true,
+					subscriptionEnd: true,
+				},
+			});
+			if (creditLogs.length > 0) {
+				await tx.adminCreditLog.createMany({ data: creditLogs });
+			}
+			return row;
 		});
 
 		return updated;
@@ -453,7 +496,10 @@ export class AdminUserService {
 	 * Reset soft : remet les consommables / compteur IA à zéro.
 	 * Ne touche pas au compte, aux CV, à l’historique ni au plan.
 	 */
-	async softResetUser(id: string): Promise<{
+	async softResetUser(
+		id: string,
+		actorUserId?: string | null,
+	): Promise<{
 		id: string;
 		downloadCredits: number;
 		freeDownloadsRemaining: number;
@@ -462,27 +508,61 @@ export class AdminUserService {
 	}> {
 		const existing = await prisma.user.findUnique({
 			where: { id },
-			select: { id: true },
+			select: {
+				id: true,
+				downloadCredits: true,
+				freeDownloadsRemaining: true,
+			},
 		});
 		if (!existing) {
 			throw new NotFoundError("USER", id);
 		}
 
-		return prisma.user.update({
-			where: { id },
-			data: {
-				downloadCredits: 0,
-				freeDownloadsRemaining: 0,
-				iaRequestsUsed: 0,
-				lastIaReset: new Date(),
-			},
-			select: {
-				id: true,
-				downloadCredits: true,
-				freeDownloadsRemaining: true,
-				iaRequestsUsed: true,
-				lastIaReset: true,
-			},
+		const creditLogs: Prisma.AdminCreditLogCreateManyInput[] = [];
+		if (existing.downloadCredits !== 0) {
+			creditLogs.push({
+				kind: "DOWNLOAD_CREDITS",
+				reason: "ADMIN_SOFT_RESET",
+				before: existing.downloadCredits,
+				after: 0,
+				delta: -existing.downloadCredits,
+				targetUserId: id,
+				actorUserId: actorUserId ?? null,
+			});
+		}
+		if (existing.freeDownloadsRemaining !== 0) {
+			creditLogs.push({
+				kind: "FREE_DOWNLOADS",
+				reason: "ADMIN_SOFT_RESET",
+				before: existing.freeDownloadsRemaining,
+				after: 0,
+				delta: -existing.freeDownloadsRemaining,
+				targetUserId: id,
+				actorUserId: actorUserId ?? null,
+			});
+		}
+
+		return prisma.$transaction(async (tx) => {
+			const row = await tx.user.update({
+				where: { id },
+				data: {
+					downloadCredits: 0,
+					freeDownloadsRemaining: 0,
+					iaRequestsUsed: 0,
+					lastIaReset: new Date(),
+				},
+				select: {
+					id: true,
+					downloadCredits: true,
+					freeDownloadsRemaining: true,
+					iaRequestsUsed: true,
+					lastIaReset: true,
+				},
+			});
+			if (creditLogs.length > 0) {
+				await tx.adminCreditLog.createMany({ data: creditLogs });
+			}
+			return row;
 		});
 	}
 }

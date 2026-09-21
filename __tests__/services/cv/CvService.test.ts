@@ -607,10 +607,10 @@ describe("CvService.findAllByUser", () => {
 });
 
 describe("CvService.setPreview", () => {
-	const SAMPLE_WITH = "data:image/jpeg;base64,withlogo";
-	const SAMPLE_CLEAN = "data:image/jpeg;base64,clean";
+	const SAMPLE_WITH = `data:image/jpeg;base64,${Buffer.from("withlogo").toString("base64")}`;
+	const SAMPLE_CLEAN = `data:image/jpeg;base64,${Buffer.from("clean").toString("base64")}`;
 
-	it("stores both preview URLs", async () => {
+	it("stores both preview URLs as uploaded file paths", async () => {
 		const user = await createTestUser();
 		const template = await createTestTemplate();
 		const cv = await createCV(user.id, template.id);
@@ -622,8 +622,23 @@ describe("CvService.setPreview", () => {
 			SAMPLE_CLEAN,
 		);
 
-		expect(updated.previewUrl).toBe(SAMPLE_WITH);
-		expect(updated.previewUrlClean).toBe(SAMPLE_CLEAN);
+		expect(updated.previewUrl).toMatch(
+			new RegExp(`^/uploads/cv-previews/${user.id}/${cv.id}-with\\.jpg$`),
+		);
+		expect(updated.previewUrlClean).toMatch(
+			new RegExp(
+				`^/uploads/cv-previews/${user.id}/${cv.id}-clean\\.jpg$`,
+			),
+		);
+
+		// re-save même clé : ne doit pas supprimer le fichier qu’on vient d’écrire
+		const again = await cvService.setPreview(
+			cv.id,
+			user.id,
+			SAMPLE_WITH,
+			SAMPLE_CLEAN,
+		);
+		expect(again.previewUrl).toBe(updated.previewUrl);
 	});
 
 	it("throws NotFoundError for unknown CV", async () => {

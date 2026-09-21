@@ -12,6 +12,7 @@ function mapAppError(error: AppError): TRPCError["code"] {
 	if (error.code.endsWith("_NOT_FOUND")) return "NOT_FOUND";
 	if (error.code === "VALIDATION_ERROR") return "BAD_REQUEST";
 	if (error.code === "UNAUTHORIZED") return "UNAUTHORIZED";
+	if (error.code === "TOO_MANY_REQUESTS") return "TOO_MANY_REQUESTS";
 	if (error.name === "ConflictError") return "CONFLICT";
 	if (error.name === "ForbiddenError") return "FORBIDDEN";
 	if (error.code === "CV_ALREADY_EXISTS") return "CONFLICT";

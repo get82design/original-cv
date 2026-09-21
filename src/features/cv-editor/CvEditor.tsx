@@ -36,6 +36,10 @@ import type { CvRewriteSectionType } from "@/services/schemas/cvRewriteSection.s
 import { Toast } from "primereact/toast";
 import { flattenCvFormToText } from "./utils/flattenCvFormToText";
 import {
+	getClientErrorMessage,
+	isTooManyRequestsError,
+} from "@/utils/clientError";
+import {
 	extractCvSectionSourceText,
 	listRewriteableSections,
 } from "./utils/extractCvSectionForRewrite";
@@ -412,14 +416,17 @@ export const CvEditor = () => {
 			});
 		} catch (err) {
 			setVisibleCvReview(false);
+			const rateLimited = isTooManyRequestsError(err);
 			toast.current?.show({
 				severity: "error",
-				summary: "Relecture impossible",
-				detail:
-					err instanceof Error
-						? err.message
-						: "Une erreur est survenue.",
-				life: 5000,
+				summary: rateLimited
+					? "Assistant saturé"
+					: "Relecture impossible",
+				detail: getClientErrorMessage(
+					err,
+					"Une erreur est survenue.",
+				),
+				life: rateLimited ? 7000 : 5000,
 			});
 		}
 	};
@@ -463,14 +470,17 @@ export const CvEditor = () => {
 			setRewriteResult(rewrite);
 		} catch (err) {
 			setRewriteSectionType(null);
+			const rateLimited = isTooManyRequestsError(err);
 			toast.current?.show({
 				severity: "error",
-				summary: "Reformulation impossible",
-				detail:
-					err instanceof Error
-						? err.message
-						: "Une erreur est survenue.",
-				life: 5000,
+				summary: rateLimited
+					? "Assistant saturé"
+					: "Reformulation impossible",
+				detail: getClientErrorMessage(
+					err,
+					"Une erreur est survenue.",
+				),
+				life: rateLimited ? 7000 : 5000,
 			});
 		}
 	};

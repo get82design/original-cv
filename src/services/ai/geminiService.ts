@@ -16,7 +16,7 @@ import {
 	type CvRewriteSection,
 	type CvRewriteSectionType,
 } from "../schemas/cvRewriteSection.schema";
-import { ValidationError } from "../errors";
+import { ValidationError, TooManyRequestsError } from "../errors";
 
 const DEFAULT_MODEL = "gemini-3.6-flash";
 /** Retry Zod / JSON invalide (re-prompt avec les erreurs). */
@@ -113,7 +113,7 @@ export function isTransientGeminiError(err: unknown): boolean {
 	);
 }
 
-async function withTransientRetry<T>(fn: () => Promise<T>): Promise<T> {
+export async function withTransientRetry<T>(fn: () => Promise<T>): Promise<T> {
 	let lastError: unknown;
 	for (let attempt = 0; attempt < TRANSIENT_MAX_ATTEMPTS; attempt++) {
 		try {
@@ -123,13 +123,21 @@ async function withTransientRetry<T>(fn: () => Promise<T>): Promise<T> {
 			const canRetry =
 				isTransientGeminiError(err) &&
 				attempt < TRANSIENT_MAX_ATTEMPTS - 1;
-			if (!canRetry) throw err;
+			if (!canRetry) {
+				if (isTransientGeminiError(err)) {
+					throw new TooManyRequestsError(undefined, err);
+				}
+				throw err;
+			}
 			// Vitest : pas d’attente réelle pour garder les tests rapides
 			const delayMs = process.env.VITEST
 				? 0
 				: TRANSIENT_BASE_DELAY_MS * 2 ** attempt;
 			await sleep(delayMs);
 		}
+	}
+	if (isTransientGeminiError(lastError)) {
+		throw new TooManyRequestsError(undefined, lastError);
 	}
 	throw lastError;
 }

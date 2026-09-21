@@ -36,3 +36,6 @@ next-env.d.ts
 
 # sorties locales (pdf→images, etc.)
 .tmp/
+
+# previews CV uploadées (local storage)
+public/uploads/

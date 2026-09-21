@@ -6,6 +6,7 @@ import { Button } from "primereact/button";
 import { Calendar } from "primereact/calendar";
 import { Dropdown } from "primereact/dropdown";
 import { InputNumber } from "primereact/inputnumber";
+import { Panel } from "primereact/panel";
 import { Toast } from "primereact/toast";
 import { TitleAppOne } from "@/components/title/TitleAppOne";
 import { AppCard } from "@/components/card/AppCard";
@@ -83,6 +84,7 @@ export function AdminUserDetailPage() {
 	const [planDraft, setPlanDraft] = useState<PlanRole | null>(null);
 	const [subEndDraft, setSubEndDraft] = useState<Date | null>(null);
 	const [giftTemplateId, setGiftTemplateId] = useState<string | null>(null);
+	const [actionsCollapsed, setActionsCollapsed] = useState(true);
 
 	useEffect(() => {
 		if (status === "loading") return;
@@ -254,29 +256,6 @@ export function AdminUserDetailPage() {
 							</p>
 						) : null}
 					</div>
-					{user ? (
-						<Button
-							type="button"
-							size="small"
-							severity={user.isActive ? "danger" : "success"}
-							outlined
-							label={user.isActive ? "Désactiver" : "Réactiver"}
-							disabled={busy || (isSelf && user.isActive)}
-							loading={busy}
-							onClick={() =>
-								updateMutation.mutate({
-									id: user.id,
-									isActive: !user.isActive,
-								})
-							}
-							tooltip={
-								isSelf && user.isActive
-									? "Impossible de désactiver votre propre compte"
-									: undefined
-							}
-							tooltipOptions={{ position: "top" }}
-						/>
-					) : null}
 				</div>
 			</div>
 
@@ -290,11 +269,14 @@ export function AdminUserDetailPage() {
 				</AppCard>
 			) : user ? (
 				<div className="flex flex-col gap-4">
-					<section className="admin-user-actions">
-						<h3 className="mb-2 m-0 text-sm font-semibold uppercase tracking-wide text-zinc-500">
-							Actions
-						</h3>
-						<AppCard>
+					<section>
+						<Panel
+							header="Actions"
+							toggleable
+							collapsed={actionsCollapsed}
+							onToggle={(e) => setActionsCollapsed(e.value)}
+							className="admin-user-actions admin-user-actions-panel"
+						>
 							<div className="grid gap-5 sm:grid-cols-2 sm:items-start">
 								<div className="flex flex-col gap-2">
 									<p className="m-0 text-sm font-medium text-zinc-900 dark:text-zinc-100">
@@ -599,8 +581,51 @@ export function AdminUserDetailPage() {
 										}}
 									/>
 								</div>
+
+								<div className="flex flex-col gap-2">
+									<p className="m-0 text-sm font-medium text-zinc-900 dark:text-zinc-100">
+										{user.isActive
+											? "Désactiver le compte"
+											: "Réactiver le compte"}
+									</p>
+									<p className="m-0 text-xs text-zinc-500">
+										{user.isActive
+											? "Empêche la connexion et l’usage du compte."
+											: "Rétablit l’accès au compte."}
+									</p>
+									<Button
+										type="button"
+										size="small"
+										severity={
+											user.isActive ? "danger" : "success"
+										}
+										outlined
+										label={
+											user.isActive
+												? "Désactiver"
+												: "Réactiver"
+										}
+										className="self-start"
+										disabled={
+											busy || (isSelf && user.isActive)
+										}
+										loading={busy}
+										onClick={() =>
+											updateMutation.mutate({
+												id: user.id,
+												isActive: !user.isActive,
+											})
+										}
+										tooltip={
+											isSelf && user.isActive
+												? "Impossible de désactiver votre propre compte"
+												: undefined
+										}
+										tooltipOptions={{ position: "top" }}
+									/>
+								</div>
 							</div>
-						</AppCard>
+						</Panel>
 					</section>
 
 					<div className="grid gap-4 lg:grid-cols-2 lg:items-start">

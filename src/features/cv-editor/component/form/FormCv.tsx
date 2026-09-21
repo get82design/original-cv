@@ -30,6 +30,10 @@ import { DialogImportReview } from "./DialogImportReview";
 import { fileToBase64 } from "../../utils/fileToBase64";
 import type { CvImportDraft } from "@/services/schemas/cvImportDraft.schema";
 import { applyImportDraftToForm } from "./mapImportDraftToCvDatas";
+import {
+	getClientErrorMessage,
+	isTooManyRequestsError,
+} from "@/utils/clientError";
 
 type RouterOutputs = inferRouterOutputs<AppRouter>;
 export type ProfileComplete = NonNullable<RouterOutputs["profile"]["completeMe"]>;
@@ -126,12 +130,15 @@ export const FormCv = ({ children, idCv, template, color }: FormCvProviderProps)
 		});
 	};
 
-	const showError = (detail?: string) => {
+	const showError = (detail?: string, summary = "Erreur") => {
 		toast?.current?.show({
 			severity: "error",
-			summary: "Erreur",
+			summary,
 			detail: detail || "Une erreur est survenue lors de la sauvegarde du CV",
-			life: 4000,
+			life:
+				summary === "Assistant saturé" || summary === "Limite d’imports"
+					? 7000
+					: 4000,
 		});
 	};
 
@@ -298,10 +305,15 @@ export const FormCv = ({ children, idCv, template, color }: FormCvProviderProps)
 			setVisibleStartContent(false);
 			setVisibleSelectModel(false);
 		} catch (err) {
+			const detail = getClientErrorMessage(err, "Échec de l’import du CV");
+			const quotaHit = detail.includes("Limite d’imports");
 			showError(
-				err instanceof Error
-					? err.message
-					: "Échec de l’import du CV",
+				detail,
+				isTooManyRequestsError(err)
+					? "Assistant saturé"
+					: quotaHit
+						? "Limite d’imports"
+						: "Erreur",
 			);
 		} finally {
 			setImportBusy(false);
@@ -353,8 +365,9 @@ export const FormCv = ({ children, idCv, template, color }: FormCvProviderProps)
 					previewUrlClean: withoutLogo,
 				});
 			}
-		} catch {
-			// le save a déjà réussi
+		} catch (err) {
+			// le save a déjà réussi — ne pas faire échouer la sauvegarde
+			console.error("[setPreview] failed after save", err);
 		}
 		reset(mapCvToSaveInput(saved));
 		loadedStampRef.current = `${saved.id}:${new Date(saved.updatedAt).toISOString()}`;
