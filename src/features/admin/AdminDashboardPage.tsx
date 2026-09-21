@@ -195,12 +195,26 @@ export function AdminDashboardPage() {
 					<h3 className="m-0 text-sm font-semibold uppercase tracking-wide text-zinc-500">
 						CV & modèles
 					</h3>
-					<Link
-						href="/admin/cvs?view=feed"
-						className="text-xs font-medium text-primary hover:underline dark:text-primary-dark"
-					>
-						Voir le détail →
-					</Link>
+					<div className="flex items-center gap-3">
+						<Link
+							href="/admin/templates"
+							className="text-xs font-medium text-primary hover:underline dark:text-primary-dark"
+						>
+							Catalogue →
+						</Link>
+						<Link
+							href="/admin/unlocks"
+							className="text-xs font-medium text-primary hover:underline dark:text-primary-dark"
+						>
+							Unlocks →
+						</Link>
+						<Link
+							href="/admin/cvs?view=feed"
+							className="text-xs font-medium text-primary hover:underline dark:text-primary-dark"
+						>
+							Voir le détail →
+						</Link>
+					</div>
 				</div>
 				<div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
 					<MetricCard
@@ -230,7 +244,7 @@ export function AdminDashboardPage() {
 									Top modèles
 								</p>
 								<p className="m-0 text-xs text-zinc-500 dark:text-zinc-400">
-									Classés par CV créés · DL sur la période
+									Popularité = moyenne (achats + CV + DL)
 								</p>
 							</div>
 							<Link
@@ -244,7 +258,7 @@ export function AdminDashboardPage() {
 							<p className="m-0 text-sm text-zinc-400">—</p>
 						) : (data?.cvs.topTemplates.length ?? 0) === 0 ? (
 							<p className="m-0 text-sm text-zinc-500 dark:text-zinc-400">
-								Aucun CV sur cette période.
+								Aucune activité sur cette période.
 							</p>
 						) : (
 							<ol className="m-0 flex list-decimal flex-col gap-1.5 pl-4 text-sm text-zinc-700 dark:text-zinc-300">
@@ -255,7 +269,10 @@ export function AdminDashboardPage() {
 										</span>
 										<span className="text-zinc-500 dark:text-zinc-400">
 											{" "}
-											· {t.cvCount} CV · {t.downloadCount}{" "}
+											· {t.popularityScore.toFixed(1)} pop
+											· {t.unlockCount} achat
+											{t.unlockCount > 1 ? "s" : ""} ·{" "}
+											{t.cvCount} CV · {t.downloadCount}{" "}
 											DL
 										</span>
 									</li>

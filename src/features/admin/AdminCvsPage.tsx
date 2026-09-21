@@ -33,6 +33,8 @@ const TEMPLATE_SORT_OPTIONS: {
 	label: string;
 	value: AdminTopTemplateSort;
 }[] = [
+	{ label: "Popularité", value: "popularityScore" },
+	{ label: "Achats / unlocks", value: "unlockCount" },
 	{ label: "CV créés", value: "cvCount" },
 	{ label: "DL total", value: "downloadCount" },
 	{ label: "DL gratuits", value: "freeDownloadCount" },
@@ -65,7 +67,7 @@ export function AdminCvsPage() {
 	const [view, setView] = useState<CvView>("feed");
 	const [period, setPeriod] = useState<AdminDashboardPeriod>("7d");
 	const [templateSort, setTemplateSort] =
-		useState<AdminTopTemplateSort>("cvCount");
+		useState<AdminTopTemplateSort>("popularityScore");
 	const [templateId, setTemplateId] = useState<string | null>(null);
 	const [primaryColorName, setPrimaryColorName] = useState<string | null>(
 		null,
@@ -440,7 +442,7 @@ export function AdminCvsPage() {
 					</AppCard>
 
 					<AppCard className="overflow-x-auto !p-0">
-						<table className="w-full min-w-[40rem] border-collapse text-left text-sm">
+						<table className="w-full min-w-[48rem] border-collapse text-left text-sm">
 							<thead>
 								<tr className="border-b border-zinc-200 bg-zinc-50 text-xs uppercase tracking-wide text-zinc-500 dark:border-zinc-700 dark:bg-zinc-900/60 dark:text-zinc-400">
 									<th className="px-4 py-3 font-semibold">
@@ -448,6 +450,12 @@ export function AdminCvsPage() {
 									</th>
 									<th className="px-3 py-3 font-semibold">
 										Modèle
+									</th>
+									<th className="px-3 py-3 font-semibold">
+										Pop.
+									</th>
+									<th className="px-3 py-3 font-semibold">
+										Achats
 									</th>
 									<th className="px-3 py-3 font-semibold">
 										CV
@@ -467,7 +475,7 @@ export function AdminCvsPage() {
 								{topTemplatesQuery.isLoading ? (
 									<tr>
 										<td
-											colSpan={6}
+											colSpan={8}
 											className="px-4 py-8 text-center text-zinc-500"
 										>
 											Chargement…
@@ -477,7 +485,7 @@ export function AdminCvsPage() {
 								  0 ? (
 									<tr>
 										<td
-											colSpan={6}
+											colSpan={8}
 											className="px-4 py-8 text-center text-zinc-500"
 										>
 											Aucun modèle.
@@ -494,6 +502,12 @@ export function AdminCvsPage() {
 											</td>
 											<td className="px-3 py-3 font-medium text-zinc-900 dark:text-zinc-100">
 												{t.name}
+											</td>
+											<td className="px-3 py-3 font-medium text-zinc-800 dark:text-zinc-200">
+												{t.popularityScore.toFixed(1)}
+											</td>
+											<td className="px-3 py-3 text-zinc-700 dark:text-zinc-300">
+												{t.unlockCount}
 											</td>
 											<td className="px-3 py-3 text-zinc-700 dark:text-zinc-300">
 												{t.cvCount}

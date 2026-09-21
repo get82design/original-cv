@@ -10,14 +10,17 @@ import { trpc } from "@utils/trpc";
 import { ProgressSpinner } from "primereact/progressspinner";
 import { PreviewImage } from "./compo/common/PreviewImage";
 import Link from "next/link";
-import { useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { DialogDownloadCv } from "@/components/dialog/DialogDownloadCv";
 import { DialogAssistantIa } from "@/components/dialog/DialogAssistantIa";
 import { Toast } from "primereact/toast";
+import { isTemplateLocked } from "../cv-editor/utils/isTemplateLocked";
+import { useSession } from "next-auth/react";
 
 export const ProfilePage = () => {
 	const { data: cvs, isLoading } = trpc.cv.allByUser.useQuery();
 	console.log("cvs", cvs);
+	const { status } = useSession();
 	const isLg = useMediaQuery("(min-width: 1024px)");
 	const isMd = useMediaQuery("(min-width: 768px)");
 	const isSm = useMediaQuery("(min-width: 640px)");
@@ -29,8 +32,28 @@ export const ProfilePage = () => {
 		undefined,
 		{ enabled: downloadCv != null },
 	);
+	const unlockedQuery = trpc.unlockedTemplate.findAll.useQuery(undefined, {
+		enabled: status === "authenticated" && downloadCv != null,
+	});
+	const unlockedIds = useMemo(
+		() => new Set((unlockedQuery.data ?? []).map((u) => u.templateId)),
+		[unlockedQuery.data],
+	);
+	const premiumLocked = useMemo(() => {
+		if (!downloadCv?.templateId || !downloadCv.template?.isPremium) {
+			return false;
+		}
+		return isTemplateLocked(
+			{
+				id: downloadCv.templateId,
+				isPremium: downloadCv.template.isPremium,
+			},
+			unlockedIds,
+		);
+	}, [downloadCv, unlockedIds]);
 	const consumeFreeDownloadMutation = trpc.user.consumeFreeDownload.useMutation();
 	const consumePaidDownloadMutation = trpc.user.consumePaidDownload.useMutation();
+	const unlockTemplateMutation = trpc.unlockedTemplate.unlock.useMutation();
 
 	const downloadPreviewWithLogo = downloadCv
 		? (downloadCv.previewUrl ??
@@ -99,6 +122,46 @@ export const ProfilePage = () => {
 		}
 	};
 
+	const onUnlockWithCredits = async () => {
+		const templateId = downloadCv?.templateId;
+		if (!templateId) return;
+		try {
+			await unlockTemplateMutation.mutateAsync({
+				templateId,
+				method: "credits",
+			});
+			await Promise.all([
+				utils.unlockedTemplate.findAll.invalidate(),
+				utils.user.getDownloadStatus.invalidate(),
+			]);
+			toast.current?.show({
+				severity: "success",
+				summary: "Modèle débloqué",
+				detail: "Vous pouvez maintenant télécharger votre CV.",
+				life: 3500,
+			});
+		} catch (err) {
+			toast.current?.show({
+				severity: "error",
+				summary: "Déblocage impossible",
+				detail:
+					err instanceof Error
+						? err.message
+						: "Une erreur est survenue.",
+				life: 5000,
+			});
+		}
+	};
+
+	const onUnlockWithStripe = () => {
+		toast.current?.show({
+			severity: "info",
+			summary: "Bientôt",
+			detail: "Le paiement Stripe sera disponible prochainement.",
+			life: 3500,
+		});
+	};
+
 	return (
 		<FormProfile>
 			<Toast ref={toast} position="top-center" />
@@ -110,9 +173,13 @@ export const ProfilePage = () => {
 				previewUrlWithoutLogo={downloadPreviewWithoutLogo}
 				freeDownloadsRemaining={downloadStatus?.freeDownloadsRemaining ?? 0}
 				downloadCredits={downloadStatus?.downloadCredits ?? 0}
+				premiumLocked={premiumLocked}
+				unlockPriceCredits={downloadCv?.template?.priceCredits ?? null}
+				unlockPriceCents={downloadCv?.template?.priceCents ?? null}
 				loading={
 					consumeFreeDownloadMutation.isPending ||
-					consumePaidDownloadMutation.isPending
+					consumePaidDownloadMutation.isPending ||
+					unlockTemplateMutation.isPending
 				}
 				onDownloadFree={() => {
 					void onDownloadFree();
@@ -120,6 +187,10 @@ export const ProfilePage = () => {
 				onDownloadPaid={() => {
 					void onDownloadPaid();
 				}}
+				onUnlockWithCredits={() => {
+					void onUnlockWithCredits();
+				}}
+				onUnlockWithStripe={onUnlockWithStripe}
 				onAdjust={() => setVisibleAssistantIa(true)}
 			/>
 			<DialogAssistantIa

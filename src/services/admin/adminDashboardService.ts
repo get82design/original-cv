@@ -40,10 +40,14 @@ export type AdminUserStats = {
 export type AdminTopTemplate = {
 	templateId: string;
 	name: string;
+	/** Unlocks / achats sur la période */
+	unlockCount: number;
 	/** CV créés avec ce modèle sur la période */
 	cvCount: number;
 	/** Téléchargements de ce modèle sur la période */
 	downloadCount: number;
+	/** Moyenne (unlocks + CV + DL) / 3 */
+	popularityScore: number;
 };
 
 export type AdminTopColor = {
@@ -119,50 +123,86 @@ export class AdminDashboardService {
 	): Promise<AdminCvStats> {
 		const since = periodStart(period, now);
 		const createdWhere = since ? { createdAt: { gte: since } } : {};
+		const unlockWhere = since ? { unlockedAt: { gte: since } } : {};
 
-		const [createdCount, existingCount, templateGroups] = await Promise.all([
-			prisma.cV.count({ where: createdWhere }),
-			prisma.cV.count(),
-			prisma.cV.groupBy({
-				by: ["templateId"],
-				where: createdWhere,
-				_count: { _all: true },
-				orderBy: { _count: { templateId: "desc" } },
-			}),
-		]);
+		const [createdCount, existingCount, templateGroups, unlockGroups, downloadGroups] =
+			await Promise.all([
+				prisma.cV.count({ where: createdWhere }),
+				prisma.cV.count(),
+				prisma.cV.groupBy({
+					by: ["templateId"],
+					where: createdWhere,
+					_count: { _all: true },
+				}),
+				prisma.unlockedTemplate.groupBy({
+					by: ["templateId"],
+					where: unlockWhere,
+					_count: { _all: true },
+				}),
+				prisma.downloadEvent.groupBy({
+					by: ["templateId"],
+					where: {
+						...(since ? { createdAt: { gte: since } } : {}),
+						templateId: { not: null },
+					},
+					_count: { _all: true },
+				}),
+			]);
 
-		const topGroups = templateGroups.slice(0, 5);
-		const topIds = topGroups.map((g) => g.templateId);
-
-		const [templates, downloadGroups] = await Promise.all([
-			topIds.length === 0
-				? Promise.resolve([] as Array<{ id: string; name: string }>)
-				: prisma.cVTemplate.findMany({
-						where: { id: { in: topIds } },
-						select: { id: true, name: true },
-					}),
-			prisma.downloadEvent.groupBy({
-				by: ["templateId"],
-				where: {
-					...(since ? { createdAt: { gte: since } } : {}),
-					templateId: { not: null },
-				},
-				_count: { _all: true },
-			}),
-		]);
-
-		const nameById = new Map(templates.map((t) => [t.id, t.name]));
+		const cvById = new Map(
+			templateGroups.map((g) => [g.templateId, g._count._all]),
+		);
+		const unlockById = new Map(
+			unlockGroups.map((g) => [g.templateId, g._count._all]),
+		);
 		const downloadsById = new Map(
 			downloadGroups
 				.filter((g) => g.templateId != null)
 				.map((g) => [g.templateId as string, g._count._all]),
 		);
 
+		const allTemplateIds = new Set([
+			...cvById.keys(),
+			...unlockById.keys(),
+			...downloadsById.keys(),
+		]);
+
+		const ranked = [...allTemplateIds].map((templateId) => {
+			const unlockCount = unlockById.get(templateId) ?? 0;
+			const cvCount = cvById.get(templateId) ?? 0;
+			const downloadCount = downloadsById.get(templateId) ?? 0;
+			return {
+				templateId,
+				unlockCount,
+				cvCount,
+				downloadCount,
+				popularityScore: (unlockCount + cvCount + downloadCount) / 3,
+			};
+		});
+		ranked.sort((a, b) => {
+			const diff = b.popularityScore - a.popularityScore;
+			if (diff !== 0) return diff;
+			return b.cvCount - a.cvCount;
+		});
+		const topGroups = ranked.slice(0, 5);
+		const topIds = topGroups.map((g) => g.templateId);
+
+		const templates =
+			topIds.length === 0
+				? ([] as Array<{ id: string; name: string }>)
+				: await prisma.cVTemplate.findMany({
+						where: { id: { in: topIds } },
+						select: { id: true, name: true },
+					});
+		const nameById = new Map(templates.map((t) => [t.id, t.name]));
+
 		const topTemplates: AdminTopTemplate[] = topGroups.map((g) => ({
 			templateId: g.templateId,
 			name: nameById.get(g.templateId) ?? g.templateId,
-			cvCount: g._count._all,
-			downloadCount: downloadsById.get(g.templateId) ?? 0,
+			unlockCount: g.unlockCount,
+			cvCount: g.cvCount,
+			downloadCount: g.downloadCount,
+			popularityScore: g.popularityScore,
 		}));
 
 		const colorGroups = await prisma.cV.groupBy({

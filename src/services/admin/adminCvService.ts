@@ -31,6 +31,8 @@ export type AdminCvFeedFilters = {
 };
 
 export type AdminTopTemplateSort =
+	| "popularityScore"
+	| "unlockCount"
 	| "cvCount"
 	| "downloadCount"
 	| "freeDownloadCount"
@@ -39,10 +41,16 @@ export type AdminTopTemplateSort =
 export type AdminTopTemplateRankItem = {
 	templateId: string;
 	name: string;
+	/** Achats / unlocks sur la période */
+	unlockCount: number;
 	cvCount: number;
 	downloadCount: number;
 	freeDownloadCount: number;
 	paidDownloadCount: number;
+	/**
+	 * Popularité = moyenne (unlocks + CV créés + DL) / 3
+	 */
+	popularityScore: number;
 };
 
 export type AdminTopColorRankItem = {
@@ -157,17 +165,19 @@ export class AdminCvService {
 
 	/**
 	 * Classement complet de tous les templates (catalogue),
-	 * avec CV créés + DL free/paid sur la période.
+	 * unlocks + CV créés + DL free/paid sur la période.
+	 * Popularité = moyenne (unlockCount + cvCount + downloadCount) / 3.
 	 */
 	async listTopTemplates(input: {
 		period?: AdminDashboardPeriod | undefined;
 		sortBy?: AdminTopTemplateSort | undefined;
 	}): Promise<AdminTopTemplateRankItem[]> {
 		const since = periodStart(input.period ?? "7d");
-		const sortBy: AdminTopTemplateSort = input.sortBy ?? "cvCount";
+		const sortBy: AdminTopTemplateSort = input.sortBy ?? "popularityScore";
 		const createdWhere = since ? { createdAt: { gte: since } } : {};
+		const unlockWhere = since ? { unlockedAt: { gte: since } } : {};
 
-		const [templates, cvGroups, dlGroups] = await Promise.all([
+		const [templates, cvGroups, dlGroups, unlockGroups] = await Promise.all([
 			prisma.cVTemplate.findMany({
 				select: { id: true, name: true },
 			}),
@@ -184,10 +194,18 @@ export class AdminCvService {
 				},
 				_count: { _all: true },
 			}),
+			prisma.unlockedTemplate.groupBy({
+				by: ["templateId"],
+				where: unlockWhere,
+				_count: { _all: true },
+			}),
 		]);
 
 		const cvById = new Map(
 			cvGroups.map((g) => [g.templateId, g._count._all]),
+		);
+		const unlockById = new Map(
+			unlockGroups.map((g) => [g.templateId, g._count._all]),
 		);
 		const freeById = new Map<string, number>();
 		const paidById = new Map<string, number>();
@@ -203,13 +221,18 @@ export class AdminCvService {
 		const items: AdminTopTemplateRankItem[] = templates.map((t) => {
 			const freeDownloadCount = freeById.get(t.id) ?? 0;
 			const paidDownloadCount = paidById.get(t.id) ?? 0;
+			const downloadCount = freeDownloadCount + paidDownloadCount;
+			const cvCount = cvById.get(t.id) ?? 0;
+			const unlockCount = unlockById.get(t.id) ?? 0;
 			return {
 				templateId: t.id,
 				name: t.name,
-				cvCount: cvById.get(t.id) ?? 0,
+				unlockCount,
+				cvCount,
 				freeDownloadCount,
 				paidDownloadCount,
-				downloadCount: freeDownloadCount + paidDownloadCount,
+				downloadCount,
+				popularityScore: (unlockCount + cvCount + downloadCount) / 3,
 			};
 		});
 

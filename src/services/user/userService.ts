@@ -6,6 +6,7 @@ import { ConflictError, NotFoundError, ValidationError } from "../errors";
 import type { UpdateUserInput } from "../schemas/user.schema";
 import { createHash, randomBytes } from "crypto";
 import { sendPasswordResetEmail } from "../mail/mailService";
+import { templateAccessService } from "../commons/templateAccessService";
 
 /** Raisons de cadeau free download — one-shot par user */
 export const FREE_DOWNLOAD_GRANT_REASONS = [
@@ -97,6 +98,8 @@ export class UserService {
 			throw new ValidationError("No free downloads available");
 		}
 
+		await this.assertPremiumDownloadAllowed(id, meta);
+
 		const [updated] = await prisma.$transaction([
 			prisma.user.update({
 				where: { id },
@@ -125,6 +128,8 @@ export class UserService {
 			throw new ValidationError("No download credits available");
 		}
 
+		await this.assertPremiumDownloadAllowed(id, meta);
+
 		const [updated] = await prisma.$transaction([
 			prisma.user.update({
 				where: { id },
@@ -141,6 +146,26 @@ export class UserService {
 			}),
 		]);
 		return updated;
+	}
+
+	/** Premium template : unlock requis avant export. */
+	private async assertPremiumDownloadAllowed(
+		userId: string,
+		meta?: { cvId?: string; templateId?: string },
+	) {
+		let templateId = meta?.templateId;
+		if (!templateId && meta?.cvId) {
+			const cv = await prisma.cV.findUnique({
+				where: { id: meta.cvId },
+				select: { templateId: true },
+			});
+			templateId = cv?.templateId;
+		}
+		if (!templateId) return;
+		await templateAccessService.assertCanDownloadTemplate(
+			userId,
+			templateId,
+		);
 	}
 
 	/**

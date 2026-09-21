@@ -3,7 +3,7 @@ import { useMediaQuery } from "@utils/useWindowWidth";
 import { TitleAppOne } from "@/components/title/TitleAppOne";
 import { useFormContext } from "react-hook-form";
 import type { TemplateModule } from "@/services/schemas/cvTemplate.schema";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { OneColumnModel } from "./component/kit-dnd/one-column-model/OneColumnModel";
 import {
 	clearEditorSelection,
@@ -41,6 +41,8 @@ import {
 } from "./utils/extractCvSectionForRewrite";
 import { applyCvRewriteToForm } from "./utils/applyCvRewriteToForm";
 import { useAiAdvice } from "./component/context/AiAdviceContext";
+import { useModelAndColorContext } from "./component/context/ModelAndColorContext";
+import { isTemplateLocked } from "./utils/isTemplateLocked";
 
 export const CvEditor = () => {
 	const { data } = trpc.cv.allByUser.useQuery();
@@ -77,6 +79,7 @@ export const CvEditor = () => {
 	const toast = useRef<Toast>(null);
 	const consumeFreeDownloadMutation = trpc.user.consumeFreeDownload.useMutation();
 	const consumePaidDownloadMutation = trpc.user.consumePaidDownload.useMutation();
+	const unlockTemplateMutation = trpc.unlockedTemplate.unlock.useMutation();
 	const { pushAdvice } = useAiAdvice();
 	const {
 		getValues,
@@ -88,6 +91,31 @@ export const CvEditor = () => {
 	const isLg = useMediaQuery("(min-width: 1024px)");
 	const isXl = useMediaQuery("(min-width: 1440px)");
 	const modules = watch("modules") as TemplateModule[];
+	const watchTemplateId = watch("templateId") as string | undefined;
+	const { modeles } = useModelAndColorContext();
+	const unlockedQuery = trpc.unlockedTemplate.findAll.useQuery(undefined, {
+		enabled: status === "authenticated",
+	});
+	const unlockedIds = useMemo(
+		() => new Set((unlockedQuery.data ?? []).map((u) => u.templateId)),
+		[unlockedQuery.data],
+	);
+	const premiumLocked = useMemo(() => {
+		if (!watchTemplateId) return false;
+		const model = modeles.find((m) => m.id === watchTemplateId);
+		if (!model) return false;
+		return isTemplateLocked(model, unlockedIds);
+	}, [watchTemplateId, modeles, unlockedIds]);
+	const unlockPricing = useMemo(() => {
+		if (!watchTemplateId) {
+			return { priceCredits: null as number | null, priceCents: null as number | null };
+		}
+		const model = modeles.find((m) => m.id === watchTemplateId);
+		return {
+			priceCredits: model?.priceCredits ?? null,
+			priceCents: model?.priceCents ?? null,
+		};
+	}, [watchTemplateId, modeles]);
 	const { setSectionSelected, setSelectModifInput, setSelectInputForm } =
 		useCreateCvContext();
 	const typography = watch("layoutGeneral.layout.typography");
@@ -312,6 +340,46 @@ export const CvEditor = () => {
 		}
 	};
 
+	const onUnlockWithCredits = async () => {
+		const templateId = (getValues("templateId") as string | undefined)?.trim();
+		if (!templateId) return;
+		try {
+			await unlockTemplateMutation.mutateAsync({
+				templateId,
+				method: "credits",
+			});
+			await Promise.all([
+				utils.unlockedTemplate.findAll.invalidate(),
+				utils.user.getDownloadStatus.invalidate(),
+			]);
+			toast.current?.show({
+				severity: "success",
+				summary: "Modèle débloqué",
+				detail: "Vous pouvez maintenant télécharger votre CV.",
+				life: 3500,
+			});
+		} catch (err) {
+			toast.current?.show({
+				severity: "error",
+				summary: "Déblocage impossible",
+				detail:
+					err instanceof Error
+						? err.message
+						: "Une erreur est survenue.",
+				life: 5000,
+			});
+		}
+	};
+
+	const onUnlockWithStripe = () => {
+		toast.current?.show({
+			severity: "info",
+			summary: "Bientôt",
+			detail: "Le paiement Stripe sera disponible prochainement.",
+			life: 3500,
+		});
+	};
+
 	const runCvReview = async () => {
 		if (status !== "authenticated") {
 			toast.current?.show({
@@ -473,9 +541,13 @@ export const CvEditor = () => {
 					title={(getValues("title") as string) || "Votre CV"}
 					freeDownloadsRemaining={downloadStatus?.freeDownloadsRemaining ?? 0}
 					downloadCredits={downloadStatus?.downloadCredits ?? 0}
+					premiumLocked={premiumLocked}
+					unlockPriceCredits={unlockPricing.priceCredits}
+					unlockPriceCents={unlockPricing.priceCents}
 					loading={
 						consumeFreeDownloadMutation.isPending ||
-						consumePaidDownloadMutation.isPending
+						consumePaidDownloadMutation.isPending ||
+						unlockTemplateMutation.isPending
 					}
 					onDownloadFree={() => {
 						void onDownloadFree();
@@ -483,6 +555,10 @@ export const CvEditor = () => {
 					onDownloadPaid={() => {
 						void onDownloadPaid();
 					}}
+					onUnlockWithCredits={() => {
+						void onUnlockWithCredits();
+					}}
+					onUnlockWithStripe={onUnlockWithStripe}
 					onAdjust={() => setVisibleAssistantIa(true)}
 				/>
 				<DialogAssistantIa

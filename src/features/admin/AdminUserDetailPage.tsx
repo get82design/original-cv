@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import Link from "next/link";
@@ -10,7 +10,7 @@ import { Toast } from "primereact/toast";
 import { TitleAppOne } from "@/components/title/TitleAppOne";
 import { AppCard } from "@/components/card/AppCard";
 import { trpc } from "@utils/trpc";
-import { PlanRole } from "../../../generated/prisma/enums";
+import { PlanRole, UnlockMethod } from "../../../generated/prisma/enums";
 
 const PLAN_OPTIONS: { label: string; value: PlanRole }[] = [
 	{ label: "FREE", value: PlanRole.FREE },
@@ -52,6 +52,13 @@ function aiFeatureLabel(
 	}
 }
 
+function unlockMethodLabel(method: UnlockMethod | null | undefined) {
+	if (method === UnlockMethod.CREDITS) return "Crédits";
+	if (method === UnlockMethod.STRIPE) return "Stripe";
+	if (method === UnlockMethod.GIFT) return "Cadeau";
+	return null;
+}
+
 function InfoRow({ label, value }: { label: string; value: ReactNode }) {
 	return (
 		<div className="flex flex-col gap-0.5 border-b border-zinc-100 py-2 last:border-0 dark:border-zinc-800 sm:flex-row sm:items-baseline sm:justify-between sm:gap-4">
@@ -75,6 +82,7 @@ export function AdminUserDetailPage() {
 	const [freeDraft, setFreeDraft] = useState<number | null>(null);
 	const [planDraft, setPlanDraft] = useState<PlanRole | null>(null);
 	const [subEndDraft, setSubEndDraft] = useState<Date | null>(null);
+	const [giftTemplateId, setGiftTemplateId] = useState<string | null>(null);
 
 	useEffect(() => {
 		if (status === "loading") return;
@@ -86,6 +94,10 @@ export function AdminUserDetailPage() {
 	const utils = trpc.useUtils();
 	const detailQuery = trpc.admin.getUser.useQuery(
 		{ id: id! },
+		{ enabled: status === "authenticated" && isAdmin && !!id },
+	);
+	const templatesQuery = trpc.admin.listTemplates.useQuery(
+		{ page: 1, pageSize: 50, isPremium: true, isActive: true },
 		{ enabled: status === "authenticated" && isAdmin && !!id },
 	);
 
@@ -146,6 +158,46 @@ export function AdminUserDetailPage() {
 		},
 	});
 
+	const unlockGiftMutation = trpc.admin.unlockTemplateForUser.useMutation({
+		onSuccess: async () => {
+			toast.current?.show({
+				severity: "success",
+				summary: "Modèle offert",
+				detail: "Template débloqué (cadeau) + cadeaux unlock appliqués.",
+				life: 3500,
+			});
+			setGiftTemplateId(null);
+			await Promise.all([
+				invalidateUser(),
+				utils.admin.listUnlocks.invalidate(),
+			]);
+		},
+		onError: (err) => {
+			toast.current?.show({
+				severity: "error",
+				summary: "Déblocage impossible",
+				detail: err.message || "Une erreur est survenue.",
+				life: 4000,
+			});
+		},
+	});
+
+	const unlockedTemplateIds = useMemo(() => {
+		const ids = new Set<string>();
+		for (const p of detailQuery.data?.purchaseHistory ?? []) {
+			if (p.kind === "TEMPLATE" && p.templateId) {
+				ids.add(p.templateId);
+			}
+		}
+		return ids;
+	}, [detailQuery.data?.purchaseHistory]);
+
+	const giftTemplateOptions = useMemo(() => {
+		return (templatesQuery.data?.items ?? [])
+			.filter((t) => !unlockedTemplateIds.has(t.id))
+			.map((t) => ({ label: t.name, value: t.id }));
+	}, [templatesQuery.data?.items, unlockedTemplateIds]);
+
 	if (status === "loading" || !router.isReady) {
 		return (
 			<div className="mx-auto max-w-6xl px-4 py-10">
@@ -163,7 +215,10 @@ export function AdminUserDetailPage() {
 	}
 
 	const user = detailQuery.data;
-	const busy = updateMutation.isPending || softResetMutation.isPending;
+	const busy =
+		updateMutation.isPending ||
+		softResetMutation.isPending ||
+		unlockGiftMutation.isPending;
 	const planDirty =
 		planDraft != null &&
 		(planDraft !== user?.plan ||
@@ -329,34 +384,62 @@ export function AdminUserDetailPage() {
 
 								<div className="flex flex-col gap-2">
 									<p className="m-0 text-sm font-medium text-zinc-900 dark:text-zinc-100">
-										Reset soft
+										Offrir un modèle premium
 									</p>
 									<p className="m-0 text-xs text-zinc-500">
-										Crédits, free DL et compteur IA → 0.
-										Compte / CV / historique conservés.
+										Débloque le template (méthode cadeau) et
+										applique les unlockGifts configurés.
 									</p>
-									<Button
-										type="button"
-										size="small"
-										severity="warning"
-										outlined
-										label="Reset soft"
-										className="self-start"
-										disabled={busy}
-										loading={softResetMutation.isPending}
-										onClick={() => {
-											if (
-												!window.confirm(
-													"Remettre crédits, free DL et compteur IA à zéro ?",
-												)
-											) {
-												return;
+									<div className="flex flex-wrap items-end gap-2">
+										<div className="min-w-0 flex-1">
+											<label className="mb-1 block text-xs text-zinc-500">
+												Modèle
+											</label>
+											<Dropdown
+												value={giftTemplateId}
+												options={giftTemplateOptions}
+												onChange={(e) =>
+													setGiftTemplateId(
+														(e.value as string | null) ??
+															null,
+													)
+												}
+												placeholder={
+													giftTemplateOptions.length ===
+													0
+														? "Aucun modèle disponible"
+														: "Choisir un modèle…"
+												}
+												className="w-full"
+												panelClassName="admin-dropdown-panel"
+												disabled={
+													busy ||
+													giftTemplateOptions.length ===
+														0
+												}
+												filter
+											/>
+										</div>
+										<Button
+											type="button"
+											size="small"
+											label="Offrir"
+											disabled={
+												busy || giftTemplateId == null
 											}
-											softResetMutation.mutate({
-												id: user.id,
-											});
-										}}
-									/>
+											loading={
+												unlockGiftMutation.isPending
+											}
+											onClick={() => {
+												if (!giftTemplateId || !user)
+													return;
+												unlockGiftMutation.mutate({
+													userId: user.id,
+													templateId: giftTemplateId,
+												});
+											}}
+										/>
+									</div>
 								</div>
 
 								<div className="flex flex-col gap-2">
@@ -484,6 +567,37 @@ export function AdminUserDetailPage() {
 											))}
 										</div>
 									</div>
+								</div>
+								<div className="flex flex-col gap-2">
+									<p className="m-0 text-sm font-medium text-zinc-900 dark:text-zinc-100">
+										Reset soft
+									</p>
+									<p className="m-0 text-xs text-zinc-500">
+										Crédits, free DL et compteur IA → 0.
+										Compte / CV / historique conservés.
+									</p>
+									<Button
+										type="button"
+										size="small"
+										severity="warning"
+										outlined
+										label="Reset soft"
+										className="self-start"
+										disabled={busy}
+										loading={softResetMutation.isPending}
+										onClick={() => {
+											if (
+												!window.confirm(
+													"Remettre crédits, free DL et compteur IA à zéro ?",
+												)
+											) {
+												return;
+											}
+											softResetMutation.mutate({
+												id: user.id,
+											});
+										}}
+									/>
 								</div>
 							</div>
 						</AppCard>
@@ -692,7 +806,10 @@ export function AdminUserDetailPage() {
 												Détail
 											</th>
 											<th className="px-3 py-2 font-semibold">
-												Qté
+												Méthode
+											</th>
+											<th className="px-3 py-2 font-semibold">
+												Cadeaux
 											</th>
 										</tr>
 									</thead>
@@ -712,7 +829,7 @@ export function AdminUserDetailPage() {
 														</span>
 													) : (
 														<span className="font-medium text-sky-600 dark:text-sky-300">
-															Cadeau free
+															Free DL
 														</span>
 													)}
 												</td>
@@ -720,7 +837,14 @@ export function AdminUserDetailPage() {
 													{p.label}
 												</td>
 												<td className="px-3 py-2 text-xs text-zinc-500">
-													{p.amount ?? "—"}
+													{p.kind === "TEMPLATE"
+														? (unlockMethodLabel(
+																p.method,
+															) ?? "—")
+														: "—"}
+												</td>
+												<td className="px-3 py-2 text-xs text-zinc-500">
+													{p.amountLabel ?? "—"}
 												</td>
 											</tr>
 										))}

@@ -11,6 +11,7 @@ import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { useModelAndColorContext } from "../cv-editor/component/context/ModelAndColorContext";
 import { galleryDemoValues } from "./galleryDemoValues";
 import { LoadingBadge } from "@/components/feedback/LoadingBadge";
+import { TemplateCatalogBadges } from "@/components/badge/TemplateCatalogBadges";
 import { ProgressSpinner } from "primereact/progressspinner";
 import { PageLayoutRegister } from "../cv-editor/component/kit-dnd/register/PageLayoutRegister";
 import Image from "next/image";
@@ -279,6 +280,13 @@ function GalleryCard({
 				sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
 				className="object-cover object-top"
 			/>
+			<div className="absolute top-2 right-2 z-30">
+				<TemplateCatalogBadges
+					isFeatured={template.isFeatured}
+					isPremium={template.isPremium}
+					size="sm"
+				/>
+			</div>
 			{!live && (
 				<>
 					<p className="absolute bottom-0 inset-x-0 z-10 text-center text-sm font-semibold px-2 py-1 bg-black/40 text-white">
@@ -332,13 +340,15 @@ export default function ModelList() {
 
 	const filteredTemplates = useMemo(() => {
 		if (!templates?.length) return [];
-		let list = templates;
+		let list = [...templates];
 		if (columnFilter !== "all") {
 			list = list.filter((t) => getTemplateColumns(t) === columnFilter);
 		}
 		if (selectionMode) {
 			list = list.filter((t) => selectedIds.has(t.id));
 		}
+		// Featured d’abord (sortOrder déjà appliqué côté API)
+		list.sort((a, b) => Number(b.isFeatured) - Number(a.isFeatured));
 		return list;
 	}, [templates, columnFilter, selectionMode, selectedIds]);
 

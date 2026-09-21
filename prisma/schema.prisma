@@ -170,16 +170,25 @@ model AiEvent {
 }
 
 // === La Table de Liaison : Pour savoir quel utilisateur a acheté quel Template Premium ===
+enum UnlockMethod {
+  GIFT
+  CREDITS
+  STRIPE
+}
+
 model UnlockedTemplate {
   id         String   @id @default(cuid())
   templateId String   // ID du template (ex: "minimalist-dark-2026")
   template   CVTemplate @relation(fields: [templateId], references: [id], onDelete: Cascade)
   unlockedAt DateTime @default(now())
+  method     UnlockMethod @default(GIFT)
 
   userId     String
   user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, templateId]) // Un utilisateur ne peut pas acheter 2 fois le même template
+  @@index([unlockedAt])
+  @@index([method])
 }
 
 // === Profil utilisateur ===
@@ -1070,8 +1079,29 @@ model CVTemplate {
   name String @unique                          // nom du template
   structure    Json                            // structure du template (zones, sections)
   defaultStyles Json                           // styles par défaut (fontSize, color, align, show, etc.)
+  /** Visible dans le sélecteur produit */
+  isActive   Boolean @default(true)
+  /** false = free ; true = nécessite UnlockedTemplate (ou abo plus tard) */
+  isPremium  Boolean @default(false)
+  /** Prix catalogue en centimes (null = non tarifé / free) */
+  priceCents Int?
+  /** Prix catalogue en crédits DL (null = non achetable en crédits) */
+  priceCredits Int?
+  /** Mis en avant dans le catalogue */
+  isFeatured Boolean @default(false)
+  /** Ordre d’affichage (plus petit = plus haut) */
+  sortOrder  Int @default(0)
+  /**
+   * Cadeaux à l’unlock / achat (JSON).
+   * Ex. { "downloadCredits": 2, "freeDownloads": 1 }
+   * Stripe / admin unlock liront ce contrat plus tard.
+   */
+  unlockGifts Json?
   cvs           CV[]                           // CVs utilisant ce template
   unlockedTemplates UnlockedTemplate[]         // Table de liaison pour savoir quel utilisateur a acheté quel Template Premium
+
+  @@index([isActive, sortOrder])
+  @@index([isPremium])
 }
 
 // === Item d'un module ===

@@ -437,7 +437,8 @@ html.dark #panel-modif-cv.cv-modif-tabview {
 .p-dialog.dialog-start-content,
 .p-dialog.dialog-import-review,
 .p-dialog.dialog-cv-review-result,
-.p-dialog.dialog-rewrite-section {
+.p-dialog.dialog-rewrite-section,
+.p-dialog.dialog-admin-template {
     background: #ffffff;
     border: 1px solid #e4e4e7;
     color: #18181b;
@@ -463,6 +464,11 @@ html.dark #panel-modif-cv.cv-modif-tabview {
         color: #18181b;
     }
 
+    &.dialog-admin-template .p-dialog-content {
+        padding-top: 1rem;
+        padding-bottom: 1rem;
+    }
+
     .p-dialog-footer {
         border-top-color: #e4e4e7;
         padding: 0.625rem 1rem;
@@ -477,7 +483,8 @@ html.dark .p-dialog.dialog-assistant-ia,
 html.dark .p-dialog.dialog-start-content,
 html.dark .p-dialog.dialog-import-review,
 html.dark .p-dialog.dialog-cv-review-result,
-html.dark .p-dialog.dialog-rewrite-section {
+html.dark .p-dialog.dialog-rewrite-section,
+html.dark .p-dialog.dialog-admin-template {
     background: #18181b;
     border-color: #3f3f46;
     color: #f4f4f5;
@@ -507,6 +514,11 @@ html.dark .p-dialog.dialog-rewrite-section {
         border-top-color: #3f3f46;
         padding: 0.625rem 1rem;
     }
+}
+
+html.dark .p-dialog.dialog-admin-template .p-checkbox .p-checkbox-box {
+    background: #18181b;
+    border-color: #3f3f46;
 }
 
 /* Sidebar ModelList — light/dark */
@@ -769,4 +781,91 @@ html.dark .admin-user-actions .p-calendar .p-datepicker-trigger {
     background: #27272a;
     color: #d4d4d8;
     border-color: #3f3f46;
+}
+
+/* Dropdown overlay (append to body) — panel + filtre light/dark */
+.p-dropdown-panel.admin-dropdown-panel {
+    background: #ffffff;
+    color: #18181b;
+    border: 1px solid #d4d4d8;
+}
+
+.p-dropdown-panel.admin-dropdown-panel .p-dropdown-header {
+    background: #fafafa;
+    border-bottom: 1px solid #e4e4e7;
+}
+
+.p-dropdown-panel.admin-dropdown-panel .p-dropdown-filter,
+.p-dropdown-panel.admin-dropdown-panel .p-inputtext {
+    background: #ffffff;
+    color: #18181b;
+    border-color: #d4d4d8;
+}
+
+.p-dropdown-panel.admin-dropdown-panel .p-dropdown-filter::placeholder,
+.p-dropdown-panel.admin-dropdown-panel .p-inputtext::placeholder {
+    color: #a1a1aa;
+}
+
+.p-dropdown-panel.admin-dropdown-panel .p-dropdown-item {
+    color: #18181b;
+}
+
+.p-dropdown-panel.admin-dropdown-panel .p-dropdown-item:not(.p-highlight):not(.p-disabled):hover {
+    background: #f4f4f5;
+    color: #18181b;
+}
+
+.p-dropdown-panel.admin-dropdown-panel .p-dropdown-item.p-highlight {
+    background: #e4e4e7;
+    color: #18181b;
+}
+
+.p-dropdown-panel.admin-dropdown-panel .p-dropdown-empty-message {
+    color: #71717a;
+}
+
+html.dark .p-dropdown-panel.admin-dropdown-panel {
+    background: #18181b;
+    color: #f4f4f5;
+    border-color: #3f3f46;
+}
+
+html.dark .p-dropdown-panel.admin-dropdown-panel .p-dropdown-header {
+    background: #27272a;
+    border-bottom-color: #3f3f46;
+}
+
+html.dark .p-dropdown-panel.admin-dropdown-panel .p-dropdown-filter,
+html.dark .p-dropdown-panel.admin-dropdown-panel .p-inputtext {
+    background: #09090b;
+    color: #f4f4f5;
+    border-color: #3f3f46;
+}
+
+html.dark .p-dropdown-panel.admin-dropdown-panel .p-dropdown-filter::placeholder,
+html.dark .p-dropdown-panel.admin-dropdown-panel .p-inputtext::placeholder {
+    color: #71717a;
+}
+
+html.dark .p-dropdown-panel.admin-dropdown-panel .p-dropdown-filter-icon {
+    color: #a1a1aa;
+}
+
+html.dark .p-dropdown-panel.admin-dropdown-panel .p-dropdown-item {
+    color: #f4f4f5;
+}
+
+html.dark .p-dropdown-panel.admin-dropdown-panel .p-dropdown-item:not(.p-highlight):not(.p-disabled):hover {
+    background: #27272a;
+    color: #f4f4f5;
+}
+
+html.dark .p-dropdown-panel.admin-dropdown-panel .p-dropdown-item.p-highlight {
+    background: #3f3f46;
+    color: #f4f4f5;
+}
+
+html.dark .p-dropdown-panel.admin-dropdown-panel .p-dropdown-empty-message {
+    color: #a1a1aa;
 }

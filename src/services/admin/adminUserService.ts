@@ -1,5 +1,7 @@
 import type { PlanRole, Prisma } from "../../../generated/prisma/client";
+import type { UnlockMethod } from "../../../generated/prisma/enums";
 import { prisma } from "../../../lib/prisma";
+import { parseUnlockGifts } from "../commons/templateAccess";
 import { NotFoundError, ValidationError } from "../errors";
 
 export type AdminUserListItem = {
@@ -73,6 +75,10 @@ export type AdminUserDetail = {
 		kind: "TEMPLATE" | "FREE_GRANT";
 		label: string;
 		amount: number | null;
+		/** Affichage humain (ex. « 2 free DL · 3 crédits ») */
+		amountLabel: string | null;
+		templateId?: string | undefined;
+		method?: UnlockMethod | null | undefined;
 	}>;
 };
 
@@ -220,8 +226,11 @@ export class AdminUserService {
 					select: {
 						id: true,
 						unlockedAt: true,
+						method: true,
 						templateId: true,
-						template: { select: { name: true } },
+						template: {
+							select: { name: true, unlockGifts: true },
+						},
 					},
 				},
 				downloadGrants: {
@@ -239,6 +248,31 @@ export class AdminUserService {
 
 		if (!user) {
 			throw new NotFoundError("USER", id);
+		}
+
+		const templateNameById = new Map(
+			user.unlockedTemplates.map((t) => [
+				t.templateId,
+				t.template.name,
+			]),
+		);
+
+		const missingGrantTemplateIds = new Set<string>();
+		for (const g of user.downloadGrants) {
+			for (const tid of templateIdsFromGrantReason(g.reason)) {
+				if (!templateNameById.has(tid)) {
+					missingGrantTemplateIds.add(tid);
+				}
+			}
+		}
+		if (missingGrantTemplateIds.size > 0) {
+			const missing = await prisma.cVTemplate.findMany({
+				where: { id: { in: [...missingGrantTemplateIds] } },
+				select: { id: true, name: true },
+			});
+			for (const t of missing) {
+				templateNameById.set(t.id, t.name);
+			}
 		}
 
 		return {
@@ -290,13 +324,23 @@ export class AdminUserService {
 					kind: "TEMPLATE" as const,
 					label: t.template.name,
 					amount: null,
+					amountLabel: unlockGiftsAmountLabel(
+						t.method,
+						t.template.unlockGifts,
+					),
+					templateId: t.templateId,
+					method: t.method,
 				})),
-				...user.downloadGrants.map((g) => ({
+				...user.downloadGrants
+					.filter((g) => !isTemplateUnlockGrantReason(g.reason))
+					.map((g) => ({
 					id: g.id,
 					createdAt: g.createdAt,
 					kind: "FREE_GRANT" as const,
-					label: grantReasonLabel(g.reason),
+					label: grantReasonLabel(g.reason, templateNameById),
 					amount: g.amount,
+					amountLabel:
+						g.amount > 0 ? `${g.amount} free DL` : null,
 				})),
 			].sort(
 				(a, b) => b.createdAt.getTime() - a.createdAt.getTime(),
@@ -443,7 +487,67 @@ export class AdminUserService {
 	}
 }
 
-function grantReasonLabel(reason: string): string {
+function isTemplateUnlockGrantReason(reason: string): boolean {
+	return (
+		reason.startsWith("TEMPLATE_UNLOCK:") ||
+		reason.startsWith("TEMPLATE_UNLOCK_BULK:")
+	);
+}
+
+function unlockGiftsAmountLabel(
+	method: UnlockMethod,
+	unlockGifts: unknown,
+): string | null {
+	const gifts = parseUnlockGifts(unlockGifts);
+	if (!gifts) return null;
+	const free = gifts.freeDownloads ?? 0;
+	/** Cadeau crédits uniquement hors paiement crédits */
+	const credits =
+		method === "CREDITS" ? 0 : (gifts.downloadCredits ?? 0);
+	const parts: string[] = [];
+	if (free > 0) parts.push(`${free} free DL`);
+	if (credits > 0) {
+		parts.push(`${credits} crédit${credits > 1 ? "s" : ""}`);
+	}
+	return parts.length > 0 ? parts.join(" · ") : null;
+}
+
+function templateIdsFromGrantReason(reason: string): string[] {
+	if (reason.startsWith("TEMPLATE_UNLOCK_BULK:")) {
+		return reason
+			.slice("TEMPLATE_UNLOCK_BULK:".length)
+			.split(",")
+			.map((s) => s.trim())
+			.filter(Boolean);
+	}
+	if (reason.startsWith("TEMPLATE_UNLOCK:")) {
+		const id = reason.slice("TEMPLATE_UNLOCK:".length).trim();
+		return id ? [id] : [];
+	}
+	return [];
+}
+
+function grantReasonLabel(
+	reason: string,
+	templateNameById?: ReadonlyMap<string, string>,
+): string {
+	if (reason.startsWith("TEMPLATE_UNLOCK_BULK:")) {
+		const ids = templateIdsFromGrantReason(reason);
+		const names = ids
+			.map((id) => templateNameById?.get(id))
+			.filter((n): n is string => !!n);
+		if (names.length > 0) {
+			return `Free DL · unlock ${names.join(", ")}`;
+		}
+		return "Free DL · unlocks groupés";
+	}
+	if (reason.startsWith("TEMPLATE_UNLOCK:")) {
+		const [id] = templateIdsFromGrantReason(reason);
+		const name = id ? templateNameById?.get(id) : undefined;
+		return name
+			? `Free DL · unlock ${name}`
+			: "Free DL · unlock template";
+	}
 	switch (reason) {
 		case "PROFILE_CREATED":
 			return "Cadeau · profil créé";

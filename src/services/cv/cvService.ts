@@ -2,6 +2,7 @@ import { prisma } from "../../../lib/prisma";
 import { ForbiddenError, NotFoundError, ValidationError } from "../errors";
 import { AppError } from "../errors/AppError";
 import type { CreateCvInput, UpdateCvInput } from "../schemas/cv.schema";
+import { templateAccessService } from "../commons/templateAccessService";
 import { userService } from "../user/userService";
 import { extractPrimaryColorName } from "./extractPrimaryColorName";
 
@@ -32,6 +33,11 @@ export class CvService {
 		if (!template) {
 			throw new NotFoundError("Template");
 		}
+
+		await templateAccessService.assertCanUseTemplate(
+			data.userId,
+			data.templateId,
+		);
 
 		const existing = await prisma.cV.findFirst({
 			where: {
@@ -133,6 +139,13 @@ export class CvService {
 			throw new ForbiddenError("You cannot update this CV");
 		}
 
+		if (data.templateId !== undefined) {
+			await templateAccessService.assertCanUseTemplate(
+				userId,
+				data.templateId,
+			);
+		}
+
 		return prisma.cV.update({
 			where: {
 				id: cvId,
@@ -182,7 +195,14 @@ export class CvService {
 				title: true,
 				photo: true,
 				templateId: true,
-				template: { select: { name: true } },
+				template: {
+					select: {
+						name: true,
+						isPremium: true,
+						priceCents: true,
+						priceCredits: true,
+					},
+				},
 				userId: true,
 				createdAt: true,
 				updatedAt: true,

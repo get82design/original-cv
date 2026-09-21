@@ -74,7 +74,7 @@ describe("CvTemplateService.findById", () => {
 
 describe("CvTemplateService.findAll", () => {
 	// TEST 1 : recherche nominale
-	it("returns all templates", async () => {
+	it("returns all active templates", async () => {
 		await cvTemplateService.create({
 			name: "Template Moderne",
 			structure: {
@@ -104,6 +104,29 @@ describe("CvTemplateService.findAll", () => {
 		expect(templates.map((template) => template.name)).toContain(
 			"Template Classique",
 		);
+		expect(templates.every((t) => t.isActive)).toBe(true);
+	});
+
+	it("excludes inactive templates from catalog", async () => {
+		const active = await cvTemplateService.create({
+			name: "Template Actif Catalog",
+			structure: { sections: [] },
+			defaultStyles: { color: "black" },
+		});
+		const inactive = await cvTemplateService.create({
+			name: "Template Inactif Catalog",
+			structure: { sections: [] },
+			defaultStyles: { color: "black" },
+		});
+		const { prismaTest } = await import("../../../lib/prismaTest");
+		await prismaTest.cVTemplate.update({
+			where: { id: inactive.id },
+			data: { isActive: false },
+		});
+
+		const templates = await cvTemplateService.findAll();
+		expect(templates.some((t) => t.id === active.id)).toBe(true);
+		expect(templates.some((t) => t.id === inactive.id)).toBe(false);
 	});
 
 	// TEST 2 : pas de templates existants

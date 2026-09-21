@@ -4,11 +4,21 @@ import { protectedProcedure, router } from "../trpc";
 
 export const unlockedTemplateRouter = router({
 	unlock: protectedProcedure
-		.input(z.object({ templateId: z.string() }))
+		.input(
+			z.object({
+				templateId: z.string(),
+				/**
+				 * Self-service : crédits uniquement.
+				 * Gift / Stripe passeront par admin ou webhook plus tard.
+				 */
+				method: z.literal("credits"),
+			}),
+		)
 		.mutation(async ({ input, ctx }) => {
 			return unlockedTemplateService.unlockTemplate(
 				ctx.session.user.id,
 				input.templateId,
+				{ method: "credits" },
 			);
 		}),
 

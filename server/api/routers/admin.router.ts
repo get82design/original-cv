@@ -1,9 +1,11 @@
-import { DownloadVariant, PlanRole, AiFeature } from "../../../generated/prisma/enums";
+import { DownloadVariant, PlanRole, AiFeature, UnlockMethod } from "../../../generated/prisma/enums";
 import { ValidationError } from "../../../src/services/errors";
 import { adminProcedure, router } from "../trpc";
 import { adminAiService } from "../../../src/services/admin/adminAiService";
 import { adminCvService } from "../../../src/services/admin/adminCvService";
 import { adminDownloadService } from "../../../src/services/admin/adminDownloadService";
+import { adminTemplateService } from "../../../src/services/admin/adminTemplateService";
+import { adminUnlockService } from "../../../src/services/admin/adminUnlockService";
 import { adminUserService } from "../../../src/services/admin/adminUserService";
 import {
 	adminDashboardPeriodSchema,
@@ -13,6 +15,36 @@ import { z } from "zod";
 
 export type { AdminDashboardPeriod } from "../../../src/services/admin/adminDashboardService";
 export { adminDashboardPeriodSchema };
+
+const unlockGiftsSchema = z
+	.object({
+		downloadCredits: z.number().int().min(0).max(10_000).optional(),
+		freeDownloads: z.number().int().min(0).max(10_000).optional(),
+	})
+	.strict();
+
+const updateTemplateCatalogSchema = z
+	.object({
+		id: z.string().min(1),
+		isActive: z.boolean().optional(),
+		isPremium: z.boolean().optional(),
+		priceCents: z.number().int().min(0).max(100_000_000).nullable().optional(),
+		priceCredits: z.number().int().min(0).max(10_000).nullable().optional(),
+		isFeatured: z.boolean().optional(),
+		sortOrder: z.number().int().min(0).max(10_000).optional(),
+		unlockGifts: unlockGiftsSchema.nullable().optional(),
+	})
+	.refine(
+		(v) =>
+			typeof v.isActive === "boolean" ||
+			typeof v.isPremium === "boolean" ||
+			v.priceCents !== undefined ||
+			v.priceCredits !== undefined ||
+			typeof v.isFeatured === "boolean" ||
+			typeof v.sortOrder === "number" ||
+			v.unlockGifts !== undefined,
+		{ message: "Au moins un champ catalogue à mettre à jour" },
+	);
 
 const updateUserInputSchema = z
 	.object({
@@ -109,6 +141,17 @@ export const adminRouter = router({
 		.input(z.object({ id: z.string().min(1) }))
 		.mutation(({ input }) => adminUserService.softResetUser(input.id)),
 
+	unlockTemplateForUser: adminProcedure
+		.input(
+			z.object({
+				userId: z.string().min(1),
+				templateId: z.string().min(1),
+			}),
+		)
+		.mutation(({ input }) =>
+			adminUnlockService.unlockForUser(input.userId, input.templateId),
+		),
+
 	listDownloads: adminProcedure
 		.input(
 			z.object({
@@ -142,15 +185,30 @@ export const adminRouter = router({
 				period: adminDashboardPeriodSchema.default("7d"),
 				sortBy: z
 					.enum([
+						"popularityScore",
+						"unlockCount",
 						"cvCount",
 						"downloadCount",
 						"freeDownloadCount",
 						"paidDownloadCount",
 					])
-					.default("cvCount"),
+					.default("popularityScore"),
 			}),
 		)
 		.query(({ input }) => adminCvService.listTopTemplates(input)),
+
+	listUnlocks: adminProcedure
+		.input(
+			z.object({
+				period: adminDashboardPeriodSchema.default("7d"),
+				method: z.nativeEnum(UnlockMethod).optional(),
+				templateId: z.string().min(1).optional(),
+				search: z.string().trim().max(120).optional(),
+				page: z.number().int().min(1).default(1),
+				pageSize: z.number().int().min(1).max(50).default(20),
+			}),
+		)
+		.query(({ input }) => adminUnlockService.listUnlocks(input)),
 
 	listTopColors: adminProcedure
 		.input(
@@ -159,6 +217,30 @@ export const adminRouter = router({
 			}),
 		)
 		.query(({ input }) => adminCvService.listTopColors(input)),
+
+	listTemplates: adminProcedure
+		.input(
+			z.object({
+				search: z.string().trim().max(120).optional(),
+				isActive: z.boolean().optional(),
+				isPremium: z.boolean().optional(),
+				isFeatured: z.boolean().optional(),
+				page: z.number().int().min(1).default(1),
+				pageSize: z.number().int().min(1).max(50).default(20),
+			}),
+		)
+		.query(({ input }) => adminTemplateService.listTemplates(input)),
+
+	getTemplate: adminProcedure
+		.input(z.object({ id: z.string().min(1) }))
+		.query(({ input }) => adminTemplateService.getTemplate(input.id)),
+
+	updateTemplateCatalog: adminProcedure
+		.input(updateTemplateCatalogSchema)
+		.mutation(({ input }) => {
+			const { id, ...patch } = input;
+			return adminTemplateService.updateCatalog(id, patch);
+		}),
 
 	listAiEvents: adminProcedure
 		.input(

@@ -9,6 +9,8 @@ import { DataView as PrimeDataView } from "primereact/dataview";
 import type { TemplateCv } from "@utils/trpc.types";
 import Image from "next/image";
 import { SiteBrandLogo } from "@/components/brand/SiteBrandLogo";
+import { TemplateCatalogBadges } from "@/components/badge/TemplateCatalogBadges";
+import { useMemo } from "react";
 
 function getTemplateColumns(template: TemplateCv): number {
 	const layout = template.structure as
@@ -29,7 +31,12 @@ export const HomeComponent = () => {
 	const isSm = useMediaQuery("(min-width: 640px)");
 	const { data: session, status } = useSession();
 	const { data: templates } = trpc.cvTemplate.findAll.useQuery();
-	const featured = templates?.slice(0, 8);
+	const featured = useMemo(() => {
+		if (!templates?.length) return [];
+		const starred = templates.filter((t) => t.isFeatured);
+		const rest = templates.filter((t) => !t.isFeatured);
+		return [...starred, ...rest].slice(0, 8);
+	}, [templates]);
 
 	const gridItem = (template: TemplateCv) => {
 		return (
@@ -45,6 +52,13 @@ export const HomeComponent = () => {
 						sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
 						className="object-cover object-top"
 					/>
+					<div className="absolute top-2 right-2 z-30">
+						<TemplateCatalogBadges
+							isFeatured={template.isFeatured}
+							isPremium={template.isPremium}
+							size="md"
+						/>
+					</div>
 					<p className="absolute bottom-0 inset-x-0 text-center text-sm font-semibold px-2 py-1 bg-black/40 text-white">
 						{template.name}
 					</p>

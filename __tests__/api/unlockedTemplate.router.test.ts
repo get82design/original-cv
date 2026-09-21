@@ -7,14 +7,70 @@ import {
 	createTestCaller,
 	createTestSession,
 } from "./helpers/create-test-caller";
+import { prismaTest } from "../../lib/prismaTest";
+
+async function prepareCreditsUnlock(userId: string, templateId: string) {
+	await prismaTest.user.update({
+		where: { id: userId },
+		data: { downloadCredits: 10 },
+	});
+	await prismaTest.cVTemplate.update({
+		where: { id: templateId },
+		data: { isPremium: true, priceCredits: 1 },
+	});
+}
 
 describe("unlockedTemplateRouter", () => {
+	it("unlock with method credits consumes priceCredits", async () => {
+		const user = await createTestUser();
+		await prismaTest.user.update({
+			where: { id: user.id },
+			data: { downloadCredits: 8 },
+		});
+		const caller = await createTestCaller(createTestSession(user));
+		const template = await createTestTemplate();
+		await prismaTest.cVTemplate.update({
+			where: { id: template.id },
+			data: {
+				isPremium: true,
+				priceCredits: 3,
+				unlockGifts: { downloadCredits: 5, freeDownloads: 1 },
+			},
+		});
+
+		await caller.unlockedTemplate.unlock({
+			templateId: template.id,
+			method: "credits",
+		});
+
+		const after = await prismaTest.user.findUniqueOrThrow({
+			where: { id: user.id },
+		});
+		expect(after.downloadCredits).toBe(5);
+
+		const row = await prismaTest.unlockedTemplate.findUniqueOrThrow({
+			where: {
+				userId_templateId: {
+					userId: user.id,
+					templateId: template.id,
+				},
+			},
+		});
+		expect(row.method).toBe("CREDITS");
+
+		const list = await caller.unlockedTemplate.findAll();
+		expect(list.some((u) => u.templateId === template.id)).toBe(true);
+	});
+
 	it("unlock returns UNAUTHORIZED without session", async () => {
 		const caller = await createTestCaller();
 		const template = await createTestTemplate();
 
 		await expect(
-			caller.unlockedTemplate.unlock({ templateId: template.id }),
+			caller.unlockedTemplate.unlock({
+				templateId: template.id,
+				method: "credits",
+			}),
 		).rejects.toMatchObject({ code: "UNAUTHORIZED" });
 	});
 
@@ -22,14 +78,17 @@ describe("unlockedTemplateRouter", () => {
 		const user = await createTestUser();
 		const caller = await createTestCaller(createTestSession(user));
 		const template = await createTestTemplate();
+		await prepareCreditsUnlock(user.id, template.id);
 
 		const unlocked = await caller.unlockedTemplate.unlock({
 			templateId: template.id,
+			method: "credits",
 		});
 
 		expect(unlocked.userId).toBe(user.id);
 		expect(unlocked.templateId).toBe(template.id);
 		expect(unlocked.template.id).toBe(template.id);
+		expect(unlocked.method).toBe("CREDITS");
 	});
 
 	it("unlock returns NOT_FOUND for unknown template", async () => {
@@ -37,7 +96,10 @@ describe("unlockedTemplateRouter", () => {
 		const caller = await createTestCaller(createTestSession(user));
 
 		await expect(
-			caller.unlockedTemplate.unlock({ templateId: "unknown-id" }),
+			caller.unlockedTemplate.unlock({
+				templateId: "unknown-id",
+				method: "credits",
+			}),
 		).rejects.toMatchObject({ code: "NOT_FOUND" });
 	});
 
@@ -45,11 +107,18 @@ describe("unlockedTemplateRouter", () => {
 		const user = await createTestUser();
 		const caller = await createTestCaller(createTestSession(user));
 		const template = await createTestTemplate();
+		await prepareCreditsUnlock(user.id, template.id);
 
-		await caller.unlockedTemplate.unlock({ templateId: template.id });
+		await caller.unlockedTemplate.unlock({
+			templateId: template.id,
+			method: "credits",
+		});
 
 		await expect(
-			caller.unlockedTemplate.unlock({ templateId: template.id }),
+			caller.unlockedTemplate.unlock({
+				templateId: template.id,
+				method: "credits",
+			}),
 		).rejects.toMatchObject({ code: "CONFLICT" });
 	});
 
@@ -97,8 +166,12 @@ describe("unlockedTemplateRouter", () => {
 		const user = await createTestUser();
 		const caller = await createTestCaller(createTestSession(user));
 		const template = await createTestTemplate();
+		await prepareCreditsUnlock(user.id, template.id);
 
-		await caller.unlockedTemplate.unlock({ templateId: template.id });
+		await caller.unlockedTemplate.unlock({
+			templateId: template.id,
+			method: "credits",
+		});
 
 		const list = await caller.unlockedTemplate.findAll();
 
@@ -128,15 +201,23 @@ describe("unlockedTemplateRouter", () => {
 		const user = await createTestUser();
 		const caller = await createTestCaller(createTestSession(user));
 		const template = await createTestTemplate();
+		await prepareCreditsUnlock(user.id, template.id);
 
 		expect(
-			await caller.unlockedTemplate.hasUnlocked({ templateId: template.id }),
+			await caller.unlockedTemplate.hasUnlocked({
+				templateId: template.id,
+			}),
 		).toBe(false);
 
-		await caller.unlockedTemplate.unlock({ templateId: template.id });
+		await caller.unlockedTemplate.unlock({
+			templateId: template.id,
+			method: "credits",
+		});
 
 		expect(
-			await caller.unlockedTemplate.hasUnlocked({ templateId: template.id }),
+			await caller.unlockedTemplate.hasUnlocked({
+				templateId: template.id,
+			}),
 		).toBe(true);
 	});
 
@@ -144,8 +225,12 @@ describe("unlockedTemplateRouter", () => {
 		const user = await createTestUser();
 		const caller = await createTestCaller(createTestSession(user));
 		const template = await createTestTemplate();
+		await prepareCreditsUnlock(user.id, template.id);
 
-		await caller.unlockedTemplate.unlock({ templateId: template.id });
+		await caller.unlockedTemplate.unlock({
+			templateId: template.id,
+			method: "credits",
+		});
 		await caller.unlockedTemplate.delete({ templateId: template.id });
 
 		const list = await caller.unlockedTemplate.findAll();

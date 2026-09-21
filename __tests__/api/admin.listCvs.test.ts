@@ -188,6 +188,14 @@ describe("admin.listTopTemplates", () => {
 			],
 		});
 
+		await prismaTest.unlockedTemplate.create({
+			data: {
+				userId: user.id,
+				templateId: templateHot.id,
+				method: "CREDITS",
+			},
+		});
+
 		const admin = await createTestUser();
 		const caller = await createTestCaller(
 			createTestSession({
@@ -209,6 +217,18 @@ describe("admin.listTopTemplates", () => {
 		expect(hot.freeDownloadCount).toBe(2);
 		expect(hot.paidDownloadCount).toBe(1);
 		expect(hot.downloadCount).toBe(3);
+		expect(hot.unlockCount).toBe(1);
+		// (1 unlock + cvCount + 3 DL) / 3
+		expect(hot.popularityScore).toBeCloseTo(
+			(1 + hot.cvCount + 3) / 3,
+			5,
+		);
+
+		const byPop = await caller.admin.listTopTemplates({
+			period: "all",
+			sortBy: "popularityScore",
+		});
+		expect(byPop[0]?.templateId).toBe(templateHot.id);
 
 		const byPaid = await caller.admin.listTopTemplates({
 			period: "all",
