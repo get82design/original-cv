@@ -439,7 +439,9 @@ html.dark #panel-modif-cv.cv-modif-tabview {
 .p-dialog.dialog-import-review,
 .p-dialog.dialog-cv-review-result,
 .p-dialog.dialog-rewrite-section,
-.p-dialog.dialog-admin-template {
+.p-dialog.dialog-admin-template,
+.p-dialog.dialog-admin-credit-pack,
+.p-dialog.dialog-profile-from-cv {
     background: #ffffff;
     border: 1px solid #e4e4e7;
     color: #18181b;
@@ -459,23 +461,16 @@ html.dark #panel-modif-cv.cv-modif-tabview {
         }
     }
 
-    .p-dialog-content,
+    .p-dialog-content {
+        background: #ffffff;
+        color: #18181b;
+        padding-top: 1rem;
+        padding-bottom: 1rem;
+    }
+
     .p-dialog-footer {
         background: #ffffff;
         color: #18181b;
-    }
-
-    &.dialog-admin-template .p-dialog-content {
-        padding-top: 1rem;
-        padding-bottom: 1rem;
-    }
-
-    &.dialog-ai-payment .p-dialog-content {
-        padding-top: 1rem;
-        padding-bottom: 1rem;
-    }
-
-    .p-dialog-footer {
         border-top-color: #e4e4e7;
         padding: 0.625rem 1rem;
     }
@@ -491,7 +486,9 @@ html.dark .p-dialog.dialog-start-content,
 html.dark .p-dialog.dialog-import-review,
 html.dark .p-dialog.dialog-cv-review-result,
 html.dark .p-dialog.dialog-rewrite-section,
-html.dark .p-dialog.dialog-admin-template {
+html.dark .p-dialog.dialog-admin-template,
+html.dark .p-dialog.dialog-admin-credit-pack,
+html.dark .p-dialog.dialog-profile-from-cv {
     background: #18181b;
     border-color: #3f3f46;
     color: #f4f4f5;
@@ -511,19 +508,205 @@ html.dark .p-dialog.dialog-admin-template {
         }
     }
 
-    .p-dialog-content,
-    .p-dialog-footer {
+    .p-dialog-content {
         background: #18181b;
         color: #f4f4f5;
+        padding-top: 1rem;
+        padding-bottom: 1rem;
     }
 
     .p-dialog-footer {
+        background: #18181b;
+        color: #f4f4f5;
         border-top-color: #3f3f46;
         padding: 0.625rem 1rem;
     }
 }
 
-html.dark .p-dialog.dialog-admin-template .p-checkbox .p-checkbox-box {
+/* PickList dans modals profil ← CV / CV ← profil */
+html.dark .p-dialog.dialog-profile-from-cv .p-picklist .p-picklist-header,
+html.dark .p-dialog.dialog-data-from-profile .p-picklist .p-picklist-header {
+    background: #27272a;
+    color: #f4f4f5;
+    border-color: #3f3f46;
+}
+
+html.dark .p-dialog.dialog-profile-from-cv .p-picklist .p-picklist-list,
+html.dark .p-dialog.dialog-data-from-profile .p-picklist .p-picklist-list {
+    background: #18181b;
+    color: #d4d4d8;
+    border-color: #3f3f46;
+}
+
+html.dark .p-dialog.dialog-profile-from-cv .p-picklist .p-picklist-list .p-picklist-item,
+html.dark .p-dialog.dialog-data-from-profile .p-picklist .p-picklist-list .p-picklist-item {
+    color: #d4d4d8;
+}
+
+html.dark .p-dialog.dialog-profile-from-cv .p-picklist .p-picklist-list .p-picklist-item:not(.p-highlight):hover,
+html.dark .p-dialog.dialog-data-from-profile .p-picklist .p-picklist-list .p-picklist-item:not(.p-highlight):hover {
+    background: #27272a;
+    color: #f4f4f5;
+}
+
+html.dark .p-dialog.dialog-profile-from-cv .p-picklist .p-picklist-list .p-picklist-item.p-focus,
+html.dark .p-dialog.dialog-data-from-profile .p-picklist .p-picklist-list .p-picklist-item.p-focus {
+    background: #3f3f46;
+    color: #f4f4f5;
+}
+
+html.dark .p-dialog.dialog-profile-from-cv .p-picklist .p-picklist-list .p-picklist-item.p-highlight,
+html.dark .p-dialog.dialog-data-from-profile .p-picklist .p-picklist-list .p-picklist-item.p-highlight {
+    background: #1e3a5f;
+    color: #93c5fd;
+}
+
+html.dark .p-dialog.dialog-profile-from-cv .p-picklist .p-picklist-list .p-picklist-item.p-highlight.p-focus,
+html.dark .p-dialog.dialog-data-from-profile .p-picklist .p-picklist-list .p-picklist-item.p-highlight.p-focus {
+    background: #1e40af;
+}
+
+/* Boutons transfert PickList — light */
+.p-dialog.dialog-profile-from-cv .p-picklist .p-picklist-buttons .p-button,
+.p-dialog.dialog-profile-from-cv .p-picklist .p-picklist-transfer-buttons .p-button,
+.p-dialog.dialog-profile-from-cv .p-picklist .p-picklist-source-controls .p-button,
+.p-dialog.dialog-profile-from-cv .p-picklist .p-picklist-target-controls .p-button,
+.p-dialog.dialog-data-from-profile .p-picklist .p-picklist-buttons .p-button,
+.p-dialog.dialog-data-from-profile .p-picklist .p-picklist-transfer-buttons .p-button,
+.p-dialog.dialog-data-from-profile .p-picklist .p-picklist-source-controls .p-button,
+.p-dialog.dialog-data-from-profile .p-picklist .p-picklist-target-controls .p-button {
+    background: var(--primary-color);
+    border-color: var(--primary-color);
+    color: #ffffff;
+}
+
+.p-dialog.dialog-profile-from-cv .p-picklist .p-picklist-buttons .p-button:enabled:hover,
+.p-dialog.dialog-profile-from-cv .p-picklist .p-picklist-transfer-buttons .p-button:enabled:hover,
+.p-dialog.dialog-profile-from-cv .p-picklist .p-picklist-source-controls .p-button:enabled:hover,
+.p-dialog.dialog-profile-from-cv .p-picklist .p-picklist-target-controls .p-button:enabled:hover,
+.p-dialog.dialog-data-from-profile .p-picklist .p-picklist-buttons .p-button:enabled:hover,
+.p-dialog.dialog-data-from-profile .p-picklist .p-picklist-transfer-buttons .p-button:enabled:hover,
+.p-dialog.dialog-data-from-profile .p-picklist .p-picklist-source-controls .p-button:enabled:hover,
+.p-dialog.dialog-data-from-profile .p-picklist .p-picklist-target-controls .p-button:enabled:hover {
+    background: var(--primary-color-dark);
+    border-color: var(--primary-color-dark);
+    color: #ffffff;
+}
+
+.p-dialog.dialog-profile-from-cv .p-picklist .p-picklist-buttons .p-button:enabled:active,
+.p-dialog.dialog-profile-from-cv .p-picklist .p-picklist-transfer-buttons .p-button:enabled:active,
+.p-dialog.dialog-profile-from-cv .p-picklist .p-picklist-source-controls .p-button:enabled:active,
+.p-dialog.dialog-profile-from-cv .p-picklist .p-picklist-target-controls .p-button:enabled:active,
+.p-dialog.dialog-data-from-profile .p-picklist .p-picklist-buttons .p-button:enabled:active,
+.p-dialog.dialog-data-from-profile .p-picklist .p-picklist-transfer-buttons .p-button:enabled:active,
+.p-dialog.dialog-data-from-profile .p-picklist .p-picklist-source-controls .p-button:enabled:active,
+.p-dialog.dialog-data-from-profile .p-picklist .p-picklist-target-controls .p-button:enabled:active {
+    background: #0e7a6e;
+    border-color: #0e7a6e;
+    color: #ffffff;
+}
+
+/* Boutons transfert PickList — dark */
+html.dark .p-dialog.dialog-profile-from-cv .p-picklist .p-picklist-buttons .p-button,
+html.dark .p-dialog.dialog-profile-from-cv .p-picklist .p-picklist-transfer-buttons .p-button,
+html.dark .p-dialog.dialog-profile-from-cv .p-picklist .p-picklist-source-controls .p-button,
+html.dark .p-dialog.dialog-profile-from-cv .p-picklist .p-picklist-target-controls .p-button,
+html.dark .p-dialog.dialog-data-from-profile .p-picklist .p-picklist-buttons .p-button,
+html.dark .p-dialog.dialog-data-from-profile .p-picklist .p-picklist-transfer-buttons .p-button,
+html.dark .p-dialog.dialog-data-from-profile .p-picklist .p-picklist-source-controls .p-button,
+html.dark .p-dialog.dialog-data-from-profile .p-picklist .p-picklist-target-controls .p-button {
+    background: var(--primary-color-dark);
+    border-color: var(--primary-color-dark);
+    color: #000000;
+}
+
+html.dark .p-dialog.dialog-profile-from-cv .p-picklist .p-picklist-buttons .p-button:enabled:hover,
+html.dark .p-dialog.dialog-profile-from-cv .p-picklist .p-picklist-transfer-buttons .p-button:enabled:hover,
+html.dark .p-dialog.dialog-profile-from-cv .p-picklist .p-picklist-source-controls .p-button:enabled:hover,
+html.dark .p-dialog.dialog-profile-from-cv .p-picklist .p-picklist-target-controls .p-button:enabled:hover,
+html.dark .p-dialog.dialog-data-from-profile .p-picklist .p-picklist-buttons .p-button:enabled:hover,
+html.dark .p-dialog.dialog-data-from-profile .p-picklist .p-picklist-transfer-buttons .p-button:enabled:hover,
+html.dark .p-dialog.dialog-data-from-profile .p-picklist .p-picklist-source-controls .p-button:enabled:hover,
+html.dark .p-dialog.dialog-data-from-profile .p-picklist .p-picklist-target-controls .p-button:enabled:hover {
+    background: #5dd4c6;
+    border-color: #5dd4c6;
+    color: #000000;
+}
+
+html.dark .p-dialog.dialog-profile-from-cv .p-picklist .p-picklist-buttons .p-button:enabled:active,
+html.dark .p-dialog.dialog-profile-from-cv .p-picklist .p-picklist-transfer-buttons .p-button:enabled:active,
+html.dark .p-dialog.dialog-profile-from-cv .p-picklist .p-picklist-source-controls .p-button:enabled:active,
+html.dark .p-dialog.dialog-profile-from-cv .p-picklist .p-picklist-target-controls .p-button:enabled:active,
+html.dark .p-dialog.dialog-data-from-profile .p-picklist .p-picklist-buttons .p-button:enabled:active,
+html.dark .p-dialog.dialog-data-from-profile .p-picklist .p-picklist-transfer-buttons .p-button:enabled:active,
+html.dark .p-dialog.dialog-data-from-profile .p-picklist .p-picklist-source-controls .p-button:enabled:active,
+html.dark .p-dialog.dialog-data-from-profile .p-picklist .p-picklist-target-controls .p-button:enabled:active {
+    background: #2a9e92;
+    border-color: #2a9e92;
+    color: #000000;
+}
+
+html.dark .p-dialog.dialog-profile-from-cv .p-picklist .p-picklist-buttons .p-button.p-disabled,
+html.dark .p-dialog.dialog-profile-from-cv .p-picklist .p-picklist-transfer-buttons .p-button.p-disabled,
+html.dark .p-dialog.dialog-profile-from-cv .p-picklist .p-picklist-source-controls .p-button.p-disabled,
+html.dark .p-dialog.dialog-profile-from-cv .p-picklist .p-picklist-target-controls .p-button.p-disabled,
+html.dark .p-dialog.dialog-profile-from-cv .p-picklist .p-picklist-buttons .p-button:disabled,
+html.dark .p-dialog.dialog-profile-from-cv .p-picklist .p-picklist-transfer-buttons .p-button:disabled,
+html.dark .p-dialog.dialog-profile-from-cv .p-picklist .p-picklist-source-controls .p-button:disabled,
+html.dark .p-dialog.dialog-profile-from-cv .p-picklist .p-picklist-target-controls .p-button:disabled,
+html.dark .p-dialog.dialog-data-from-profile .p-picklist .p-picklist-buttons .p-button.p-disabled,
+html.dark .p-dialog.dialog-data-from-profile .p-picklist .p-picklist-transfer-buttons .p-button.p-disabled,
+html.dark .p-dialog.dialog-data-from-profile .p-picklist .p-picklist-source-controls .p-button.p-disabled,
+html.dark .p-dialog.dialog-data-from-profile .p-picklist .p-picklist-target-controls .p-button.p-disabled,
+html.dark .p-dialog.dialog-data-from-profile .p-picklist .p-picklist-buttons .p-button:disabled,
+html.dark .p-dialog.dialog-data-from-profile .p-picklist .p-picklist-transfer-buttons .p-button:disabled,
+html.dark .p-dialog.dialog-data-from-profile .p-picklist .p-picklist-source-controls .p-button:disabled,
+html.dark .p-dialog.dialog-data-from-profile .p-picklist .p-picklist-target-controls .p-button:disabled {
+    background: #27272a;
+    border-color: #3f3f46;
+    color: #71717a;
+    opacity: 1;
+}
+
+/* Footer Annuler / Valider — dark (picklist dialogs) */
+html.dark .p-dialog.dialog-profile-from-cv .p-dialog-footer .p-button:not(.p-button-outlined):not(.p-button-text),
+html.dark .p-dialog.dialog-data-from-profile .p-dialog-footer .p-button:not(.p-button-outlined):not(.p-button-text) {
+    background: var(--primary-color-dark);
+    border-color: var(--primary-color-dark);
+    color: #000000;
+}
+
+html.dark .p-dialog.dialog-profile-from-cv .p-dialog-footer .p-button:not(.p-button-outlined):not(.p-button-text):enabled:hover,
+html.dark .p-dialog.dialog-data-from-profile .p-dialog-footer .p-button:not(.p-button-outlined):not(.p-button-text):enabled:hover {
+    background: #5dd4c6;
+    border-color: #5dd4c6;
+    color: #000000;
+}
+
+html.dark .p-dialog.dialog-profile-from-cv .p-dialog-footer .p-button.p-button-outlined,
+html.dark .p-dialog.dialog-profile-from-cv .p-dialog-footer .p-button.p-button-secondary,
+html.dark .p-dialog.dialog-profile-from-cv .p-dialog-footer .p-button[color="light"],
+html.dark .p-dialog.dialog-data-from-profile .p-dialog-footer .p-button.p-button-outlined,
+html.dark .p-dialog.dialog-data-from-profile .p-dialog-footer .p-button.p-button-secondary,
+html.dark .p-dialog.dialog-data-from-profile .p-dialog-footer .p-button[color="light"] {
+    background: transparent;
+    border-color: #52525b;
+    color: #e4e4e7;
+}
+
+html.dark .p-dialog.dialog-profile-from-cv .p-dialog-footer .p-button.p-button-outlined:enabled:hover,
+html.dark .p-dialog.dialog-profile-from-cv .p-dialog-footer .p-button.p-button-secondary:enabled:hover,
+html.dark .p-dialog.dialog-profile-from-cv .p-dialog-footer .p-button[color="light"]:enabled:hover,
+html.dark .p-dialog.dialog-data-from-profile .p-dialog-footer .p-button.p-button-outlined:enabled:hover,
+html.dark .p-dialog.dialog-data-from-profile .p-dialog-footer .p-button.p-button-secondary:enabled:hover,
+html.dark .p-dialog.dialog-data-from-profile .p-dialog-footer .p-button[color="light"]:enabled:hover {
+    background: #27272a;
+    border-color: #71717a;
+    color: #f4f4f5;
+}
+
+html.dark .p-dialog.dialog-admin-template .p-checkbox .p-checkbox-box,
+html.dark .p-dialog.dialog-admin-credit-pack .p-checkbox .p-checkbox-box {
     background: #18181b;
     border-color: #3f3f46;
 }

@@ -106,6 +106,7 @@ export function AdminBillingPage() {
 
 	const [editingPack, setEditingPack] = useState<PackRow | null>(null);
 	const [creating, setCreating] = useState(false);
+	const [deletingPack, setDeletingPack] = useState<PackRow | null>(null);
 	const [draftName, setDraftName] = useState("");
 	const [draftDescription, setDraftDescription] = useState("");
 	const [draftPriceEuros, setDraftPriceEuros] = useState<number | null>(null);
@@ -186,6 +187,7 @@ export function AdminBillingPage() {
 	const deleteMutation = trpc.admin.deleteCreditPack.useMutation({
 		onSuccess: async () => {
 			await utils.admin.listCreditPacks.invalidate();
+			setDeletingPack(null);
 			toast.current?.show({
 				severity: "success",
 				summary: "Pack supprimé",
@@ -428,21 +430,7 @@ export function AdminBillingPage() {
 										size="small"
 										severity="danger"
 										outlined
-										loading={
-											deleteMutation.isPending &&
-											deleteMutation.variables?.id === pack.id
-										}
-										onClick={() => {
-											if (
-												typeof window !== "undefined" &&
-												!window.confirm(
-													`Supprimer le pack « ${pack.name} » ?`,
-												)
-											) {
-												return;
-											}
-											deleteMutation.mutate({ id: pack.id });
-										}}
+										onClick={() => setDeletingPack(pack)}
 									/>
 								</div>
 							</AppCard>
@@ -452,10 +440,52 @@ export function AdminBillingPage() {
 			</section>
 
 			<Dialog
+				visible={deletingPack != null}
+				onHide={() => {
+					if (deleteMutation.isPending) return;
+					setDeletingPack(null);
+				}}
+				header="Supprimer le pack"
+				style={{ width: "420px", maxWidth: "92vw" }}
+				className="dialog-admin-credit-pack"
+				footer={
+					<div className="flex justify-end gap-2">
+						<Button
+							type="button"
+							label="Annuler"
+							outlined
+							disabled={deleteMutation.isPending}
+							onClick={() => setDeletingPack(null)}
+							className="!text-zinc-600 dark:!text-zinc-300 !border-zinc-300 dark:!border-zinc-600 hover:!bg-zinc-100 dark:hover:!bg-zinc-800"
+						/>
+						<Button
+							type="button"
+							label="Supprimer"
+							severity="danger"
+							loading={deleteMutation.isPending}
+							onClick={() => {
+								if (!deletingPack) return;
+								deleteMutation.mutate({ id: deletingPack.id });
+							}}
+						/>
+					</div>
+				}
+			>
+				<p className="m-0 text-sm text-zinc-700 dark:text-zinc-300">
+					Supprimer le pack{" "}
+					<span className="font-semibold text-zinc-900 dark:text-zinc-100">
+						« {deletingPack?.name} »
+					</span>{" "}
+					? Cette action est définitive.
+				</p>
+			</Dialog>
+
+			<Dialog
 				visible={packDialogOpen}
 				onHide={closePackDialog}
 				header={editingPack ? "Éditer le pack" : "Nouveau pack"}
 				style={{ width: "480px", maxWidth: "92vw" }}
+				className="dialog-admin-credit-pack"
 				footer={
 					<div className="flex justify-end gap-2">
 						<Button
@@ -463,6 +493,7 @@ export function AdminBillingPage() {
 							label="Annuler"
 							outlined
 							onClick={closePackDialog}
+							className="!text-zinc-600 dark:!text-zinc-300 !border-zinc-300 dark:!border-zinc-600 hover:!bg-zinc-100 dark:hover:!bg-zinc-800"
 						/>
 						<Button
 							type="button"
@@ -471,6 +502,7 @@ export function AdminBillingPage() {
 								createMutation.isPending || updateMutation.isPending
 							}
 							onClick={savePack}
+							className="bg-primary hover:bg-primary-dark dark:bg-primary-dark dark:hover:bg-primary text-white dark:text-black font-semibold"
 						/>
 					</div>
 				}

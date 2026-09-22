@@ -17,10 +17,8 @@ export const DialogSelectCv = ({
 	return (
 		<Dialog
 			visible={visible}
-			// className={darkMode
-			//     ? 'dark'
-			//     : ''}
 			onHide={onHide}
+			className="dialog-profile-from-cv"
 			style={{ minWidth: "800px" }}
 			header={
 				<TitleAppTwo

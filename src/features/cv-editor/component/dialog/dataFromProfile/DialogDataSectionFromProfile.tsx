@@ -322,14 +322,27 @@ export const DialogDataSectionFromProfile = ({visible, onHide, sectionSelected}:
     const footer = () => {
         return (
             <div className="flex justify-end gap-2">
-                <Button label="Annuler" outlined onClick={onHide} className="text-gray-600 hover:bg-gray-200" />
-                <Button label="Valider" onClick={onValidate} />
+                <Button
+					label="Annuler"
+					outlined
+					onClick={onHide}
+					className="!text-zinc-600 dark:!text-zinc-300 !border-zinc-300 dark:!border-zinc-600 hover:!bg-zinc-100 dark:hover:!bg-zinc-800"
+				/>
+                <Button
+					label="Valider"
+					onClick={onValidate}
+					className="bg-primary hover:bg-primary-dark dark:bg-primary-dark dark:hover:bg-primary text-white dark:text-black font-semibold"
+				/>
             </div>
         );
     };
     return (
-        <Dialog visible={visible} onHide={onHide} header="Données du profil" style={{ width: "900px", maxWidth: "85vw" }}
-			className="bg-white dark:bg-gray-900"
+        <Dialog
+			visible={visible}
+			onHide={onHide}
+			header="Données du profil"
+			style={{ width: "900px", maxWidth: "85vw" }}
+			className="dialog-data-from-profile"
 			footer={footer}
         >
             {sectionName === "description" && (
@@ -559,10 +572,10 @@ type ScalarTransferProps = {
 
 export function ScalarTransfer({ profileText, cvText, onApply, labels }: ScalarTransferProps) {
     return (
-      <div className="w-full grid grid-cols-11 gap-8">
+      <div className="w-full grid grid-cols-11 gap-8 text-zinc-900 dark:text-zinc-100">
         <div className="col-span-5 flex flex-col gap-2">
           <p className="text-lg font-semibold">{labels.left}</p>
-          <p className="text-justify whitespace-pre-wrap">{profileText || "—"}</p>
+          <p className="text-justify whitespace-pre-wrap text-zinc-700 dark:text-zinc-300">{profileText || "—"}</p>
         </div>
         <div className="col-span-1 flex justify-center items-center">
           <Button
@@ -570,11 +583,12 @@ export function ScalarTransfer({ profileText, cvText, onApply, labels }: ScalarT
             disabled={!profileText}
             onClick={() => onApply(profileText)}
             aria-label="Appliquer au CV"
+			className="bg-primary hover:bg-primary-dark dark:bg-primary-dark dark:hover:bg-primary text-white dark:text-black"
           />
         </div>
         <div className="col-span-5 flex flex-col gap-2">
           <p className="text-lg font-semibold">{labels.right}</p>
-          <p className="text-justify whitespace-pre-wrap">{cvText || "—"}</p>
+          <p className="text-justify whitespace-pre-wrap text-zinc-700 dark:text-zinc-300">{cvText || "—"}</p>
         </div>
       </div>
     );

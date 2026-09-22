@@ -70,7 +70,7 @@ export function DialogSelectSocialMedia({
 	const templateFooter = () => {
 		return (
 			<div className="w-full flex justify-end gap-2">
-				<Button color="light" label="Annuler" onClick={onHide} size="small" />
+				<Button outlined label="Annuler" onClick={onHide} size="small" />
 				<Button
 					label="Valider"
 					size="small"
@@ -86,6 +86,7 @@ export function DialogSelectSocialMedia({
 		<Dialog
 			visible={visible}
 			onHide={onHide}
+			className="dialog-profile-from-cv"
 			header="Selectionnez vos réseaux sociaux"
 			style={{ minWidth: "1100px" }}
 			footer={templateFooter}
