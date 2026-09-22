@@ -1,25 +1,19 @@
-import { AppCard } from "@/components/card/AppCard";
 import { TitleAppOne } from "@/components/title/TitleAppOne";
-import { TitleAppTwo } from "@/components/title/TitleAppTwo";
 import { useMediaQuery } from "@utils/useWindowWidth";
-import { Button } from "primereact/button";
 import { CompoPage, type CV } from "./CompoPage";
 import { FormProfile } from "./form/FormProfile";
 import { ProfileProvider } from "./contexte/ProfileContext";
 import { trpc } from "@utils/trpc";
-import { ProgressSpinner } from "primereact/progressspinner";
-import { PreviewImage } from "./compo/common/PreviewImage";
-import Link from "next/link";
 import { useMemo, useRef, useState } from "react";
 import { DialogDownloadCv } from "@/components/dialog/DialogDownloadCv";
 import { DialogAssistantIa } from "@/components/dialog/DialogAssistantIa";
 import { Toast } from "primereact/toast";
 import { isTemplateLocked } from "../cv-editor/utils/isTemplateLocked";
 import { useSession } from "next-auth/react";
+import { ProfileCvsCard } from "./compo/ProfileCvsCard";
 
 export const ProfilePage = () => {
 	const { data: cvs, isLoading } = trpc.cv.allByUser.useQuery();
-	console.log("cvs", cvs);
 	const { status } = useSession();
 	const isLg = useMediaQuery("(min-width: 1024px)");
 	const isMd = useMediaQuery("(min-width: 768px)");
@@ -202,7 +196,7 @@ export const ProfilePage = () => {
 			/>
 			<div
 				className={"w-full p-4 md:p-8 relative"}
-				style={{ /*...ClassikAppColor(),*/ minHeight: "calc(100vh - 70px)" }}
+				style={{ minHeight: "calc(100vh - 70px)" }}
 			>
 				<div className="w-full flex flex-col-reverse lg:flex-row lg:justify-end gap-6">
 					<div
@@ -213,7 +207,7 @@ export const ProfilePage = () => {
 							<TitleAppOne firstPart="DASH" secondPart="BOARD" />
 						</div>
 						<ProfileProvider>
-							<CompoPage cvs={cvs ?? []} /*nbCv={nbCv} cv={cv}*/ />
+							<CompoPage cvs={cvs ?? []} />
 						</ProfileProvider>
 					</div>
 					<div
@@ -233,74 +227,13 @@ export const ProfilePage = () => {
 								width: !isLg ? "100%" : "384px",
 							}}
 						>
-							<AppCard className={"min-h-full flex flex-col gap-4"}>
-								<TitleAppTwo
-									firstPart={"Vos"}
-									secondPart={"CVs"}
-									size={"text-2xl"}
-									withSpace
-								/>
-								{isLoading ? (
-									<ProgressSpinner
-										style={{ width: "50px", height: "50px" }}
-										strokeWidth="8"
-										fill="var(--surface-ground)"
-										animationDuration=".5s"
-									/>
-								) : (
-									<>
-										<p>
-											Vous avez enregistré {cvs?.length} CV
-											{cvs?.length && cvs?.length > 1 ? "s" : ""}
-										</p>
-										<div className="flex w-full justify-center gap-2">
-											{cvs &&
-												cvs.length > 0 &&
-												cvs.map((cv) => {
-													return (
-														<div
-															key={cv?.id}
-															className="w-full flex flex-col items-center gap-4"
-														>
-															<PreviewImage
-																width={!isMd ? "w-full p-2" : "w-2/3"}
-																cv={cv}
-																action={
-																	<>
-																		{isMd && (
-																			<Button
-																				size="small"
-																				onClick={() => setDownloadCv(cv)}
-																			>
-																				Visionner
-																			</Button>
-																		)}
-																		{isMd && (
-																			<Link href={`/cv/${cv?.id}`}>
-																				<Button size="small">Modifier</Button>
-																			</Link>
-																		)}
-																	</>
-																}
-															/>
-															{isSm && (
-																<div className="w-full flex justify-center">
-																	<Button
-																		onClick={(e) => {
-																			e.preventDefault();
-																		}}
-																	>
-																		Récupérer les données du CV
-																	</Button>
-																</div>
-															)}
-														</div>
-													);
-												})}
-										</div>
-									</>
-								)}
-							</AppCard>
+							<ProfileCvsCard
+								cvs={cvs}
+								isLoading={isLoading}
+								isMd={isMd}
+								isSm={isSm}
+								onVisionner={setDownloadCv}
+							/>
 						</div>
 					</div>
 				</div>
