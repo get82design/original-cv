@@ -27,12 +27,7 @@ export const RatingProfile = ({ name }: { name: string }) => {
 					onChange={(e) => {
 						field.onChange(toLevel(e.value ?? 1));
 					}}
-					onIcon={
-						<MdStar
-							style={{ width: 18, height: 18 }}
-							className="text-primary"
-						/>
-					}
+					onIcon={<MdStar style={{ width: 18, height: 18 }} className="text-primary" />}
 					offIcon={<MdStarOutline style={{ width: 18, height: 18 }} />}
 				/>
 			)}

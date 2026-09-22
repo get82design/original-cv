@@ -28,12 +28,7 @@ describe("CV Fullflow Integration with formation", () => {
 		const { user, template } = await utils.createUserAndTemplate();
 		const cv = await utils.createCV(user.id, template.id);
 		const start = new Date();
-		const formation = await utils.createFormation(
-			cv.id,
-			"Formation 1",
-			start,
-			1,
-		);
+		const formation = await utils.createFormation(cv.id, "Formation 1", start, 1);
 		expect(formation.cvId).toBe(cv.id);
 		expect(formation.title).toBe("Formation 1");
 		expect(formation.organismeFormation).toBeNull();

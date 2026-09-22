@@ -42,11 +42,7 @@ export const CardGroupTagOne = ({
 	const { setSelectModifInput, setSelectInputForm } = useCreateCvContext();
 	const { watch, getValues, setValue } = useFormContext();
 	const watchGeneral = watch(FieldNameLayoutGeneral.layout);
-	const pathContent = dataFieldContent(
-		"datas.tagGroup.content",
-		index,
-		"content",
-	);
+	const pathContent = dataFieldContent("datas.tagGroup.content", index, "content");
 	const watchWithIcon = watchGeneral?.titleSection.withIcon;
 	const watchListStyle = watchGeneral?.listStyle;
 	const menuLeft = useRef<Menu>(null);
@@ -54,8 +50,7 @@ export const CardGroupTagOne = ({
 	const watchModelTitleOfGroup = watch(`${pathContent}.settings.groupTitle`);
 
 	const deleteGroup = (itemToDelete: ListItem<TagGroupItemContentInput>) => {
-		const list = (getValues(FieldNameTag.content) ??
-			[]) as ListItem<TagGroupItemContentInput>[];
+		const list = (getValues(FieldNameTag.content) ?? []) as ListItem<TagGroupItemContentInput>[];
 
 		const newList = list
 			.filter((entry) => entry.clientKey !== itemToDelete.clientKey)
@@ -67,12 +62,9 @@ export const CardGroupTagOne = ({
 		});
 
 		// sélection : groupe lui-même OU un Competence de ce groupe
-		const deletedTagKeys = new Set(
-			(itemToDelete.content?.tags ?? []).map((s) => s.clientKey),
-		);
+		const deletedTagKeys = new Set((itemToDelete.content?.tags ?? []).map((s) => s.clientKey));
 		const selectionWasInGroup =
-			itemSelected === itemToDelete.clientKey ||
-			deletedTagKeys.has(itemSelected);
+			itemSelected === itemToDelete.clientKey || deletedTagKeys.has(itemSelected);
 
 		if (selectionWasInGroup) {
 			setItemSelected(newList[0]?.clientKey ?? "");
@@ -80,8 +72,7 @@ export const CardGroupTagOne = ({
 	};
 
 	const itemKey =
-		watch("layoutGeneral.defaultStyles")?.components?.sectionTag?.item ??
-		"CardTagOne";
+		watch("layoutGeneral.defaultStyles")?.components?.sectionTag?.item ?? "CardTagOne";
 	const Card = TagCardRegister[itemKey] ?? CardTagOne;
 
 	return (
@@ -110,12 +101,7 @@ export const CardGroupTagOne = ({
 				itemsMenu ? (
 					<>
 						<ToolbarOptionsButton menuRef={menuLeft} />
-						<Menu
-							model={itemsMenu(index)}
-							popup
-							ref={menuLeft}
-							style={{ width: 300 }}
-						/>
+						<Menu model={itemsMenu(index)} popup ref={menuLeft} style={{ width: 300 }} />
 					</>
 				) : null
 			}
@@ -172,9 +158,7 @@ export const ContentTagGroupContainer = ({
 		<div className="w-full flex flex-col gap-3 pb-1 mt-1">
 			<div className="w-full flex justify-between items-center relative -mb-2">
 				<CommonPointList general={general} />
-				<div className="w-4/5">
-					{item?.content?.settings?.withGroupTitle && titleGroupCompo}
-				</div>
+				<div className="w-4/5">{item?.content?.settings?.withGroupTitle && titleGroupCompo}</div>
 			</div>
 			<div className="w-full flex flex-col gap-0">{tagsCompo}</div>
 		</div>

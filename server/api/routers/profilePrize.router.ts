@@ -1,9 +1,6 @@
 import z from "zod";
 import { profilePrizeService } from "../../../src/services/profile/profilePrizeService";
-import {
-	createPrizeSchema,
-	updatePrizeSchema,
-} from "../../../src/services/schemas/prize.schema";
+import { createPrizeSchema, updatePrizeSchema } from "../../../src/services/schemas/prize.schema";
 import { getOwnedProfile } from "../helpers/getOwnedProfile";
 import { protectedProcedure, router } from "../trpc";
 import { prisma } from "../../../lib/prisma";
@@ -28,12 +25,10 @@ async function assertPrizeProfileOwnership(prizeId: string, userId: string) {
 }
 
 export const profilePrizeRouter = router({
-	create: protectedProcedure
-		.input(createPrizeSchema)
-		.mutation(async ({ input, ctx }) => {
-			const profile = await getOwnedProfile(ctx.session.user.id);
-			return profilePrizeService.create(profile.id, input);
-		}),
+	create: protectedProcedure.input(createPrizeSchema).mutation(async ({ input, ctx }) => {
+		const profile = await getOwnedProfile(ctx.session.user.id);
+		return profilePrizeService.create(profile.id, input);
+	}),
 
 	findAll: protectedProcedure.query(async ({ ctx }) => {
 		const profile = await getOwnedProfile(ctx.session.user.id);

@@ -32,12 +32,8 @@ export const CardSkillOne = ({
 
 	const watchGeneral = watch(FieldNameLayoutGeneral.layout);
 	const pathContent = `datas.skillGroup.content.${groupIndex}.content.skills.${index}.content`;
-	const watchModelSkill = watch(
-		`datas.skillGroup.content.${groupIndex}.content.settings.skills`,
-	);
-	const watchDesignSkill = watch(
-		`datas.skillGroup.content.${groupIndex}.content.settings.design`,
-	);
+	const watchModelSkill = watch(`datas.skillGroup.content.${groupIndex}.content.settings.skills`);
+	const watchDesignSkill = watch(`datas.skillGroup.content.${groupIndex}.content.settings.design`);
 
 	const deleteItem = (itemToDelete: ListItem<unknown>) => {
 		const list = (getValues(itemName) ?? []) as ListItem<unknown>[];
@@ -78,9 +74,7 @@ export const CardSkillOne = ({
 					<InputTextCv
 						placeholder="Skill"
 						onClick={() => {
-							setSelectModifInput(
-								`datas.skillGroup.content.${groupIndex}.content.settings.skills`,
-							);
+							setSelectModifInput(`datas.skillGroup.content.${groupIndex}.content.settings.skills`);
 							setSelectInputForm("");
 						}}
 						forceWidthFull
@@ -92,12 +86,7 @@ export const CardSkillOne = ({
 						}}
 					/>
 				}
-				levelCompo={
-					<RatingCvInput
-						name={`${pathContent}.level`}
-						design={watchDesignSkill}
-					/>
-				}
+				levelCompo={<RatingCvInput name={`${pathContent}.level`} design={watchDesignSkill} />}
 			/>
 		</SectionItemShell>
 	);

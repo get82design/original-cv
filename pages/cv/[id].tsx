@@ -13,10 +13,8 @@ import { AiAdviceProvider } from "../../src/features/cv-editor/component/context
 export default function CvPage() {
 	const router = useRouter();
 	const id = typeof router.query.id === "string" ? router.query.id : null;
-	const template =
-		typeof router.query.template === "string" ? router.query.template : null;
-	const color =
-		typeof router.query.color === "string" ? router.query.color : null;
+	const template = typeof router.query.template === "string" ? router.query.template : null;
+	const color = typeof router.query.color === "string" ? router.query.color : null;
 
 	// optionnel : attendre que le router soit prêt
 	if (!router.isReady) return <div>Loading...</div>;

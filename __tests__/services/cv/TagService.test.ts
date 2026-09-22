@@ -104,9 +104,7 @@ describe("TagService.delete", () => {
 	});
 
 	it("throws if tag does not exist", async () => {
-		await expect(tagService.delete("unknown-id")).rejects.toThrow(
-			NotFoundError,
-		);
+		await expect(tagService.delete("unknown-id")).rejects.toThrow(NotFoundError);
 	});
 
 	it("throws if tag is used", async () => {

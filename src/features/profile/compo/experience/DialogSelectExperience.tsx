@@ -1,7 +1,4 @@
-import type {
-	ExperienceInput,
-	ProfileSaveInput,
-} from "@/services/schemas/profileSave.schema";
+import type { ExperienceInput, ProfileSaveInput } from "@/services/schemas/profileSave.schema";
 import type { CvFull } from "@utils/trpc.types";
 import type { ListItem } from "@utils/type";
 import { Button } from "primereact/button";
@@ -11,9 +8,7 @@ import { useEffect, useState } from "react";
 import { v4 as uuid } from "uuid";
 
 type CvExperience = NonNullable<CvFull>["experiences"][number];
-type ProfileExperienceItem = NonNullable<
-	ProfileSaveInput["experiences"]
->[number];
+type ProfileExperienceItem = NonNullable<ProfileSaveInput["experiences"]>[number];
 
 function cvExperienceToProfile(exp: CvExperience): ProfileExperienceItem {
 	return {
@@ -62,16 +57,12 @@ export const DialogSelectExperience = ({
 		if (!visible) return;
 		setTarget(listExperienceInProfile);
 		const already = new Set(
-			listExperienceInProfile.map(
-				(e) => `${e.content.title}|${e.content.company ?? ""}`,
-			),
+			listExperienceInProfile.map((e) => `${e.content.title}|${e.content.company ?? ""}`),
 		);
 		setSource(
 			listExperienceFromCv
 				.map((exp) => cvExperienceToProfile(exp))
-				.filter(
-					(e) => !already.has(`${e.content.title}|${e.content.company ?? ""}`),
-				),
+				.filter((e) => !already.has(`${e.content.title}|${e.content.company ?? ""}`)),
 		);
 	}, [visible, listExperienceFromCv]);
 

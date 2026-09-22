@@ -1,7 +1,4 @@
-import type {
-	ExpertiseInput,
-	ProfileSaveInput,
-} from "@/services/schemas/profileSave.schema";
+import type { ExpertiseInput, ProfileSaveInput } from "@/services/schemas/profileSave.schema";
 import type { CvFull } from "@utils/trpc.types";
 import type { ListItem } from "@utils/type";
 import { Button } from "primereact/button";
@@ -50,16 +47,12 @@ export const DialogSelectExpertise = ({
 		if (!visible) return;
 		setTarget(listExpertiseInProfile);
 		const already = new Set(
-			listExpertiseInProfile.map(
-				(e) => `${e.content.title}|${e.content.level ?? ""}`,
-			),
+			listExpertiseInProfile.map((e) => `${e.content.title}|${e.content.level ?? ""}`),
 		);
 		setSource(
 			listExpertiseFromCv
 				.map((exp) => cvExpertiseToProfile(exp))
-				.filter(
-					(e) => !already.has(`${e.content.title}|${e.content.level ?? ""}`),
-				),
+				.filter((e) => !already.has(`${e.content.title}|${e.content.level ?? ""}`)),
 		);
 	}, [visible, listExpertiseFromCv]);
 

@@ -19,19 +19,21 @@ export interface TwoColumnSideBarProps {
 	deleteSection: (item: ItemGeneralProps) => void;
 }
 export function TwoColumnSideBar({ deleteSection }: TwoColumnSideBarProps) {
-    const paddingDoc = ChangePaddingDocument();
+	const paddingDoc = ChangePaddingDocument();
 	const refTaille = useRef<HTMLDivElement>(null);
 	const { setSectionSelected } = useCreateCvContext();
 	const { watch } = useFormContext();
-    const sidebarSide = watch(FieldNameLayoutGeneral.sidebarSide) ?? "left";
-    const headerPlacement = watch(FieldNameLayoutGeneral.headerPlacement) ?? "top";
+	const sidebarSide = watch(FieldNameLayoutGeneral.sidebarSide) ?? "left";
+	const headerPlacement = watch(FieldNameLayoutGeneral.headerPlacement) ?? "top";
 
 	const left = useCvSectionItems(0);
 	const right = useCvSectionItems(1);
-    const [activeSectionId, setActiveSectionId] = useState<string | null>(null);
-    const activeItem = [...left, ...right].find((i) => i.id === activeSectionId);
-	const { sensors, handleDragEnd, handleDragOver, collisionDetection } =
-		useCvPageDnd([left, right], { sidebarColumn: 0 });
+	const [activeSectionId, setActiveSectionId] = useState<string | null>(null);
+	const activeItem = [...left, ...right].find((i) => i.id === activeSectionId);
+	const { sensors, handleDragEnd, handleDragOver, collisionDetection } = useCvPageDnd(
+		[left, right],
+		{ sidebarColumn: 0 },
+	);
 
 	const primaryColor = GetPrimaryColor() ?? "white";
 	const accent = watch(FieldNameLayoutGeneral.pageAccent);
@@ -40,29 +42,21 @@ export function TwoColumnSideBar({ deleteSection }: TwoColumnSideBarProps) {
 	const sidebarShadeBgColor = sidebarTheme?.shadeBgColor;
 	const sidebarFg = sidebarTheme?.fg;
 	const shade = accent?.shade;
-	const marge = (watch(FieldNameLayoutGeneral.marge) ?? "md") as
-		| "sm"
-		| "md"
-		| "lg";
+	const marge = (watch(FieldNameLayoutGeneral.marge) ?? "md") as "sm" | "md" | "lg";
 	const pagePad = { sm: "2rem", md: "3rem", lg: "4rem" }[marge];
 	const [colorSelected, setColorSelected] = useState<string | null>(null);
-	const bandStop =
-		"calc(var(--page-pad) + (100% - 2 * var(--page-pad)) * 0.2 + 0.5rem)";
+	const bandStop = "calc(var(--page-pad) + (100% - 2 * var(--page-pad)) * 0.2 + 0.5rem)";
 
-    const hue = sidebarBgColor === "primaryColor"
-        ? primaryColor.split("-")[0]
-        : sidebarBgColor; // "gray" | "black" | "white"
-    const cssToken =
-        sidebarBgColor && (hue === "black" || hue === "white")
-            ? hue
-            : sidebarBgColor
-                ? `${hue}${sidebarShadeBgColor ?? ""}` // "gray-700"
-                : undefined;
+	const hue = sidebarBgColor === "primaryColor" ? primaryColor.split("-")[0] : sidebarBgColor; // "gray" | "black" | "white"
+	const cssToken =
+		sidebarBgColor && (hue === "black" || hue === "white")
+			? hue
+			: sidebarBgColor
+				? `${hue}${sidebarShadeBgColor ?? ""}` // "gray-700"
+				: undefined;
 	const columnFg = resolveSidebarFg(sidebarFg, sidebarShadeBgColor);
 
-	const headerKey =
-		watch("layoutGeneral.defaultStyles")?.components?.sectionHeader ??
-		"HeaderOne";
+	const headerKey = watch("layoutGeneral.defaultStyles")?.components?.sectionHeader ?? "HeaderOne";
 	const HeaderComponent = HeaderRegister[headerKey] ?? HeaderRegister.HeaderOne;
 
 	useEffect(() => {
@@ -74,21 +68,21 @@ export function TwoColumnSideBar({ deleteSection }: TwoColumnSideBarProps) {
 		}
 	}, [shade, primaryColor]);
 	return (
-        <DndContext
+		<DndContext
 			sensors={sensors}
 			collisionDetection={collisionDetection}
 			// onDragEnd={handleDragEnd}
 			onDragOver={handleDragOver}
-            onDragStart={(e) => {
-                if (e.active.data.current?.type === "section") {
-                  setActiveSectionId(String(e.active.id));
-                }
-            }}
-            onDragEnd={(e) => {
-                setActiveSectionId(null);
-                handleDragEnd(e);
-            }}
-            onDragCancel={() => setActiveSectionId(null)}
+			onDragStart={(e) => {
+				if (e.active.data.current?.type === "section") {
+					setActiveSectionId(String(e.active.id));
+				}
+			}}
+			onDragEnd={(e) => {
+				setActiveSectionId(null);
+				handleDragEnd(e);
+			}}
+			onDragCancel={() => setActiveSectionId(null)}
 		>
 			<div
 				className={`cv-page-document shadow-lg relative bg-white`}
@@ -107,63 +101,66 @@ export function TwoColumnSideBar({ deleteSection }: TwoColumnSideBarProps) {
 					{/* Header full-bleed (au-dessus des 2 colonnes) */}
 					{headerPlacement === "top" && (
 						<button
-                            type="button"
-                            onClick={() => setSectionSelected("header")}
-                            className={`w-full ${paddingDoc} pb-0`}
-                        >
-                            {HeaderComponent && <HeaderComponent />}
-                        </button>
+							type="button"
+							onClick={() => setSectionSelected("header")}
+							className={`w-full ${paddingDoc} pb-0`}
+						>
+							{HeaderComponent && <HeaderComponent />}
+						</button>
 					)}
 
 					<div className="sections-container w-full grid grid-cols-8 gap-6">
 						{/* Colonne 0 — sidebar gauche */}
-						<ColumnDropZone 
-                            column={0} 
-                            className={`col-span-3 min-h-[4rem] ${
-                                sidebarSide === "right" ? "order-2" : "order-1"
-                            } ${paddingDoc}`}
+						<ColumnDropZone
+							column={0}
+							className={`col-span-3 min-h-[4rem] ${
+								sidebarSide === "right" ? "order-2" : "order-1"
+							} ${paddingDoc}`}
 							fg={columnFg}
-                            style={{
-                                backgroundColor: cssToken ? `var(--${cssToken})` : undefined,
-                            }}
-                        >
-                            <>
-                            {headerPlacement === "sidebar" && (
-                                <button
-                                    type="button"
-                                    onClick={() => setSectionSelected("header")}
-                                    className="w-full"
-                                >
-                                    {HeaderComponent && <HeaderComponent />}
-                                </button>
-                            )}
-							<SortableContext
-								items={left.map((item) => item.id)}
-								strategy={verticalListSortingStrategy}
-							>
-								{left.map((item) => (
-									// biome-ignore lint/a11y/noStaticElementInteractions: wrapper section
-									// biome-ignore lint/a11y/useKeyWithClickEvents: sélection section
-									<div
-										key={item.id}
-										className="sections-container-left"
-										onClick={() => setSectionSelected(item.id)}
+							style={{
+								backgroundColor: cssToken ? `var(--${cssToken})` : undefined,
+							}}
+						>
+							<>
+								{headerPlacement === "sidebar" && (
+									<button
+										type="button"
+										onClick={() => setSectionSelected("header")}
+										className="w-full"
 									>
-										<SectionSortableContext
-											item={item}
-											deleteSection={deleteSection}
-											sectionMenu={item.sectionMenu}
-										/>
-									</div>
-								))}
-							</SortableContext>
-                            </>
+										{HeaderComponent && <HeaderComponent />}
+									</button>
+								)}
+								<SortableContext
+									items={left.map((item) => item.id)}
+									strategy={verticalListSortingStrategy}
+								>
+									{left.map((item) => (
+										// biome-ignore lint/a11y/noStaticElementInteractions: wrapper section
+										// biome-ignore lint/a11y/useKeyWithClickEvents: sélection section
+										<div
+											key={item.id}
+											className="sections-container-left"
+											onClick={() => setSectionSelected(item.id)}
+										>
+											<SectionSortableContext
+												item={item}
+												deleteSection={deleteSection}
+												sectionMenu={item.sectionMenu}
+											/>
+										</div>
+									))}
+								</SortableContext>
+							</>
 						</ColumnDropZone>
 
 						{/* Colonne 1 — main */}
-						<ColumnDropZone column={1} className={`col-span-5 min-h-[4rem] ${
-                            sidebarSide === "right" ? "order-1 pr-0" : "order-2 pl-0"
-                        } ${paddingDoc}`}>
+						<ColumnDropZone
+							column={1}
+							className={`col-span-5 min-h-[4rem] ${
+								sidebarSide === "right" ? "order-1 pr-0" : "order-2 pl-0"
+							} ${paddingDoc}`}
+						>
 							<SortableContext
 								items={right.map((item) => item.id)}
 								strategy={verticalListSortingStrategy}
@@ -188,15 +185,15 @@ export function TwoColumnSideBar({ deleteSection }: TwoColumnSideBarProps) {
 					</div>
 				</div>
 			</div>
-            <DragOverlay>
-                {activeItem ? (
-                    <div className="opacity-90 bg-white shadow-lg">
-                        {/* titre ou mini preview — pas forcément tout le SectionXxx */}
-                        {/* {activeItem.id.replace("section-", "")} */}
-                        <activeItem.content />
-                    </div>
-                ) : null}
-            </DragOverlay>
+			<DragOverlay>
+				{activeItem ? (
+					<div className="opacity-90 bg-white shadow-lg">
+						{/* titre ou mini preview — pas forcément tout le SectionXxx */}
+						{/* {activeItem.id.replace("section-", "")} */}
+						<activeItem.content />
+					</div>
+				) : null}
+			</DragOverlay>
 		</DndContext>
-    );
+	);
 }

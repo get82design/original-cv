@@ -20,10 +20,7 @@ const PLAN_OPTIONS: { label: string; value: PlanRole }[] = [
 	{ label: "PREMIUM+IA", value: PlanRole.PREMIUM_PLUS_IA },
 ];
 
-const PREMIUM_PLANS: PlanRole[] = [
-	PlanRole.PREMIUM,
-	PlanRole.PREMIUM_PLUS_IA,
-];
+const PREMIUM_PLANS: PlanRole[] = [PlanRole.PREMIUM, PlanRole.PREMIUM_PLUS_IA];
 
 //! Abonnement admin : UI visible mais disabled — V1 pas encore figée sur le modèle abo (plan / subscriptionEnd). Remettre à false (et retirer disabled) quand l’abonnement produit est certain.
 const SUBSCRIPTION_ACTIONS_DISABLED = true;
@@ -40,9 +37,7 @@ function formatDate(d: Date | string | null | undefined) {
 	});
 }
 
-function aiFeatureLabel(
-	feature: "IMPORT_CV" | "REVIEW_CV" | "REWRITE_SECTION",
-) {
+function aiFeatureLabel(feature: "IMPORT_CV" | "REVIEW_CV" | "REWRITE_SECTION") {
 	switch (feature) {
 		case "IMPORT_CV":
 			return "Import PDF";
@@ -64,9 +59,7 @@ function InfoRow({ label, value }: { label: string; value: ReactNode }) {
 	return (
 		<div className="flex flex-col gap-0.5 border-b border-zinc-100 py-2 last:border-0 dark:border-zinc-800 sm:flex-row sm:items-baseline sm:justify-between sm:gap-4">
 			<span className="text-xs font-medium text-zinc-500">{label}</span>
-			<span className="text-sm text-zinc-900 dark:text-zinc-100">
-				{value}
-			</span>
+			<span className="text-sm text-zinc-900 dark:text-zinc-100">{value}</span>
 		</div>
 	);
 }
@@ -109,9 +102,7 @@ export function AdminUserDetailPage() {
 		setCreditsDraft(user.downloadCredits);
 		setFreeDraft(user.freeDownloadsRemaining);
 		setPlanDraft(user.plan);
-		setSubEndDraft(
-			user.subscriptionEnd ? new Date(user.subscriptionEnd) : null,
-		);
+		setSubEndDraft(user.subscriptionEnd ? new Date(user.subscriptionEnd) : null);
 	}, [detailQuery.data]);
 
 	const invalidateUser = async () => {
@@ -169,10 +160,7 @@ export function AdminUserDetailPage() {
 				life: 3500,
 			});
 			setGiftTemplateId(null);
-			await Promise.all([
-				invalidateUser(),
-				utils.admin.listUnlocks.invalidate(),
-			]);
+			await Promise.all([invalidateUser(), utils.admin.listUnlocks.invalidate()]);
 		},
 		onError: (err) => {
 			toast.current?.show({
@@ -218,18 +206,13 @@ export function AdminUserDetailPage() {
 
 	const user = detailQuery.data;
 	const busy =
-		updateMutation.isPending ||
-		softResetMutation.isPending ||
-		unlockGiftMutation.isPending;
+		updateMutation.isPending || softResetMutation.isPending || unlockGiftMutation.isPending;
 	const planDirty =
 		planDraft != null &&
 		(planDraft !== user?.plan ||
 			(subEndDraft?.getTime() ?? null) !==
-				(user?.subscriptionEnd
-					? new Date(user.subscriptionEnd).getTime()
-					: null));
-	const planNeedsEnd =
-		planDraft != null && PREMIUM_PLANS.includes(planDraft);
+				(user?.subscriptionEnd ? new Date(user.subscriptionEnd).getTime() : null));
+	const planNeedsEnd = planDraft != null && PREMIUM_PLANS.includes(planDraft);
 
 	return (
 		<div className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
@@ -284,56 +267,34 @@ export function AdminUserDetailPage() {
 									</p>
 									{SUBSCRIPTION_ACTIONS_DISABLED ? (
 										<p className="m-0 text-xs text-zinc-500">
-											Désactivé tant que le modèle d’abo
-											V1 n’est pas figé.
+											Désactivé tant que le modèle d’abo V1 n’est pas figé.
 										</p>
 									) : null}
 									<div className="flex flex-wrap items-end gap-2">
 										<div className="w-[7.5rem]">
-											<label className="mb-1 block text-xs text-zinc-500">
-												Plan
-											</label>
+											<label className="mb-1 block text-xs text-zinc-500">Plan</label>
 											<Dropdown
 												value={planDraft}
 												options={PLAN_OPTIONS}
 												onChange={(e) => {
-													const next =
-														e.value as PlanRole;
+													const next = e.value as PlanRole;
 													setPlanDraft(next);
-													if (
-														!PREMIUM_PLANS.includes(
-															next,
-														)
-													) {
+													if (!PREMIUM_PLANS.includes(next)) {
 														setSubEndDraft(null);
 													}
 												}}
 												className="w-full"
-												disabled={
-													busy ||
-													SUBSCRIPTION_ACTIONS_DISABLED
-												}
+												disabled={busy || SUBSCRIPTION_ACTIONS_DISABLED}
 											/>
 										</div>
 										<div className="w-36">
-											<label className="mb-1 block text-xs text-zinc-500">
-												Fin abo
-											</label>
+											<label className="mb-1 block text-xs text-zinc-500">Fin abo</label>
 											<Calendar
 												value={subEndDraft}
-												onChange={(e) =>
-													setSubEndDraft(
-														(e.value as Date | null) ??
-															null,
-													)
-												}
+												onChange={(e) => setSubEndDraft((e.value as Date | null) ?? null)}
 												dateFormat="dd/mm/yy"
 												showIcon
-												disabled={
-													busy ||
-													SUBSCRIPTION_ACTIONS_DISABLED ||
-													!planNeedsEnd
-												}
+												disabled={busy || SUBSCRIPTION_ACTIONS_DISABLED || !planNeedsEnd}
 												className="w-full"
 												inputClassName="w-full text-sm"
 											/>
@@ -354,10 +315,7 @@ export function AdminUserDetailPage() {
 												updateMutation.mutate({
 													id: user.id,
 													plan: planDraft,
-													subscriptionEnd:
-														planNeedsEnd
-															? subEndDraft
-															: null,
+													subscriptionEnd: planNeedsEnd ? subEndDraft : null,
 												});
 											}}
 										/>
@@ -369,36 +327,23 @@ export function AdminUserDetailPage() {
 										Offrir un modèle premium
 									</p>
 									<p className="m-0 text-xs text-zinc-500">
-										Débloque le template (méthode cadeau) et
-										applique les unlockGifts configurés.
+										Débloque le template (méthode cadeau) et applique les unlockGifts configurés.
 									</p>
 									<div className="flex flex-wrap items-end gap-2">
 										<div className="min-w-0 flex-1">
-											<label className="mb-1 block text-xs text-zinc-500">
-												Modèle
-											</label>
+											<label className="mb-1 block text-xs text-zinc-500">Modèle</label>
 											<Dropdown
 												value={giftTemplateId}
 												options={giftTemplateOptions}
-												onChange={(e) =>
-													setGiftTemplateId(
-														(e.value as string | null) ??
-															null,
-													)
-												}
+												onChange={(e) => setGiftTemplateId((e.value as string | null) ?? null)}
 												placeholder={
-													giftTemplateOptions.length ===
-													0
+													giftTemplateOptions.length === 0
 														? "Aucun modèle disponible"
 														: "Choisir un modèle…"
 												}
 												className="w-full"
 												panelClassName="admin-dropdown-panel"
-												disabled={
-													busy ||
-													giftTemplateOptions.length ===
-														0
-												}
+												disabled={busy || giftTemplateOptions.length === 0}
 												filter
 											/>
 										</div>
@@ -406,15 +351,10 @@ export function AdminUserDetailPage() {
 											type="button"
 											size="small"
 											label="Offrir"
-											disabled={
-												busy || giftTemplateId == null
-											}
-											loading={
-												unlockGiftMutation.isPending
-											}
+											disabled={busy || giftTemplateId == null}
+											loading={unlockGiftMutation.isPending}
 											onClick={() => {
-												if (!giftTemplateId || !user)
-													return;
+												if (!giftTemplateId || !user) return;
 												unlockGiftMutation.mutate({
 													userId: user.id,
 													templateId: giftTemplateId,
@@ -431,9 +371,7 @@ export function AdminUserDetailPage() {
 									<div className="flex flex-wrap items-center gap-2">
 										<InputNumber
 											value={creditsDraft}
-											onValueChange={(e) =>
-												setCreditsDraft(e.value ?? null)
-											}
+											onValueChange={(e) => setCreditsDraft(e.value ?? null)}
 											min={0}
 											max={10000}
 											showButtons
@@ -449,19 +387,14 @@ export function AdminUserDetailPage() {
 											size="small"
 											label="Appliquer"
 											disabled={
-												busy ||
-												creditsDraft === null ||
-												creditsDraft ===
-													user.downloadCredits
+												busy || creditsDraft === null || creditsDraft === user.downloadCredits
 											}
 											loading={busy}
 											onClick={() => {
-												if (creditsDraft === null)
-													return;
+												if (creditsDraft === null) return;
 												updateMutation.mutate({
 													id: user.id,
-													downloadCredits:
-														creditsDraft,
+													downloadCredits: creditsDraft,
 												});
 											}}
 										/>
@@ -477,9 +410,7 @@ export function AdminUserDetailPage() {
 													onClick={() =>
 														updateMutation.mutate({
 															id: user.id,
-															downloadCredits:
-																user.downloadCredits +
-																n,
+															downloadCredits: user.downloadCredits + n,
 														})
 													}
 												/>
@@ -495,9 +426,7 @@ export function AdminUserDetailPage() {
 									<div className="flex flex-wrap items-center gap-2">
 										<InputNumber
 											value={freeDraft}
-											onValueChange={(e) =>
-												setFreeDraft(e.value ?? null)
-											}
+											onValueChange={(e) => setFreeDraft(e.value ?? null)}
 											min={0}
 											max={10000}
 											showButtons
@@ -513,18 +442,14 @@ export function AdminUserDetailPage() {
 											size="small"
 											label="Appliquer"
 											disabled={
-												busy ||
-												freeDraft === null ||
-												freeDraft ===
-													user.freeDownloadsRemaining
+												busy || freeDraft === null || freeDraft === user.freeDownloadsRemaining
 											}
 											loading={busy}
 											onClick={() => {
 												if (freeDraft === null) return;
 												updateMutation.mutate({
 													id: user.id,
-													freeDownloadsRemaining:
-														freeDraft,
+													freeDownloadsRemaining: freeDraft,
 												});
 											}}
 										/>
@@ -540,9 +465,7 @@ export function AdminUserDetailPage() {
 													onClick={() =>
 														updateMutation.mutate({
 															id: user.id,
-															freeDownloadsRemaining:
-																user.freeDownloadsRemaining +
-																n,
+															freeDownloadsRemaining: user.freeDownloadsRemaining + n,
 														})
 													}
 												/>
@@ -555,8 +478,7 @@ export function AdminUserDetailPage() {
 										Reset soft
 									</p>
 									<p className="m-0 text-xs text-zinc-500">
-										Crédits, free DL et compteur IA → 0.
-										Compte / CV / historique conservés.
+										Crédits, free DL et compteur IA → 0. Compte / CV / historique conservés.
 									</p>
 									<Button
 										type="button"
@@ -568,11 +490,7 @@ export function AdminUserDetailPage() {
 										disabled={busy}
 										loading={softResetMutation.isPending}
 										onClick={() => {
-											if (
-												!window.confirm(
-													"Remettre crédits, free DL et compteur IA à zéro ?",
-												)
-											) {
+											if (!window.confirm("Remettre crédits, free DL et compteur IA à zéro ?")) {
 												return;
 											}
 											softResetMutation.mutate({
@@ -584,9 +502,7 @@ export function AdminUserDetailPage() {
 
 								<div className="flex flex-col gap-2">
 									<p className="m-0 text-sm font-medium text-zinc-900 dark:text-zinc-100">
-										{user.isActive
-											? "Désactiver le compte"
-											: "Réactiver le compte"}
+										{user.isActive ? "Désactiver le compte" : "Réactiver le compte"}
 									</p>
 									<p className="m-0 text-xs text-zinc-500">
 										{user.isActive
@@ -596,19 +512,11 @@ export function AdminUserDetailPage() {
 									<Button
 										type="button"
 										size="small"
-										severity={
-											user.isActive ? "danger" : "success"
-										}
+										severity={user.isActive ? "danger" : "success"}
 										outlined
-										label={
-											user.isActive
-												? "Désactiver"
-												: "Réactiver"
-										}
+										label={user.isActive ? "Désactiver" : "Réactiver"}
 										className="self-start"
-										disabled={
-											busy || (isSelf && user.isActive)
-										}
+										disabled={busy || (isSelf && user.isActive)}
 										loading={busy}
 										onClick={() =>
 											updateMutation.mutate({
@@ -637,10 +545,7 @@ export function AdminUserDetailPage() {
 								<InfoRow label="Email" value={user.email} />
 								<InfoRow label="Nom" value={user.name || "—"} />
 								<InfoRow label="Plan" value={user.plan} />
-								<InfoRow
-									label="Fin abo"
-									value={formatDate(user.subscriptionEnd)}
-								/>
+								<InfoRow label="Fin abo" value={formatDate(user.subscriptionEnd)} />
 								<InfoRow label="Rôle" value={user.role} />
 								<InfoRow
 									label="Statut"
@@ -668,14 +573,8 @@ export function AdminUserDetailPage() {
 										)
 									}
 								/>
-								<InfoRow
-									label="Créé"
-									value={formatDate(user.createdAt)}
-								/>
-								<InfoRow
-									label="Dernière co."
-									value={formatDate(user.lastLoginAt)}
-								/>
+								<InfoRow label="Créé" value={formatDate(user.createdAt)} />
+								<InfoRow label="Dernière co." value={formatDate(user.lastLoginAt)} />
 							</AppCard>
 						</section>
 
@@ -684,23 +583,14 @@ export function AdminUserDetailPage() {
 								Quotas
 							</h3>
 							<AppCard>
-								<InfoRow
-									label="Crédits (sans logo)"
-									value={user.downloadCredits}
-								/>
-								<InfoRow
-									label="Free DL (avec logo)"
-									value={user.freeDownloadsRemaining}
-								/>
+								<InfoRow label="Crédits (sans logo)" value={user.downloadCredits} />
+								<InfoRow label="Free DL (avec logo)" value={user.freeDownloadsRemaining} />
 								<InfoRow label="Max CV" value={user.maxCvs} />
 								<InfoRow
 									label="Requêtes IA (mois)"
 									value={`${user.iaRequestsUsed} · reset ${formatDate(user.lastIaReset)}`}
 								/>
-								<InfoRow
-									label="Downloads total"
-									value={user.downloadCount}
-								/>
+								<InfoRow label="Downloads total" value={user.downloadCount} />
 							</AppCard>
 						</section>
 					</div>
@@ -711,30 +601,19 @@ export function AdminUserDetailPage() {
 						</h3>
 						<AppCard className="overflow-x-auto !p-0">
 							{user.cvs.length === 0 ? (
-								<p className="m-0 px-4 py-6 text-sm text-zinc-500">
-									Aucun CV.
-								</p>
+								<p className="m-0 px-4 py-6 text-sm text-zinc-500">Aucun CV.</p>
 							) : (
 								<table className="w-full min-w-[28rem] border-collapse text-left text-sm">
 									<thead>
 										<tr className="border-b border-zinc-200 bg-zinc-50 text-xs uppercase tracking-wide text-zinc-500 dark:border-zinc-700 dark:bg-zinc-900/60 dark:text-zinc-400">
-											<th className="px-4 py-2 font-semibold">
-												Titre
-											</th>
-											<th className="px-3 py-2 font-semibold">
-												Modèle
-											</th>
-											<th className="px-3 py-2 font-semibold">
-												Maj
-											</th>
+											<th className="px-4 py-2 font-semibold">Titre</th>
+											<th className="px-3 py-2 font-semibold">Modèle</th>
+											<th className="px-3 py-2 font-semibold">Maj</th>
 										</tr>
 									</thead>
 									<tbody>
 										{user.cvs.map((cv) => (
-											<tr
-												key={cv.id}
-												className="border-b border-zinc-100 dark:border-zinc-800"
-											>
+											<tr key={cv.id} className="border-b border-zinc-100 dark:border-zinc-800">
 												<td className="px-4 py-2 font-medium text-zinc-900 dark:text-zinc-100">
 													{cv.title}
 												</td>
@@ -758,36 +637,24 @@ export function AdminUserDetailPage() {
 						</h3>
 						<AppCard className="overflow-x-auto !p-0">
 							{user.recentDownloads.length === 0 ? (
-								<p className="m-0 px-4 py-6 text-sm text-zinc-500">
-									Aucun téléchargement.
-								</p>
+								<p className="m-0 px-4 py-6 text-sm text-zinc-500">Aucun téléchargement.</p>
 							) : (
 								<table className="w-full min-w-[28rem] border-collapse text-left text-sm">
 									<thead>
 										<tr className="border-b border-zinc-200 bg-zinc-50 text-xs uppercase tracking-wide text-zinc-500 dark:border-zinc-700 dark:bg-zinc-900/60 dark:text-zinc-400">
-											<th className="px-4 py-2 font-semibold">
-												Date
-											</th>
-											<th className="px-3 py-2 font-semibold">
-												Type
-											</th>
-											<th className="px-3 py-2 font-semibold">
-												CV
-											</th>
+											<th className="px-4 py-2 font-semibold">Date</th>
+											<th className="px-3 py-2 font-semibold">Type</th>
+											<th className="px-3 py-2 font-semibold">CV</th>
 										</tr>
 									</thead>
 									<tbody>
 										{user.recentDownloads.map((d) => (
-											<tr
-												key={d.id}
-												className="border-b border-zinc-100 dark:border-zinc-800"
-											>
+											<tr key={d.id} className="border-b border-zinc-100 dark:border-zinc-800">
 												<td className="px-4 py-2 text-xs whitespace-nowrap text-zinc-500">
 													{formatDate(d.createdAt)}
 												</td>
 												<td className="px-3 py-2 text-xs">
-													{d.variant ===
-													"WITH_LOGO" ? (
+													{d.variant === "WITH_LOGO" ? (
 														<span className="font-medium text-emerald-600 dark:text-emerald-400">
 															Gratuit
 														</span>
@@ -814,28 +681,16 @@ export function AdminUserDetailPage() {
 						</h3>
 						<AppCard className="overflow-x-auto !p-0">
 							{user.purchaseHistory.length === 0 ? (
-								<p className="m-0 px-4 py-6 text-sm text-zinc-500">
-									Aucun achat ni cadeau.
-								</p>
+								<p className="m-0 px-4 py-6 text-sm text-zinc-500">Aucun achat ni cadeau.</p>
 							) : (
 								<table className="w-full min-w-[28rem] border-collapse text-left text-sm">
 									<thead>
 										<tr className="border-b border-zinc-200 bg-zinc-50 text-xs uppercase tracking-wide text-zinc-500 dark:border-zinc-700 dark:bg-zinc-900/60 dark:text-zinc-400">
-											<th className="px-4 py-2 font-semibold">
-												Date
-											</th>
-											<th className="px-3 py-2 font-semibold">
-												Type
-											</th>
-											<th className="px-3 py-2 font-semibold">
-												Détail
-											</th>
-											<th className="px-3 py-2 font-semibold">
-												Méthode
-											</th>
-											<th className="px-3 py-2 font-semibold">
-												Cadeaux
-											</th>
+											<th className="px-4 py-2 font-semibold">Date</th>
+											<th className="px-3 py-2 font-semibold">Type</th>
+											<th className="px-3 py-2 font-semibold">Détail</th>
+											<th className="px-3 py-2 font-semibold">Méthode</th>
+											<th className="px-3 py-2 font-semibold">Cadeaux</th>
 										</tr>
 									</thead>
 									<tbody>
@@ -858,19 +713,11 @@ export function AdminUserDetailPage() {
 														</span>
 													)}
 												</td>
-												<td className="px-3 py-2 text-zinc-800 dark:text-zinc-200">
-													{p.label}
-												</td>
+												<td className="px-3 py-2 text-zinc-800 dark:text-zinc-200">{p.label}</td>
 												<td className="px-3 py-2 text-xs text-zinc-500">
-													{p.kind === "TEMPLATE"
-														? (unlockMethodLabel(
-																p.method,
-															) ?? "—")
-														: "—"}
+													{p.kind === "TEMPLATE" ? (unlockMethodLabel(p.method) ?? "—") : "—"}
 												</td>
-												<td className="px-3 py-2 text-xs text-zinc-500">
-													{p.amountLabel ?? "—"}
-												</td>
+												<td className="px-3 py-2 text-xs text-zinc-500">{p.amountLabel ?? "—"}</td>
 											</tr>
 										))}
 									</tbody>
@@ -885,30 +732,19 @@ export function AdminUserDetailPage() {
 						</h3>
 						<AppCard className="overflow-x-auto !p-0">
 							{user.recentAiEvents.length === 0 ? (
-								<p className="m-0 px-4 py-6 text-sm text-zinc-500">
-									Aucune requête IA.
-								</p>
+								<p className="m-0 px-4 py-6 text-sm text-zinc-500">Aucune requête IA.</p>
 							) : (
 								<table className="w-full min-w-[28rem] border-collapse text-left text-sm">
 									<thead>
 										<tr className="border-b border-zinc-200 bg-zinc-50 text-xs uppercase tracking-wide text-zinc-500 dark:border-zinc-700 dark:bg-zinc-900/60 dark:text-zinc-400">
-											<th className="px-4 py-2 font-semibold">
-												Date
-											</th>
-											<th className="px-3 py-2 font-semibold">
-												Fonction
-											</th>
-											<th className="px-3 py-2 font-semibold">
-												Détail
-											</th>
+											<th className="px-4 py-2 font-semibold">Date</th>
+											<th className="px-3 py-2 font-semibold">Fonction</th>
+											<th className="px-3 py-2 font-semibold">Détail</th>
 										</tr>
 									</thead>
 									<tbody>
 										{user.recentAiEvents.map((e) => (
-											<tr
-												key={e.id}
-												className="border-b border-zinc-100 dark:border-zinc-800"
-											>
+											<tr key={e.id} className="border-b border-zinc-100 dark:border-zinc-800">
 												<td className="px-4 py-2 text-xs whitespace-nowrap text-zinc-500">
 													{formatDate(e.createdAt)}
 												</td>

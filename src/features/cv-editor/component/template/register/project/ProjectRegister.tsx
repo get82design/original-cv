@@ -19,14 +19,8 @@ export const IconRegister: Record<string, React.ComponentType> = {
 	GoProject,
 };
 
-export function ProjectRenderer({
-	templateConfig,
-}: {
-	templateConfig: TemplateDefaultStyles;
-}) {
-	const projectKey =
-		templateConfig?.components?.sectionProject?.component ??
-		"SectionProjectOne";
+export function ProjectRenderer({ templateConfig }: { templateConfig: TemplateDefaultStyles }) {
+	const projectKey = templateConfig?.components?.sectionProject?.component ?? "SectionProjectOne";
 	const ProjectComponent = ProjectRegister[projectKey] ?? DefaultProject;
 	return <ProjectComponent />;
 }
@@ -35,19 +29,12 @@ export function MiniatureProjectRenderer({
 }: {
 	templateConfig: TemplateDefaultStyles;
 }) {
-	const miniatureKey =
-		templateConfig?.components?.sectionProject?.miniature ?? "MiniProjectOne";
-	const MiniatureComponent =
-		MiniatureRegister[miniatureKey] ?? DefaultMiniature;
+	const miniatureKey = templateConfig?.components?.sectionProject?.miniature ?? "MiniProjectOne";
+	const MiniatureComponent = MiniatureRegister[miniatureKey] ?? DefaultMiniature;
 	return <MiniatureComponent />;
 }
-export function IconProjectRenderer({
-	templateConfig,
-}: {
-	templateConfig: TemplateDefaultStyles;
-}) {
-	const iconKey =
-		templateConfig?.components?.sectionProject?.icon ?? "GoProject";
+export function IconProjectRenderer({ templateConfig }: { templateConfig: TemplateDefaultStyles }) {
+	const iconKey = templateConfig?.components?.sectionProject?.icon ?? "GoProject";
 	const IconComponent = IconRegister[iconKey] ?? DefaultIcon;
 	return <IconComponent />;
 }

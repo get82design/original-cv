@@ -25,9 +25,7 @@ export const HeaderTwoContainer = ({
 	return (
 		<div
 			className={`w-full flex items-center flex-col pb-6 gap-1 px-1 ${
-				modelGeneral
-					? ChangeSpaceDocumentApercu(modelGeneral.space)
-					: ChangeSpaceDocument()
+				modelGeneral ? ChangeSpaceDocumentApercu(modelGeneral.space) : ChangeSpaceDocument()
 			}`}
 		>
 			<div

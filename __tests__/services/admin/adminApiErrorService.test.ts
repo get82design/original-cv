@@ -54,9 +54,7 @@ describe("AdminApiErrorService", () => {
 			search: user.email.slice(0, 8),
 		});
 
-		expect(result.items.some((i) => i.message === "search-me-error")).toBe(
-			true,
-		);
+		expect(result.items.some((i) => i.message === "search-me-error")).toBe(true);
 		expect(
 			result.items
 				.filter((i) => i.message === "search-me-error")

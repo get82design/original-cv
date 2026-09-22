@@ -39,30 +39,18 @@ export const CardPublicationOne = ({
 	const { setSelectModifInput, setSelectInputForm } = useCreateCvContext();
 
 	const watchGeneral = watch(FieldNameLayoutGeneral.layout);
-	const pathContent = dataFieldContent(
-		"datas.publication.content",
-		index,
-		"content",
-	);
+	const pathContent = dataFieldContent("datas.publication.content", index, "content");
 	const watchWithIcon = watchGeneral?.titleSection.withIcon;
 	const watchListStyle = watchGeneral?.listStyle;
 	const menuLeft = useRef<Menu>(null);
 
 	const watchModelTitleOfPublication = watch(`${pathContent}.settings.title`);
-	const watchModelDescriptionOfPublication = watch(
-		`${pathContent}.settings.description`,
-	);
-	const watchModelJournalNameOfPublication = watch(
-		`${pathContent}.settings.journalName`,
-	);
-	const watchModelPeriodeOfPublication = watch(
-		`${pathContent}.settings.periode`,
-	);
+	const watchModelDescriptionOfPublication = watch(`${pathContent}.settings.description`);
+	const watchModelJournalNameOfPublication = watch(`${pathContent}.settings.journalName`);
+	const watchModelPeriodeOfPublication = watch(`${pathContent}.settings.periode`);
 	const watchModelUrlOfPublication = watch(`${pathContent}.settings.url`);
 
-	const deletePublication = (
-		itemToDelete: ListItem<PublicationItemContentInput>,
-	) => {
+	const deletePublication = (itemToDelete: ListItem<PublicationItemContentInput>) => {
 		const list = (getValues(FieldNamePublication.content) ??
 			[]) as ListItem<PublicationItemContentInput>[];
 
@@ -103,12 +91,7 @@ export const CardPublicationOne = ({
 				itemsMenu ? (
 					<>
 						<ToolbarOptionsButton menuRef={menuLeft} />
-						<Menu
-							model={itemsMenu(index)}
-							popup
-							ref={menuLeft}
-							style={{ width: 300 }}
-						/>
+						<Menu model={itemsMenu(index)} popup ref={menuLeft} style={{ width: 300 }} />
 					</>
 				) : null
 			}

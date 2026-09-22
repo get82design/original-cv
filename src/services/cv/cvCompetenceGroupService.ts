@@ -55,7 +55,7 @@ export class CvCompetenceGroupService {
 			data: {
 				title: data.title,
 				order: data.order,
-				cvId: cvId,	
+				cvId: cvId,
 				settings: data.settings ?? {},
 			},
 		});

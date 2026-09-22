@@ -199,9 +199,7 @@ describe("CvSkillGroupService.move", () => {
 
 	// TEST 2 : skill group inexistant
 	it("throws if skill group does not exist", async () => {
-		await expect(cvSkillGroupService.move("unknown-id", 1)).rejects.toThrow(
-			NotFoundError,
-		);
+		await expect(cvSkillGroupService.move("unknown-id", 1)).rejects.toThrow(NotFoundError);
 	});
 
 	// TEST 3 : ordre invalide
@@ -254,9 +252,7 @@ describe("CvSkillGroupService.delete", () => {
 
 	// TEST 2 : skill group inexistant
 	it("throws if skill group does not exist", async () => {
-		await expect(cvSkillGroupService.delete("unknown-id")).rejects.toThrow(
-			NotFoundError,
-		);
+		await expect(cvSkillGroupService.delete("unknown-id")).rejects.toThrow(NotFoundError);
 	});
 
 	// TEST 3 : réorganisation des skill groups après suppression

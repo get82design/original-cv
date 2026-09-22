@@ -13,15 +13,12 @@ import { TemplateCatalogBadges } from "@/components/badge/TemplateCatalogBadges"
 import { useMemo } from "react";
 
 function getTemplateColumns(template: TemplateCv): number {
-	const layout = template.structure as
-		| { layout?: { columns?: number } }
-		| null;
+	const layout = template.structure as { layout?: { columns?: number } } | null;
 	return layout?.layout?.columns ?? 1;
 }
 
 function templateImageAlt(template: TemplateCv): string {
-	const name =
-		template.name.charAt(0).toUpperCase() + template.name.slice(1);
+	const name = template.name.charAt(0).toUpperCase() + template.name.slice(1);
 	const columns = getTemplateColumns(template);
 	return `Modèle de CV ${name} — ${columns} colonne${columns > 1 ? "s" : ""}`;
 }
@@ -40,10 +37,7 @@ export const HomeComponent = () => {
 
 	const gridItem = (template: TemplateCv) => {
 		return (
-			<div
-				className="p-4 bg-gray-100 dark:bg-zinc-800 rounded-lg"
-				key={template.id}
-			>
+			<div className="p-4 bg-gray-100 dark:bg-zinc-800 rounded-lg" key={template.id}>
 				<div className="relative overflow-hidden rounded-lg shadow-md aspect-[1/1.414] group">
 					<Image
 						src={`/assets/img/${template.name}.png`}
@@ -92,8 +86,7 @@ export const HomeComponent = () => {
 					<div className="w-full xl:w-1/2 lg:pl-8 xl:pl-40 min-h-full flex flex-col justify-center gap-3 sm:gap-6 -ml-2 sm:-ml-4">
 						<div className="flex flex-col-reverse gap-1 sm:gap-2">
 							<h1 className="font-extrabold text-2xl sm:text-4xl lg:text-5xl leading-6 sm:leading-9 lg:leading-12">
-								Des modèles pro, entièrement modulables, créez votre CV
-								sur{" "}
+								Des modèles pro, entièrement modulables, créez votre CV sur{" "}
 								<span className="font-light">Original</span>
 								<span className="text-primary dark:text-primary-dark">CV</span>
 							</h1>
@@ -128,12 +121,11 @@ export const HomeComponent = () => {
 					</h2>
 					<div className="flex flex-col gap-0.5">
 						<p className="m-0 text-sm sm:text-base text-white/90 dark:text-black/80 leading-relaxed">
-							Choisissez un modèle professionnel, ajustez couleurs et mise en
-							page, puis partez d&apos;une base solide — sans repartir de zéro.
+							Choisissez un modèle professionnel, ajustez couleurs et mise en page, puis partez
+							d&apos;une base solide — sans repartir de zéro.
 						</p>
 						<p className="m-0 text-sm sm:text-base text-white/90 dark:text-black/80 leading-relaxed">
-							L&apos;objectif : un rendu net, lisible et crédible pour les
-							recruteurs.
+							L&apos;objectif : un rendu net, lisible et crédible pour les recruteurs.
 						</p>
 					</div>
 				</div>
@@ -141,20 +133,10 @@ export const HomeComponent = () => {
 
 			<div className="w-full">
 				<AppCard className="min-h-full flex flex-col gap-4 items-center py-8 px-16">
-					<TitleAppTwo
-						as="h2"
-						firstPart="Créez votre"
-						secondPart="CV"
-						size="text-4xl"
-						withSpace
-					/>
+					<TitleAppTwo as="h2" firstPart="Créez votre" secondPart="CV" size="text-4xl" withSpace />
 					<div className="flex flex-col gap-0 text-center">
-						<p className="text-2xl">
-							Choisissez l'un de nos nombreux templates pour votre CV.
-						</p>
-						<p className="text-2xl">
-							Vous pouvez toujours le modifier plus tard.
-						</p>
+						<p className="text-2xl">Choisissez l'un de nos nombreux templates pour votre CV.</p>
+						<p className="text-2xl">Vous pouvez toujours le modifier plus tard.</p>
 					</div>
 					<PrimeDataView
 						value={featured}
@@ -188,8 +170,7 @@ export const HomeComponent = () => {
 								1. Choisir un modèle
 							</span>
 							<p className="m-0 text-sm sm:text-base text-zinc-700 dark:text-zinc-300 leading-relaxed">
-								Parcourez les templates et partez d&apos;une base pro adaptée
-								à votre profil.
+								Parcourez les templates et partez d&apos;une base pro adaptée à votre profil.
 							</p>
 						</li>
 						<li className="flex flex-col gap-2 text-center">
@@ -197,8 +178,7 @@ export const HomeComponent = () => {
 								2. Personnaliser
 							</span>
 							<p className="m-0 text-sm sm:text-base text-zinc-700 dark:text-zinc-300 leading-relaxed">
-								Ajustez couleurs, mise en page et contenu — tout est
-								modulable.
+								Ajustez couleurs, mise en page et contenu — tout est modulable.
 							</p>
 						</li>
 						<li className="flex flex-col gap-2 text-center">
@@ -206,8 +186,7 @@ export const HomeComponent = () => {
 								3. Télécharger ou sauver
 							</span>
 							<p className="m-0 text-sm sm:text-base text-zinc-700 dark:text-zinc-300 leading-relaxed">
-								Exportez votre CV ou enregistrez-le pour y revenir plus
-								tard.
+								Exportez votre CV ou enregistrez-le pour y revenir plus tard.
 							</p>
 						</li>
 					</ol>
@@ -221,8 +200,8 @@ export const HomeComponent = () => {
 							Créez un compte gratuit
 						</h2>
 						<p className="m-0 text-sm sm:text-base text-zinc-600 dark:text-zinc-400 leading-relaxed">
-							Sauvegardez vos CV, revenez y travailler plus tard, et
-							débloquez des avantages au fil de votre utilisation.
+							Sauvegardez vos CV, revenez y travailler plus tard, et débloquez des avantages au fil
+							de votre utilisation.
 						</p>
 						<Link href="/register">
 							<Button

@@ -15,9 +15,7 @@ export const TitleSectionLigne = ({
 	watchLigneDessous,
 }: TitleSectionLigneProps) => {
 	const { setValue } = useFormContext();
-	const [iconStyle, setIconStyle] = useState<
-		"Aucun" | "Dessus" | "Dessous" | "Les 2"
-	>();
+	const [iconStyle, setIconStyle] = useState<"Aucun" | "Dessus" | "Dessous" | "Les 2">();
 	const iconOptions = ["Aucun", "Dessus", "Dessous", "Les 2"];
 	useEffect(() => {
 		if (watchLigneDessous && watchLigneDessus) {
@@ -63,10 +61,7 @@ export const TitleSectionLigne = ({
 			<div className="flex gap-1 items-center">
 				<p className="my-0 font-semibold text-xs">Lignes</p>
 				<MdInfo className="infoIconTitleSection text-sm text-muted-color" />
-				<Tooltip
-					target=".infoIconTitleSection"
-					content={"Modifier les lignes des titres"}
-				/>
+				<Tooltip target=".infoIconTitleSection" content={"Modifier les lignes des titres"} />
 			</div>
 			<SelectButton
 				className="shadow-none text-xs panel-modification"

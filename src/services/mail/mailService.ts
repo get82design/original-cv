@@ -12,8 +12,7 @@ function getResend(): Resend | null {
 }
 
 export async function sendPasswordResetEmail(to: string, resetUrl: string) {
-	const isTest =
-		process.env.VITEST === "true" || process.env.NODE_ENV === "test";
+	const isTest = process.env.VITEST === "true" || process.env.NODE_ENV === "test";
 	const resend = isTest ? null : getResend();
 	if (!resend) {
 		console.log(

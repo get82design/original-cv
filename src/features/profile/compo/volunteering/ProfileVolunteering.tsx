@@ -19,9 +19,7 @@ import { trpc } from "@utils/trpc";
 import { DialogSelectCv } from "../common/DialogSelectCv";
 import { DialogSelectVolunteering } from "./DialogSelectVolunteering";
 
-export function createEmptyVolunteering(opts?: {
-	order?: number;
-}): ListItem<VolunteeringInput> {
+export function createEmptyVolunteering(opts?: { order?: number }): ListItem<VolunteeringInput> {
 	return {
 		clientKey: "volunteering-" + uuid(),
 		order: opts?.order ?? 1,
@@ -51,10 +49,7 @@ export const ProfileVolunteering = ({ cvs }: { cvs: CV[] }) => {
 	const [toDelete, setToDelete] = useState<Set<string>>(new Set());
 	const [visibleMaj, setVisibleMaj] = useState(false);
 	const [idCv, setIdCv] = useState<string | undefined>(undefined);
-	const { data: cvSelected } = trpc.cv.byId.useQuery(
-		{ id: idCv ?? "" },
-		{ enabled: !!idCv },
-	);
+	const { data: cvSelected } = trpc.cv.byId.useQuery({ id: idCv ?? "" }, { enabled: !!idCv });
 	const [visibleSelect, setVisibleSelect] = useState(false);
 
 	const { control, watch, setValue } = useFormContext<ProfileSaveInput>();
@@ -141,12 +136,7 @@ export const ProfileVolunteering = ({ cvs }: { cvs: CV[] }) => {
 			)}
 			<AppCard className="relative group">
 				<div className="opacity-30 absolute top-2 left-3">
-					<TitleAppTwo
-						firstPart={"Du"}
-						secondPart={"Bénévolat"}
-						size={"text-2xl"}
-						withSpace
-					/>
+					<TitleAppTwo firstPart={"Du"} secondPart={"Bénévolat"} size={"text-2xl"} withSpace />
 				</div>
 				<div className="mt-10 flex flex-col gap-2">
 					{fields.map((field, idx: number) => {
@@ -212,9 +202,7 @@ export const ProfileVolunteering = ({ cvs }: { cvs: CV[] }) => {
 						);
 					})}
 					{fields.length === 0 && (
-						<p className="w-full font-light text-gray-400">
-							Aucune action bénévole enregistrée.
-						</p>
+						<p className="w-full font-light text-gray-400">Aucune action bénévole enregistrée.</p>
 					)}
 					{openDelete && (
 						<MiniFooterMultiFunc
@@ -250,11 +238,7 @@ export const ProfileVolunteering = ({ cvs }: { cvs: CV[] }) => {
 	);
 };
 
-function VolunteeringMissions({
-	volunteeringIndex,
-}: {
-	volunteeringIndex: number;
-}) {
+function VolunteeringMissions({ volunteeringIndex }: { volunteeringIndex: number }) {
 	const { control } = useFormContext<ProfileSaveInput>();
 	const { fields, append, remove } = useFieldArray({
 		control,

@@ -151,9 +151,7 @@ export function AdminAiPage() {
 			<AppCard className="admin-filters mb-4">
 				<div className="flex flex-col gap-3 lg:flex-row lg:items-end">
 					<div className="flex-1">
-						<label className="mb-1 block text-xs text-zinc-500">
-							Recherche
-						</label>
+						<label className="mb-1 block text-xs text-zinc-500">Recherche</label>
 						<div className="relative w-full">
 							<i className="pi pi-search pointer-events-none absolute top-1/2 left-3 z-10 -translate-y-1/2 text-sm text-zinc-500 dark:text-zinc-400" />
 							<InputText
@@ -165,9 +163,7 @@ export function AdminAiPage() {
 						</div>
 					</div>
 					<div className="w-full lg:w-48">
-						<label className="mb-1 block text-xs text-zinc-500">
-							Fonction
-						</label>
+						<label className="mb-1 block text-xs text-zinc-500">Fonction</label>
 						<Dropdown
 							value={feature}
 							options={FEATURE_OPTIONS}
@@ -196,28 +192,19 @@ export function AdminAiPage() {
 					<tbody>
 						{listQuery.isLoading ? (
 							<tr>
-								<td
-									colSpan={4}
-									className="px-4 py-8 text-center text-zinc-500"
-								>
+								<td colSpan={4} className="px-4 py-8 text-center text-zinc-500">
 									Chargement…
 								</td>
 							</tr>
 						) : (listQuery.data?.items.length ?? 0) === 0 ? (
 							<tr>
-								<td
-									colSpan={4}
-									className="px-4 py-8 text-center text-zinc-500"
-								>
+								<td colSpan={4} className="px-4 py-8 text-center text-zinc-500">
 									Aucune requête IA.
 								</td>
 							</tr>
 						) : (
 							listQuery.data!.items.map((e) => (
-								<tr
-									key={e.id}
-									className="border-b border-zinc-100 dark:border-zinc-800"
-								>
+								<tr key={e.id} className="border-b border-zinc-100 dark:border-zinc-800">
 									<td className="px-4 py-3 text-xs whitespace-nowrap text-zinc-500">
 										{formatDate(e.createdAt)}
 									</td>
@@ -233,9 +220,7 @@ export function AdminAiPage() {
 												{e.userEmail}
 											</Link>
 										) : (
-											<span className="text-zinc-500">
-												—
-											</span>
+											<span className="text-zinc-500">—</span>
 										)}
 									</td>
 									<td className="px-3 py-3 text-xs text-zinc-600 dark:text-zinc-400">
@@ -267,12 +252,8 @@ export function AdminAiPage() {
 							size="small"
 							outlined
 							label="Suivant"
-							disabled={
-								page >= totalPages || listQuery.isFetching
-							}
-							onClick={() =>
-								setPage((p) => Math.min(totalPages, p + 1))
-							}
+							disabled={page >= totalPages || listQuery.isFetching}
+							onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
 						/>
 					</div>
 				</div>

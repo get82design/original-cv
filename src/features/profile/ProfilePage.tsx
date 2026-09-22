@@ -22,10 +22,9 @@ export const ProfilePage = () => {
 	const [visibleAssistantIa, setVisibleAssistantIa] = useState(false);
 	const toast = useRef<Toast>(null);
 	const utils = trpc.useUtils();
-	const { data: downloadStatus } = trpc.user.getDownloadStatus.useQuery(
-		undefined,
-		{ enabled: downloadCv != null },
-	);
+	const { data: downloadStatus } = trpc.user.getDownloadStatus.useQuery(undefined, {
+		enabled: downloadCv != null,
+	});
 	const unlockedQuery = trpc.unlockedTemplate.findAll.useQuery(undefined, {
 		enabled: status === "authenticated" && downloadCv != null,
 	});
@@ -51,23 +50,16 @@ export const ProfilePage = () => {
 
 	const downloadPreviewWithLogo = downloadCv
 		? (downloadCv.previewUrl ??
-			(downloadCv.template?.name
-				? `/assets/img/${downloadCv.template.name}.png`
-				: null))
+			(downloadCv.template?.name ? `/assets/img/${downloadCv.template.name}.png` : null))
 		: null;
-	const downloadPreviewWithoutLogo =
-		downloadCv?.previewUrlClean ?? downloadPreviewWithLogo;
+	const downloadPreviewWithoutLogo = downloadCv?.previewUrlClean ?? downloadPreviewWithLogo;
 
 	const downloadMeta = () => {
 		if (!downloadCv) return {};
 		return {
 			cvId: downloadCv.id,
-			...(downloadCv.templateId
-				? { templateId: downloadCv.templateId }
-				: {}),
-			...(downloadCv.primaryColorName
-				? { primaryColorName: downloadCv.primaryColorName }
-				: {}),
+			...(downloadCv.templateId ? { templateId: downloadCv.templateId } : {}),
+			...(downloadCv.primaryColorName ? { primaryColorName: downloadCv.primaryColorName } : {}),
 		};
 	};
 
@@ -86,10 +78,7 @@ export const ProfilePage = () => {
 			toast.current?.show({
 				severity: "error",
 				summary: "Export impossible",
-				detail:
-					err instanceof Error
-						? err.message
-						: "Une erreur est survenue.",
+				detail: err instanceof Error ? err.message : "Une erreur est survenue.",
 				life: 5000,
 			});
 		}
@@ -110,10 +99,7 @@ export const ProfilePage = () => {
 			toast.current?.show({
 				severity: "error",
 				summary: "Export impossible",
-				detail:
-					err instanceof Error
-						? err.message
-						: "Une erreur est survenue.",
+				detail: err instanceof Error ? err.message : "Une erreur est survenue.",
 				life: 5000,
 			});
 		}
@@ -141,10 +127,7 @@ export const ProfilePage = () => {
 			toast.current?.show({
 				severity: "error",
 				summary: "Déblocage impossible",
-				detail:
-					err instanceof Error
-						? err.message
-						: "Une erreur est survenue.",
+				detail: err instanceof Error ? err.message : "Une erreur est survenue.",
 				life: 5000,
 			});
 		}
@@ -190,14 +173,8 @@ export const ProfilePage = () => {
 				onUnlockWithStripe={onUnlockWithStripe}
 				onAdjust={() => setVisibleAssistantIa(true)}
 			/>
-			<DialogAssistantIa
-				visible={visibleAssistantIa}
-				onHide={() => setVisibleAssistantIa(false)}
-			/>
-			<div
-				className={"w-full p-4 md:p-8 relative"}
-				style={{ minHeight: "calc(100vh - 70px)" }}
-			>
+			<DialogAssistantIa visible={visibleAssistantIa} onHide={() => setVisibleAssistantIa(false)} />
+			<div className={"w-full p-4 md:p-8 relative"} style={{ minHeight: "calc(100vh - 70px)" }}>
 				<div className="w-full flex flex-col-reverse lg:flex-row lg:justify-end gap-6">
 					<div
 						className="w-full hidden sm:flex flex-col gap-6"
@@ -215,11 +192,7 @@ export const ProfilePage = () => {
 						className="w-full lg:w-96 flex flex-col gap-4 lg:contents"
 					>
 						<div className="w-full lg:hidden">
-							<TitleAppOne
-								firstPart="DASH"
-								secondPart="BOARD"
-								classNameSize="text-3xl"
-							/>
+							<TitleAppOne firstPart="DASH" secondPart="BOARD" classNameSize="text-3xl" />
 						</div>
 						<div
 							style={{

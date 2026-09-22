@@ -181,9 +181,7 @@ describe("Certification model", () => {
 		// 3-3: peut mettre l'organismeCertification à null si optional
 		it("should allow setting organismeCertification to null", async () => {
 			const user = await createTestUserWithProfile({
-				certifications: [
-					{ title: "Certif 1", organismeCertification: "Org 1", order: 1 },
-				],
+				certifications: [{ title: "Certif 1", organismeCertification: "Org 1", order: 1 }],
 			});
 
 			await prismaTest.certification.update({

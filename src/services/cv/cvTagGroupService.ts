@@ -2,10 +2,7 @@ import { prisma } from "../../../lib/prisma";
 import { compactOrder } from "../../utils/compactOrder";
 import { reorderItems } from "../../utils/reorderCvItems";
 import { ConflictError, NotFoundError, ValidationError } from "../errors";
-import type {
-	CreateTagGroupInput,
-	UpdateTagGroupInput,
-} from "../schemas/tagGroup.schema";
+import type { CreateTagGroupInput, UpdateTagGroupInput } from "../schemas/tagGroup.schema";
 
 export class CvTagGroupService {
 	async create(cvId: string, data: CreateTagGroupInput) {

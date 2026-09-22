@@ -37,8 +37,8 @@ export const SectionSocialMediaOne = () => {
 	});
 
 	const itemKey =
-		watch("layoutGeneral.defaultStyles")?.components?.sectionSocialMedia
-			?.item ?? "CardSocialMediaOne";
+		watch("layoutGeneral.defaultStyles")?.components?.sectionSocialMedia?.item ??
+		"CardSocialMediaOne";
 	const Card = SocialMediaCardRegister[itemKey] ?? CardSocialMediaOne;
 
 	return (

@@ -124,7 +124,7 @@ export const sectionCatalog: Record<string, CatalogEntry> = {
 		configKey: "sectionPassion",
 		register: PassionRegister,
 		fallback: "SectionPassionOne",
-		menu: () => <PassionSectionMenu />
+		menu: () => <PassionSectionMenu />,
 	},
 	expertise: {
 		id: "section-expertise",
@@ -190,16 +190,12 @@ export function buildItemUse(
 		.map((mod) => {
 			const entry = sectionCatalog[mod.type];
 			if (!entry) return null;
-			const key =
-				templateConfig?.components?.[entry.configKey]?.component ??
-				entry.fallback;
+			const key = templateConfig?.components?.[entry.configKey]?.component ?? entry.fallback;
 			return {
 				id: entry.id,
 				order: mod.order,
 				column: mod.column ?? 0,
-				content:
-					entry.register[key] ??
-					(entry.register[entry.fallback] as ComponentType<{}>),
+				content: entry.register[key] ?? (entry.register[entry.fallback] as ComponentType<{}>),
 				sectionMenu: entry.menu?.(),
 			} satisfies SectionItem;
 		})

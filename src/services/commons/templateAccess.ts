@@ -21,9 +21,7 @@ export type TemplateUnlockGifts = {
 
 export type TemplateAccessDenial = "INACTIVE" | "PREMIUM_LOCKED";
 
-export function isListedInCatalog(template: {
-	isActive: boolean;
-}): boolean {
+export function isListedInCatalog(template: { isActive: boolean }): boolean {
 	return template.isActive;
 }
 
@@ -63,9 +61,7 @@ export function reasonCannotDownloadTemplate(
 }
 
 /** Unlock manuel / achat : template doit être actif. Free autorisé (no-op métier). */
-export function canUnlockTemplate(template: {
-	isActive: boolean;
-}): boolean {
+export function canUnlockTemplate(template: { isActive: boolean }): boolean {
 	return template.isActive;
 }
 

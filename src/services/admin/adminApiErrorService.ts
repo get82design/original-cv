@@ -1,9 +1,6 @@
 import type { Prisma } from "../../../generated/prisma/client";
 import { prisma } from "../../../lib/prisma";
-import {
-	periodStart,
-	type AdminDashboardPeriod,
-} from "./adminDashboardService";
+import { periodStart, type AdminDashboardPeriod } from "./adminDashboardService";
 
 const MESSAGE_MAX = 2_000;
 

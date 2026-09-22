@@ -1,9 +1,6 @@
 import { prisma } from "../../../lib/prisma";
 import { ConflictError, NotFoundError } from "../errors";
-import type {
-	CreateMissionInput,
-	UpdateMissionInput,
-} from "../schemas/mission.schema";
+import type { CreateMissionInput, UpdateMissionInput } from "../schemas/mission.schema";
 
 export class ProfileMissionExperienceService {
 	async create(profileId: string, data: CreateMissionInput) {
@@ -195,5 +192,4 @@ export class ProfileMissionExperienceService {
 	}
 }
 
-export const profileMissionExperienceService =
-	new ProfileMissionExperienceService();
+export const profileMissionExperienceService = new ProfileMissionExperienceService();

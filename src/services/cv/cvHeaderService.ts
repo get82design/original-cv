@@ -1,9 +1,6 @@
 import { prisma } from "../../../lib/prisma";
 import { ConflictError, NotFoundError } from "../errors";
-import type {
-	CreateCvHeaderInput,
-	UpdateCvHeaderInput,
-} from "../schemas/cvHeader.schema";
+import type { CreateCvHeaderInput, UpdateCvHeaderInput } from "../schemas/cvHeader.schema";
 
 export class CvHeaderService {
 	async create(cvId: string, data: CreateCvHeaderInput) {
@@ -25,10 +22,7 @@ export class CvHeaderService {
 		});
 
 		if (existingHeader) {
-			throw new ConflictError(
-				"CV_HEADER_ALREADY_EXISTS",
-				"This CV already has a header.",
-			);
+			throw new ConflictError("CV_HEADER_ALREADY_EXISTS", "This CV already has a header.");
 		}
 
 		return prisma.cvHeader.create({

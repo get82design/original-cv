@@ -8,9 +8,7 @@ type NonNullCv = NonNullable<CvFull>;
  * Mappe un CV complet vers les valeurs du formulaire profil (remplacement intégral).
  * Les listes sont recréées avec de nouveaux clientKey (sans id) : le save remplacera le contenu.
  */
-export function mapCvToProfileFormValues(
-	cv: NonNullCv,
-): Omit<ProfileSaveInput, never> {
+export function mapCvToProfileFormValues(cv: NonNullCv): Omit<ProfileSaveInput, never> {
 	const header = cv.headerCv;
 
 	return {

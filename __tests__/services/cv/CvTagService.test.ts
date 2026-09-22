@@ -396,9 +396,7 @@ describe("CvTagService.move", () => {
 
 	// TEST 2 : cvtag inexistant
 	it("throws if cvtag does not exist", async () => {
-		await expect(cvTagService.move("unknown-id", 1)).rejects.toThrow(
-			NotFoundError,
-		);
+		await expect(cvTagService.move("unknown-id", 1)).rejects.toThrow(NotFoundError);
 	});
 
 	// TEST 3 : ordre invalide
@@ -469,9 +467,7 @@ describe("CvTagService.delete", () => {
 	});
 
 	it("throws if tag does not exist", async () => {
-		await expect(cvTagService.delete("unknown-id")).rejects.toThrow(
-			NotFoundError,
-		);
+		await expect(cvTagService.delete("unknown-id")).rejects.toThrow(NotFoundError);
 	});
 
 	it("reorders remaining tags", async () => {

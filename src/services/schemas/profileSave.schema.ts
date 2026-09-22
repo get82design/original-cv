@@ -1,20 +1,11 @@
 import { z } from "zod";
 import { createProfileSchema } from "./profile.schema";
-import {
-	createExperienceSchema,
-	createMissionExperienceSchema,
-} from "./experience.schema";
+import { createExperienceSchema, createMissionExperienceSchema } from "./experience.schema";
 import { CvTimelineStatusSchema, LevelSchema } from "./enums";
-import {
-	createMissionProjectSchema,
-	createProjectSchema,
-} from "./project.schema";
+import { createMissionProjectSchema, createProjectSchema } from "./project.schema";
 import { createPublicationSchema } from "./publication.schema";
 import { createAchievementSchema } from "./achievement.schema";
-import {
-	createMissionVolunteeringSchema,
-	createVolunteeringSchema,
-} from "./volunteering.schema";
+import { createMissionVolunteeringSchema, createVolunteeringSchema } from "./volunteering.schema";
 import { createEducationSchema } from "./education.schema";
 import { createSkillGroupSchema } from "./skillGroup.schema";
 import { skillInCvFormSchema } from "./skill.schema";
@@ -47,9 +38,7 @@ const experienceContentSchema = createExperienceSchema
 		description: z.string().nullish(),
 		company: z.string().nullish(),
 		missions: z
-			.array(
-				listItemSchema(createMissionExperienceSchema.omit({ order: true })),
-			)
+			.array(listItemSchema(createMissionExperienceSchema.omit({ order: true })))
 			.default([]),
 	});
 
@@ -68,9 +57,7 @@ const projectContentSchema = createProjectSchema
 		start: z.coerce.date(),
 		end: z.coerce.date().nullish(),
 		technology: z.string().nullish(),
-		missions: z
-			.array(listItemSchema(createMissionProjectSchema.omit({ order: true })))
-			.default([]),
+		missions: z.array(listItemSchema(createMissionProjectSchema.omit({ order: true }))).default([]),
 		status: CvTimelineStatusSchema.optional(),
 	});
 
@@ -101,23 +88,19 @@ const volunteeringContentSchema = createVolunteeringSchema
 		start: z.coerce.date(),
 		end: z.coerce.date().nullish(),
 		missions: z
-			.array(
-				listItemSchema(createMissionVolunteeringSchema.omit({ order: true })),
-			)
+			.array(listItemSchema(createMissionVolunteeringSchema.omit({ order: true })))
 			.default([]),
 	});
 
-const educationContentSchema = createEducationSchema
-	.omit({ order: true, settings: true })
-	.extend({
-		title: z.string().nullish(),
-		city: z.string().nullish(),
-		school: z.string().nullish(),
-		start: z.coerce.date(),
-		end: z.coerce.date().nullish(),
-		obtained: CvTimelineStatusSchema.optional(),
-		degree: z.string().nullish(),
-	});
+const educationContentSchema = createEducationSchema.omit({ order: true, settings: true }).extend({
+	title: z.string().nullish(),
+	city: z.string().nullish(),
+	school: z.string().nullish(),
+	start: z.coerce.date(),
+	end: z.coerce.date().nullish(),
+	obtained: CvTimelineStatusSchema.optional(),
+	degree: z.string().nullish(),
+});
 
 const skillGroupContentSchema = createSkillGroupSchema
 	.omit({ order: true, skills: true, settings: true })
@@ -140,12 +123,10 @@ const competenceGroupContentSchema = createCompetenceGroupSchema
 		competences: z.array(listItemSchema(competenceInCvFormSchema)).default([]),
 	});
 
-const languageContentSchema = createLanguageSchema
-	.omit({ order: true, settings: true })
-	.extend({
-		name: z.string().nullish(),
-		level: LevelSchema.nullish(),
-	});
+const languageContentSchema = createLanguageSchema.omit({ order: true, settings: true }).extend({
+	name: z.string().nullish(),
+	level: LevelSchema.nullish(),
+});
 
 const socialMediaContentSchema = createSocialMediaSchema
 	.omit({ order: true, settings: true })
@@ -155,12 +136,10 @@ const socialMediaContentSchema = createSocialMediaSchema
 		username: z.string().nullish(),
 	});
 
-const expertiseContentSchema = createExpertiseSchema
-	.omit({ order: true, settings: true })
-	.extend({
-		title: z.string().min(1),
-		level: LevelSchema.nullish(),
-	});
+const expertiseContentSchema = createExpertiseSchema.omit({ order: true, settings: true }).extend({
+	title: z.string().min(1),
+	level: LevelSchema.nullish(),
+});
 
 const certificationContentSchema = createCertificationSchema
 	.omit({ order: true, settings: true })
@@ -169,15 +148,13 @@ const certificationContentSchema = createCertificationSchema
 		organismeCertification: z.string().nullish(),
 	});
 
-const formationContentSchema = createFormationSchema
-	.omit({ order: true, settings: true })
-	.extend({
-		title: z.string().min(1),
-		organismeFormation: z.string().nullish(),
-		start: z.coerce.date(),
-		end: z.coerce.date().nullish(),
-		status: CvTimelineStatusSchema.optional(),
-	});
+const formationContentSchema = createFormationSchema.omit({ order: true, settings: true }).extend({
+	title: z.string().min(1),
+	organismeFormation: z.string().nullish(),
+	start: z.coerce.date(),
+	end: z.coerce.date().nullish(),
+	status: CvTimelineStatusSchema.optional(),
+});
 
 const passionContentSchema = z.object({
 	id: z.string().optional(),
@@ -216,14 +193,10 @@ export const profileSaveSchema = createProfileSchema.extend({
 	skillGroups: z.array(listItemSchema(skillGroupContentSchema)).optional(),
 	languages: z.array(listItemSchema(languageContentSchema)).optional(),
 	tagGroups: z.array(listItemSchema(tagGroupContentSchema)).optional(),
-	competenceGroups: z
-		.array(listItemSchema(competenceGroupContentSchema))
-		.optional(),
+	competenceGroups: z.array(listItemSchema(competenceGroupContentSchema)).optional(),
 	socialMedias: z.array(listItemSchema(socialMediaContentSchema)).optional(),
 	expertises: z.array(listItemSchema(expertiseContentSchema)).optional(),
-	certifications: z
-		.array(listItemSchema(certificationContentSchema))
-		.optional(),
+	certifications: z.array(listItemSchema(certificationContentSchema)).optional(),
 	formations: z.array(listItemSchema(formationContentSchema)).optional(),
 	passions: z.array(listItemSchema(passionContentSchema)).optional(),
 	prizes: z.array(listItemSchema(prizeContentSchema)).optional(),

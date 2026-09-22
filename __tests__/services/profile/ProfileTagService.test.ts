@@ -380,9 +380,7 @@ describe("ProfileTagService.move", () => {
 
 	// TEST 2 : profiletag inexistant
 	it("throws if tag does not exist", async () => {
-		await expect(profileTagService.move("unknown-id", 1)).rejects.toThrow(
-			NotFoundError,
-		);
+		await expect(profileTagService.move("unknown-id", 1)).rejects.toThrow(NotFoundError);
 	});
 
 	// TEST 3 : ordre invalide
@@ -450,9 +448,7 @@ describe("ProfileTagService.delete", () => {
 	});
 
 	it("throws if tag does not exist", async () => {
-		await expect(profileTagService.delete("unknown-id")).rejects.toThrow(
-			NotFoundError,
-		);
+		await expect(profileTagService.delete("unknown-id")).rejects.toThrow(NotFoundError);
 	});
 
 	it("reorders remaining tags", async () => {

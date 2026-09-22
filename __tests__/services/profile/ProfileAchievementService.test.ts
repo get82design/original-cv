@@ -106,9 +106,7 @@ describe("ProfileAchievementService.findAllByProfileId", () => {
 			order: 2,
 		});
 
-		const result = await profileAchievementService.findAllByProfileId(
-			profile.id,
-		);
+		const result = await profileAchievementService.findAllByProfileId(profile.id);
 
 		expect(result).toHaveLength(2);
 		expect(result[0]!.title).toBe("Achievement 1");
@@ -119,9 +117,7 @@ describe("ProfileAchievementService.findAllByProfileId", () => {
 	it("returns empty array if no achievement exists", async () => {
 		const user = await createTestUser();
 		const profile = await createTestProfile(user.id, "John", "Doe");
-		const result = await profileAchievementService.findAllByProfileId(
-			profile.id,
-		);
+		const result = await profileAchievementService.findAllByProfileId(profile.id);
 
 		expect(result).toEqual([]);
 	});
@@ -146,9 +142,7 @@ describe("ProfileAchievementService.findAllByProfileId", () => {
 			technology: "Technology 2",
 			order: 2,
 		});
-		const result = await profileAchievementService.findAllByProfileId(
-			profileA.id,
-		);
+		const result = await profileAchievementService.findAllByProfileId(profileA.id);
 
 		expect(result).toHaveLength(1);
 		expect(result[0]!.title).toBe("Achievement 1");
@@ -254,9 +248,7 @@ describe("ProfileAchievementService.move", () => {
 			order: 2,
 		});
 		await profileAchievementService.move(achievement2.id, 1);
-		const result = await profileAchievementService.findAllByProfileId(
-			profile.id,
-		);
+		const result = await profileAchievementService.findAllByProfileId(profile.id);
 
 		expect(result[0]!.id).toBe(achievement2.id);
 		expect(result[1]!.id).toBe(achievement1.id);
@@ -264,9 +256,7 @@ describe("ProfileAchievementService.move", () => {
 
 	// TEST 2 : achievement inexistant
 	it("throws if achievement does not exist", async () => {
-		await expect(
-			profileAchievementService.move("unknown-id", 1),
-		).rejects.toThrow(NotFoundError);
+		await expect(profileAchievementService.move("unknown-id", 1)).rejects.toThrow(NotFoundError);
 	});
 
 	// TEST 3 : ordre invalide
@@ -280,9 +270,7 @@ describe("ProfileAchievementService.move", () => {
 			technology: "Technology 1",
 			order: 1,
 		});
-		await expect(
-			profileAchievementService.move(achievement1.id, 0),
-		).rejects.toThrow();
+		await expect(profileAchievementService.move(achievement1.id, 0)).rejects.toThrow();
 	});
 
 	it("move no-op if order is the same", async () => {
@@ -317,18 +305,14 @@ describe("ProfileAchievementService.delete", () => {
 			order: 1,
 		});
 		await profileAchievementService.delete(achievement1.id);
-		const result = await profileAchievementService.findAllByProfileId(
-			profile.id,
-		);
+		const result = await profileAchievementService.findAllByProfileId(profile.id);
 
 		expect(result).toHaveLength(0);
 	});
 
 	// TEST 2 : achievement inexistant
 	it("throws if achievement does not exist", async () => {
-		await expect(
-			profileAchievementService.delete("unknown-id"),
-		).rejects.toThrow(NotFoundError);
+		await expect(profileAchievementService.delete("unknown-id")).rejects.toThrow(NotFoundError);
 	});
 
 	// TEST 3 : réorganisation des achievements après suppression
@@ -357,9 +341,7 @@ describe("ProfileAchievementService.delete", () => {
 			order: 3,
 		});
 		await profileAchievementService.delete(achievement2.id);
-		const result = await profileAchievementService.findAllByProfileId(
-			profile.id,
-		);
+		const result = await profileAchievementService.findAllByProfileId(profile.id);
 
 		expect(result).toHaveLength(2);
 		expect(result[0]!.order).toBe(1);

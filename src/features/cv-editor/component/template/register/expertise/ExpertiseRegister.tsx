@@ -19,16 +19,10 @@ export const IconRegister: Record<string, React.ComponentType> = {
 	RxMixerVertical,
 };
 
-export function ExpertiseRenderer({
-	templateConfig,
-}: {
-	templateConfig: TemplateDefaultStyles;
-}) {
+export function ExpertiseRenderer({ templateConfig }: { templateConfig: TemplateDefaultStyles }) {
 	const ExpertiseKey =
-		templateConfig?.components?.sectionExpertise?.component ??
-		"SectionExpertiseOne";
-	const ExpertiseComponent =
-		ExpertiseRegister[ExpertiseKey] ?? DefaultExpertise;
+		templateConfig?.components?.sectionExpertise?.component ?? "SectionExpertiseOne";
+	const ExpertiseComponent = ExpertiseRegister[ExpertiseKey] ?? DefaultExpertise;
 	return <ExpertiseComponent />;
 }
 export function MiniatureExpertiseRenderer({
@@ -37,10 +31,8 @@ export function MiniatureExpertiseRenderer({
 	templateConfig: TemplateDefaultStyles;
 }) {
 	const miniatureKey =
-		templateConfig?.components?.sectionExpertise?.miniature ??
-		"MiniExpertiseOne";
-	const MiniatureComponent =
-		MiniatureRegister[miniatureKey] ?? DefaultMiniature;
+		templateConfig?.components?.sectionExpertise?.miniature ?? "MiniExpertiseOne";
+	const MiniatureComponent = MiniatureRegister[miniatureKey] ?? DefaultMiniature;
 	return <MiniatureComponent />;
 }
 export function IconExpertiseRenderer({
@@ -48,8 +40,7 @@ export function IconExpertiseRenderer({
 }: {
 	templateConfig: TemplateDefaultStyles;
 }) {
-	const iconKey =
-		templateConfig?.components?.sectionExpertise?.icon ?? "IconExpertise";
+	const iconKey = templateConfig?.components?.sectionExpertise?.icon ?? "IconExpertise";
 	const IconComponent = IconRegister[iconKey] ?? DefaultIcon;
 	return <IconComponent />;
 }

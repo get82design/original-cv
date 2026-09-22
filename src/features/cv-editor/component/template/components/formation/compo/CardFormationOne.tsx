@@ -40,25 +40,17 @@ export const CardFormationOne = ({
 	const { setSelectModifInput, setSelectInputForm } = useCreateCvContext();
 
 	const watchGeneral = watch(FieldNameLayoutGeneral.layout);
-	const pathContent = dataFieldContent(
-		"datas.formation.content",
-		index,
-		"content",
-	);
+	const pathContent = dataFieldContent("datas.formation.content", index, "content");
 	const watchWithIcon = watchGeneral?.titleSection.withIcon;
 	const watchListStyle = watchGeneral?.listStyle;
 	const menuLeft = useRef<Menu>(null);
 
 	const watchModelTitleOfFormation = watch(`${pathContent}.settings.title`);
-	const watchModelOrganismeFormation = watch(
-		`${pathContent}.settings.organismeFormation`,
-	);
+	const watchModelOrganismeFormation = watch(`${pathContent}.settings.organismeFormation`);
 	const watchModelYearOfFormation = watch(`${pathContent}.settings.periode`);
 	const watchModelStatusOfFormation = watch(`${pathContent}.settings.status`);
 
-	const deleteFormation = (
-		itemToDelete: ListItem<FormationItemContentInput>,
-	) => {
+	const deleteFormation = (itemToDelete: ListItem<FormationItemContentInput>) => {
 		const list = (getValues(FieldNameFormation.content) ??
 			[]) as ListItem<FormationItemContentInput>[];
 
@@ -99,12 +91,7 @@ export const CardFormationOne = ({
 				itemsMenu ? (
 					<>
 						<ToolbarOptionsButton menuRef={menuLeft} />
-						<Menu
-							model={itemsMenu(index)}
-							popup
-							ref={menuLeft}
-							style={{ width: 300 }}
-						/>
+						<Menu model={itemsMenu(index)} popup ref={menuLeft} style={{ width: 300 }} />
 					</>
 				) : null
 			}
@@ -133,9 +120,7 @@ export const CardFormationOne = ({
 						placeholder="Organisme de la formation"
 						onClick={() => {
 							setSelectModifInput(`${pathContent}.settings.organismeFormation`);
-							setSelectInputForm(
-								`${pathContent}.settings.withOrganismeFormation`,
-							);
+							setSelectInputForm(`${pathContent}.settings.withOrganismeFormation`);
 						}}
 						name={`${pathContent}.organismeFormation`}
 						textColor={watchModelOrganismeFormation?.colorSelect}

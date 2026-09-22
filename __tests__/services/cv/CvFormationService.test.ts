@@ -2,11 +2,7 @@ import { describe, expect, it } from "vitest";
 import { createTestUser } from "../../utils/create-test-user";
 import { createTestTemplate } from "../../utils/create-test-template";
 import { createCV } from "../../utils/create-test-cv-full-flow";
-import {
-	ConflictError,
-	NotFoundError,
-	ValidationError,
-} from "../../../src/services/errors";
+import { ConflictError, NotFoundError, ValidationError } from "../../../src/services/errors";
 import { cvFormationService } from "../../../src/services/cv/cvFormationService";
 import { CvTimelineStatus } from "../../../generated/prisma/enums";
 import { expectMoveNoOp } from "../../utils/move-noop";
@@ -455,9 +451,7 @@ describe("CvFormationService.move", () => {
 
 	// TEST 2 : formation inexistant
 	it("throws if formation does not exist", async () => {
-		await expect(cvFormationService.move("unknown-id", 1)).rejects.toThrow(
-			NotFoundError,
-		);
+		await expect(cvFormationService.move("unknown-id", 1)).rejects.toThrow(NotFoundError);
 	});
 
 	// TEST 3 : ordre invalide
@@ -513,9 +507,7 @@ describe("CvFormationService.delete", () => {
 
 	// TEST 2 : formation inexistant
 	it("throws if formation does not exist", async () => {
-		await expect(cvFormationService.delete("unknown-id")).rejects.toThrow(
-			NotFoundError,
-		);
+		await expect(cvFormationService.delete("unknown-id")).rejects.toThrow(NotFoundError);
 	});
 
 	// TEST 3 : réorganisation des formations après suppression

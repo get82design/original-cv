@@ -9,10 +9,7 @@ import { protectedProcedure, router } from "../trpc";
 import { prisma } from "../../../lib/prisma";
 import { NotFoundError } from "../../../src/services/errors";
 
-async function assertCertificationCvOwnership(
-	certificationId: string,
-	userId: string,
-) {
+async function assertCertificationCvOwnership(certificationId: string, userId: string) {
 	const certification = await prisma.cvCertification.findUnique({
 		where: { id: certificationId },
 		select: { id: true, cvId: true },

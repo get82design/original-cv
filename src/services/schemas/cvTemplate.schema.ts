@@ -93,9 +93,7 @@ export const educationContentSchema = z
 		withYear: z.boolean().default(true),
 		withVille: z.boolean().default(true),
 		withEtablissement: z.boolean().default(true),
-		columns: z
-			.union([z.literal(1), z.literal(2), z.literal(3), z.literal(4)])
-			.default(1),
+		columns: z.union([z.literal(1), z.literal(2), z.literal(3), z.literal(4)]).default(1),
 	});
 
 const educationModuleSchema = baseModuleSchema.extend({
@@ -114,12 +112,8 @@ export const skillContentSchema = z
 	})
 	.extend({
 		withGroupTitle: z.boolean().default(true),
-		groupColumns: z
-			.union([z.literal(1), z.literal(2), z.literal(3)])
-			.default(1),
-		itemColumns: z
-			.union([z.literal(1), z.literal(2), z.literal(3), z.literal(4)])
-			.default(3),
+		groupColumns: z.union([z.literal(1), z.literal(2), z.literal(3)]).default(1),
+		itemColumns: z.union([z.literal(1), z.literal(2), z.literal(3), z.literal(4)]).default(3),
 	});
 
 const skillModuleSchema = baseModuleSchema.extend({
@@ -137,9 +131,7 @@ export const competenceContentSchema = z
 	})
 	.extend({
 		withGroupTitle: z.boolean().default(true),
-		columns: z
-			.union([z.literal(1), z.literal(2), z.literal(3), z.literal(4)])
-			.default(1),
+		columns: z.union([z.literal(1), z.literal(2), z.literal(3), z.literal(4)]).default(1),
 	});
 
 const competenceModuleSchema = baseModuleSchema.extend({
@@ -174,9 +166,7 @@ export const languageContentSchema = z
 	})
 	.extend({
 		design: levelDisplaySchema.default("stars"),
-		columns: z
-			.union([z.literal(1), z.literal(2), z.literal(3), z.literal(4)])
-			.default(3),
+		columns: z.union([z.literal(1), z.literal(2), z.literal(3), z.literal(4)]).default(3),
 	});
 
 const languageModulesSchema = baseModuleSchema.extend({
@@ -223,9 +213,7 @@ export const socialMediaContentSchema = z
 		withUsername: z.boolean().default(true),
 		withIcon: z.boolean().default(true),
 		iconColor: colorSelectSchema.optional(),
-		columns: z
-			.union([z.literal(1), z.literal(2), z.literal(3), z.literal(4)])
-			.default(3),
+		columns: z.union([z.literal(1), z.literal(2), z.literal(3), z.literal(4)]).default(3),
 	});
 
 const socialMediaModuleSchema = baseModuleSchema.extend({
@@ -246,9 +234,7 @@ export const strengthContentSchema = z
 		withIcon: z.boolean().default(true),
 		iconColor: colorSelectSchema.optional(),
 		withDescription: z.boolean().default(true),
-		columns: z
-			.union([z.literal(1), z.literal(2), z.literal(3), z.literal(4)])
-			.default(1),
+		columns: z.union([z.literal(1), z.literal(2), z.literal(3), z.literal(4)]).default(1),
 	});
 
 const strengthModuleSchema = baseModuleSchema.extend({
@@ -271,9 +257,7 @@ export const formationContentSchema = z
 		withOrganismeFormation: z.boolean().default(true),
 		withPeriode: z.boolean().default(true),
 		withStatus: z.boolean().default(true),
-		columns: z
-			.union([z.literal(1), z.literal(2), z.literal(3), z.literal(4)])
-			.default(2),
+		columns: z.union([z.literal(1), z.literal(2), z.literal(3), z.literal(4)]).default(2),
 	});
 
 const formationModuleSchema = baseModuleSchema.extend({
@@ -292,9 +276,7 @@ export const certificationContentSchema = z
 	.extend({
 		withTitle: z.boolean().default(true),
 		withOrganismeCertification: z.boolean().default(true),
-		columns: z
-			.union([z.literal(1), z.literal(2), z.literal(3), z.literal(4)])
-			.default(2),
+		columns: z.union([z.literal(1), z.literal(2), z.literal(3), z.literal(4)]).default(2),
 	});
 
 const certificationModuleSchema = baseModuleSchema.extend({
@@ -316,9 +298,7 @@ export const prizeContentSchema = z
 		withDomain: z.boolean().default(true),
 		withIcon: z.boolean().default(true),
 		iconColor: colorSelectSchema.optional(),
-		columns: z
-			.union([z.literal(1), z.literal(2), z.literal(3), z.literal(4)])
-			.default(3),
+		columns: z.union([z.literal(1), z.literal(2), z.literal(3), z.literal(4)]).default(3),
 	});
 
 const prizeModuleSchema = baseModuleSchema.extend({
@@ -336,9 +316,7 @@ export const passionContentSchema = z
 	.extend({
 		withIcon: z.boolean().default(true),
 		iconColor: colorSelectSchema.optional(),
-		columns: z
-			.union([z.literal(1), z.literal(2), z.literal(3), z.literal(4)])
-			.default(3),
+		columns: z.union([z.literal(1), z.literal(2), z.literal(3), z.literal(4)]).default(3),
 	});
 
 const passionModuleSchema = baseModuleSchema.extend({
@@ -355,9 +333,7 @@ export const expertiseContentSchema = z
 	})
 	.extend({
 		design: levelDisplaySchema.default("stars"),
-		columns: z
-			.union([z.literal(1), z.literal(2), z.literal(3), z.literal(4)])
-			.default(3),
+		columns: z.union([z.literal(1), z.literal(2), z.literal(3), z.literal(4)]).default(3),
 	});
 
 const expertiseModuleSchema = baseModuleSchema.extend({
@@ -519,11 +495,15 @@ export const templateLayoutSchema = z.object({
 	stylePhoto: z.enum(["circle", "flat"]).default("circle"),
 	listStyle: z.enum(["none", "line", "point"]).default("none"),
 	headerPrimaryColor: z.boolean().default(false),
-	sidebarTheme: z.object({
-		bgColor: colorSelectSchema.optional(),      // primaryColor | gray | black | white
-		shadeBgColor: z.enum(["-100","-200","-300","-400","-500","-600","-700","-800","-900"]).optional(),
-		fg: z.enum(["auto", "black", "white"]).default("auto"),
-	  }).optional(),
+	sidebarTheme: z
+		.object({
+			bgColor: colorSelectSchema.optional(), // primaryColor | gray | black | white
+			shadeBgColor: z
+				.enum(["-100", "-200", "-300", "-400", "-500", "-600", "-700", "-800", "-900"])
+				.optional(),
+			fg: z.enum(["auto", "black", "white"]).default("auto"),
+		})
+		.optional(),
 	titleSection: z.object({
 		textTransform: z.enum(["capitalize", "uppercase"]).default("capitalize"),
 		withIcon: z.boolean().default(false),
@@ -585,21 +565,10 @@ export const templateDefaultStylesSchema = z.object({
 	components: z
 		.object({
 			pageLayout: z
-				.enum([
-					"OneColumnModel",
-					"OneColumnWithLeftBar",
-					"TwoColumnCenter",
-					"TwoColumnSideBar",
-				])
+				.enum(["OneColumnModel", "OneColumnWithLeftBar", "TwoColumnCenter", "TwoColumnSideBar"])
 				.default("OneColumnModel"),
 			sidebarSide: z.enum(["left", "right"]).default("left"),
-			sectionHeader: z.enum([
-				"HeaderOne",
-				"HeaderTwo",
-				"HeaderThree",
-				"HeaderFour",
-				"HeaderFive",
-			]),
+			sectionHeader: z.enum(["HeaderOne", "HeaderTwo", "HeaderThree", "HeaderFour", "HeaderFive"]),
 			sectionExperience: z.object({
 				component: z.enum(["SectionExperienceOne", "SectionExperienceTwo"]),
 				miniature: z.enum(["MiniExperienceOne"]),
@@ -670,10 +639,7 @@ export const templateDefaultStylesSchema = z.object({
 				icon: z.enum(["GiLevelTwo"]),
 			}),
 			sectionCertification: z.object({
-				component: z.enum([
-					"SectionCertificationOne",
-					"SectionCertificationTwo",
-				]),
+				component: z.enum(["SectionCertificationOne", "SectionCertificationTwo"]),
 				miniature: z.enum(["MiniCertificationOne"]),
 				item: z.enum(["CardCertificationOne"]).default("CardCertificationOne"),
 				Label: z.string().min(1),
@@ -725,9 +691,7 @@ export const templateDefaultStylesSchema = z.object({
 				component: z.enum(["SectionCompetenceOne", "SectionCompetenceTwo"]),
 				miniature: z.enum(["MiniCompetenceOne"]),
 				item: z.enum(["CardCompetenceOne"]).default("CardCompetenceOne"),
-				group: z
-					.enum(["CardGroupCompetenceOne"])
-					.default("CardGroupCompetenceOne"),
+				group: z.enum(["CardGroupCompetenceOne"]).default("CardGroupCompetenceOne"),
 				Label: z.string().min(1),
 				icon: z.enum(["MdTag"]),
 			}),
@@ -763,26 +727,16 @@ export type EducationContentSettings = z.infer<typeof educationContentSchema>;
 export type SkillContentSettings = z.infer<typeof skillContentSchema>;
 export type LanguageContentSettings = z.infer<typeof languageContentSchema>;
 export type ProjectContentSettings = z.infer<typeof projectContentSchema>;
-export type SocialMediaContentSettings = z.infer<
-	typeof socialMediaContentSchema
->;
+export type SocialMediaContentSettings = z.infer<typeof socialMediaContentSchema>;
 export type StrengthContentSettings = z.infer<typeof strengthContentSchema>;
 export type PhilosophyContentSettings = z.infer<typeof philosophyContentSchema>;
 export type FormationContentSettings = z.infer<typeof formationContentSchema>;
-export type CertificationContentSettings = z.infer<
-	typeof certificationContentSchema
->;
+export type CertificationContentSettings = z.infer<typeof certificationContentSchema>;
 export type PrizeContentSettings = z.infer<typeof prizeContentSchema>;
 export type PassionContentSettings = z.infer<typeof passionContentSchema>;
 export type ExpertiseContentSettings = z.infer<typeof expertiseContentSchema>;
-export type VolunteeringContentSettings = z.infer<
-	typeof volunteeringContentSchema
->;
-export type PublicationContentSettings = z.infer<
-	typeof publicationContentSchema
->;
-export type AchievementContentSettings = z.infer<
-	typeof achievementContentSchema
->;
+export type VolunteeringContentSettings = z.infer<typeof volunteeringContentSchema>;
+export type PublicationContentSettings = z.infer<typeof publicationContentSchema>;
+export type AchievementContentSettings = z.infer<typeof achievementContentSchema>;
 export type CompetenceContentSettings = z.infer<typeof competenceContentSchema>;
 export type TagContentSettings = z.infer<typeof tagContentSchema>;

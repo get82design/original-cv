@@ -9,10 +9,7 @@ import {
 import { assertCvOwnership } from "../helpers/assertCvOwnership";
 import { protectedProcedure, router } from "../trpc";
 
-async function assertVolunteeringCvOwnership(
-	volunteeringId: string,
-	userId: string,
-) {
+async function assertVolunteeringCvOwnership(volunteeringId: string, userId: string) {
 	const volunteering = await prisma.cvVolunteering.findUnique({
 		where: { id: volunteeringId },
 		select: { id: true, cvId: true },
@@ -24,10 +21,7 @@ async function assertVolunteeringCvOwnership(
 	return volunteering;
 }
 
-async function assertMissionVolunteeringCvOwnership(
-	missionId: string,
-	userId: string,
-) {
+async function assertMissionVolunteeringCvOwnership(missionId: string, userId: string) {
 	const mission = await prisma.cvMissionVolunteering.findUnique({
 		where: { id: missionId },
 		select: {
@@ -46,26 +40,15 @@ export const cvMissionVolunteeringRouter = router({
 	create: protectedProcedure
 		.input(z.object({ volunteeringId: z.string(), data: createMissionSchema }))
 		.mutation(async ({ input, ctx }) => {
-			await assertVolunteeringCvOwnership(
-				input.volunteeringId,
-				ctx.session.user.id,
-			);
-			return cvMissionVolunteeringService.create(
-				input.volunteeringId,
-				input.data,
-			);
+			await assertVolunteeringCvOwnership(input.volunteeringId, ctx.session.user.id);
+			return cvMissionVolunteeringService.create(input.volunteeringId, input.data);
 		}),
 
 	findAllByVolunteeringId: protectedProcedure
 		.input(z.object({ volunteeringId: z.string() }))
 		.query(async ({ input, ctx }) => {
-			await assertVolunteeringCvOwnership(
-				input.volunteeringId,
-				ctx.session.user.id,
-			);
-			return cvMissionVolunteeringService.findAllByCvVolunteeringId(
-				input.volunteeringId,
-			);
+			await assertVolunteeringCvOwnership(input.volunteeringId, ctx.session.user.id);
+			return cvMissionVolunteeringService.findAllByCvVolunteeringId(input.volunteeringId);
 		}),
 
 	update: protectedProcedure

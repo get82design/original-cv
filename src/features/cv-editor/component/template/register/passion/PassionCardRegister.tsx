@@ -5,9 +5,6 @@ import {
 
 export type PassionCardProps = CardPassionOneProps;
 
-export const PassionCardRegister: Record<
-	string,
-	React.ComponentType<PassionCardProps>
-> = {
+export const PassionCardRegister: Record<string, React.ComponentType<PassionCardProps>> = {
 	CardPassionOne,
 };

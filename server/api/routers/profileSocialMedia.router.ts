@@ -9,10 +9,7 @@ import { protectedProcedure, router } from "../trpc";
 import { prisma } from "../../../lib/prisma";
 import { ForbiddenError, NotFoundError } from "../../../src/services/errors";
 
-async function assertSocialMediaProfileOwnership(
-	socialMediaId: string,
-	userId: string,
-) {
+async function assertSocialMediaProfileOwnership(socialMediaId: string, userId: string) {
 	const socialMedia = await prisma.socialMedia.findUnique({
 		where: { id: socialMediaId },
 		select: {
@@ -31,12 +28,10 @@ async function assertSocialMediaProfileOwnership(
 }
 
 export const profileSocialMediaRouter = router({
-	create: protectedProcedure
-		.input(createSocialMediaSchema)
-		.mutation(async ({ input, ctx }) => {
-			const profile = await getOwnedProfile(ctx.session.user.id);
-			return profileSocialMediaService.create(profile.id, input);
-		}),
+	create: protectedProcedure.input(createSocialMediaSchema).mutation(async ({ input, ctx }) => {
+		const profile = await getOwnedProfile(ctx.session.user.id);
+		return profileSocialMediaService.create(profile.id, input);
+	}),
 
 	findAll: protectedProcedure.query(async ({ ctx }) => {
 		const profile = await getOwnedProfile(ctx.session.user.id);

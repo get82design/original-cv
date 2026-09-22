@@ -1,18 +1,11 @@
 import { describe, expect, it, vi } from "vitest";
-import {
-	isTransientGeminiError,
-	withTransientRetry,
-} from "../../../src/services/ai/geminiService";
+import { isTransientGeminiError, withTransientRetry } from "../../../src/services/ai/geminiService";
 import { TooManyRequestsError } from "../../../src/services/errors";
 
 describe("isTransientGeminiError", () => {
 	it("détecte status 503 / 429", () => {
-		expect(isTransientGeminiError({ status: 503, message: "x" })).toBe(
-			true,
-		);
-		expect(isTransientGeminiError({ status: 429, message: "x" })).toBe(
-			true,
-		);
+		expect(isTransientGeminiError({ status: 503, message: "x" })).toBe(true);
+		expect(isTransientGeminiError({ status: 429, message: "x" })).toBe(true);
 	});
 
 	it("détecte message overloaded / unavailable", () => {
@@ -21,15 +14,11 @@ describe("isTransientGeminiError", () => {
 				message: "The model is overloaded. Please try again later.",
 			}),
 		).toBe(true);
-		expect(
-			isTransientGeminiError({ message: "503 Service Unavailable" }),
-		).toBe(true);
+		expect(isTransientGeminiError({ message: "503 Service Unavailable" })).toBe(true);
 	});
 
 	it("ignore les erreurs métier / auth", () => {
-		expect(isTransientGeminiError({ status: 401, message: "nope" })).toBe(
-			false,
-		);
+		expect(isTransientGeminiError({ status: 401, message: "nope" })).toBe(false);
 		expect(isTransientGeminiError(new Error("Invalid JSON"))).toBe(false);
 		expect(isTransientGeminiError(null)).toBe(false);
 	});
@@ -47,13 +36,9 @@ describe("withTransientRetry", () => {
 	});
 
 	it("après épuisement des retries 429 → TooManyRequestsError", async () => {
-		const fn = vi
-			.fn()
-			.mockRejectedValue({ status: 429, message: "rate limit" });
+		const fn = vi.fn().mockRejectedValue({ status: 429, message: "rate limit" });
 
-		await expect(withTransientRetry(fn)).rejects.toBeInstanceOf(
-			TooManyRequestsError,
-		);
+		await expect(withTransientRetry(fn)).rejects.toBeInstanceOf(TooManyRequestsError);
 		expect(fn).toHaveBeenCalledTimes(3);
 	});
 

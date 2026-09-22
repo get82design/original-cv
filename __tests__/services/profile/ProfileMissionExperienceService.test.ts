@@ -20,13 +20,10 @@ describe("ProfileMissionExperienceService.create", () => {
 			order: 1,
 		});
 
-		const mission = await profileMissionExperienceService.create(
-			experience.id,
-			{
-				content: "Développement API REST",
-				order: 1,
-			},
-		);
+		const mission = await profileMissionExperienceService.create(experience.id, {
+			content: "Développement API REST",
+			order: 1,
+		});
 
 		expect(mission.experienceId).toBe(experience.id);
 		expect(mission.content).toBe("Développement API REST");
@@ -88,10 +85,7 @@ describe("ProfileMissionExperienceService.findAllByExperienceId", () => {
 			order: 1,
 		});
 
-		const missions =
-			await profileMissionExperienceService.findAllByExperienceId(
-				experience.id,
-			);
+		const missions = await profileMissionExperienceService.findAllByExperienceId(experience.id);
 		expect(missions).toHaveLength(1);
 		expect(missions[0]?.content).toBe("Mission 1");
 		expect(missions[0]?.order).toBe(1);
@@ -107,10 +101,7 @@ describe("ProfileMissionExperienceService.findAllByExperienceId", () => {
 			start: new Date("2020-01-01"),
 			order: 1,
 		});
-		const missions =
-			await profileMissionExperienceService.findAllByExperienceId(
-				experience.id,
-			);
+		const missions = await profileMissionExperienceService.findAllByExperienceId(experience.id);
 		expect(missions).toHaveLength(0);
 	});
 
@@ -139,10 +130,7 @@ describe("ProfileMissionExperienceService.findAllByExperienceId", () => {
 			content: "Mission 2",
 			order: 1,
 		});
-		const missions =
-			await profileMissionExperienceService.findAllByExperienceId(
-				experienceB.id,
-			);
+		const missions = await profileMissionExperienceService.findAllByExperienceId(experienceB.id);
 		expect(missions).toHaveLength(1);
 		expect(missions[0]?.content).toBe("Mission 2");
 		expect(missions[0]?.order).toBe(1);
@@ -161,19 +149,13 @@ describe("ProfileMissionExperienceService.update", () => {
 			start: new Date("2020-01-01"),
 			order: 1,
 		});
-		const mission = await profileMissionExperienceService.create(
-			experience.id,
-			{
-				content: "Mission 1",
-				order: 1,
-			},
-		);
-		const updatedMission = await profileMissionExperienceService.update(
-			mission.id,
-			{
-				content: "Mission 2",
-			},
-		);
+		const mission = await profileMissionExperienceService.create(experience.id, {
+			content: "Mission 1",
+			order: 1,
+		});
+		const updatedMission = await profileMissionExperienceService.update(mission.id, {
+			content: "Mission 2",
+		});
 		expect(updatedMission.content).toBe("Mission 2");
 	});
 
@@ -187,13 +169,10 @@ describe("ProfileMissionExperienceService.update", () => {
 			start: new Date("2020-01-01"),
 			order: 1,
 		});
-		const mission = await profileMissionExperienceService.create(
-			experience.id,
-			{
-				content: "Mission 1",
-				order: 1,
-			},
-		);
+		const mission = await profileMissionExperienceService.create(experience.id, {
+			content: "Mission 1",
+			order: 1,
+		});
 		await expect(
 			profileMissionExperienceService.update("invalid-mission-id", {
 				content: "Mission 2",
@@ -211,19 +190,13 @@ describe("ProfileMissionExperienceService.update", () => {
 			start: new Date("2020-01-01"),
 			order: 1,
 		});
-		const mission = await profileMissionExperienceService.create(
-			experience.id,
-			{
-				content: "Mission 1",
-				order: 1,
-			},
-		);
-		const updatedMission = await profileMissionExperienceService.update(
-			mission.id,
-			{
-				content: "Mission 2",
-			},
-		);
+		const mission = await profileMissionExperienceService.create(experience.id, {
+			content: "Mission 1",
+			order: 1,
+		});
+		const updatedMission = await profileMissionExperienceService.update(mission.id, {
+			content: "Mission 2",
+		});
 		expect(updatedMission.order).toBe(1);
 	});
 });
@@ -242,36 +215,28 @@ describe("ProfileMissionExperienceService.move", () => {
 			order: 1,
 		});
 
-		const mission1 = await profileMissionExperienceService.create(
-			experience.id,
-			{
-				content: "Mission 1",
-				order: 1,
-			},
-		);
+		const mission1 = await profileMissionExperienceService.create(experience.id, {
+			content: "Mission 1",
+			order: 1,
+		});
 
-		const mission2 = await profileMissionExperienceService.create(
-			experience.id,
-			{
-				content: "Mission 2",
-				order: 2,
-			},
-		);
+		const mission2 = await profileMissionExperienceService.create(experience.id, {
+			content: "Mission 2",
+			order: 2,
+		});
 
 		await profileMissionExperienceService.move(mission1.id, 2);
 
-		const result = await profileMissionExperienceService.findAllByExperienceId(
-			experience.id,
-		);
+		const result = await profileMissionExperienceService.findAllByExperienceId(experience.id);
 
 		expect(result[0]!.content).toBe("Mission 2");
 		expect(result[1]!.content).toBe("Mission 1");
 	});
 
 	it("throws if missions experience does not exist", async () => {
-		await expect(
-			profileMissionExperienceService.move("invalid-mission-id", 2),
-		).rejects.toThrow(NotFoundError);
+		await expect(profileMissionExperienceService.move("invalid-mission-id", 2)).rejects.toThrow(
+			NotFoundError,
+		);
 	});
 
 	it("throws if order is invalid", async () => {
@@ -284,16 +249,11 @@ describe("ProfileMissionExperienceService.move", () => {
 			start: new Date("2020-01-01"),
 			order: 1,
 		});
-		const mission = await profileMissionExperienceService.create(
-			experience.id,
-			{
-				content: "Mission 1",
-				order: 1,
-			},
-		);
-		await expect(
-			profileMissionExperienceService.move(mission.id, 0),
-		).rejects.toThrow();
+		const mission = await profileMissionExperienceService.create(experience.id, {
+			content: "Mission 1",
+			order: 1,
+		});
+		await expect(profileMissionExperienceService.move(mission.id, 0)).rejects.toThrow();
 	});
 
 	it("move no-op if order is the same", async () => {
@@ -308,17 +268,13 @@ describe("ProfileMissionExperienceService.move", () => {
 		});
 		return await expectMoveNoOp({
 			createEntity: async () => {
-				const mission = await profileMissionExperienceService.create(
-					experience.id,
-					{
-						content: "Mission 1",
-						order: 1,
-					},
-				);
+				const mission = await profileMissionExperienceService.create(experience.id, {
+					content: "Mission 1",
+					order: 1,
+				});
 				return { id: mission.id, order: mission.order };
 			},
-			moveEntity: (id, order) =>
-				profileMissionExperienceService.move(id, order),
+			moveEntity: (id, order) => profileMissionExperienceService.move(id, order),
 		});
 	});
 
@@ -332,16 +288,11 @@ describe("ProfileMissionExperienceService.move", () => {
 			start: new Date("2020-01-01"),
 			order: 1,
 		});
-		const mission = await profileMissionExperienceService.create(
-			experience.id,
-			{
-				content: "Mission 1",
-				order: 1,
-			},
-		);
-		await expect(
-			profileMissionExperienceService.move(mission.id, 99),
-		).rejects.toThrow();
+		const mission = await profileMissionExperienceService.create(experience.id, {
+			content: "Mission 1",
+			order: 1,
+		});
+		await expect(profileMissionExperienceService.move(mission.id, 99)).rejects.toThrow();
 	});
 });
 
@@ -357,25 +308,19 @@ describe("ProfileMissionExperienceService.delete", () => {
 			start: new Date("2020-01-01"),
 			order: 1,
 		});
-		const mission = await profileMissionExperienceService.create(
-			experience.id,
-			{
-				content: "Mission 1",
-				order: 1,
-			},
-		);
+		const mission = await profileMissionExperienceService.create(experience.id, {
+			content: "Mission 1",
+			order: 1,
+		});
 		await profileMissionExperienceService.delete(mission.id);
-		const missions =
-			await profileMissionExperienceService.findAllByExperienceId(
-				experience.id,
-			);
+		const missions = await profileMissionExperienceService.findAllByExperienceId(experience.id);
 		expect(missions).toHaveLength(0);
 	});
 
 	it("throws if mission does not exist", async () => {
-		await expect(
-			profileMissionExperienceService.delete("invalid-mission-id"),
-		).rejects.toThrow(NotFoundError);
+		await expect(profileMissionExperienceService.delete("invalid-mission-id")).rejects.toThrow(
+			NotFoundError,
+		);
 	});
 
 	it("reorders remaining missions after deletion", async () => {
@@ -388,25 +333,16 @@ describe("ProfileMissionExperienceService.delete", () => {
 			start: new Date("2020-01-01"),
 			order: 1,
 		});
-		const mission1 = await profileMissionExperienceService.create(
-			experience.id,
-			{
-				content: "Mission 1",
-				order: 1,
-			},
-		);
-		const mission2 = await profileMissionExperienceService.create(
-			experience.id,
-			{
-				content: "Mission 2",
-				order: 2,
-			},
-		);
+		const mission1 = await profileMissionExperienceService.create(experience.id, {
+			content: "Mission 1",
+			order: 1,
+		});
+		const mission2 = await profileMissionExperienceService.create(experience.id, {
+			content: "Mission 2",
+			order: 2,
+		});
 		await profileMissionExperienceService.delete(mission1.id);
-		const missions =
-			await profileMissionExperienceService.findAllByExperienceId(
-				experience.id,
-			);
+		const missions = await profileMissionExperienceService.findAllByExperienceId(experience.id);
 		expect(missions).toHaveLength(1);
 		expect(missions[0]?.content).toBe("Mission 2");
 		expect(missions[0]?.order).toBe(1);

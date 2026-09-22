@@ -46,10 +46,7 @@ export const useChangeTextFormat = (dataInput: {
 export function getCvTypographyVars(typography?: {
 	fontFamily?: FontSlug;
 	roles?: Partial<
-		Record<
-			"body" | "headerTitle" | "headerSubTitle" | "sectionTitle" | "accent",
-			FontSlug
-		>
+		Record<"body" | "headerTitle" | "headerSubTitle" | "sectionTitle" | "accent", FontSlug>
 	>;
 }) {
 	const toVar = (slug: FontSlug) => `var(${FONT_CATALOG[slug].cssVar})`;
@@ -57,8 +54,7 @@ export function getCvTypographyVars(typography?: {
 	const roles = typography?.roles ?? {};
 	const templateBody = roles.body ?? userFont;
 
-	const resolve = (role?: FontSlug) =>
-		toVar(role && role !== templateBody ? role : userFont);
+	const resolve = (role?: FontSlug) => toVar(role && role !== templateBody ? role : userFont);
 
 	return {
 		"--cv-font-body": toVar(userFont),

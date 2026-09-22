@@ -10,13 +10,9 @@ import { protectedProcedure, router } from "../trpc";
 export const profileRouter = router({
 	create: protectedProcedure
 		.input(createProfileSchema)
-		.mutation(({ input, ctx }) =>
-			profileService.create(ctx.session.user.id, input),
-		),
+		.mutation(({ input, ctx }) => profileService.create(ctx.session.user.id, input)),
 
-	me: protectedProcedure.query(({ ctx }) =>
-		profileService.findByUserId(ctx.session.user.id),
-	),
+	me: protectedProcedure.query(({ ctx }) => profileService.findByUserId(ctx.session.user.id)),
 
 	completeMe: protectedProcedure.query(({ ctx }) =>
 		profileService.findCompleteByUserId(ctx.session.user.id),
@@ -24,17 +20,11 @@ export const profileRouter = router({
 
 	save: protectedProcedure
 		.input(profileSaveSchema)
-		.mutation(({ input, ctx }) =>
-			profileSaveService.save(ctx.session.user.id, input),
-		),
+		.mutation(({ input, ctx }) => profileSaveService.save(ctx.session.user.id, input)),
 
 	update: protectedProcedure
 		.input(updateProfileSchema)
-		.mutation(({ input, ctx }) =>
-			profileService.update(ctx.session.user.id, input),
-		),
+		.mutation(({ input, ctx }) => profileService.update(ctx.session.user.id, input)),
 
-	delete: protectedProcedure.mutation(({ ctx }) =>
-		profileService.delete(ctx.session.user.id),
-	),
+	delete: protectedProcedure.mutation(({ ctx }) => profileService.delete(ctx.session.user.id)),
 });

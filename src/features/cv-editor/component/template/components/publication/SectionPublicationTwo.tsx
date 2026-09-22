@@ -34,8 +34,8 @@ export const SectionPublicationTwo = () => {
 	});
 
 	const itemKey =
-		watch("layoutGeneral.defaultStyles")?.components?.sectionPublication
-			?.item ?? "CardPublicationOne";
+		watch("layoutGeneral.defaultStyles")?.components?.sectionPublication?.item ??
+		"CardPublicationOne";
 	const Card = PublicationCardRegister[itemKey] ?? CardPublicationOne;
 
 	return (

@@ -7,11 +7,9 @@ import {
 import { protectedProcedure, router } from "../trpc";
 
 export const skillBaseRouter = router({
-	create: protectedProcedure
-		.input(createSkillBaseSchema)
-		.mutation(async ({ input }) => {
-			return skillService.create(input);
-		}),
+	create: protectedProcedure.input(createSkillBaseSchema).mutation(async ({ input }) => {
+		return skillService.create(input);
+	}),
 	findAll: protectedProcedure.query(async () => {
 		return skillService.findAll();
 	}),
@@ -20,9 +18,7 @@ export const skillBaseRouter = router({
 		.mutation(async ({ input }) => {
 			return skillService.update(input.id, input.data);
 		}),
-	delete: protectedProcedure
-		.input(z.object({ id: z.string() }))
-		.mutation(async ({ input }) => {
-			return skillService.delete(input.id);
-		}),
+	delete: protectedProcedure.input(z.object({ id: z.string() })).mutation(async ({ input }) => {
+		return skillService.delete(input.id);
+	}),
 });

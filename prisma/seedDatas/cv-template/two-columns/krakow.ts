@@ -13,7 +13,7 @@ export const krakow = defineTemplate({
 	layout: {
 		...sharedLayout,
 		columns: 2,
-        sidebarSide: "left",
+		sidebarSide: "left",
 		marge: "sm",
 		titleSection: {
 			...sharedLayout.titleSection,
@@ -37,7 +37,7 @@ export const krakow = defineTemplate({
 			column: 1,
 			columns: 2,
 		},
-        project: { isActive: true, column: 1 },
+		project: { isActive: true, column: 1 },
 		// sidebar (colonne 0)
 		language: {
 			design: "bars",
@@ -48,14 +48,14 @@ export const krakow = defineTemplate({
 		},
 		tag: { title: "Skills", design: "border", isActive: true, order: 2, column: 0 },
 		socialMedia: { title: "Réseaux", isActive: true, order: 4, column: 0, columns: 1 },
-        passion: { isActive: true, column: 0, columns: 1 },
-        volunteering: { isActive: false, column: 1 },
-        philosophy: { isActive: false, column: 1 },
-        certification: { isActive: false, column: 1 },
-        formation: { isActive: false, column: 1 },
-        achievement: { isActive: false, column: 1 },
-        publication: { isActive: false, column: 1 },
-        prize: { isActive: false, column: 0, columns: 1 },
-        expertise: { isActive: false, column: 0, columns: 1 },
+		passion: { isActive: true, column: 0, columns: 1 },
+		volunteering: { isActive: false, column: 1 },
+		philosophy: { isActive: false, column: 1 },
+		certification: { isActive: false, column: 1 },
+		formation: { isActive: false, column: 1 },
+		achievement: { isActive: false, column: 1 },
+		publication: { isActive: false, column: 1 },
+		prize: { isActive: false, column: 0, columns: 1 },
+		expertise: { isActive: false, column: 0, columns: 1 },
 	},
 });

@@ -11,9 +11,7 @@ interface DecorOption {
 	value: boolean;
 }
 
-export const TitleSectionDecorSwitch = ({
-	watchWithIcon,
-}: TitleSectionDecorSwitchProps) => {
+export const TitleSectionDecorSwitch = ({ watchWithIcon }: TitleSectionDecorSwitchProps) => {
 	const { setValue } = useFormContext();
 	const decorOptions: DecorOption[] = [
 		{ name: "Icônes", value: true },

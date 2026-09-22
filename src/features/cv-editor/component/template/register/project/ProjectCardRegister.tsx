@@ -5,9 +5,6 @@ import {
 
 export type ProjectCardProps = CardProjectOneProps;
 
-export const ProjectCardRegister: Record<
-	string,
-	React.ComponentType<ProjectCardProps>
-> = {
+export const ProjectCardRegister: Record<string, React.ComponentType<ProjectCardProps>> = {
 	CardProjectOne,
 };

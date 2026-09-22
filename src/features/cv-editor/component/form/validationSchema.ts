@@ -1,26 +1,30 @@
-import type { CompetenceGroupItemContentInput, SkillGroupItemContentInput, TagGroupItemContentInput } from "@/services/schemas/cvSave.schema";
+import type {
+	CompetenceGroupItemContentInput,
+	SkillGroupItemContentInput,
+	TagGroupItemContentInput,
+} from "@/services/schemas/cvSave.schema";
 import type { CompetenceGroupInput, TagGroupInput } from "@/services/schemas/profileSave.schema";
 import {
-    isBlankAchievement,
-    isBlankCertification,
-    isBlankCompetence,
-    isBlankCompetenceGroup,
+	isBlankAchievement,
+	isBlankCertification,
+	isBlankCompetence,
+	isBlankCompetenceGroup,
 	isBlankEducation,
 	isBlankExperience,
-    isBlankExpertise,
-    isBlankFormation,
-    isBlankLanguage,
-    isBlankPassion,
-    isBlankPrize,
-    isBlankProject,
-    isBlankPublication,
-    isBlankSkill,
-    isBlankSkillGroup,
-    isBlankSocialMedia,
-    isBlankStrength,
-    isBlankTag,
-    isBlankTagGroup,
-    isBlankVolunteering,
+	isBlankExpertise,
+	isBlankFormation,
+	isBlankLanguage,
+	isBlankPassion,
+	isBlankPrize,
+	isBlankProject,
+	isBlankPublication,
+	isBlankSkill,
+	isBlankSkillGroup,
+	isBlankSocialMedia,
+	isBlankStrength,
+	isBlankTag,
+	isBlankTagGroup,
+	isBlankVolunteering,
 } from "@/utils/isBankSection";
 import type { ListItem } from "@utils/type";
 import z from "zod";
@@ -41,11 +45,11 @@ export const cvValidationSchema = z
 		datas: z
 			.object({
 				header: z
-                  .object({
-                    prenom: z.string().optional(),
-                    nom: z.string().optional(),
-                  })
-                  .optional(),
+					.object({
+						prenom: z.string().optional(),
+						nom: z.string().optional(),
+					})
+					.optional(),
 				description: z.object({ content: z.any().optional() }).optional(),
 				philosophy: z
 					.object({ content: z.any().optional(), settings: z.any().optional() })
@@ -55,67 +59,67 @@ export const cvValidationSchema = z
 						content: z.array(z.any()).optional(),
 					})
 					.optional(),
-                achievement: z
+				achievement: z
 					.object({
 						content: z.array(z.any()).optional(),
 					})
 					.optional(),
-                certification: z
+				certification: z
 					.object({
 						content: z.array(z.any()).optional(),
 					})
 					.optional(),
-                education: z
+				education: z
 					.object({
 						content: z.array(z.any()).optional(),
 					})
 					.optional(),
-                expertise: z
+				expertise: z
 					.object({
 						content: z.array(z.any()).optional(),
 					})
 					.optional(),
-                formation: z
+				formation: z
 					.object({
 						content: z.array(z.any()).optional(),
 					})
 					.optional(),
-                language: z
+				language: z
 					.object({
 						content: z.array(z.any()).optional(),
 					})
 					.optional(),
-                passion: z
+				passion: z
 					.object({
 						content: z.array(z.any()).optional(),
 					})
 					.optional(),
-                prize: z
+				prize: z
 					.object({
 						content: z.array(z.any()).optional(),
 					})
 					.optional(),
-                project: z
+				project: z
 					.object({
 						content: z.array(z.any()).optional(),
 					})
 					.optional(),
-                publication: z
+				publication: z
 					.object({
 						content: z.array(z.any()).optional(),
 					})
 					.optional(),
-                socialMedia: z
+				socialMedia: z
 					.object({
 						content: z.array(z.any()).optional(),
 					})
 					.optional(),
-                strength: z
+				strength: z
 					.object({
 						content: z.array(z.any()).optional(),
 					})
 					.optional(),
-                volunteering: z
+				volunteering: z
 					.object({
 						content: z.array(z.any()).optional(),
 					})
@@ -130,11 +134,11 @@ export const cvValidationSchema = z
 						content: z.array(z.any()).optional(),
 					})
 					.optional(),
-                competenceGroup: z
-                    .object({
-                        content: z.array(z.any()).optional(),
-                    })
-                    .optional(),
+				competenceGroup: z
+					.object({
+						content: z.array(z.any()).optional(),
+					})
+					.optional(),
 			})
 			.passthrough()
 			.optional(),
@@ -172,7 +176,7 @@ export const cvValidationSchema = z
 				}
 			});
 		}
-        if (isModuleActive(cv.modules, "achievement")) {
+		if (isModuleActive(cv.modules, "achievement")) {
 			const items = cv.datas?.achievement?.content ?? [];
 			items.forEach((item, i) => {
 				if (isBlankAchievement(item)) return;
@@ -185,7 +189,7 @@ export const cvValidationSchema = z
 				}
 			});
 		}
-        if (isModuleActive(cv.modules, "certification")) {
+		if (isModuleActive(cv.modules, "certification")) {
 			const items = cv.datas?.certification?.content ?? [];
 			items.forEach((item, i) => {
 				if (isBlankCertification(item)) return;
@@ -198,7 +202,7 @@ export const cvValidationSchema = z
 				}
 			});
 		}
-        if (isModuleActive(cv.modules, "education")) {
+		if (isModuleActive(cv.modules, "education")) {
 			const items = cv.datas?.education?.content ?? [];
 			items.forEach((item, i) => {
 				if (isBlankEducation(item)) return;
@@ -211,7 +215,7 @@ export const cvValidationSchema = z
 				}
 			});
 		}
-        if (isModuleActive(cv.modules, "expertise")) {
+		if (isModuleActive(cv.modules, "expertise")) {
 			const items = cv.datas?.expertise?.content ?? [];
 			items.forEach((item, i) => {
 				if (isBlankExpertise(item)) return;
@@ -224,7 +228,7 @@ export const cvValidationSchema = z
 				}
 			});
 		}
-        if (isModuleActive(cv.modules, "formation")) {
+		if (isModuleActive(cv.modules, "formation")) {
 			const items = cv.datas?.formation?.content ?? [];
 			items.forEach((item, i) => {
 				if (isBlankFormation(item)) return;
@@ -237,7 +241,7 @@ export const cvValidationSchema = z
 				}
 			});
 		}
-        if (isModuleActive(cv.modules, "language")) {
+		if (isModuleActive(cv.modules, "language")) {
 			const items = cv.datas?.language?.content ?? [];
 			items.forEach((item, i) => {
 				if (isBlankLanguage(item)) return;
@@ -250,7 +254,7 @@ export const cvValidationSchema = z
 				}
 			});
 		}
-        if (isModuleActive(cv.modules, "passion")) {
+		if (isModuleActive(cv.modules, "passion")) {
 			const items = cv.datas?.passion?.content ?? [];
 			items.forEach((item, i) => {
 				if (isBlankPassion(item)) return;
@@ -263,7 +267,7 @@ export const cvValidationSchema = z
 				}
 			});
 		}
-        if (isModuleActive(cv.modules, "prize")) {
+		if (isModuleActive(cv.modules, "prize")) {
 			const items = cv.datas?.prize?.content ?? [];
 			items.forEach((item, i) => {
 				if (isBlankPrize(item)) return;
@@ -276,7 +280,7 @@ export const cvValidationSchema = z
 				}
 			});
 		}
-        if (isModuleActive(cv.modules, "project")) {
+		if (isModuleActive(cv.modules, "project")) {
 			const items = cv.datas?.project?.content ?? [];
 			items.forEach((item, i) => {
 				if (isBlankProject(item)) return;
@@ -289,7 +293,7 @@ export const cvValidationSchema = z
 				}
 			});
 		}
-        if (isModuleActive(cv.modules, "publication")) {
+		if (isModuleActive(cv.modules, "publication")) {
 			const items = cv.datas?.publication?.content ?? [];
 			items.forEach((item, i) => {
 				if (isBlankPublication(item)) return;
@@ -302,7 +306,7 @@ export const cvValidationSchema = z
 				}
 			});
 		}
-        if (isModuleActive(cv.modules, "socialMedia")) {
+		if (isModuleActive(cv.modules, "socialMedia")) {
 			const items = cv.datas?.socialMedia?.content ?? [];
 			items.forEach((item, i) => {
 				if (isBlankSocialMedia(item)) return;
@@ -315,7 +319,7 @@ export const cvValidationSchema = z
 				}
 			});
 		}
-        if (isModuleActive(cv.modules, "strength")) {
+		if (isModuleActive(cv.modules, "strength")) {
 			const items = cv.datas?.strength?.content ?? [];
 			items.forEach((item, i) => {
 				if (isBlankStrength(item)) return;
@@ -328,7 +332,7 @@ export const cvValidationSchema = z
 				}
 			});
 		}
-        if (isModuleActive(cv.modules, "volunteering")) {
+		if (isModuleActive(cv.modules, "volunteering")) {
 			const items = cv.datas?.volunteering?.content ?? [];
 			items.forEach((item, i) => {
 				if (isBlankVolunteering(item)) return;
@@ -342,14 +346,7 @@ export const cvValidationSchema = z
 				if (!item.content?.organisation?.trim()) {
 					ctx.addIssue({
 						code: "custom",
-						path: [
-							"datas",
-							"volunteering",
-							"content",
-							i,
-							"content",
-							"organisation",
-						],
+						path: ["datas", "volunteering", "content", i, "content", "organisation"],
 						message: "L'organisation est requise",
 					});
 				}
@@ -385,110 +382,98 @@ export const cvValidationSchema = z
 			// 	});
 			// }
 		}
-        if (isModuleActive(cv.modules, "skill")) {
-            const groups = cv.datas?.skillGroup?.content ?? [];
-            groups.forEach((group: ListItem<SkillGroupItemContentInput>, gi) => {
-              if (isBlankSkillGroup(group)) return;
-              // optionnel : exiger un titre de groupe s'il y a des skills
-              // if (!group.content?.title?.trim()) {
-              //   ctx.addIssue({
-              //     code: "custom",
-              //     path: ["datas", "skillGroup", "content", gi, "content", "title"],
-              //     message: "Le titre du groupe est requis",
-              //   });
-              // }
-              (group.content?.skills ?? []).forEach((skill, si) => {
-                if (isBlankSkill(skill as any)) return;
-                if (!skill.content?.name?.trim()) {
-                  ctx.addIssue({
-                    code: "custom",
-                    path: [
-                      "datas",
-                      "skillGroup",
-                      "content",
-                      gi,
-                      "content",
-                      "skills",
-                      si,
-                      "content",
-                      "name",
-                    ],
-                    message: "Le nom de la compétence est requis",
-                  });
-                }
-              });
-            });
-        }
-        if (isModuleActive(cv.modules, "tag")) {
-            const groups = cv.datas?.tagGroup?.content ?? [];
-            groups.forEach((group: ListItem<TagGroupItemContentInput>, gi) => {
-              if (isBlankTagGroup(group as ListItem<TagGroupInput>)) return;
-              // optionnel : exiger un titre de groupe s'il y a des skills
-              // if (!group.content?.title?.trim()) {
-              //   ctx.addIssue({
-              //     code: "custom",
-              //     path: ["datas", "skillGroup", "content", gi, "content", "title"],
-              //     message: "Le titre du groupe est requis",
-              //   });
-              // }
-              (group.content?.tags ?? []).forEach((tag, si) => {
-                if (isBlankTag(tag as any)) return;
-                const name = (tag as { content?: { name?: string } }).content?.name?.trim();
-                if (!name) {
-                  ctx.addIssue({
-                    code: "custom",
-                    path: [
-                      "datas",
-                      "tagGroup",
-                      "content",
-                      gi,
-                      "content",
-                      "tags",
-                      si,
-                      "content",
-                      "name",
-                    ],
-                    message: "Le nom de la compétence est requis",
-                  });
-                }
-              });
-            });
-        }
-        if (isModuleActive(cv.modules, "competence")) {
-            const groups = cv.datas?.competenceGroup?.content ?? [];
-            groups.forEach((group: ListItem<CompetenceGroupItemContentInput>, gi) => {
-              if (isBlankCompetenceGroup(group as ListItem<CompetenceGroupInput>)) return;
-              // optionnel : exiger un titre de groupe s'il y a des skills
-              // if (!group.content?.title?.trim()) {
-              //   ctx.addIssue({
-              //     code: "custom",
-              //     path: ["datas", "skillGroup", "content", gi, "content", "title"],
-              //     message: "Le titre du groupe est requis",
-              //   });
-              // }
-              (group.content?.competences ?? []).forEach((competence, si) => {
-                if (isBlankCompetence(competence as any)) return;
-                const name = (competence as { content?: { name?: string } }).content?.name?.trim();
-                if (!name) {
-                  ctx.addIssue({
-                    code: "custom",
-                    path: [
-                      "datas",
-                      "competenceGroup",
-                      "content",
-                      gi,
-                      "content",
-                      "competences",
-                      si,
-                      "content",
-                      "name",
-                    ],
-                    message: "Le nom de la compétence est requis",
-                  });
-                }
-              });
-            });
-        }
+		if (isModuleActive(cv.modules, "skill")) {
+			const groups = cv.datas?.skillGroup?.content ?? [];
+			groups.forEach((group: ListItem<SkillGroupItemContentInput>, gi) => {
+				if (isBlankSkillGroup(group)) return;
+				// optionnel : exiger un titre de groupe s'il y a des skills
+				// if (!group.content?.title?.trim()) {
+				//   ctx.addIssue({
+				//     code: "custom",
+				//     path: ["datas", "skillGroup", "content", gi, "content", "title"],
+				//     message: "Le titre du groupe est requis",
+				//   });
+				// }
+				(group.content?.skills ?? []).forEach((skill, si) => {
+					if (isBlankSkill(skill as any)) return;
+					if (!skill.content?.name?.trim()) {
+						ctx.addIssue({
+							code: "custom",
+							path: [
+								"datas",
+								"skillGroup",
+								"content",
+								gi,
+								"content",
+								"skills",
+								si,
+								"content",
+								"name",
+							],
+							message: "Le nom de la compétence est requis",
+						});
+					}
+				});
+			});
+		}
+		if (isModuleActive(cv.modules, "tag")) {
+			const groups = cv.datas?.tagGroup?.content ?? [];
+			groups.forEach((group: ListItem<TagGroupItemContentInput>, gi) => {
+				if (isBlankTagGroup(group as ListItem<TagGroupInput>)) return;
+				// optionnel : exiger un titre de groupe s'il y a des skills
+				// if (!group.content?.title?.trim()) {
+				//   ctx.addIssue({
+				//     code: "custom",
+				//     path: ["datas", "skillGroup", "content", gi, "content", "title"],
+				//     message: "Le titre du groupe est requis",
+				//   });
+				// }
+				(group.content?.tags ?? []).forEach((tag, si) => {
+					if (isBlankTag(tag as any)) return;
+					const name = (tag as { content?: { name?: string } }).content?.name?.trim();
+					if (!name) {
+						ctx.addIssue({
+							code: "custom",
+							path: ["datas", "tagGroup", "content", gi, "content", "tags", si, "content", "name"],
+							message: "Le nom de la compétence est requis",
+						});
+					}
+				});
+			});
+		}
+		if (isModuleActive(cv.modules, "competence")) {
+			const groups = cv.datas?.competenceGroup?.content ?? [];
+			groups.forEach((group: ListItem<CompetenceGroupItemContentInput>, gi) => {
+				if (isBlankCompetenceGroup(group as ListItem<CompetenceGroupInput>)) return;
+				// optionnel : exiger un titre de groupe s'il y a des skills
+				// if (!group.content?.title?.trim()) {
+				//   ctx.addIssue({
+				//     code: "custom",
+				//     path: ["datas", "skillGroup", "content", gi, "content", "title"],
+				//     message: "Le titre du groupe est requis",
+				//   });
+				// }
+				(group.content?.competences ?? []).forEach((competence, si) => {
+					if (isBlankCompetence(competence as any)) return;
+					const name = (competence as { content?: { name?: string } }).content?.name?.trim();
+					if (!name) {
+						ctx.addIssue({
+							code: "custom",
+							path: [
+								"datas",
+								"competenceGroup",
+								"content",
+								gi,
+								"content",
+								"competences",
+								si,
+								"content",
+								"name",
+							],
+							message: "Le nom de la compétence est requis",
+						});
+					}
+				});
+			});
+		}
 	});
-
-

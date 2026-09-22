@@ -3,10 +3,7 @@ import { TRPCError } from "@trpc/server";
 
 import { createTestTemplate } from "../utils/create-test-template";
 import { createTestUser } from "../utils/create-test-user";
-import {
-	createTestCaller,
-	createTestSession,
-} from "./helpers/create-test-caller";
+import { createTestCaller, createTestSession } from "./helpers/create-test-caller";
 import { prismaTest } from "../../lib/prismaTest";
 
 async function prepareCreditsUnlock(userId: string, templateId: string) {
@@ -136,18 +133,16 @@ describe("unlockedTemplateRouter", () => {
 
 		const list = await caller.unlockedTemplate.findAll();
 		expect(list).toHaveLength(2);
-		expect(list.map((u) => u.templateId).sort()).toEqual(
-			[t1.id, t2.id].sort(),
-		);
+		expect(list.map((u) => u.templateId).sort()).toEqual([t1.id, t2.id].sort());
 	});
 
 	it("unlockMany rejects invalid input (Zod)", async () => {
 		const user = await createTestUser();
 		const caller = await createTestCaller(createTestSession(user));
 
-		await expect(
-			caller.unlockedTemplate.unlockMany({ templateIds: [] }),
-		).rejects.toBeInstanceOf(TRPCError);
+		await expect(caller.unlockedTemplate.unlockMany({ templateIds: [] })).rejects.toBeInstanceOf(
+			TRPCError,
+		);
 	});
 
 	it("unlockMany returns NOT_FOUND when a template is missing", async () => {
@@ -242,8 +237,8 @@ describe("unlockedTemplateRouter", () => {
 		const caller = await createTestCaller(createTestSession(user));
 		const template = await createTestTemplate();
 
-		await expect(
-			caller.unlockedTemplate.delete({ templateId: template.id }),
-		).rejects.toMatchObject({ code: "NOT_FOUND" });
+		await expect(caller.unlockedTemplate.delete({ templateId: template.id })).rejects.toMatchObject(
+			{ code: "NOT_FOUND" },
+		);
 	});
 });

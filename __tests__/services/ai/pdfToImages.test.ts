@@ -45,8 +45,6 @@ describe("pdfPagesToImages", () => {
 	}, 30_000);
 
 	it("rejects an empty buffer", async () => {
-		await expect(pdfPagesToImages(new Uint8Array())).rejects.toThrow(
-			ValidationError,
-		);
+		await expect(pdfPagesToImages(new Uint8Array())).rejects.toThrow(ValidationError);
 	});
 });

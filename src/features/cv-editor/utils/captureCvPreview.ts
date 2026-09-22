@@ -25,8 +25,7 @@ export async function captureCvPreview(options?: {
 			quality: 0.72,
 			pixelRatio: 0.45, // ~940px → ~420px
 			backgroundColor: "#ffffff",
-			filter: (node) =>
-				!(node instanceof HTMLElement && node.dataset.previewIgnore === "true"),
+			filter: (node) => !(node instanceof HTMLElement && node.dataset.previewIgnore === "true"),
 		});
 	} finally {
 		if (excludeSignature) setSignaturePreviewIgnore(false);

@@ -8,10 +8,7 @@ import {
 } from "../utils/create-test-cv-full-flow";
 import { createTestTemplate } from "../utils/create-test-template";
 import { createTestUser } from "../utils/create-test-user";
-import {
-	createTestCaller,
-	createTestSession,
-} from "./helpers/create-test-caller";
+import { createTestCaller, createTestSession } from "./helpers/create-test-caller";
 
 describe("cvCompetenceRouter", () => {
 	async function setup() {
@@ -219,8 +216,8 @@ describe("cvCompetenceRouter", () => {
 	it("delete returns NOT_FOUND for unknown id", async () => {
 		const { caller } = await setup();
 
-		await expect(
-			caller.cvCompetence.delete({ id: "unknown-id" }),
-		).rejects.toMatchObject({ code: "NOT_FOUND" });
+		await expect(caller.cvCompetence.delete({ id: "unknown-id" })).rejects.toMatchObject({
+			code: "NOT_FOUND",
+		});
 	});
 });

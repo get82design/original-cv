@@ -1,9 +1,4 @@
-import {
-	createContext,
-	type PropsWithChildren,
-	useContext,
-	useState,
-} from "react";
+import { createContext, type PropsWithChildren, useContext, useState } from "react";
 import { v4 as uuid } from "uuid";
 import type { CvReview } from "@/services/schemas/cvReview.schema";
 import type { AiActionId } from "@/components/dialog/DialogAssistantIa";
@@ -25,11 +20,7 @@ export type AiAdviceEntry = {
 
 type AiAdviceContextValue = {
 	entries: AiAdviceEntry[];
-	pushAdvice: (input: {
-		kind: AiAdviceKind;
-		title: string;
-		review: CvReview;
-	}) => void;
+	pushAdvice: (input: { kind: AiAdviceKind; title: string; review: CvReview }) => void;
 	removeAdvice: (id: string) => void;
 	clearAdvice: () => void;
 	/** Incrémenté à chaque nouveau conseil — le dock ouvre l’onglet IA */
@@ -50,11 +41,7 @@ export const AiAdviceProvider = ({ children }: PropsWithChildren) => {
 	const [entries, setEntries] = useState<AiAdviceEntry[]>([]);
 	const [iaTabNonce, setIaTabNonce] = useState(0);
 
-	const pushAdvice = (input: {
-		kind: AiAdviceKind;
-		title: string;
-		review: CvReview;
-	}) => {
+	const pushAdvice = (input: { kind: AiAdviceKind; title: string; review: CvReview }) => {
 		const entry: AiAdviceEntry = {
 			id: uuid(),
 			kind: input.kind,

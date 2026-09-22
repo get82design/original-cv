@@ -8,10 +8,7 @@ import { useFieldArray, useFormContext } from "react-hook-form";
 import { Tooltip } from "primereact/tooltip";
 import { SpeedDial } from "primereact/speeddial";
 import type { MenuItem } from "primereact/menuitem";
-import type {
-	ExperienceInput,
-	ProfileSaveInput,
-} from "@/services/schemas/profileSave.schema";
+import type { ExperienceInput, ProfileSaveInput } from "@/services/schemas/profileSave.schema";
 import type { ListItem } from "@utils/type";
 import { v4 as uuid } from "uuid";
 import { PeriodeProfile } from "../../input/PeriodeProfile";
@@ -21,9 +18,7 @@ import { DialogSelectCv } from "../common/DialogSelectCv";
 import { trpc } from "@utils/trpc";
 import { DialogSelectExperience } from "./DialogSelectExperience";
 
-export function createEmptyExperience(opts?: {
-	order?: number;
-}): ListItem<ExperienceInput> {
+export function createEmptyExperience(opts?: { order?: number }): ListItem<ExperienceInput> {
 	return {
 		clientKey: "experience-" + uuid(),
 		order: opts?.order ?? 1,
@@ -53,10 +48,7 @@ export const ProfileExperiences = ({ cvs }: { cvs: CV[] }) => {
 	const [openDelete, setOpenDelete] = useState(false);
 	const [visibleMaj, setVisibleMaj] = useState(false);
 	const [idCv, setIdCv] = useState<string | undefined>(undefined);
-	const { data: cvSelected } = trpc.cv.byId.useQuery(
-		{ id: idCv ?? "" },
-		{ enabled: !!idCv },
-	);
+	const { data: cvSelected } = trpc.cv.byId.useQuery({ id: idCv ?? "" }, { enabled: !!idCv });
 	const [visibleSelect, setVisibleSelect] = useState(false);
 
 	const { control } = useFormContext<ProfileSaveInput>();
@@ -152,12 +144,7 @@ export const ProfileExperiences = ({ cvs }: { cvs: CV[] }) => {
 			)}
 			<AppCard className="relative group">
 				<div className="opacity-30 absolute top-2 left-3">
-					<TitleAppTwo
-						firstPart={"Vos"}
-						secondPart={"Expériences"}
-						size={"text-2xl"}
-						withSpace
-					/>
+					<TitleAppTwo firstPart={"Vos"} secondPart={"Expériences"} size={"text-2xl"} withSpace />
 				</div>
 				<div className="mt-10 flex flex-col gap-4">
 					{fields.map((field, idx) => (
@@ -226,9 +213,7 @@ export const ProfileExperiences = ({ cvs }: { cvs: CV[] }) => {
 						</div>
 					))}
 					{fields.length === 0 && (
-						<p className="w-full font-light text-gray-400">
-							Aucune expérience enregistrée.
-						</p>
+						<p className="w-full font-light text-gray-400">Aucune expérience enregistrée.</p>
 					)}
 					{openDelete && (
 						<MiniFooterMultiFunc
@@ -274,10 +259,7 @@ function ExperienceMissions({ expIndex }: { expIndex: number }) {
 	return (
 		<>
 			{fields.map((field, j) => (
-				<div
-					key={field.rhfId}
-					className="flex justify-between items-start gap-2"
-				>
+				<div key={field.rhfId} className="flex justify-between items-start gap-2">
 					<TextareaProfile
 						placeholder="Mission accomplie ?"
 						name={`experiences.${expIndex}.content.missions.${j}.content.content`}

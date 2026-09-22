@@ -1,7 +1,4 @@
-import type {
-	ProfileSaveInput,
-	ProjectInput,
-} from "@/services/schemas/profileSave.schema";
+import type { ProfileSaveInput, ProjectInput } from "@/services/schemas/profileSave.schema";
 import type { CvFull } from "@utils/trpc.types";
 import type { ListItem } from "@utils/type";
 import { Button } from "primereact/button";
@@ -60,16 +57,12 @@ export function DialogSelectProject({
 		if (!visible) return;
 		setTarget(listProjectInProfile);
 		const already = new Set(
-			listProjectInProfile.map(
-				(e) => `${e.content.title}|${e.content.location ?? ""}`,
-			),
+			listProjectInProfile.map((e) => `${e.content.title}|${e.content.location ?? ""}`),
 		);
 		setSource(
 			listProjectFromCv
 				.map((exp) => cvProjectToProfile(exp))
-				.filter(
-					(e) => !already.has(`${e.content.title}|${e.content.location ?? ""}`),
-				),
+				.filter((e) => !already.has(`${e.content.title}|${e.content.location ?? ""}`)),
 		);
 	}, [visible, listProjectFromCv]);
 

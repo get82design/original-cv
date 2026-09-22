@@ -17,11 +17,7 @@ export const HeaderRegister: Record<string, React.ComponentType> = {
 	HeaderFive,
 };
 
-export function HeaderRenderer({
-	templateConfig,
-}: {
-	templateConfig: TemplateDefaultStyles;
-}) {
+export function HeaderRenderer({ templateConfig }: { templateConfig: TemplateDefaultStyles }) {
 	// 3. Récupère la clé de manière sûre
 	const headerKey = templateConfig?.components?.sectionHeader ?? "HeaderOne";
 	// 4. Garantis à TypeScript que HeaderComponent N'EST PAS undefined

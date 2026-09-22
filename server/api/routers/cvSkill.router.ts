@@ -2,10 +2,7 @@ import z from "zod";
 import { prisma } from "../../../lib/prisma";
 import { cvSkillService } from "../../../src/services/cv/cvSkillService";
 import { NotFoundError } from "../../../src/services/errors";
-import {
-	createSkillSchema,
-	updateSkillSchema,
-} from "../../../src/services/schemas/skill.schema";
+import { createSkillSchema, updateSkillSchema } from "../../../src/services/schemas/skill.schema";
 import { assertCvOwnership } from "../helpers/assertCvOwnership";
 import { protectedProcedure, router } from "../trpc";
 

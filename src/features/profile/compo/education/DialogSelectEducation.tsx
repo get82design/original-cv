@@ -1,7 +1,4 @@
-import type {
-	EducationInput,
-	ProfileSaveInput,
-} from "@/services/schemas/profileSave.schema";
+import type { EducationInput, ProfileSaveInput } from "@/services/schemas/profileSave.schema";
 import type { CvFull } from "@utils/trpc.types";
 import type { ListItem } from "@utils/type";
 import { Button } from "primereact/button";
@@ -55,16 +52,12 @@ export const DialogSelectEducation = ({
 		if (!visible) return;
 		setTarget(listEducationInProfile);
 		const already = new Set(
-			listEducationInProfile.map(
-				(e) => `${e.content.title}|${e.content.school ?? ""}`,
-			),
+			listEducationInProfile.map((e) => `${e.content.title}|${e.content.school ?? ""}`),
 		);
 		setSource(
 			listEducationFromCv
 				.map((exp) => cvEducationToProfile(exp))
-				.filter(
-					(e) => !already.has(`${e.content.title}|${e.content.school ?? ""}`),
-				),
+				.filter((e) => !already.has(`${e.content.title}|${e.content.school ?? ""}`)),
 		);
 	}, [visible, listEducationFromCv]);
 

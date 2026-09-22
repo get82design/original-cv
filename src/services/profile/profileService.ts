@@ -1,8 +1,5 @@
 import { prisma } from "../../../lib/prisma";
-import type {
-	CreateProfileInput,
-	UpdateProfileInput,
-} from "../schemas/profile.schema";
+import type { CreateProfileInput, UpdateProfileInput } from "../schemas/profile.schema";
 import { ConflictError, NotFoundError } from "../errors";
 
 export class ProfileService {

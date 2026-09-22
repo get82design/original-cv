@@ -19,14 +19,9 @@ export const IconRegister: Record<string, React.ComponentType> = {
 	FaThumbsUp,
 };
 
-export const StrengthRenderer = ({
-	templateConfig,
-}: {
-	templateConfig: TemplateDefaultStyles;
-}) => {
+export const StrengthRenderer = ({ templateConfig }: { templateConfig: TemplateDefaultStyles }) => {
 	const strengthKey =
-		templateConfig?.components?.sectionStrength?.component ??
-		"SectionStrengthOne";
+		templateConfig?.components?.sectionStrength?.component ?? "SectionStrengthOne";
 	const StrengthComponent = StrengthRegister[strengthKey] ?? DefaultRegister;
 	return <StrengthComponent />;
 };
@@ -35,10 +30,8 @@ export const MiniatureStrengthRenderer = ({
 }: {
 	templateConfig: TemplateDefaultStyles;
 }) => {
-	const miniatureKey =
-		templateConfig?.components?.sectionStrength?.miniature ?? "MiniStrengthOne";
-	const MiniatureComponent =
-		MiniatureRegister[miniatureKey] ?? DefaultMiniature;
+	const miniatureKey = templateConfig?.components?.sectionStrength?.miniature ?? "MiniStrengthOne";
+	const MiniatureComponent = MiniatureRegister[miniatureKey] ?? DefaultMiniature;
 	return <MiniatureComponent />;
 };
 export const IconStrengthRenderer = ({
@@ -46,8 +39,7 @@ export const IconStrengthRenderer = ({
 }: {
 	templateConfig: TemplateDefaultStyles;
 }) => {
-	const iconKey =
-		templateConfig?.components?.sectionStrength?.icon ?? "FaThumbsUp";
+	const iconKey = templateConfig?.components?.sectionStrength?.icon ?? "FaThumbsUp";
 	const IconComponent = IconRegister[iconKey] ?? DefaultIcon;
 	return <IconComponent />;
 };

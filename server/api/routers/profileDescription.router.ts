@@ -7,24 +7,20 @@ import { getOwnedProfile } from "../helpers/getOwnedProfile";
 import { protectedProcedure, router } from "../trpc";
 
 export const profileDescriptionRouter = router({
-	create: protectedProcedure
-		.input(createDescriptionSchema)
-		.mutation(async ({ input, ctx }) => {
-			const profile = await getOwnedProfile(ctx.session.user.id);
-			return profileDescriptionService.create(profile.id, input);
-		}),
+	create: protectedProcedure.input(createDescriptionSchema).mutation(async ({ input, ctx }) => {
+		const profile = await getOwnedProfile(ctx.session.user.id);
+		return profileDescriptionService.create(profile.id, input);
+	}),
 
 	me: protectedProcedure.query(async ({ ctx }) => {
 		const profile = await getOwnedProfile(ctx.session.user.id);
 		return profileDescriptionService.findByProfileId(profile.id);
 	}),
 
-	update: protectedProcedure
-		.input(updateDescriptionSchema)
-		.mutation(async ({ input, ctx }) => {
-			const profile = await getOwnedProfile(ctx.session.user.id);
-			return profileDescriptionService.update(profile.id, input);
-		}),
+	update: protectedProcedure.input(updateDescriptionSchema).mutation(async ({ input, ctx }) => {
+		const profile = await getOwnedProfile(ctx.session.user.id);
+		return profileDescriptionService.update(profile.id, input);
+	}),
 
 	delete: protectedProcedure.mutation(async ({ ctx }) => {
 		const profile = await getOwnedProfile(ctx.session.user.id);

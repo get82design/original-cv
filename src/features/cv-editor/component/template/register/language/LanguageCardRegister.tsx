@@ -5,9 +5,6 @@ import {
 
 export type LanguageCardProps = CardLanguageOneProps;
 
-export const LanguageCardRegister: Record<
-	string,
-	React.ComponentType<LanguageCardProps>
-> = {
+export const LanguageCardRegister: Record<string, React.ComponentType<LanguageCardProps>> = {
 	CardLanguageOne,
 };

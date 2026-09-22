@@ -12,11 +12,7 @@ import { protectedProcedure, router } from "../trpc";
 
 const aiPaymentChoiceSchema = z.enum(["free", "paid"]);
 
-const billableFeatureSchema = z.enum([
-	"REVIEW_CV",
-	"REWRITE_SECTION",
-	"COVER_LETTER",
-]);
+const billableFeatureSchema = z.enum(["REVIEW_CV", "REWRITE_SECTION", "COVER_LETTER"]);
 
 /**
  * Import PDF : gratuit plafonné (assertCvImportQuota).
@@ -30,16 +26,11 @@ export const aiRouter = router({
 	getBillingOptions: protectedProcedure
 		.input(z.object({ feature: billableFeatureSchema }))
 		.query(({ ctx, input }) =>
-			aiBillingService.getBillingOptions(
-				ctx.session.user.id,
-				input.feature as BillableAiFeature,
-			),
+			aiBillingService.getBillingOptions(ctx.session.user.id, input.feature as BillableAiFeature),
 		),
 
 	/** Tarifs crédits des services IA (hors import) — affichage catalogue. */
-	listFeaturePrices: protectedProcedure.query(() =>
-		aiBillingService.listPrices(),
-	),
+	listFeaturePrices: protectedProcedure.query(() => aiBillingService.listPrices()),
 
 	/**
 	 * Import CV depuis un PDF (base64) → draft Zod.
@@ -54,9 +45,7 @@ export const aiRouter = router({
 		)
 		.mutation(async ({ ctx, input }) => {
 			await assertCvImportQuota(ctx.session.user.id);
-			const bytes = Uint8Array.from(
-				Buffer.from(input.pdfBase64, "base64"),
-			);
+			const bytes = Uint8Array.from(Buffer.from(input.pdfBase64, "base64"));
 			const result = await cvImportService.importCvFromPdf(bytes, {
 				maxPages: input.maxPages ?? 3,
 			});
@@ -76,11 +65,7 @@ export const aiRouter = router({
 		)
 		.mutation(async ({ ctx, input }) => {
 			const userId = ctx.session.user.id;
-			await aiBillingService.assertCanPay(
-				userId,
-				"REVIEW_CV",
-				input.paymentMethod,
-			);
+			await aiBillingService.assertCanPay(userId, "REVIEW_CV", input.paymentMethod);
 			const review = await geminiService.reviewCv(input.cvText);
 			await aiBillingService.consumeAndLog({
 				userId,
@@ -104,11 +89,7 @@ export const aiRouter = router({
 		)
 		.mutation(async ({ ctx, input }) => {
 			const userId = ctx.session.user.id;
-			await aiBillingService.assertCanPay(
-				userId,
-				"REWRITE_SECTION",
-				input.paymentMethod,
-			);
+			await aiBillingService.assertCanPay(userId, "REWRITE_SECTION", input.paymentMethod);
 			const rewrite = await geminiService.rewriteSection({
 				sectionType: input.sectionType,
 				sectionLabel: input.sectionLabel,

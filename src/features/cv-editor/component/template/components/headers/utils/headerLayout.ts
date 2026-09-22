@@ -25,8 +25,7 @@ export function getHeaderChrome(layout: TemplateLayout | undefined): HeaderChrom
 	return {
 		photoSide: side,
 		rowClass: side === "right" ? "flex-row-reverse" : "flex-row",
-		textAlignClass:
-			side === "right" ? "text-right items-end" : "text-left items-start",
+		textAlignClass: side === "right" ? "text-right items-end" : "text-left items-start",
 		textAlign,
 		contacts:
 			side === "right"

@@ -15,12 +15,10 @@ export const cvDescriptionRouter = router({
 			return cvDescriptionService.create(input.cvId, input.data);
 		}),
 
-	byCvId: protectedProcedure
-		.input(z.object({ cvId: z.string() }))
-		.query(async ({ input, ctx }) => {
-			await assertCvOwnership(input.cvId, ctx.session.user.id);
-			return cvDescriptionService.findByCvId(input.cvId);
-		}),
+	byCvId: protectedProcedure.input(z.object({ cvId: z.string() })).query(async ({ input, ctx }) => {
+		await assertCvOwnership(input.cvId, ctx.session.user.id);
+		return cvDescriptionService.findByCvId(input.cvId);
+	}),
 
 	update: protectedProcedure
 		.input(z.object({ cvId: z.string(), data: updateDescriptionSchema }))

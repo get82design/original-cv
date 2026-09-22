@@ -3,10 +3,7 @@ import { compactOrder } from "../../utils/compactOrder";
 import { reorderItems } from "../../utils/reorderCvItems";
 import { validateTimeline } from "../../utils/validateTimeline";
 import { ConflictError, NotFoundError } from "../errors";
-import type {
-	CreateFormationInput,
-	UpdateFormationInput,
-} from "../schemas/formation.schema";
+import type { CreateFormationInput, UpdateFormationInput } from "../schemas/formation.schema";
 
 export class CvFormationService {
 	async create(cvId: string, data: CreateFormationInput) {
@@ -120,8 +117,7 @@ export class CvFormationService {
 
 		const dataToUpdate = {
 			title: data.title ?? existing.title,
-			organismeFormation:
-				data.organismeFormation ?? existing.organismeFormation,
+			organismeFormation: data.organismeFormation ?? existing.organismeFormation,
 			start: data.start ?? existing.start,
 			end: data.end !== undefined ? data.end : existing.end,
 			status: data.status !== undefined ? data.status : existing.status,

@@ -211,9 +211,7 @@ describe("ProfilePrizeService.move", () => {
 
 	// TEST 2 : prize inexistant
 	it("throws if prize does not exist", async () => {
-		await expect(profilePrizeService.move("unknown-id", 1)).rejects.toThrow(
-			NotFoundError,
-		);
+		await expect(profilePrizeService.move("unknown-id", 1)).rejects.toThrow(NotFoundError);
 	});
 
 	// TEST 3 : ordre invalide
@@ -263,9 +261,7 @@ describe("ProfilePrizeService.delete", () => {
 
 	// TEST 2 : prize inexistant
 	it("throws if prize does not exist", async () => {
-		await expect(profilePrizeService.delete("unknown-id")).rejects.toThrow(
-			NotFoundError,
-		);
+		await expect(profilePrizeService.delete("unknown-id")).rejects.toThrow(NotFoundError);
 	});
 
 	// TEST 3 : réorganisation des prizes après suppression

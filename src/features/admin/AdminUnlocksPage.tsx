@@ -156,9 +156,7 @@ export function AdminUnlocksPage() {
 			<AppCard className="admin-filters mb-4">
 				<div className="grid gap-3 sm:grid-cols-2">
 					<div>
-						<label className="mb-1 block text-xs text-zinc-500">
-							Méthode
-						</label>
+						<label className="mb-1 block text-xs text-zinc-500">Méthode</label>
 						<Dropdown
 							value={method}
 							options={METHOD_OPTIONS}
@@ -172,9 +170,7 @@ export function AdminUnlocksPage() {
 						/>
 					</div>
 					<div>
-						<label className="mb-1 block text-xs text-zinc-500">
-							Email utilisateur
-						</label>
+						<label className="mb-1 block text-xs text-zinc-500">Email utilisateur</label>
 						<div className="relative w-full">
 							<i className="pi pi-search pointer-events-none absolute top-1/2 left-3 z-10 -translate-y-1/2 text-sm text-zinc-500 dark:text-zinc-400" />
 							<InputText
@@ -201,31 +197,20 @@ export function AdminUnlocksPage() {
 					<tbody>
 						{listQuery.isLoading ? (
 							<tr>
-								<td
-									colSpan={4}
-									className="px-4 py-8 text-center text-zinc-500"
-								>
+								<td colSpan={4} className="px-4 py-8 text-center text-zinc-500">
 									Chargement…
 								</td>
 							</tr>
 						) : (listQuery.data?.items.length ?? 0) === 0 ? (
 							<tr>
-								<td
-									colSpan={4}
-									className="px-4 py-8 text-center text-zinc-500"
-								>
+								<td colSpan={4} className="px-4 py-8 text-center text-zinc-500">
 									Aucun déblocage sur cette période.
 								</td>
 							</tr>
 						) : (
 							listQuery.data!.items.map((u) => (
-								<tr
-									key={u.id}
-									className="border-b border-zinc-100 dark:border-zinc-800"
-								>
-									<td className="px-4 py-3 text-xs text-zinc-500">
-										{formatDate(u.unlockedAt)}
-									</td>
+								<tr key={u.id} className="border-b border-zinc-100 dark:border-zinc-800">
+									<td className="px-4 py-3 text-xs text-zinc-500">{formatDate(u.unlockedAt)}</td>
 									<td className="px-3 py-3">
 										<Link
 											href={`/admin/users/${u.userId}`}
@@ -234,12 +219,8 @@ export function AdminUnlocksPage() {
 											{u.userEmail ?? u.userId}
 										</Link>
 									</td>
-									<td className="px-3 py-3 text-zinc-800 dark:text-zinc-200">
-										{u.templateName}
-									</td>
-									<td
-										className={`px-3 py-3 text-xs font-medium ${methodClass(u.method)}`}
-									>
+									<td className="px-3 py-3 text-zinc-800 dark:text-zinc-200">{u.templateName}</td>
+									<td className={`px-3 py-3 text-xs font-medium ${methodClass(u.method)}`}>
 										{methodLabel(u.method)}
 									</td>
 								</tr>
@@ -268,12 +249,8 @@ export function AdminUnlocksPage() {
 							size="small"
 							outlined
 							label="Suivant"
-							disabled={
-								page >= totalPages || listQuery.isFetching
-							}
-							onClick={() =>
-								setPage((p) => Math.min(totalPages, p + 1))
-							}
+							disabled={page >= totalPages || listQuery.isFetching}
+							onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
 						/>
 					</div>
 				</div>

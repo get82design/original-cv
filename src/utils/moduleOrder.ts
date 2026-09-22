@@ -5,12 +5,8 @@ import type { TemplateModule } from "@/services/schemas/cvTemplate.schema";
  * - actifs : 1, 2, 3… (ordre relatif conservé)
  * - inactifs : à la suite (n+1…) pour respecter @@unique([cvId, column, order])
  */
-export function compactActiveOrders(
-	modules: TemplateModule[],
-): TemplateModule[] {
-	const columns = [
-		...new Set(modules.map((m) => m.column ?? 0)),
-	];
+export function compactActiveOrders(modules: TemplateModule[]): TemplateModule[] {
+	const columns = [...new Set(modules.map((m) => m.column ?? 0))];
 
 	const orderByType = new Map<string, number>();
 
@@ -47,13 +43,8 @@ export function nextActiveOrder(modules: TemplateModule[]): number {
 	return Math.max(...active.map((m) => m.order)) + 1;
 }
 
-export function nextActiveOrderInColumn(
-	modules: TemplateModule[],
-	column: number,
-): number {
-	const active = modules.filter(
-		(m) => m.isActive && (m.column ?? 0) === column,
-	);
+export function nextActiveOrderInColumn(modules: TemplateModule[], column: number): number {
+	const active = modules.filter((m) => m.isActive && (m.column ?? 0) === column);
 	if (active.length === 0) return 1;
 	return Math.max(...active.map((m) => m.order)) + 1;
 }

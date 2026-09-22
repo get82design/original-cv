@@ -19,13 +19,8 @@ export const IconTagRegister: Record<string, React.ComponentType> = {
 	MdTag,
 };
 
-export const TagRenderer = ({
-	templateConfig,
-}: {
-	templateConfig: TemplateDefaultStyles;
-}) => {
-	const tagKey =
-		templateConfig?.components?.sectionTag?.component ?? "SectionTagOne";
+export const TagRenderer = ({ templateConfig }: { templateConfig: TemplateDefaultStyles }) => {
+	const tagKey = templateConfig?.components?.sectionTag?.component ?? "SectionTagOne";
 	const TagComponent = TagRegister[tagKey] ?? DefaultRegister;
 	return <TagComponent />;
 };
@@ -34,17 +29,11 @@ export const MiniatureTagRenderer = ({
 }: {
 	templateConfig: TemplateDefaultStyles;
 }) => {
-	const miniatureKey =
-		templateConfig?.components?.sectionTag?.miniature ?? "MiniTagOne";
-	const MiniatureComponent =
-		MiniatureRegister[miniatureKey] ?? DefaultMiniature;
+	const miniatureKey = templateConfig?.components?.sectionTag?.miniature ?? "MiniTagOne";
+	const MiniatureComponent = MiniatureRegister[miniatureKey] ?? DefaultMiniature;
 	return <MiniatureComponent />;
 };
-export const IconTagRenderer = ({
-	templateConfig,
-}: {
-	templateConfig: TemplateDefaultStyles;
-}) => {
+export const IconTagRenderer = ({ templateConfig }: { templateConfig: TemplateDefaultStyles }) => {
 	const iconKey = templateConfig?.components?.sectionTag?.icon ?? "MdTag";
 	const IconComponent = IconTagRegister[iconKey] ?? DefaultIcon;
 	return <IconComponent />;

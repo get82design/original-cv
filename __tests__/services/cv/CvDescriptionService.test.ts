@@ -68,9 +68,7 @@ describe("CvDescriptionService.findByCvId", () => {
 		const template = await createTestTemplate();
 		const cv = await createCV(user.id, template.id);
 
-		await expect(cvDescriptionService.findByCvId(cv.id)).rejects.toThrow(
-			NotFoundError,
-		);
+		await expect(cvDescriptionService.findByCvId(cv.id)).rejects.toThrow(NotFoundError);
 	});
 });
 
@@ -119,9 +117,7 @@ describe("CvDescriptionService.delete", () => {
 
 		await cvDescriptionService.delete(cv.id);
 
-		await expect(cvDescriptionService.findByCvId(cv.id)).rejects.toThrow(
-			NotFoundError,
-		);
+		await expect(cvDescriptionService.findByCvId(cv.id)).rejects.toThrow(NotFoundError);
 	});
 
 	// TEST 2 : description inexistante
@@ -130,8 +126,6 @@ describe("CvDescriptionService.delete", () => {
 		const template = await createTestTemplate();
 		const cv = await createCV(user.id, template.id);
 
-		await expect(cvDescriptionService.delete(cv.id)).rejects.toThrow(
-			NotFoundError,
-		);
+		await expect(cvDescriptionService.delete(cv.id)).rejects.toThrow(NotFoundError);
 	});
 });

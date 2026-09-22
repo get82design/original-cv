@@ -1,10 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { createTestUser } from "../utils/create-test-user";
 import { createTestTemplate } from "../utils/create-test-template";
-import {
-	createTestCaller,
-	createTestSession,
-} from "./helpers/create-test-caller";
+import { createTestCaller, createTestSession } from "./helpers/create-test-caller";
 
 describe("admin.listTemplates", () => {
 	it("rejects non-admin", async () => {
@@ -104,13 +101,9 @@ describe("admin.updateTemplateCatalog", () => {
 			}),
 		);
 
-		await expect(
-			caller.admin.updateTemplateCatalog({ id: template.id }),
-		).rejects.toMatchObject({
+		await expect(caller.admin.updateTemplateCatalog({ id: template.id })).rejects.toMatchObject({
 			code: "BAD_REQUEST",
-			message: expect.stringContaining(
-				"Au moins un champ catalogue à mettre à jour",
-			),
+			message: expect.stringContaining("Au moins un champ catalogue à mettre à jour"),
 		});
 	});
 });

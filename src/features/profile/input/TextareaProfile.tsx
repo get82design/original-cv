@@ -1,7 +1,4 @@
-import {
-	InputTextarea,
-	type InputTextareaProps,
-} from "primereact/inputtextarea";
+import { InputTextarea, type InputTextareaProps } from "primereact/inputtextarea";
 import { Controller, useFormContext } from "react-hook-form";
 
 interface TextareaProfileProps extends InputTextareaProps {
@@ -68,9 +65,7 @@ export const TextareaProfile = ({
 							autoResize
 						/>
 						{fieldState.error && (
-							<span className="text-red-500 text-xs -mt-1 mb-1">
-								{fieldState.error.message}
-							</span>
+							<span className="text-red-500 text-xs -mt-1 mb-1">{fieldState.error.message}</span>
 						)}
 					</>
 				)}

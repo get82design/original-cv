@@ -33,9 +33,6 @@ async function main() {
 }
 
 main().catch((err) => {
-	console.error(
-		"pdf:to-images failed:",
-		err instanceof Error ? err.message : err,
-	);
+	console.error("pdf:to-images failed:", err instanceof Error ? err.message : err);
 	process.exitCode = 1;
 });

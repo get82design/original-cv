@@ -4,10 +4,7 @@ import { TRPCError } from "@trpc/server";
 import { createCV } from "../utils/create-test-cv-full-flow";
 import { createTestTemplate } from "../utils/create-test-template";
 import { createTestUser } from "../utils/create-test-user";
-import {
-	createTestCaller,
-	createTestSession,
-} from "./helpers/create-test-caller";
+import { createTestCaller, createTestSession } from "./helpers/create-test-caller";
 
 describe("cvStrengthRouter", () => {
 	async function setup() {
@@ -235,8 +232,8 @@ describe("cvStrengthRouter", () => {
 	it("delete returns NOT_FOUND for unknown strength", async () => {
 		const { caller } = await setup();
 
-		await expect(
-			caller.cvStrength.delete({ id: "unknown" }),
-		).rejects.toMatchObject({ code: "NOT_FOUND" });
+		await expect(caller.cvStrength.delete({ id: "unknown" })).rejects.toMatchObject({
+			code: "NOT_FOUND",
+		});
 	});
 });

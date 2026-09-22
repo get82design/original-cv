@@ -18,9 +18,7 @@ export const SectionDescriptionOne = () => {
 	const watchModelDescriptionTitle: BaseTextSettings = watch(
 		FieldNameDescription.settingsSectionTitle,
 	);
-	const watchSettingsContent: BaseTextSettings = watch(
-		FieldNameDescription.settingsContent,
-	);
+	const watchSettingsContent: BaseTextSettings = watch(FieldNameDescription.settingsContent);
 
 	return (
 		<SectionOneContainer

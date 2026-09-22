@@ -2,10 +2,7 @@ import z from "zod";
 import { prisma } from "../../../lib/prisma";
 import { ForbiddenError, NotFoundError } from "../../../src/services/errors";
 import { profileTagService } from "../../../src/services/profile/profileTagService";
-import {
-	createTagSchema,
-	updateTagSchema,
-} from "../../../src/services/schemas/tag.schema";
+import { createTagSchema, updateTagSchema } from "../../../src/services/schemas/tag.schema";
 import { protectedProcedure, router } from "../trpc";
 
 async function assertGroupProfileOwnership(groupId: string, userId: string) {

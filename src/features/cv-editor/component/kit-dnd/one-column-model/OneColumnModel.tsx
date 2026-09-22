@@ -1,9 +1,6 @@
 import { ChangePaddingDocument } from "@/features/cv-editor/utils/utilsCv/marge";
 import { DndContext } from "@dnd-kit/core";
-import {
-	SortableContext,
-	verticalListSortingStrategy,
-} from "@dnd-kit/sortable";
+import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { useEffect, useRef, useState } from "react";
 import { useFormContext } from "react-hook-form";
 import { HeaderRegister } from "../../template/register/header/HeaderRegister";
@@ -25,24 +22,17 @@ export const OneColumnModel = ({ deleteSection }: OneColumnModelProps) => {
 	const { watch } = useFormContext();
 
 	const itemUse = useCvSectionItems(0); // colonne unique
-	const { sensors, handleDragEnd, handleDragOver, collisionDetection } =
-		useCvPageDnd([itemUse]);
+	const { sensors, handleDragEnd, handleDragOver, collisionDetection } = useCvPageDnd([itemUse]);
 
 	const primaryColor = GetPrimaryColor() ?? "white";
 	const accent = watch("layoutGeneral.layout.pageAccent");
 	const shade = accent?.shade;
-	const marge = (watch("layoutGeneral.layout.marge") ?? "md") as
-		| "sm"
-		| "md"
-		| "lg";
+	const marge = (watch("layoutGeneral.layout.marge") ?? "md") as "sm" | "md" | "lg";
 	const pagePad = { sm: "2rem", md: "3rem", lg: "4rem" }[marge];
 	const [colorSelected, setColorSelected] = useState<string | null>(null);
-	const bandStop =
-		"calc(var(--page-pad) + (100% - 2 * var(--page-pad)) * 0.2 + 0.5rem)";
+	const bandStop = "calc(var(--page-pad) + (100% - 2 * var(--page-pad)) * 0.2 + 0.5rem)";
 
-	const headerKey =
-		watch("layoutGeneral.defaultStyles")?.components?.sectionHeader ??
-		"HeaderOne";
+	const headerKey = watch("layoutGeneral.defaultStyles")?.components?.sectionHeader ?? "HeaderOne";
 	const HeaderComponent = HeaderRegister[headerKey] ?? HeaderRegister.HeaderOne;
 
 	useEffect(() => {
@@ -78,11 +68,7 @@ export const OneColumnModel = ({ deleteSection }: OneColumnModelProps) => {
 					strategy={verticalListSortingStrategy}
 				>
 					<div ref={refTaille}>
-						<button
-							type="button"
-							onClick={() => setSectionSelected("header")}
-							className="w-full"
-						>
+						<button type="button" onClick={() => setSectionSelected("header")} className="w-full">
 							{HeaderComponent && <HeaderComponent />}
 						</button>
 						{itemUse

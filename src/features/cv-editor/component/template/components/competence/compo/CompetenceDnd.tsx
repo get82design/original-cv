@@ -38,11 +38,9 @@ export const CompetenceDnd = ({
 	};
 
 	const isThisGroupActive =
-		itemSelected === clientKeyGroup ||
-		competences.some((c) => c.clientKey === itemSelected);
+		itemSelected === clientKeyGroup || competences.some((c) => c.clientKey === itemSelected);
 
-	const showAddCompetence =
-		sectionSelected === "section-competence" && isThisGroupActive;
+	const showAddCompetence = sectionSelected === "section-competence" && isThisGroupActive;
 
 	return (
 		<SortableContext

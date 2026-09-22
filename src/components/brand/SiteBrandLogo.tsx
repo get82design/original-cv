@@ -1,8 +1,5 @@
 import { OriginalCvLogo } from "@/components/brand/OriginalCvLogo";
-import {
-	logoTokensForSite,
-	SITE_BRAND_COLOR,
-} from "@/components/brand/logoTokens";
+import { logoTokensForSite, SITE_BRAND_COLOR } from "@/components/brand/logoTokens";
 import { useEffect, useState } from "react";
 
 const useIsDarkMode = () => {

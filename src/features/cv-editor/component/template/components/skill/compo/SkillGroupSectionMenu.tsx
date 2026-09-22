@@ -7,23 +7,23 @@ import { useFormContext } from "react-hook-form";
 import { ToolbarOptionsButton } from "@/features/cv-editor/component/template/components/common-compo/section/ToolbarOptionsButton";
 
 export const SkillGroupSectionMenu = () => {
-    const menuRef = useRef<Menu>(null);
+	const menuRef = useRef<Menu>(null);
 	const { watch, setValue, getValues } = useFormContext();
-    const modules = watch("modules");
+	const modules = watch("modules");
 	const pathDesign = moduleField(modules, "skill", "settings", "content");
 
-    const applyGroupColumns = (next: 1 | 2 | 3) => {
-        setValue(columnsPath, next, { shouldDirty: true });
-        const groups = getValues("datas.skillGroup.content") ?? [];
-        groups.forEach((_: unknown, idx: number) => {
-          const path = `datas.skillGroup.content.${idx}.content.settings.itemColumns`;
-          const current = getValues(path);
-          const clamped = clampItemColumns(next, current);
-          if (Number(current) !== clamped) {
-            setValue(path, clamped, { shouldDirty: true });
-          }
-        });
-    };
+	const applyGroupColumns = (next: 1 | 2 | 3) => {
+		setValue(columnsPath, next, { shouldDirty: true });
+		const groups = getValues("datas.skillGroup.content") ?? [];
+		groups.forEach((_: unknown, idx: number) => {
+			const path = `datas.skillGroup.content.${idx}.content.settings.itemColumns`;
+			const current = getValues(path);
+			const clamped = clampItemColumns(next, current);
+			if (Number(current) !== clamped) {
+				setValue(path, clamped, { shouldDirty: true });
+			}
+		});
+	};
 
 	// → modules.{i}.settings.content
 	const columnsPath = `${pathDesign}.groupColumns`;
@@ -42,21 +42,21 @@ export const SkillGroupSectionMenu = () => {
 									label="1"
 									value={1}
 									checked={Number(watchColumns) === 1}
-                                    onChange={() => applyGroupColumns(1)}
+									onChange={() => applyGroupColumns(1)}
 								/>
 								<RadioRhf
 									name={columnsPath}
 									label="2"
 									value={2}
 									checked={Number(watchColumns) === 2}
-                                    onChange={() => applyGroupColumns(2)}
+									onChange={() => applyGroupColumns(2)}
 								/>
-                                <RadioRhf
+								<RadioRhf
 									name={columnsPath}
 									label="3"
 									value={3}
 									checked={Number(watchColumns) === 3}
-                                    onChange={() => applyGroupColumns(3)}
+									onChange={() => applyGroupColumns(3)}
 								/>
 							</div>
 						</div>
@@ -71,4 +71,4 @@ export const SkillGroupSectionMenu = () => {
 			<Menu model={items} popup ref={menuRef} style={{ width: 300 }} />
 		</>
 	);
-}
+};

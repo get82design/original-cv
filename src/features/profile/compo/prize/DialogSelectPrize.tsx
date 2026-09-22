@@ -1,7 +1,4 @@
-import type {
-	PrizeInput,
-	ProfileSaveInput,
-} from "@/services/schemas/profileSave.schema";
+import type { PrizeInput, ProfileSaveInput } from "@/services/schemas/profileSave.schema";
 import type { CvFull } from "@utils/trpc.types";
 import type { ListItem } from "@utils/type";
 import { Button } from "primereact/button";
@@ -51,16 +48,12 @@ export const DialogSelectPrize = ({
 		if (!visible) return;
 		setTarget(listPrizeInProfile);
 		const already = new Set(
-			listPrizeInProfile.map(
-				(e) => `${e.content.title}|${e.content.domaine ?? ""}`,
-			),
+			listPrizeInProfile.map((e) => `${e.content.title}|${e.content.domaine ?? ""}`),
 		);
 		setSource(
 			listPrizeFromCv
 				.map((exp) => cvPrizeToProfile(exp))
-				.filter(
-					(e) => !already.has(`${e.content.title}|${e.content.domaine ?? ""}`),
-				),
+				.filter((e) => !already.has(`${e.content.title}|${e.content.domaine ?? ""}`)),
 		);
 	}, [visible, listPrizeFromCv]);
 

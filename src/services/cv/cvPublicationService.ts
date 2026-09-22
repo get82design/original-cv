@@ -3,10 +3,7 @@ import { compactOrder } from "../../utils/compactOrder";
 import { reorderItems } from "../../utils/reorderCvItems";
 import { validateTimeline } from "../../utils/validateTimeline";
 import { ConflictError, NotFoundError } from "../errors";
-import type {
-	CreatePublicationInput,
-	UpdatePublicationInput,
-} from "../schemas/publication.schema";
+import type { CreatePublicationInput, UpdatePublicationInput } from "../schemas/publication.schema";
 
 export class CvPublicationService {
 	async create(cvId: string, data: CreatePublicationInput) {

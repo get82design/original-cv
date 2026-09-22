@@ -130,10 +130,7 @@ export class ProfileTagService {
 
 	async move(id: string, newOrder: number) {
 		if (newOrder < 1) {
-			throw new ValidationError(
-				"INVALID_ORDER",
-				"Order must be greater than 0.",
-			);
+			throw new ValidationError("INVALID_ORDER", "Order must be greater than 0.");
 		}
 
 		const tag = await prisma.profileTag.findUnique({

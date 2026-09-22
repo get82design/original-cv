@@ -1,13 +1,6 @@
 import type { Color, TemplateCv } from "@utils/trpc.types";
 import { Dialog, type DialogProps } from "primereact/dialog";
-import {
-	useEffect,
-	useMemo,
-	useRef,
-	useState,
-	type Dispatch,
-	type SetStateAction,
-} from "react";
+import { useEffect, useMemo, useRef, useState, type Dispatch, type SetStateAction } from "react";
 import { useFormContext } from "react-hook-form";
 import { useModelAndColorContext } from "../context/ModelAndColorContext";
 import { Button } from "primereact/button";
@@ -59,9 +52,7 @@ export const DialogSelectModel = ({
 	const { colors, modeles } = useModelAndColorContext();
 	const { setValue } = useFormContext<CvFormValues>();
 	const options = ["Reprendre brouillon", "Nouveau CV"];
-	const [draftOption, setDraftOption] = useState<string | undefined>(
-		undefined,
-	);
+	const [draftOption, setDraftOption] = useState<string | undefined>(undefined);
 	const fileInputRef = useRef<HTMLInputElement>(null);
 
 	const [idModele, setIdModele] = useState("");
@@ -81,9 +72,7 @@ export const DialogSelectModel = ({
 	useEffect(() => {
 		if (dataTemplate) {
 			setModelSelect(dataTemplate as TemplateCv);
-			const defaultStyles = templateDefaultStylesSchema.parse(
-				dataTemplate.defaultStyles,
-			);
+			const defaultStyles = templateDefaultStylesSchema.parse(dataTemplate.defaultStyles);
 			setValue(FieldNameLayoutGeneral.primaryColor, {
 				name: defaultStyles.primaryColor.name,
 				primary: defaultStyles.primaryColor.primary,
@@ -101,11 +90,9 @@ export const DialogSelectModel = ({
 	const footerTemplate = () => {
 		return (
 			<div className="w-full flex flex-col items-center gap-2">
-				{modelSelect &&
-				isTemplateLocked(modelSelect, unlockedIds) ? (
+				{modelSelect && isTemplateLocked(modelSelect, unlockedIds) ? (
 					<p className="m-0 text-xs text-amber-600 dark:text-amber-400">
-						Modèle premium — utilisable pour créer le CV, déblocage
-						requis pour télécharger.
+						Modèle premium — utilisable pour créer le CV, déblocage requis pour télécharger.
 					</p>
 				) : null}
 				<Button
@@ -120,11 +107,7 @@ export const DialogSelectModel = ({
 							? () => onSelectModel(!!withProfileValue)
 							: onResumeDraft
 					}
-					disabled={
-						importing ||
-						((draftOption === "Nouveau CV" || !draft) &&
-							!modelSelect)
-					}
+					disabled={importing || ((draftOption === "Nouveau CV" || !draft) && !modelSelect)}
 				/>
 			</div>
 		);
@@ -161,9 +144,7 @@ export const DialogSelectModel = ({
 						backgroundSize: "cover",
 						backgroundPosition: "top center",
 						backgroundRepeat: "no-repeat",
-						border: selected
-							? "solid 2px var(--primary-color)"
-							: "solid 2px transparent",
+						border: selected ? "solid 2px var(--primary-color)" : "solid 2px transparent",
 					}}
 				></div>
 			</button>
@@ -221,25 +202,15 @@ export const DialogSelectModel = ({
 					)}
 					{showNewCv && !withProfileValue && (
 						<div className="w-full flex flex-col items-center gap-2 rounded-lg border border-dashed border-zinc-300 px-4 py-3 dark:border-zinc-600">
-							<p className="m-0 text-center font-semibold">
-								Ou importer un CV existant (PDF)
-							</p>
+							<p className="m-0 text-center font-semibold">Ou importer un CV existant (PDF)</p>
 							<p className="m-0 text-center text-xs text-zinc-500 dark:text-zinc-400">
 								Choisissez un modèle ci-dessous, puis importez.
 							</p>
 							<Button
 								type="button"
 								outlined={!importing}
-								icon={
-									importing
-										? "pi pi-spin pi-spinner"
-										: "pi pi-upload"
-								}
-								label={
-									importing
-										? "Import en cours…"
-										: "Importer un CV"
-								}
+								icon={importing ? "pi pi-spin pi-spinner" : "pi pi-upload"}
+								label={importing ? "Import en cours…" : "Importer un CV"}
 								disabled={importing}
 								onClick={() => {
 									if (!modelSelect) {
@@ -266,9 +237,7 @@ export const DialogSelectModel = ({
 													general={true}
 													className="col"
 													key={color.name}
-													name={
-														FieldNameLayoutGeneral.primaryColor
-													}
+													name={FieldNameLayoutGeneral.primaryColor}
 													color={`--${color.name}${color.primary}`}
 													value={color}
 												/>
@@ -276,15 +245,8 @@ export const DialogSelectModel = ({
 										})
 									: null}
 							</div>
-							<p className="text-center font-semibold">
-								Choisissez un modèle pour votre CV :
-							</p>
-							<Carousel
-								value={modeles}
-								numScroll={1}
-								numVisible={5}
-								itemTemplate={itemTemplate}
-							/>
+							<p className="text-center font-semibold">Choisissez un modèle pour votre CV :</p>
+							<Carousel value={modeles} numScroll={1} numVisible={5} itemTemplate={itemTemplate} />
 						</>
 					) : null}
 				</div>

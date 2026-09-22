@@ -35,13 +35,9 @@ describe("geminiService.parseCvFromImages", () => {
 			response: { text: () => validDraftJson },
 		});
 
-		const { geminiService } = await import(
-			"../../../src/services/ai/geminiService"
-		);
+		const { geminiService } = await import("../../../src/services/ai/geminiService");
 
-		const draft = await geminiService.parseCvFromImages([
-			{ mimeType: "image/png", base64: "aaa" },
-		]);
+		const draft = await geminiService.parseCvFromImages([{ mimeType: "image/png", base64: "aaa" }]);
 
 		expect(draft.identity.firstName).toBe("Ada");
 		expect(draft.skills).toEqual(["Math"]);
@@ -69,13 +65,9 @@ describe("geminiService.parseCvFromImages", () => {
 				response: { text: () => validDraftJson },
 			});
 
-		const { geminiService } = await import(
-			"../../../src/services/ai/geminiService"
-		);
+		const { geminiService } = await import("../../../src/services/ai/geminiService");
 
-		const draft = await geminiService.parseCvFromImages([
-			{ mimeType: "image/png", base64: "aaa" },
-		]);
+		const draft = await geminiService.parseCvFromImages([{ mimeType: "image/png", base64: "aaa" }]);
 
 		expect(draft.identity.firstName).toBe("Ada");
 		expect(generateContent).toHaveBeenCalledTimes(2);
@@ -83,22 +75,14 @@ describe("geminiService.parseCvFromImages", () => {
 		const retryParts = generateContent.mock.calls[1]![0] as Array<{
 			text?: string;
 		}>;
-		expect(retryParts[0]?.text).toContain(
-			"La réponse précédente était invalide",
-		);
+		expect(retryParts[0]?.text).toContain("La réponse précédente était invalide");
 	});
 
 	it("rejects empty image list", async () => {
-		const { geminiService } = await import(
-			"../../../src/services/ai/geminiService"
-		);
-		const { ValidationError } = await import(
-			"../../../src/services/errors"
-		);
+		const { geminiService } = await import("../../../src/services/ai/geminiService");
+		const { ValidationError } = await import("../../../src/services/errors");
 
-		await expect(geminiService.parseCvFromImages([])).rejects.toBeInstanceOf(
-			ValidationError,
-		);
+		await expect(geminiService.parseCvFromImages([])).rejects.toBeInstanceOf(ValidationError);
 	});
 
 	it("rejects after retry if still invalid", async () => {
@@ -106,17 +90,11 @@ describe("geminiService.parseCvFromImages", () => {
 			response: { text: () => "not-json" },
 		});
 
-		const { geminiService } = await import(
-			"../../../src/services/ai/geminiService"
-		);
-		const { ValidationError } = await import(
-			"../../../src/services/errors"
-		);
+		const { geminiService } = await import("../../../src/services/ai/geminiService");
+		const { ValidationError } = await import("../../../src/services/errors");
 
 		await expect(
-			geminiService.parseCvFromImages([
-				{ mimeType: "image/png", base64: "aaa" },
-			]),
+			geminiService.parseCvFromImages([{ mimeType: "image/png", base64: "aaa" }]),
 		).rejects.toBeInstanceOf(ValidationError);
 		expect(generateContent).toHaveBeenCalledTimes(2);
 	});

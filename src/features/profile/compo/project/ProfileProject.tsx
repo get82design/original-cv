@@ -6,10 +6,7 @@ import { Tooltip } from "primereact/tooltip";
 import { useRef, useState } from "react";
 import { MiniFooterMultiFunc } from "../footer/MiniFooterMultiFunc";
 import { useFieldArray, useFormContext } from "react-hook-form";
-import type {
-	ProfileSaveInput,
-	ProjectInput,
-} from "@/services/schemas/profileSave.schema";
+import type { ProfileSaveInput, ProjectInput } from "@/services/schemas/profileSave.schema";
 import { TextareaProfile } from "../../input/TextareaProfile";
 import { InputTextProfile } from "../../input/InputTextProfile";
 import { PeriodeProfile } from "../../input/PeriodeProfile";
@@ -21,9 +18,7 @@ import { DialogSelectCv } from "../common/DialogSelectCv";
 import { trpc } from "@utils/trpc";
 import { DialogSelectProject } from "./DialogSelectProject";
 
-export function createEmptyProject(opts?: {
-	order?: number;
-}): ListItem<ProjectInput> {
+export function createEmptyProject(opts?: { order?: number }): ListItem<ProjectInput> {
 	return {
 		clientKey: "project-" + uuid(),
 		order: opts?.order ?? 1,
@@ -54,10 +49,7 @@ export const ProfileProject = ({ cvs }: { cvs: CV[] }) => {
 	const [toDelete, setToDelete] = useState<Set<string>>(new Set());
 	const [visibleMaj, setVisibleMaj] = useState(false);
 	const [idCv, setIdCv] = useState<string | undefined>(undefined);
-	const { data: cvSelected } = trpc.cv.byId.useQuery(
-		{ id: idCv ?? "" },
-		{ enabled: !!idCv },
-	);
+	const { data: cvSelected } = trpc.cv.byId.useQuery({ id: idCv ?? "" }, { enabled: !!idCv });
 	const [visibleSelect, setVisibleSelect] = useState(false);
 
 	const { control } = useFormContext<ProfileSaveInput>();
@@ -144,12 +136,7 @@ export const ProfileProject = ({ cvs }: { cvs: CV[] }) => {
 			)}
 			<AppCard className="relative group">
 				<div className="opacity-30 absolute top-2 left-3">
-					<TitleAppTwo
-						firstPart={"Vos"}
-						secondPart={"Projets"}
-						size={"text-2xl"}
-						withSpace
-					/>
+					<TitleAppTwo firstPart={"Vos"} secondPart={"Projets"} size={"text-2xl"} withSpace />
 				</div>
 				<div className="mt-10 flex flex-col gap-4">
 					{fields.map((field, idx: number) => {
@@ -204,9 +191,7 @@ export const ProfileProject = ({ cvs }: { cvs: CV[] }) => {
 						);
 					})}
 					{fields.length === 0 && (
-						<p className="w-full font-light text-gray-400">
-							Aucun projet enregistré
-						</p>
+						<p className="w-full font-light text-gray-400">Aucun projet enregistré</p>
 					)}
 					{openDelete && (
 						<MiniFooterMultiFunc
@@ -254,10 +239,7 @@ function ProjectMissions({ projectIndex }: { projectIndex: number }) {
 	return (
 		<>
 			{fields.map((field, j) => (
-				<div
-					key={field.rhfId}
-					className="flex justify-between items-start gap-2"
-				>
+				<div key={field.rhfId} className="flex justify-between items-start gap-2">
 					<TextareaProfile
 						name={`projects.${projectIndex}.content.missions.${j}.content.content`}
 						placeholder="Mission accomplie ?"

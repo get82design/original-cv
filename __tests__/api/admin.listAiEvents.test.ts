@@ -1,18 +1,15 @@
 import { describe, expect, it } from "vitest";
 import { prismaTest } from "../../lib/prismaTest";
 import { createTestUser } from "../utils/create-test-user";
-import {
-	createTestCaller,
-	createTestSession,
-} from "./helpers/create-test-caller";
+import { createTestCaller, createTestSession } from "./helpers/create-test-caller";
 
 describe("admin.listAiEvents", () => {
 	it("rejects non-admin", async () => {
 		const user = await createTestUser();
 		const caller = await createTestCaller(createTestSession(user));
-		await expect(
-			caller.admin.listAiEvents({ period: "7d" }),
-		).rejects.toMatchObject({ code: "FORBIDDEN" });
+		await expect(caller.admin.listAiEvents({ period: "7d" })).rejects.toMatchObject({
+			code: "FORBIDDEN",
+		});
 	});
 
 	it("returns AI events for ADMIN", async () => {
@@ -66,9 +63,7 @@ describe("admin.listAiEvents", () => {
 			period: "all",
 			feature: "IMPORT_CV",
 		});
-		expect(imports.items.every((i) => i.feature === "IMPORT_CV")).toBe(
-			true,
-		);
+		expect(imports.items.every((i) => i.feature === "IMPORT_CV")).toBe(true);
 	});
 
 	it("filters by email search", async () => {

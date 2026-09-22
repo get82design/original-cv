@@ -18,9 +18,7 @@ import { trpc } from "@utils/trpc";
 import { DialogSelectCv } from "../common/DialogSelectCv";
 import { DialogSelectPrize } from "./DialogSelectPrize";
 
-export function createEmptyPrize(opts?: {
-	order?: number;
-}): ListItem<PrizeInput> {
+export function createEmptyPrize(opts?: { order?: number }): ListItem<PrizeInput> {
 	return {
 		clientKey: `socialMedia-${uuid()}`,
 		order: opts?.order ?? 1,
@@ -38,10 +36,7 @@ export const ProfilePrize = ({ cvs }: { cvs: CV[] }) => {
 	const [toDelete, setToDelete] = useState<Set<string>>(new Set());
 	const [visibleMaj, setVisibleMaj] = useState(false);
 	const [idCv, setIdCv] = useState<string | undefined>(undefined);
-	const { data: cvSelected } = trpc.cv.byId.useQuery(
-		{ id: idCv ?? "" },
-		{ enabled: !!idCv },
-	);
+	const { data: cvSelected } = trpc.cv.byId.useQuery({ id: idCv ?? "" }, { enabled: !!idCv });
 	const [visibleSelect, setVisibleSelect] = useState(false);
 
 	const { control, watch, setValue } = useFormContext<ProfileSaveInput>();
@@ -123,20 +118,12 @@ export const ProfilePrize = ({ cvs }: { cvs: CV[] }) => {
 			/>
 			<AppCard className="relative group">
 				<div className="opacity-30 absolute top-2 left-3">
-					<TitleAppTwo
-						firstPart={""}
-						secondPart={"Prix"}
-						size={"text-2xl"}
-						withSpace
-					/>
+					<TitleAppTwo firstPart={""} secondPart={"Prix"} size={"text-2xl"} withSpace />
 				</div>
 				<div className="mt-10 flex flex-col gap-4">
 					{fields.map((fields, idx: number) => {
 						return (
-							<div
-								className="w-full flex gap-2 items-center"
-								key={fields.clientKey}
-							>
+							<div className="w-full flex gap-2 items-center" key={fields.clientKey}>
 								<div className="flex flex-col gap-0 items-center">
 									{openDelete && (
 										<Checkbox
@@ -148,9 +135,7 @@ export const ProfilePrize = ({ cvs }: { cvs: CV[] }) => {
 									)}
 									<SelectBasicIconProfile
 										icon={watch(`prizes.${idx}.content.icon`) ?? ""}
-										setIcon={(data: string) =>
-											setValue(`prizes.${idx}.content.icon`, data)
-										}
+										setIcon={(data: string) => setValue(`prizes.${idx}.content.icon`, data)}
 									/>
 								</div>
 								<div className="w-full flex flex-col gap-0">
@@ -175,9 +160,7 @@ export const ProfilePrize = ({ cvs }: { cvs: CV[] }) => {
 						);
 					})}
 					{fields.length === 0 && (
-						<p className="w-full font-light text-gray-400">
-							Aucun prix enregistré
-						</p>
+						<p className="w-full font-light text-gray-400">Aucun prix enregistré</p>
 					)}
 					{openDelete && (
 						<MiniFooterMultiFunc

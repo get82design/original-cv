@@ -31,9 +31,7 @@ export const InputTextProfile = ({
 	const ref = useRef<HTMLInputElement>(null);
 	const { control } = useFormContext();
 	return (
-		<div
-			className={`card flex ${textColor} ${className} flex-col gap-0 relative`}
-		>
+		<div className={`card flex ${textColor} ${className} flex-col gap-0 relative`}>
 			<Controller
 				name={name}
 				control={control}
@@ -66,9 +64,7 @@ export const InputTextProfile = ({
 							{...props}
 						/>
 						{fieldState.error && (
-							<span className="text-red-500 text-xs">
-								{fieldState.error.message}
-							</span>
+							<span className="text-red-500 text-xs">{fieldState.error.message}</span>
 						)}
 					</>
 				)}

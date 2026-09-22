@@ -7,10 +7,7 @@ export const createTagSchema = z.object({
 
 export const tagInCvFormSchema = z.object({
 	name: z.string().default(""),
-	tagId: z.preprocess(
-		(v) => (v === "" || v == null ? undefined : v),
-		z.string().min(1).optional(),
-	),
+	tagId: z.preprocess((v) => (v === "" || v == null ? undefined : v), z.string().min(1).optional()),
 });
 
 export const updateTagSchema = createTagSchema.partial();

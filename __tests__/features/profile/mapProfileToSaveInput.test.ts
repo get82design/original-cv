@@ -1,8 +1,5 @@
 import { describe, expect, it } from "vitest";
-import {
-	CvTimelineStatus,
-	Level,
-} from "../../../generated/prisma/client";
+import { CvTimelineStatus, Level } from "../../../generated/prisma/client";
 import {
 	mapProfileToSaveInput,
 	type ProfileMapperInput,
@@ -34,9 +31,7 @@ function emptyLists() {
 	};
 }
 
-function baseProfile(
-	overrides: Record<string, unknown> = {},
-): ProfileMapperInput {
+function baseProfile(overrides: Record<string, unknown> = {}): ProfileMapperInput {
 	return {
 		id: "profile-1",
 		userId: "user-1",

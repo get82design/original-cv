@@ -28,8 +28,7 @@ function BadgePill({
 			"border-amber-400/40 bg-gradient-to-r from-amber-500/95 to-orange-500/90 text-white shadow-sm shadow-amber-900/20",
 		premium:
 			"border-violet-400/30 bg-gradient-to-r from-violet-600/95 to-indigo-600/90 text-white shadow-sm shadow-violet-950/25",
-		locked:
-			"border-zinc-400/30 bg-zinc-900/85 text-zinc-100 shadow-sm backdrop-blur-sm",
+		locked: "border-zinc-400/30 bg-zinc-900/85 text-zinc-100 shadow-sm backdrop-blur-sm",
 	} as const;
 
 	return (
@@ -59,8 +58,7 @@ export function TemplateCatalogBadges({
 		>
 			{isFeatured ? (
 				<BadgePill tone="spotlight" size={size}>
-					<i className="pi pi-star-fill text-[0.7em]" aria-hidden />
-					À la une
+					<i className="pi pi-star-fill text-[0.7em]" aria-hidden />À la une
 				</BadgePill>
 			) : null}
 			{isPremium ? (

@@ -26,10 +26,7 @@ export const TitleSectionIcon = ({ watchIconStyle }: TitleSectionIconProps) => {
 			<div className="flex gap-1 items-center">
 				<p className="my-0 font-semibold text-xs">Icones</p>
 				<MdInfo className="infoIconTitleSectionStyle text-sm text-muted-color" />
-				<Tooltip
-					target=".infoIconTitleSectionStyle"
-					content={"Modifier l'icone des titres"}
-				/>
+				<Tooltip target=".infoIconTitleSectionStyle" content={"Modifier l'icone des titres"} />
 			</div>
 			<SelectButtonRhf
 				className="shadow-none panel-modification"

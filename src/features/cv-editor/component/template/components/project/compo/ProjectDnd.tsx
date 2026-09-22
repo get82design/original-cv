@@ -2,10 +2,7 @@ import { useCreateCvContext } from "@/features/cv-editor/component/context/Creat
 import { FieldNameProject } from "@/features/cv-editor/utils/fields/fieldNameProject";
 import { dataFieldContent } from "@/features/cv-editor/utils/fields/moduleField";
 import type { ProjectItemContentInput } from "@/services/schemas/cvSave.schema";
-import {
-	SortableContext,
-	verticalListSortingStrategy,
-} from "@dnd-kit/sortable";
+import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import type { ListItem } from "@utils/type";
 import { Button } from "primereact/button";
 import { useFormContext } from "react-hook-form";
@@ -31,16 +28,8 @@ export const ProjectDnd = ({
 	const { setValue } = useFormContext();
 	const { setSectionSelected, sectionSelected } = useCreateCvContext();
 
-	const addElmList = (
-		item: ListItem<ProjectItemContentInput>,
-		elm: string,
-		index: number,
-	) => {
-		const pathContent = dataFieldContent(
-			"datas.project.content",
-			index,
-			"content.missions",
-		);
+	const addElmList = (item: ListItem<ProjectItemContentInput>, elm: string, index: number) => {
+		const pathContent = dataFieldContent("datas.project.content", index, "content.missions");
 
 		const newMission = {
 			clientKey: "mission-" + uuid(),
@@ -55,11 +44,7 @@ export const ProjectDnd = ({
 	};
 
 	const deleteMission = (index: number, idx: number) => {
-		const pathContent = dataFieldContent(
-			"datas.project.content",
-			index,
-			"content.missions",
-		);
+		const pathContent = dataFieldContent("datas.project.content", index, "content.missions");
 		const currentMissions = watchProjects[index]?.content?.missions ?? [];
 		const nextMissions = currentMissions
 			.filter((_, i) => i !== idx)
@@ -71,11 +56,7 @@ export const ProjectDnd = ({
 	};
 
 	const itemsMenu = (idx: number) => {
-		const pathContent = dataFieldContent(
-			"datas.project.content",
-			idx,
-			"content.settings",
-		);
+		const pathContent = dataFieldContent("datas.project.content", idx, "content.settings");
 		return [
 			{
 				label: "Intitulé",
@@ -174,10 +155,7 @@ export const ProjectDnd = ({
 							const fresh = createNewItem();
 							setValue(
 								FieldNameProject.content,
-								[
-									...watchProjects,
-									{ ...fresh, order: watchProjects.length + 1 },
-								],
+								[...watchProjects, { ...fresh, order: watchProjects.length + 1 }],
 								{ shouldDirty: true },
 							);
 						}}

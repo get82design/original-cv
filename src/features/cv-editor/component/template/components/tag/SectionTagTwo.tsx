@@ -1,7 +1,4 @@
-import type {
-	BaseTextSettings,
-	TagContentSettings,
-} from "@/services/schemas/cvTemplate.schema";
+import type { BaseTextSettings, TagContentSettings } from "@/services/schemas/cvTemplate.schema";
 import { useFormContext } from "react-hook-form";
 import { useSectionList } from "../../../hooks/useSectionList";
 import type { TagGroupItemContentInput } from "@/services/schemas/cvSave.schema";
@@ -17,9 +14,7 @@ import { GroupTagCardRegister } from "../../register/tag/GroupTagCardRegister";
 
 export function SectionTagTwo() {
 	const { watch } = useFormContext();
-	const watchModelTagTitle: BaseTextSettings = watch(
-		FieldNameTag.settingsSectionTitle,
-	);
+	const watchModelTagTitle: BaseTextSettings = watch(FieldNameTag.settingsSectionTitle);
 	const watchGeneral = watch(FieldNameLayoutGeneral.layout);
 
 	const {
@@ -34,8 +29,7 @@ export function SectionTagTwo() {
 	});
 
 	const groupKey =
-		watch("layoutGeneral.defaultStyles")?.components?.sectionTag?.group ??
-		"CardGroupTagOne";
+		watch("layoutGeneral.defaultStyles")?.components?.sectionTag?.group ?? "CardGroupTagOne";
 	const GroupCard = GroupTagCardRegister[groupKey] ?? CardGroupTagOne;
 
 	return (

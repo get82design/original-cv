@@ -55,20 +55,16 @@ export const AppBar = () => {
 							<MdDehaze style={{ width: "24px", height: "24px" }} />
 						</Button>
 					)}
-					<Link
-						href="/"
-						className="inline-flex items-center"
-						aria-label="OriginalCV"
-					>
+					<Link href="/" className="inline-flex items-center" aria-label="OriginalCV">
 						<SiteBrandLogo className="h-11 w-auto" />
 					</Link>
 					{isSm && (
 						<nav className="flex gap-4 items-center ml-8">
-                            {isAdmin ? (
-                                <Link href="/admin" className={navLinkClass}>
-                                    Admin
-                                </Link>
-                            ) : null}
+							{isAdmin ? (
+								<Link href="/admin" className={navLinkClass}>
+									Admin
+								</Link>
+							) : null}
 							<Link href="/modeles" className={navLinkClass}>
 								Modèles
 							</Link>
@@ -81,12 +77,7 @@ export const AppBar = () => {
 				<div className="flex gap-1 items-center">
 					{status === "authenticated" ? (
 						<>
-							<Menu
-								id="profile-menu_logout"
-								model={items}
-								popup
-								ref={menu}
-							/>
+							<Menu id="profile-menu_logout" model={items} popup ref={menu} />
 							<Button
 								text
 								id="profile-menu"

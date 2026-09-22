@@ -32,8 +32,8 @@ export const SectionAchievementOne = () => {
 	});
 
 	const itemKey =
-		watch("layoutGeneral.defaultStyles")?.components?.sectionAchievement
-			?.item ?? "CardAchievementOne";
+		watch("layoutGeneral.defaultStyles")?.components?.sectionAchievement?.item ??
+		"CardAchievementOne";
 	const Card = AchievementCardRegister[itemKey] ?? CardAchievementOne;
 
 	return (

@@ -5,25 +5,18 @@ import {
 } from "../../../../services/schemas/cvTemplate.schema";
 import type { CvFormValues } from "../../../../services/schemas/cvSave.schema";
 import type { CvImportDraft } from "../../../../services/schemas/cvImportDraft.schema";
-import {
-	LevelSchema,
-	type Level,
-} from "../../../../services/schemas/enums";
+import { LevelSchema, type Level } from "../../../../services/schemas/enums";
 import type { TemplateCv } from "../../../../../utils/trpc.types";
 
 function getModule<T extends TemplateModule["type"]>(
 	modules: TemplateModule[],
 	type: T,
 ): Extract<TemplateModule, { type: T }> | undefined {
-	return modules.find(
-		(m): m is Extract<TemplateModule, { type: T }> => m.type === type,
-	);
+	return modules.find((m): m is Extract<TemplateModule, { type: T }> => m.type === type);
 }
 
 /** YYYY | YYYY-MM | YYYY-MM-DD → Date (1er du mois / 1er janv. si partiel). */
-export function parseImportDate(
-	value?: string | null,
-): Date | undefined {
+export function parseImportDate(value?: string | null): Date | undefined {
 	if (!value?.trim()) return undefined;
 	const v = value.trim();
 	if (/^\d{4}$/.test(v)) return new Date(`${v}-01-01T12:00:00`);
@@ -150,9 +143,7 @@ export function mapImportDraftToCvDatas(
 							order: order + 1,
 							content: {
 								name: l.name,
-								level: toLevel(
-									typeof l.level === "string" ? l.level : null,
-								),
+								level: toLevel(typeof l.level === "string" ? l.level : null),
 								settings: language.settings.content,
 							},
 						})),
@@ -195,8 +186,7 @@ export function mapImportDraftToCvDatas(
 							order: order + 1,
 							content: {
 								title: c.title,
-								organismeCertification:
-									c.organismeCertification ?? "",
+								organismeCertification: c.organismeCertification ?? "",
 								settings: certification.settings.content,
 							},
 						})),

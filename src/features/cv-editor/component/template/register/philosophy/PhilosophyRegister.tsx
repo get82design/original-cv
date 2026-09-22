@@ -25,10 +25,8 @@ export function MiniaturePhilosophyRenderer({
 	templateConfig: TemplateDefaultStyles;
 }) {
 	const miniatureKey =
-		templateConfig?.components?.sectionPhilosophy?.miniature ??
-		"MiniPhilosophyOne";
-	const MiniatureComponent =
-		MiniatureRegister[miniatureKey] ?? DefaultMiniature;
+		templateConfig?.components?.sectionPhilosophy?.miniature ?? "MiniPhilosophyOne";
+	const MiniatureComponent = MiniatureRegister[miniatureKey] ?? DefaultMiniature;
 	return <MiniatureComponent />;
 }
 export function IconPhilosophyRenderer({
@@ -36,20 +34,13 @@ export function IconPhilosophyRenderer({
 }: {
 	templateConfig: TemplateDefaultStyles;
 }) {
-	const iconKey =
-		templateConfig?.components?.sectionPhilosophy?.icon ?? "IconPhilosophy";
+	const iconKey = templateConfig?.components?.sectionPhilosophy?.icon ?? "IconPhilosophy";
 	const IconComponent = IconRegister[iconKey] ?? DefaultIcon;
 	return <IconComponent />;
 }
-export function PhilosophyRenderer({
-	templateConfig,
-}: {
-	templateConfig: TemplateDefaultStyles;
-}) {
+export function PhilosophyRenderer({ templateConfig }: { templateConfig: TemplateDefaultStyles }) {
 	const PhilosophyKey =
-		templateConfig?.components?.sectionPhilosophy?.component ??
-		"SectionPhilosophyOne";
-	const PhilosophyComponent =
-		PhilosophyRegister[PhilosophyKey] ?? DefaultPhilosophy;
+		templateConfig?.components?.sectionPhilosophy?.component ?? "SectionPhilosophyOne";
+	const PhilosophyComponent = PhilosophyRegister[PhilosophyKey] ?? DefaultPhilosophy;
 	return <PhilosophyComponent />;
 }

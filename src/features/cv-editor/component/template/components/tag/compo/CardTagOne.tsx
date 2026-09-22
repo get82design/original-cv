@@ -29,17 +29,12 @@ export const CardTagOne = ({
 	clientKeyGroup,
 }: CardTagOneProps) => {
 	const { watch, getValues, setValue } = useFormContext();
-	const { setSelectModifInput, setSelectInputForm, sectionSelected } =
-		useCreateCvContext();
+	const { setSelectModifInput, setSelectInputForm, sectionSelected } = useCreateCvContext();
 
 	const watchGeneral = watch(FieldNameLayoutGeneral.layout);
 	const pathContent = `datas.tagGroup.content.${groupIndex}.content.tags.${index}.content`;
-	const watchDesign = watch(
-		`datas.tagGroup.content.${groupIndex}.content.settings.design`,
-	);
-	const watchModelTag = watch(
-		`datas.tagGroup.content.${groupIndex}.content.settings.tags`,
-	);
+	const watchDesign = watch(`datas.tagGroup.content.${groupIndex}.content.settings.design`);
+	const watchModelTag = watch(`datas.tagGroup.content.${groupIndex}.content.settings.tags`);
 	const columnFg = useColumnFg();
 	const design = watchDesign ?? "tag";
 	// Pastille : blanc sur primary. Border/none : noir, ou fg sidebar (blanc).
@@ -76,19 +71,14 @@ export const CardTagOne = ({
 			.filter((_, i) => i !== idx)
 			.map((entry, i) => ({ ...entry, order: i + 1 }));
 		setValue(path, newList, { shouldDirty: true, shouldTouch: true });
-		if (
-			removed &&
-			itemSelected === (removed as { clientKey: string }).clientKey
-		) {
+		if (removed && itemSelected === (removed as { clientKey: string }).clientKey) {
 			setItemSelected(newList[0]?.clientKey ?? clientKeyGroup);
 		}
 	};
 
 	const isSelected = itemSelected === item.clientKey;
 	const label =
-		watch(`${pathContent}.name`) ??
-		(item as { content?: { name?: string } })?.content?.name ??
-		"";
+		watch(`${pathContent}.name`) ?? (item as { content?: { name?: string } })?.content?.name ?? "";
 
 	return (
 		<SectionItemShell
@@ -122,9 +112,7 @@ export const CardTagOne = ({
 								placeholder="Tag"
 								autoFocus
 								onClick={() => {
-									setSelectModifInput(
-										`datas.tagGroup.content.${groupIndex}.content.settings.tags`,
-									);
+									setSelectModifInput(`datas.tagGroup.content.${groupIndex}.content.settings.tags`);
 									setSelectInputForm("");
 								}}
 								forceWidthFull
@@ -138,9 +126,7 @@ export const CardTagOne = ({
 								className="my-0"
 								style={{ color: tagCssColor ? `var(--${tagCssColor})` : undefined }}
 								onClick={() => {
-									setSelectModifInput(
-										`datas.tagGroup.content.${groupIndex}.content.settings.tags`,
-									);
+									setSelectModifInput(`datas.tagGroup.content.${groupIndex}.content.settings.tags`);
 									setSelectInputForm("");
 								}}
 							>

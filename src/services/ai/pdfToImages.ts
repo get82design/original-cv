@@ -26,9 +26,9 @@ let pdfjsReady: Promise<void> | null = null;
 async function ensurePdfjs() {
 	if (!pdfjsReady) {
 		// Legacy build : compatible Node (évite Uint8Array.toHex du build moderne)
-		pdfjsReady = definePDFJSModule(
-			() => import("pdfjs-dist/legacy/build/pdf.mjs"),
-		).then(() => undefined);
+		pdfjsReady = definePDFJSModule(() => import("pdfjs-dist/legacy/build/pdf.mjs")).then(
+			() => undefined,
+		);
 	}
 	await pdfjsReady;
 }
@@ -77,9 +77,7 @@ export async function pdfPagesToImages(
 			toDataURL: true,
 		})) as string;
 
-		const base64 = dataUrl.includes(",")
-			? dataUrl.slice(dataUrl.indexOf(",") + 1)
-			: dataUrl;
+		const base64 = dataUrl.includes(",") ? dataUrl.slice(dataUrl.indexOf(",") + 1) : dataUrl;
 
 		pages.push({
 			pageNumber,

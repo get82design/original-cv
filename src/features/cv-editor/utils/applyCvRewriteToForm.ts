@@ -19,10 +19,7 @@ type ListItem = {
 	};
 };
 
-function applyItemsToSection(
-	items: ListItem[] | undefined,
-	rewrite: CvRewriteSection,
-): ListItem[] {
+function applyItemsToSection(items: ListItem[] | undefined, rewrite: CvRewriteSection): ListItem[] {
 	const current = items ?? [];
 	const byId = new Map(current.map((i) => [i.clientKey, i]));
 

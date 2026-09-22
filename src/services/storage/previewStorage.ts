@@ -1,9 +1,6 @@
 import { mkdir, unlink, writeFile } from "node:fs/promises";
 import path from "node:path";
-import {
-	R2PreviewStorage,
-	readR2PreviewConfigFromEnv,
-} from "./r2PreviewStorage";
+import { R2PreviewStorage, readR2PreviewConfigFromEnv } from "./r2PreviewStorage";
 
 /**
  * Stockage des previews CV.
@@ -31,9 +28,7 @@ function resolveLocalRoot(): string {
 }
 
 function resolvePublicBase(): string {
-	const base =
-		process.env.PREVIEW_PUBLIC_BASE_URL?.trim() ||
-		"/uploads/cv-previews";
+	const base = process.env.PREVIEW_PUBLIC_BASE_URL?.trim() || "/uploads/cv-previews";
 	return base.replace(/\/$/, "");
 }
 
@@ -51,9 +46,7 @@ export class LocalPreviewStorage implements PreviewStorage {
 		return { publicUrl: `${this.publicBase}/${key.replace(/\\/g, "/")}` };
 	}
 
-	async deleteIfManaged(
-		publicUrl: string | null | undefined,
-	): Promise<void> {
+	async deleteIfManaged(publicUrl: string | null | undefined): Promise<void> {
 		if (!publicUrl?.startsWith(`${this.publicBase}/`)) return;
 		const key = publicUrl.slice(this.publicBase.length + 1);
 		if (!key || key.includes("..")) return;
@@ -78,15 +71,12 @@ let singleton: PreviewStorage | null = null;
 
 export function getPreviewStorage(): PreviewStorage {
 	if (!singleton) {
-		const isTest =
-			process.env.VITEST === "true" || process.env.NODE_ENV === "test";
+		const isTest = process.env.VITEST === "true" || process.env.NODE_ENV === "test";
 		if (isTest) {
 			singleton = new LocalPreviewStorage();
 		} else {
 			const r2 = readR2PreviewConfigFromEnv();
-			singleton = r2
-				? new R2PreviewStorage(r2)
-				: new LocalPreviewStorage();
+			singleton = r2 ? new R2PreviewStorage(r2) : new LocalPreviewStorage();
 		}
 	}
 	return singleton;

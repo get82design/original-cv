@@ -4,7 +4,12 @@ import {
 	templateStructureSchema,
 } from "@/services/schemas/cvTemplate.schema";
 import type { TemplateCv } from "@utils/trpc.types";
-import { loadTemplateSnapshot, saveTemplateSnapshot, type TemplateDatasSettingsSnapshot, type TemplateSnapshot } from "./templateCache";
+import {
+	loadTemplateSnapshot,
+	saveTemplateSnapshot,
+	type TemplateDatasSettingsSnapshot,
+	type TemplateSnapshot,
+} from "./templateCache";
 
 type CvDatas = NonNullable<CvFormValues["datas"]>;
 
@@ -17,16 +22,13 @@ export function applyTemplateToForm(
 	const defaultStyles = templateDefaultStylesSchema.parse(model.defaultStyles);
 
 	const experienceFromModel = structure.modules.find(
-		(m): m is Extract<typeof m, { type: "experience" }> =>
-			m.type === "experience",
+		(m): m is Extract<typeof m, { type: "experience" }> => m.type === "experience",
 	);
 	const educationFromModel = structure.modules.find(
-		(m): m is Extract<typeof m, { type: "education" }> =>
-			m.type === "education",
+		(m): m is Extract<typeof m, { type: "education" }> => m.type === "education",
 	);
 	const descriptionFromModel = structure.modules.find(
-		(m): m is Extract<typeof m, { type: "description" }> =>
-			m.type === "description",
+		(m): m is Extract<typeof m, { type: "description" }> => m.type === "description",
 	);
 	const skillGroupFromModel = structure.modules.find(
 		(m): m is Extract<typeof m, { type: "skill" }> => m.type === "skill",
@@ -38,23 +40,19 @@ export function applyTemplateToForm(
 		(m): m is Extract<typeof m, { type: "project" }> => m.type === "project",
 	);
 	const socialMediaFromModel = structure.modules.find(
-		(m): m is Extract<typeof m, { type: "socialMedia" }> =>
-			m.type === "socialMedia",
+		(m): m is Extract<typeof m, { type: "socialMedia" }> => m.type === "socialMedia",
 	);
 	const strengthFromModel = structure.modules.find(
 		(m): m is Extract<typeof m, { type: "strength" }> => m.type === "strength",
 	);
 	const philosophyFromModel = structure.modules.find(
-		(m): m is Extract<typeof m, { type: "philosophy" }> =>
-			m.type === "philosophy",
+		(m): m is Extract<typeof m, { type: "philosophy" }> => m.type === "philosophy",
 	);
 	const formationFromModel = structure.modules.find(
-		(m): m is Extract<typeof m, { type: "formation" }> =>
-			m.type === "formation",
+		(m): m is Extract<typeof m, { type: "formation" }> => m.type === "formation",
 	);
 	const certificationFromModel = structure.modules.find(
-		(m): m is Extract<typeof m, { type: "certification" }> =>
-			m.type === "certification",
+		(m): m is Extract<typeof m, { type: "certification" }> => m.type === "certification",
 	);
 	const prizeFromModel = structure.modules.find(
 		(m): m is Extract<typeof m, { type: "prize" }> => m.type === "prize",
@@ -63,24 +61,19 @@ export function applyTemplateToForm(
 		(m): m is Extract<typeof m, { type: "passion" }> => m.type === "passion",
 	);
 	const expertiseFromModel = structure.modules.find(
-		(m): m is Extract<typeof m, { type: "expertise" }> =>
-			m.type === "expertise",
+		(m): m is Extract<typeof m, { type: "expertise" }> => m.type === "expertise",
 	);
 	const volunteeringFromModel = structure.modules.find(
-		(m): m is Extract<typeof m, { type: "volunteering" }> =>
-			m.type === "volunteering",
+		(m): m is Extract<typeof m, { type: "volunteering" }> => m.type === "volunteering",
 	);
 	const publicationFromModel = structure.modules.find(
-		(m): m is Extract<typeof m, { type: "publication" }> =>
-			m.type === "publication",
+		(m): m is Extract<typeof m, { type: "publication" }> => m.type === "publication",
 	);
 	const achievementFromModel = structure.modules.find(
-		(m): m is Extract<typeof m, { type: "achievement" }> =>
-			m.type === "achievement",
+		(m): m is Extract<typeof m, { type: "achievement" }> => m.type === "achievement",
 	);
 	const competenceGroupFromModel = structure.modules.find(
-		(m): m is Extract<typeof m, { type: "competence" }> =>
-			m.type === "competence",
+		(m): m is Extract<typeof m, { type: "competence" }> => m.type === "competence",
 	);
 	const tagGroupFromModel = structure.modules.find(
 		(m): m is Extract<typeof m, { type: "tag" }> => m.type === "tag",
@@ -104,73 +97,68 @@ export function applyTemplateToForm(
 			...(experienceFromModel || current.datas?.experience
 				? {
 						experience: {
-							title:
-								current.datas?.experience?.title ?? experienceFromModel!.title,
+							title: current.datas?.experience?.title ?? experienceFromModel!.title,
 							content: current.datas?.experience?.content ?? [],
 							settings: options?.resetSectionStyles
 								? {
-									...current.datas?.experience?.settings,
-									title: experienceFromModel!.settings.title, // defaults du nouveau template
+										...current.datas?.experience?.settings,
+										title: experienceFromModel!.settings.title, // defaults du nouveau template
 									}
-								: current.datas?.experience?.settings ?? {
-									title: experienceFromModel!.settings.title,
-									},
+								: (current.datas?.experience?.settings ?? {
+										title: experienceFromModel!.settings.title,
+									}),
 						},
 					}
 				: {}),
 			...(educationFromModel || current.datas?.education
 				? {
 						education: {
-							title:
-								current.datas?.education?.title ?? educationFromModel!.title,
+							title: current.datas?.education?.title ?? educationFromModel!.title,
 							content: current.datas?.education?.content ?? [],
 							settings: options?.resetSectionStyles
 								? {
-									...current.datas?.education?.settings,
-									title: educationFromModel!.settings.title, // defaults du nouveau template
+										...current.datas?.education?.settings,
+										title: educationFromModel!.settings.title, // defaults du nouveau template
 									}
-								: current.datas?.education?.settings ?? {
-									title: educationFromModel!.settings.title,
-									},
+								: (current.datas?.education?.settings ?? {
+										title: educationFromModel!.settings.title,
+									}),
 						},
 					}
 				: {}),
 			...(descriptionFromModel || current.datas?.description
 				? {
 						description: {
-							title:
-								current.datas?.description?.title ??
-								descriptionFromModel!.title,
+							title: current.datas?.description?.title ?? descriptionFromModel!.title,
 							content: current.datas?.description?.content ?? {
 								description: "",
 							},
 							settings: options?.resetSectionStyles
 								? {
-									...current.datas?.description?.settings,
-									title: descriptionFromModel!.settings.title,
-									content: descriptionFromModel!.settings.content.description,
-								}
-								: current.datas?.description?.settings ?? { 
-									title: descriptionFromModel!.settings.title,
-									content: descriptionFromModel!.settings.content.description,
-								 },
+										...current.datas?.description?.settings,
+										title: descriptionFromModel!.settings.title,
+										content: descriptionFromModel!.settings.content.description,
+									}
+								: (current.datas?.description?.settings ?? {
+										title: descriptionFromModel!.settings.title,
+										content: descriptionFromModel!.settings.content.description,
+									}),
 						},
 					}
 				: {}),
 			...(skillGroupFromModel || current.datas?.skillGroup
 				? {
 						skillGroup: {
-							title:
-								current.datas?.skillGroup?.title ?? skillGroupFromModel!.title,
+							title: current.datas?.skillGroup?.title ?? skillGroupFromModel!.title,
 							content: current.datas?.skillGroup?.content ?? [],
 							settings: options?.resetSectionStyles
 								? {
-									...current.datas?.skillGroup?.settings,
-									title: skillGroupFromModel!.settings.title, // defaults du nouveau template
-								}
-								: current.datas?.skillGroup?.settings ?? {
-									title: skillGroupFromModel!.settings.title,
-								},
+										...current.datas?.skillGroup?.settings,
+										title: skillGroupFromModel!.settings.title, // defaults du nouveau template
+									}
+								: (current.datas?.skillGroup?.settings ?? {
+										title: skillGroupFromModel!.settings.title,
+									}),
 						},
 					}
 				: {}),
@@ -181,12 +169,12 @@ export function applyTemplateToForm(
 							content: current.datas?.language?.content ?? [],
 							settings: options?.resetSectionStyles
 								? {
-									...current.datas?.language?.settings,
-									title: languageFromModel!.settings.title, // defaults du nouveau template
+										...current.datas?.language?.settings,
+										title: languageFromModel!.settings.title, // defaults du nouveau template
 									}
-								: current.datas?.language?.settings ?? {
-									title: languageFromModel!.settings.title,
-									},
+								: (current.datas?.language?.settings ?? {
+										title: languageFromModel!.settings.title,
+									}),
 						},
 					}
 				: {}),
@@ -197,30 +185,28 @@ export function applyTemplateToForm(
 							content: current.datas?.project?.content ?? [],
 							settings: options?.resetSectionStyles
 								? {
-									...current.datas?.project?.settings,
-									title: projectFromModel!.settings.title, // defaults du nouveau template
+										...current.datas?.project?.settings,
+										title: projectFromModel!.settings.title, // defaults du nouveau template
 									}
-								: current.datas?.project?.settings ?? {
-									title: projectFromModel!.settings.title,
-									},
+								: (current.datas?.project?.settings ?? {
+										title: projectFromModel!.settings.title,
+									}),
 						},
 					}
 				: {}),
 			...(socialMediaFromModel || current.datas?.socialMedia
 				? {
 						socialMedia: {
-							title:
-								current.datas?.socialMedia?.title ??
-								socialMediaFromModel!.title,
+							title: current.datas?.socialMedia?.title ?? socialMediaFromModel!.title,
 							content: current.datas?.socialMedia?.content ?? [],
 							settings: options?.resetSectionStyles
 								? {
-									...current.datas?.socialMedia?.settings,
-									title: socialMediaFromModel!.settings.title, // defaults du nouveau template
+										...current.datas?.socialMedia?.settings,
+										title: socialMediaFromModel!.settings.title, // defaults du nouveau template
 									}
-								: current.datas?.socialMedia?.settings ?? {
-									title: socialMediaFromModel!.settings.title,
-									},
+								: (current.datas?.socialMedia?.settings ?? {
+										title: socialMediaFromModel!.settings.title,
+									}),
 						},
 					}
 				: {}),
@@ -231,68 +217,65 @@ export function applyTemplateToForm(
 							content: current.datas?.strength?.content ?? [],
 							settings: options?.resetSectionStyles
 								? {
-									...current.datas?.strength?.settings,
-									title: strengthFromModel!.settings.title, // defaults du nouveau template
+										...current.datas?.strength?.settings,
+										title: strengthFromModel!.settings.title, // defaults du nouveau template
 									}
-								: current.datas?.strength?.settings ?? {
-									title: strengthFromModel!.settings.title,
-									},
+								: (current.datas?.strength?.settings ?? {
+										title: strengthFromModel!.settings.title,
+									}),
 						},
 					}
 				: {}),
 			...(philosophyFromModel || current.datas?.philosophy
 				? {
 						philosophy: {
-							title:
-								current.datas?.philosophy?.title ?? philosophyFromModel!.title,
+							title: current.datas?.philosophy?.title ?? philosophyFromModel!.title,
 							content: current.datas?.philosophy?.content ?? {
 								citation: "",
 								author: "",
 							},
-							settings:  options?.resetSectionStyles
-							? {
-								...current.datas?.philosophy?.settings,
-								title: philosophyFromModel!.settings.title,
-								content: philosophyFromModel!.settings.content,
-							} : current.datas?.philosophy?.settings ?? {
-								title: philosophyFromModel!.settings.title,
-								content: philosophyFromModel!.settings.content,
-							},
+							settings: options?.resetSectionStyles
+								? {
+										...current.datas?.philosophy?.settings,
+										title: philosophyFromModel!.settings.title,
+										content: philosophyFromModel!.settings.content,
+									}
+								: (current.datas?.philosophy?.settings ?? {
+										title: philosophyFromModel!.settings.title,
+										content: philosophyFromModel!.settings.content,
+									}),
 						},
 					}
 				: {}),
 			...(formationFromModel || current.datas?.formation
 				? {
 						formation: {
-							title:
-								current.datas?.formation?.title ?? formationFromModel!.title,
+							title: current.datas?.formation?.title ?? formationFromModel!.title,
 							content: current.datas?.formation?.content ?? [],
 							settings: options?.resetSectionStyles
 								? {
-									...current.datas?.formation?.settings,
-									title: formationFromModel!.settings.title, // defaults du nouveau template
+										...current.datas?.formation?.settings,
+										title: formationFromModel!.settings.title, // defaults du nouveau template
 									}
-								: current.datas?.formation?.settings ?? {
-									title: formationFromModel!.settings.title,
-									},
+								: (current.datas?.formation?.settings ?? {
+										title: formationFromModel!.settings.title,
+									}),
 						},
 					}
 				: {}),
 			...(certificationFromModel || current.datas?.certification
 				? {
 						certification: {
-							title:
-								current.datas?.certification?.title ??
-								certificationFromModel!.title,
+							title: current.datas?.certification?.title ?? certificationFromModel!.title,
 							content: current.datas?.certification?.content ?? [],
 							settings: options?.resetSectionStyles
 								? {
-									...current.datas?.certification?.settings,
-									title: certificationFromModel!.settings.title, // defaults du nouveau template
+										...current.datas?.certification?.settings,
+										title: certificationFromModel!.settings.title, // defaults du nouveau template
 									}
-								: current.datas?.certification?.settings ?? {
-									title: certificationFromModel!.settings.title,
-									},
+								: (current.datas?.certification?.settings ?? {
+										title: certificationFromModel!.settings.title,
+									}),
 						},
 					}
 				: {}),
@@ -303,12 +286,12 @@ export function applyTemplateToForm(
 							content: current.datas?.prize?.content ?? [],
 							settings: options?.resetSectionStyles
 								? {
-									...current.datas?.prize?.settings,
-									title: prizeFromModel!.settings.title, // defaults du nouveau template
+										...current.datas?.prize?.settings,
+										title: prizeFromModel!.settings.title, // defaults du nouveau template
 									}
-								: current.datas?.prize?.settings ?? {
-									title: prizeFromModel!.settings.title,
-									},
+								: (current.datas?.prize?.settings ?? {
+										title: prizeFromModel!.settings.title,
+									}),
 						},
 					}
 				: {}),
@@ -319,101 +302,92 @@ export function applyTemplateToForm(
 							content: current.datas?.passion?.content ?? [],
 							settings: options?.resetSectionStyles
 								? {
-									...current.datas?.passion?.settings,
-									title: passionFromModel!.settings.title, // defaults du nouveau template
+										...current.datas?.passion?.settings,
+										title: passionFromModel!.settings.title, // defaults du nouveau template
 									}
-								: current.datas?.passion?.settings ?? {
-									title: passionFromModel!.settings.title,
-									},
+								: (current.datas?.passion?.settings ?? {
+										title: passionFromModel!.settings.title,
+									}),
 						},
 					}
 				: {}),
 			...(expertiseFromModel || current.datas?.expertise
 				? {
 						expertise: {
-							title:
-								current.datas?.expertise?.title ?? expertiseFromModel!.title,
+							title: current.datas?.expertise?.title ?? expertiseFromModel!.title,
 							content: current.datas?.expertise?.content ?? [],
 							settings: options?.resetSectionStyles
 								? {
-									...current.datas?.expertise?.settings,
-									title: expertiseFromModel!.settings.title, // defaults du nouveau template
+										...current.datas?.expertise?.settings,
+										title: expertiseFromModel!.settings.title, // defaults du nouveau template
 									}
-								: current.datas?.expertise?.settings ?? {
-									title: expertiseFromModel!.settings.title,
-									},
+								: (current.datas?.expertise?.settings ?? {
+										title: expertiseFromModel!.settings.title,
+									}),
 						},
 					}
 				: {}),
 			...(volunteeringFromModel || current.datas?.volunteering
 				? {
 						volunteering: {
-							title:
-								current.datas?.volunteering?.title ??
-								volunteeringFromModel!.title,
+							title: current.datas?.volunteering?.title ?? volunteeringFromModel!.title,
 							content: current.datas?.volunteering?.content ?? [],
 							settings: options?.resetSectionStyles
 								? {
-									...current.datas?.volunteering?.settings,
-									title: volunteeringFromModel!.settings.title, // defaults du nouveau template
+										...current.datas?.volunteering?.settings,
+										title: volunteeringFromModel!.settings.title, // defaults du nouveau template
 									}
-								: current.datas?.volunteering?.settings ?? {
-									title: volunteeringFromModel!.settings.title,
-									},
+								: (current.datas?.volunteering?.settings ?? {
+										title: volunteeringFromModel!.settings.title,
+									}),
 						},
 					}
 				: {}),
 			...(publicationFromModel || current.datas?.publication
 				? {
 						publication: {
-							title:
-								current.datas?.publication?.title ??
-								publicationFromModel!.title,
+							title: current.datas?.publication?.title ?? publicationFromModel!.title,
 							content: current.datas?.publication?.content ?? [],
 							settings: options?.resetSectionStyles
 								? {
-									...current.datas?.publication?.settings,
-									title: publicationFromModel!.settings.title, // defaults du nouveau template
+										...current.datas?.publication?.settings,
+										title: publicationFromModel!.settings.title, // defaults du nouveau template
 									}
-								: current.datas?.publication?.settings ?? {
-									title: publicationFromModel!.settings.title,
-									},
+								: (current.datas?.publication?.settings ?? {
+										title: publicationFromModel!.settings.title,
+									}),
 						},
 					}
 				: {}),
 			...(achievementFromModel || current.datas?.achievement
 				? {
 						achievement: {
-							title:
-								current.datas?.achievement?.title ??
-								achievementFromModel!.title,
+							title: current.datas?.achievement?.title ?? achievementFromModel!.title,
 							content: current.datas?.achievement?.content ?? [],
 							settings: options?.resetSectionStyles
 								? {
-									...current.datas?.achievement?.settings,
-									title: achievementFromModel!.settings.title, // defaults du nouveau template
+										...current.datas?.achievement?.settings,
+										title: achievementFromModel!.settings.title, // defaults du nouveau template
 									}
-								: current.datas?.achievement?.settings ?? {
-									title: achievementFromModel!.settings.title,
-									},
+								: (current.datas?.achievement?.settings ?? {
+										title: achievementFromModel!.settings.title,
+									}),
 						},
 					}
 				: {}),
 			...(competenceGroupFromModel || current.datas?.competenceGroup
 				? {
 						competenceGroup: {
-							title:
-								current.datas?.competenceGroup?.title ??
-								competenceGroupFromModel!.title,
+							title: current.datas?.competenceGroup?.title ?? competenceGroupFromModel!.title,
 							content: current.datas?.competenceGroup?.content ?? [],
 							settings: options?.resetSectionStyles
 								? {
-									...current.datas?.competenceGroup?.settings,
-									title: competenceGroupFromModel!.settings.title, // defaults du nouveau template
+										...current.datas?.competenceGroup?.settings,
+										title: competenceGroupFromModel!.settings.title, // defaults du nouveau template
 									}
-								: current.datas?.competenceGroup?.settings ?? {
-									title: competenceGroupFromModel!.settings.title,
-									},
+								: (current.datas?.competenceGroup?.settings ?? {
+										title: competenceGroupFromModel!.settings.title,
+									}),
 						},
 					}
 				: {}),
@@ -425,34 +399,34 @@ export function applyTemplateToForm(
 								const fromModel = tagGroupFromModel?.settings.content;
 								const prev = group.content?.settings;
 								return {
-								  ...group,
-								  content: {
-									...group.content,
-									settings:
-									  options?.resetSectionStyles && fromModel
-										? {
-											groupTitle: fromModel.groupTitle,
-											tags: fromModel.tags,
-											withGroupTitle: fromModel.withGroupTitle,
-											design: fromModel.design,
-										  }
-										: (prev ?? {
-											groupTitle: fromModel!.groupTitle,
-											tags: fromModel!.tags,
-											withGroupTitle: fromModel!.withGroupTitle,
-											design: fromModel!.design,
-										  }),
-								  },
+									...group,
+									content: {
+										...group.content,
+										settings:
+											options?.resetSectionStyles && fromModel
+												? {
+														groupTitle: fromModel.groupTitle,
+														tags: fromModel.tags,
+														withGroupTitle: fromModel.withGroupTitle,
+														design: fromModel.design,
+													}
+												: (prev ?? {
+														groupTitle: fromModel!.groupTitle,
+														tags: fromModel!.tags,
+														withGroupTitle: fromModel!.withGroupTitle,
+														design: fromModel!.design,
+													}),
+									},
 								};
-							  }),
+							}),
 							settings: options?.resetSectionStyles
 								? {
-									...current.datas?.tagGroup?.settings,
-									title: tagGroupFromModel!.settings.title, // defaults du nouveau template
+										...current.datas?.tagGroup?.settings,
+										title: tagGroupFromModel!.settings.title, // defaults du nouveau template
 									}
-								: current.datas?.tagGroup?.settings ?? {
-									title: tagGroupFromModel!.settings.title,
-									},
+								: (current.datas?.tagGroup?.settings ?? {
+										title: tagGroupFromModel!.settings.title,
+									}),
 						},
 					}
 				: {}),
@@ -469,9 +443,7 @@ export function applyTemplateToForm(
 				}
 			: {
 					modules: current?.modules?.map((module) => {
-						const fromModel = structure.modules.find(
-							(m) => m.type === module.type,
-						);
+						const fromModel = structure.modules.find((m) => m.type === module.type);
 						return {
 							...module,
 							settings: fromModel?.settings ?? module.settings,
@@ -508,13 +480,13 @@ function mergeDatasSettings(
 
 function mergeSnapshot(base: CvFormValues, snap: TemplateSnapshot): CvFormValues {
 	return {
-	  ...base,
-	  layoutGeneral: snap.layoutGeneral ?? base.layoutGeneral,
-	  modules: snap.modules ?? base.modules,
-	  datas: {
-		...base.datas,
-		...mergeDatasSettings(base.datas, snap.datasSettings),
-	  } as CvDatas,
+		...base,
+		layoutGeneral: snap.layoutGeneral ?? base.layoutGeneral,
+		modules: snap.modules ?? base.modules,
+		datas: {
+			...base.datas,
+			...mergeDatasSettings(base.datas, snap.datasSettings),
+		} as CvDatas,
 	};
 }
 
@@ -522,11 +494,11 @@ export function switchTemplate(
 	current: CvFormValues,
 	model: TemplateCv,
 	options?: { updateModules?: boolean },
-  ): CvFormValues {
+): CvFormValues {
 	const prevId = current.templateId;
 	// 1. Sauver l’ancien template
 	if (prevId && prevId !== model.id) {
-	  saveTemplateSnapshot(prevId, current);
+		saveTemplateSnapshot(prevId, current);
 	}
 	// 2. Appliquer le nouveau (structure + defaults)
 	const withNewTemplate = applyTemplateToForm(current, model, {

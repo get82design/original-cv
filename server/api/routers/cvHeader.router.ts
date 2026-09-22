@@ -15,12 +15,10 @@ export const cvHeaderRouter = router({
 			return cvHeaderService.create(input.cvId, input.data);
 		}),
 
-	byCvId: protectedProcedure
-		.input(z.object({ cvId: z.string() }))
-		.query(async ({ input, ctx }) => {
-			await assertCvOwnership(input.cvId, ctx.session.user.id);
-			return cvHeaderService.findByCvId(input.cvId);
-		}),
+	byCvId: protectedProcedure.input(z.object({ cvId: z.string() })).query(async ({ input, ctx }) => {
+		await assertCvOwnership(input.cvId, ctx.session.user.id);
+		return cvHeaderService.findByCvId(input.cvId);
+	}),
 
 	update: protectedProcedure
 		.input(z.object({ cvId: z.string(), data: updateCvHeaderSchema }))

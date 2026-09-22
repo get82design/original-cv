@@ -101,9 +101,7 @@ describe("reorderItems", () => {
 	});
 
 	it("throws if item does not exist", () => {
-		expect(() => reorderItems(createItems(), "999", 1)).toThrow(
-			"Item not found",
-		);
+		expect(() => reorderItems(createItems(), "999", 1)).toThrow("Item not found");
 	});
 
 	it("works with a single item", () => {

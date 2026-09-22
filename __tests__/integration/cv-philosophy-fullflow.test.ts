@@ -6,11 +6,7 @@ describe("CV Fullflow Integration with philosophy", () => {
 	it("should create a CV with philosophy", async () => {
 		const { user, template } = await utils.createUserAndTemplate();
 		const cv = await utils.createCV(user.id, template.id);
-		const philosophy = await utils.createPhilosophy(
-			cv.id,
-			"Philosophy 1",
-			"Author 1",
-		);
+		const philosophy = await utils.createPhilosophy(cv.id, "Philosophy 1", "Author 1");
 		expect(philosophy.cvId).toBe(cv.id);
 		expect(philosophy.citation).toBe("Philosophy 1");
 		expect(philosophy.author).toBe("Author 1");
@@ -28,11 +24,7 @@ describe("CV Fullflow Integration with philosophy", () => {
 	it("should delete a CV with philosophy", async () => {
 		const { user, template } = await utils.createUserAndTemplate();
 		const cv = await utils.createCV(user.id, template.id);
-		const philosophy = await utils.createPhilosophy(
-			cv.id,
-			"Philosophy 1",
-			"Author 1",
-		);
+		const philosophy = await utils.createPhilosophy(cv.id, "Philosophy 1", "Author 1");
 		await prismaTest.cV.delete({ where: { id: cv.id } });
 		const philosophyAfterDelete = await prismaTest.cvPhilosophy.findUnique({
 			where: { id: philosophy.id },

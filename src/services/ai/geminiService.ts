@@ -34,9 +34,7 @@ export type CvImportImageInput = {
 function getApiKey() {
 	const key = process.env.GOOGLE_GENERATIVE_AI_API_KEY;
 	if (!key) {
-		throw new ValidationError(
-			"GOOGLE_GENERATIVE_AI_API_KEY is not configured",
-		);
+		throw new ValidationError("GOOGLE_GENERATIVE_AI_API_KEY is not configured");
 	}
 	return key;
 }
@@ -51,23 +49,16 @@ function extractJsonText(raw: string): string {
 	return trimmed;
 }
 
-function formatZodIssues(
-	issues: { path: PropertyKey[]; message: string }[],
-): string {
+function formatZodIssues(issues: { path: PropertyKey[]; message: string }[]): string {
 	return issues
 		.slice(0, 8)
 		.map((i) => `${i.path.join(".") || "(root)"}: ${i.message}`)
 		.join("\n");
 }
 
-type ParseOutcome<T> =
-	| { ok: true; data: T }
-	| { ok: false; reason: string };
+type ParseOutcome<T> = { ok: true; data: T } | { ok: false; reason: string };
 
-function parseJsonWithSchema<T>(
-	raw: string,
-	schema: z.ZodType<T>,
-): ParseOutcome<T> {
+function parseJsonWithSchema<T>(raw: string, schema: z.ZodType<T>): ParseOutcome<T> {
 	let json: unknown;
 	try {
 		json = JSON.parse(extractJsonText(raw));
@@ -120,9 +111,7 @@ export async function withTransientRetry<T>(fn: () => Promise<T>): Promise<T> {
 			return await fn();
 		} catch (err) {
 			lastError = err;
-			const canRetry =
-				isTransientGeminiError(err) &&
-				attempt < TRANSIENT_MAX_ATTEMPTS - 1;
+			const canRetry = isTransientGeminiError(err) && attempt < TRANSIENT_MAX_ATTEMPTS - 1;
 			if (!canRetry) {
 				if (isTransientGeminiError(err)) {
 					throw new TooManyRequestsError(undefined, err);
@@ -130,9 +119,7 @@ export async function withTransientRetry<T>(fn: () => Promise<T>): Promise<T> {
 				throw err;
 			}
 			// Vitest : pas d’attente réelle pour garder les tests rapides
-			const delayMs = process.env.VITEST
-				? 0
-				: TRANSIENT_BASE_DELAY_MS * 2 ** attempt;
+			const delayMs = process.env.VITEST ? 0 : TRANSIENT_BASE_DELAY_MS * 2 ** attempt;
 			await sleep(delayMs);
 		}
 	}
@@ -161,9 +148,7 @@ export class GeminiService {
 	async ping(model = DEFAULT_MODEL) {
 		const generativeModel = this.client().getGenerativeModel({ model });
 		const result = await withTransientRetry(() =>
-			generativeModel.generateContent(
-				"Réponds uniquement par le mot OK",
-			),
+			generativeModel.generateContent("Réponds uniquement par le mot OK"),
 		);
 		const text = result.response.text().trim();
 		return { ok: text.toUpperCase().includes("OK"), text, model };
@@ -207,33 +192,22 @@ export class GeminiService {
 			);
 
 			const result = await withTransientRetry(() =>
-				generativeModel.generateContent([
-					{ text: prompt },
-					...imageParts,
-				]),
+				generativeModel.generateContent([{ text: prompt }, ...imageParts]),
 			);
-			const outcome = parseJsonWithSchema(
-				result.response.text(),
-				cvImportDraftSchema,
-			);
+			const outcome = parseJsonWithSchema(result.response.text(), cvImportDraftSchema);
 
 			if (outcome.ok) return outcome.data;
 			lastReason = outcome.reason;
 		}
 
-		throw new ValidationError(
-			`CV import draft validation failed after retry: ${lastReason}`,
-		);
+		throw new ValidationError(`CV import draft validation failed after retry: ${lastReason}`);
 	}
 
 	/**
 	 * Relecture générale d’un CV (texte aplati).
 	 * safeParse → retry 1× avec les erreurs de validation dans le prompt.
 	 */
-	async reviewCv(
-		cvText: string,
-		options: { model?: string } = {},
-	): Promise<CvReview> {
+	async reviewCv(cvText: string, options: { model?: string } = {}): Promise<CvReview> {
 		const text = cvText.trim();
 		if (!text) {
 			throw new ValidationError("CV text is empty");
@@ -245,26 +219,17 @@ export class GeminiService {
 		for (let attempt = 0; attempt < MAX_ATTEMPTS; attempt++) {
 			const prompt = buildCvReviewSystemPrompt({
 				cvText: text,
-				...(attempt === 0
-					? {}
-					: { validationErrors: lastReason }),
+				...(attempt === 0 ? {} : { validationErrors: lastReason }),
 			});
 
-			const result = await withTransientRetry(() =>
-				generativeModel.generateContent(prompt),
-			);
-			const outcome = parseJsonWithSchema(
-				result.response.text(),
-				cvReviewSchema,
-			);
+			const result = await withTransientRetry(() => generativeModel.generateContent(prompt));
+			const outcome = parseJsonWithSchema(result.response.text(), cvReviewSchema);
 
 			if (outcome.ok) return outcome.data;
 			lastReason = outcome.reason;
 		}
 
-		throw new ValidationError(
-			`CV review validation failed after retry: ${lastReason}`,
-		);
+		throw new ValidationError(`CV review validation failed after retry: ${lastReason}`);
 	}
 
 	/**
@@ -284,10 +249,7 @@ export class GeminiService {
 			throw new ValidationError("Section source text is empty");
 		}
 
-		const generativeModel = this.jsonModel(
-			options.model ?? DEFAULT_MODEL,
-			0.35,
-		);
+		const generativeModel = this.jsonModel(options.model ?? DEFAULT_MODEL, 0.35);
 		let lastReason = "Unknown validation error";
 
 		for (let attempt = 0; attempt < MAX_ATTEMPTS; attempt++) {
@@ -298,21 +260,14 @@ export class GeminiService {
 				...(attempt === 0 ? {} : { validationErrors: lastReason }),
 			});
 
-			const result = await withTransientRetry(() =>
-				generativeModel.generateContent(prompt),
-			);
-			const outcome = parseJsonWithSchema(
-				result.response.text(),
-				cvRewriteSectionSchema,
-			);
+			const result = await withTransientRetry(() => generativeModel.generateContent(prompt));
+			const outcome = parseJsonWithSchema(result.response.text(), cvRewriteSectionSchema);
 
 			if (outcome.ok) return outcome.data;
 			lastReason = outcome.reason;
 		}
 
-		throw new ValidationError(
-			`CV rewrite validation failed after retry: ${lastReason}`,
-		);
+		throw new ValidationError(`CV rewrite validation failed after retry: ${lastReason}`);
 	}
 }
 

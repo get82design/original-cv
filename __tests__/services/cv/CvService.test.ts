@@ -1,9 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { cvService } from "../../../src/services/cv/cvService";
-import {
-	buildCvComplete,
-	createCV,
-} from "../../utils/create-test-cv-full-flow";
+import { buildCvComplete, createCV } from "../../utils/create-test-cv-full-flow";
 import { createTestUser } from "../../utils/create-test-user";
 import { createTestTemplate } from "../../utils/create-test-template";
 import {
@@ -173,9 +170,7 @@ describe("CvService.findById", () => {
 
 	// TEST 2 : Lancer une erreur si le CV n'existe pas
 	it("should throw if CV doesn't exist", async () => {
-		await expect(cvService.findById("unknown-id")).rejects.toThrow(
-			NotFoundError,
-		);
+		await expect(cvService.findById("unknown-id")).rejects.toThrow(NotFoundError);
 	});
 
 	// TEST 3 : Charger les entités liées au CV
@@ -557,9 +552,7 @@ describe("CvService.delete", () => {
 	it("throws if CV does not exist", async () => {
 		const user = await createTestUser();
 
-		await expect(cvService.delete("unknown-cv", user.id)).rejects.toThrow(
-			NotFoundError,
-		);
+		await expect(cvService.delete("unknown-cv", user.id)).rejects.toThrow(NotFoundError);
 	});
 
 	// TEST 3 : Lancer une erreur si l'utilisateur ne possède pas le CV
@@ -571,9 +564,7 @@ describe("CvService.delete", () => {
 
 		const cv = await createCV(owner.id, template.id);
 
-		await expect(cvService.delete(cv.id, otherUser.id)).rejects.toThrow(
-			ForbiddenError,
-		);
+		await expect(cvService.delete(cv.id, otherUser.id)).rejects.toThrow(ForbiddenError);
 
 		const dbCV = await prismaTest.cV.findUnique({
 			where: {
@@ -595,9 +586,7 @@ describe("CvService.findAllByUser", () => {
 		await createCV(userB.id, template.id, "CV B");
 		const list = await cvService.findAllByUser(userA.id);
 		expect(list).toHaveLength(2);
-		expect(list.map((cv) => cv.id).sort()).toEqual(
-			[cvA1.id, cvA2.id].sort(),
-		);
+		expect(list.map((cv) => cv.id).sort()).toEqual([cvA1.id, cvA2.id].sort());
 	});
 	it("returns an empty array when user has no CVs", async () => {
 		const user = await createTestUser();
@@ -615,29 +604,17 @@ describe("CvService.setPreview", () => {
 		const template = await createTestTemplate();
 		const cv = await createCV(user.id, template.id);
 
-		const updated = await cvService.setPreview(
-			cv.id,
-			user.id,
-			SAMPLE_WITH,
-			SAMPLE_CLEAN,
-		);
+		const updated = await cvService.setPreview(cv.id, user.id, SAMPLE_WITH, SAMPLE_CLEAN);
 
 		expect(updated.previewUrl).toMatch(
 			new RegExp(`^/uploads/cv-previews/${user.id}/${cv.id}-with\\.jpg$`),
 		);
 		expect(updated.previewUrlClean).toMatch(
-			new RegExp(
-				`^/uploads/cv-previews/${user.id}/${cv.id}-clean\\.jpg$`,
-			),
+			new RegExp(`^/uploads/cv-previews/${user.id}/${cv.id}-clean\\.jpg$`),
 		);
 
 		// re-save même clé : ne doit pas supprimer le fichier qu’on vient d’écrire
-		const again = await cvService.setPreview(
-			cv.id,
-			user.id,
-			SAMPLE_WITH,
-			SAMPLE_CLEAN,
-		);
+		const again = await cvService.setPreview(cv.id, user.id, SAMPLE_WITH, SAMPLE_CLEAN);
 		expect(again.previewUrl).toBe(updated.previewUrl);
 	});
 
@@ -654,8 +631,8 @@ describe("CvService.setPreview", () => {
 		const template = await createTestTemplate();
 		const cv = await createCV(owner.id, template.id);
 
-		await expect(
-			cvService.setPreview(cv.id, other.id, SAMPLE_WITH, SAMPLE_CLEAN),
-		).rejects.toThrow(ForbiddenError);
+		await expect(cvService.setPreview(cv.id, other.id, SAMPLE_WITH, SAMPLE_CLEAN)).rejects.toThrow(
+			ForbiddenError,
+		);
 	});
 });

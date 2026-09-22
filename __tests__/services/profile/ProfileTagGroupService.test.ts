@@ -80,9 +80,7 @@ describe("ProfileTagGroupService.findAllByProfileId", () => {
 			order: 2,
 			tags: [],
 		});
-		const tagGroups = await profileTagGroupService.findAllByProfileId(
-			profile.id,
-		);
+		const tagGroups = await profileTagGroupService.findAllByProfileId(profile.id);
 		expect(tagGroups.length).toBe(2);
 		expect(tagGroups[0]?.title).toBe("Tag Group 1");
 		expect(tagGroups[0]?.order).toBe(1);
@@ -93,9 +91,7 @@ describe("ProfileTagGroupService.findAllByProfileId", () => {
 	it("returns empty array if no tag groups exist", async () => {
 		const user = await createTestUser();
 		const profile = await createTestProfile(user.id, "John", "Doe");
-		const tagGroups = await profileTagGroupService.findAllByProfileId(
-			profile.id,
-		);
+		const tagGroups = await profileTagGroupService.findAllByProfileId(profile.id);
 		expect(tagGroups).toEqual([]);
 	});
 
@@ -114,9 +110,7 @@ describe("ProfileTagGroupService.findAllByProfileId", () => {
 			order: 2,
 			tags: [],
 		});
-		const tagGroups = await profileTagGroupService.findAllByProfileId(
-			profile.id,
-		);
+		const tagGroups = await profileTagGroupService.findAllByProfileId(profile.id);
 		expect(tagGroups.length).toBe(1);
 		expect(tagGroups[0]?.title).toBe("Tag Group 1");
 		expect(tagGroups[0]?.order).toBe(1);
@@ -195,9 +189,9 @@ describe("ProfileTagGroupService.move", () => {
 
 	// TEST 2 : tag group inexistant
 	it("throws if tag group does not exist", async () => {
-		await expect(
-			profileTagGroupService.move("unknown-tag-group", 1),
-		).rejects.toThrow(NotFoundError);
+		await expect(profileTagGroupService.move("unknown-tag-group", 1)).rejects.toThrow(
+			NotFoundError,
+		);
 	});
 
 	// TEST 3 : ordre invalide
@@ -247,9 +241,7 @@ describe("ProfileTagGroupService.delete", () => {
 
 	// TEST 2 : tag group inexistant
 	it("throws if tag group does not exist", async () => {
-		await expect(
-			profileTagGroupService.delete("unknown-tag-group"),
-		).rejects.toThrow(NotFoundError);
+		await expect(profileTagGroupService.delete("unknown-tag-group")).rejects.toThrow(NotFoundError);
 	});
 
 	// TEST 3 : réorganisation des tag groups après suppression

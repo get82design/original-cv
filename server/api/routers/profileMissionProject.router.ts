@@ -8,10 +8,7 @@ import {
 } from "../../../src/services/schemas/mission.schema";
 import { protectedProcedure, router } from "../trpc";
 
-async function assertProjectProfileOwnership(
-	projectId: string,
-	userId: string,
-) {
+async function assertProjectProfileOwnership(projectId: string, userId: string) {
 	const project = await prisma.project.findUnique({
 		where: { id: projectId },
 		select: {
@@ -28,10 +25,7 @@ async function assertProjectProfileOwnership(
 	return project;
 }
 
-async function assertMissionProfileOwnership(
-	missionId: string,
-	userId: string,
-) {
+async function assertMissionProfileOwnership(missionId: string, userId: string) {
 	const mission = await prisma.missionProject.findUnique({
 		where: { id: missionId },
 		select: {
@@ -64,9 +58,7 @@ export const profileMissionProjectRouter = router({
 		.input(z.object({ projectId: z.string() }))
 		.query(async ({ input, ctx }) => {
 			await assertProjectProfileOwnership(input.projectId, ctx.session.user.id);
-			return profileMissionProjectService.findAllByProfileProjectId(
-				input.projectId,
-			);
+			return profileMissionProjectService.findAllByProfileProjectId(input.projectId);
 		}),
 
 	update: protectedProcedure

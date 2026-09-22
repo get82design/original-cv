@@ -3,11 +3,7 @@ import { cvVolunteeringService } from "../../../src/services/cv/cvVolunteeringSe
 import { createTestUser } from "../../utils/create-test-user";
 import { createTestTemplate } from "../../utils/create-test-template";
 import { createCV } from "../../utils/create-test-cv-full-flow";
-import {
-	ConflictError,
-	NotFoundError,
-	ValidationError,
-} from "../../../src/services/errors";
+import { ConflictError, NotFoundError, ValidationError } from "../../../src/services/errors";
 import { expectMoveNoOp } from "../../utils/move-noop";
 
 describe("CvVolunteeringService.create", () => {
@@ -368,9 +364,7 @@ describe("CvVolunteeringService.move", () => {
 
 	// TEST 2 : volunteering inexistant
 	it("throws if volunteering does not exist", async () => {
-		await expect(cvVolunteeringService.move("unknown-id", 1)).rejects.toThrow(
-			NotFoundError,
-		);
+		await expect(cvVolunteeringService.move("unknown-id", 1)).rejects.toThrow(NotFoundError);
 	});
 
 	// TEST 3 : ordre invalide
@@ -385,9 +379,7 @@ describe("CvVolunteeringService.move", () => {
 			start: new Date("2020-01-01"),
 			order: 1,
 		});
-		await expect(
-			cvVolunteeringService.move(volunteering1.id, 0),
-		).rejects.toThrow();
+		await expect(cvVolunteeringService.move(volunteering1.id, 0)).rejects.toThrow();
 	});
 
 	it("move no-op if order is the same", async () => {
@@ -431,9 +423,7 @@ describe("CvVolunteeringService.delete", () => {
 
 	// TEST 2 : volunteering inexistant
 	it("throws if volunteering does not exist", async () => {
-		await expect(cvVolunteeringService.delete("unknown-id")).rejects.toThrow(
-			NotFoundError,
-		);
+		await expect(cvVolunteeringService.delete("unknown-id")).rejects.toThrow(NotFoundError);
 	});
 
 	// TEST 3 : réorganisation des volunteerings après suppression

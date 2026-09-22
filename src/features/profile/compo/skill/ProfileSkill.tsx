@@ -6,10 +6,7 @@ import { Tooltip } from "primereact/tooltip";
 import { useRef, useState } from "react";
 import { MiniFooterMultiFunc } from "../footer/MiniFooterMultiFunc";
 import { useFieldArray, useFormContext } from "react-hook-form";
-import type {
-	ProfileSaveInput,
-	SkillInput,
-} from "@/services/schemas/profileSave.schema";
+import type { ProfileSaveInput, SkillInput } from "@/services/schemas/profileSave.schema";
 import type { SkillGroupInput } from "@/services/schemas/profileSave.schema";
 import { v4 as uuid } from "uuid";
 import type { ListItem } from "@utils/type";
@@ -22,9 +19,7 @@ import { trpc } from "@utils/trpc";
 import { DialogSelectCv } from "../common/DialogSelectCv";
 import { DialogSelectSkillGroup } from "./DialogSelectSkill";
 
-function createEmptySkillGroup(opts?: {
-	order?: number;
-}): ListItem<SkillGroupInput> {
+function createEmptySkillGroup(opts?: { order?: number }): ListItem<SkillGroupInput> {
 	return {
 		clientKey: `skillGroup-${uuid()}`,
 		order: opts?.order ?? 0,
@@ -46,10 +41,7 @@ export const ProfileSkill = ({ cvs }: { cvs: CV[] }) => {
 	const [toDelete, setToDelete] = useState<Set<string>>(new Set());
 	const [visibleMaj, setVisibleMaj] = useState(false);
 	const [idCv, setIdCv] = useState<string | undefined>(undefined);
-	const { data: cvSelected } = trpc.cv.byId.useQuery(
-		{ id: idCv ?? "" },
-		{ enabled: !!idCv },
-	);
+	const { data: cvSelected } = trpc.cv.byId.useQuery({ id: idCv ?? "" }, { enabled: !!idCv });
 	const [visibleSelect, setVisibleSelect] = useState(false);
 
 	const { control, watch, setValue } = useFormContext<ProfileSaveInput>();
@@ -136,12 +128,7 @@ export const ProfileSkill = ({ cvs }: { cvs: CV[] }) => {
 			)}
 			<AppCard className="relative group">
 				<div className="opacity-30 absolute top-2 left-3">
-					<TitleAppTwo
-						firstPart={"Vos"}
-						secondPart={"Skills"}
-						size={"text-2xl"}
-						withSpace
-					/>
+					<TitleAppTwo firstPart={"Vos"} secondPart={"Skills"} size={"text-2xl"} withSpace />
 				</div>
 				<div className="mt-10 flex flex-col gap-4">
 					{fields.map((field, idx) => {
@@ -169,9 +156,7 @@ export const ProfileSkill = ({ cvs }: { cvs: CV[] }) => {
 						);
 					})}
 					{fields.length === 0 && (
-						<p className="w-full font-light text-gray-400">
-							Aucun groupe de skills enregistré
-						</p>
+						<p className="w-full font-light text-gray-400">Aucun groupe de skills enregistré</p>
 					)}
 					{openDelete && (
 						<MiniFooterMultiFunc
@@ -226,9 +211,7 @@ function SkillGroupSkills({ groupIndex }: { groupIndex: number }) {
 						textColor={"text-black dark:text-white"}
 						className="w-full"
 					/>
-					<RatingProfile
-						name={`skillGroups.${groupIndex}.content.skills.${index}.content.level`}
-					/>
+					<RatingProfile name={`skillGroups.${groupIndex}.content.skills.${index}.content.level`} />
 					<FaTimes
 						style={{
 							width: "12px",
@@ -239,10 +222,7 @@ function SkillGroupSkills({ groupIndex }: { groupIndex: number }) {
 					/>
 				</div>
 			))}
-			<button
-				type="button"
-				onClick={() => append(createEmptySkill({ order: fields.length }))}
-			>
+			<button type="button" onClick={() => append(createEmptySkill({ order: fields.length }))}>
 				Ajouter un skill
 			</button>
 		</>

@@ -1,10 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { createTestUser } from "../../utils/create-test-user";
-import {
-	ConflictError,
-	NotFoundError,
-	ValidationError,
-} from "../../../src/services/errors";
+import { ConflictError, NotFoundError, ValidationError } from "../../../src/services/errors";
 import { CvTimelineStatus } from "../../../generated/prisma/enums";
 import { createTestProfile } from "../../utils/create-test-profile";
 import { profileFormationService } from "../../../src/services/profile/profileFormationService";
@@ -233,9 +229,7 @@ describe("ProfileFormationService.findAllByProfileId", () => {
 			organismeFormation: "Organisme 2",
 			order: 1,
 		});
-		const result = await profileFormationService.findAllByProfileId(
-			profileA.id,
-		);
+		const result = await profileFormationService.findAllByProfileId(profileA.id);
 
 		expect(result).toHaveLength(1);
 		expect(result[0]!.title).toBe("Formation 1");
@@ -437,9 +431,7 @@ describe("ProfileFormationService.move", () => {
 
 	// TEST 2 : formation inexistant
 	it("throws if formation does not exist", async () => {
-		await expect(profileFormationService.move("unknown-id", 1)).rejects.toThrow(
-			NotFoundError,
-		);
+		await expect(profileFormationService.move("unknown-id", 1)).rejects.toThrow(NotFoundError);
 	});
 
 	// TEST 3 : ordre invalide
@@ -452,9 +444,7 @@ describe("ProfileFormationService.move", () => {
 			start: new Date("2020-01-01"),
 			order: 1,
 		});
-		await expect(
-			profileFormationService.move(formation1.id, 0),
-		).rejects.toThrow();
+		await expect(profileFormationService.move(formation1.id, 0)).rejects.toThrow();
 	});
 
 	it("move no-op if order is the same", async () => {
@@ -494,9 +484,7 @@ describe("ProfileFormationService.delete", () => {
 
 	// TEST 2 : formation inexistant
 	it("throws if formation does not exist", async () => {
-		await expect(profileFormationService.delete("unknown-id")).rejects.toThrow(
-			NotFoundError,
-		);
+		await expect(profileFormationService.delete("unknown-id")).rejects.toThrow(NotFoundError);
 	});
 
 	// TEST 3 : réorganisation des formations après suppression

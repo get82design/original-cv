@@ -1,14 +1,7 @@
 import { z } from "zod";
 import { prisma } from "../../../lib/prisma";
 
-export const adminDashboardPeriodSchema = z.enum([
-	"1d",
-	"7d",
-	"30d",
-	"90d",
-	"365d",
-	"all",
-]);
+export const adminDashboardPeriodSchema = z.enum(["1d", "7d", "30d", "90d", "365d", "all"]);
 export type AdminDashboardPeriod = z.infer<typeof adminDashboardPeriodSchema>;
 
 const CONNECTED_WINDOW_MS = 15 * 60 * 1000;
@@ -22,10 +15,7 @@ const PERIOD_MS: Record<Exclude<AdminDashboardPeriod, "all">, number> = {
 };
 
 /** `null` = depuis toujours (pas de borne basse). */
-export function periodStart(
-	period: AdminDashboardPeriod,
-	now = new Date(),
-): Date | null {
+export function periodStart(period: AdminDashboardPeriod, now = new Date()): Date | null {
 	if (period === "all") return null;
 	return new Date(now.getTime() - PERIOD_MS[period]);
 }
@@ -108,17 +98,13 @@ export type AdminCvStats = {
 
 type DateWindow = { start: Date | null; end: Date | null };
 
-function dateInWindow(
-	start: Date | null,
-	end: Date | null,
-): { gte?: Date; lt?: Date } | undefined {
+function dateInWindow(start: Date | null, end: Date | null): { gte?: Date; lt?: Date } | undefined {
 	if (!start && !end) return undefined;
 	return {
 		...(start ? { gte: start } : {}),
 		...(end ? { lt: end } : {}),
 	};
 }
-
 
 export type AdminDownloadStats = {
 	ready: true;
@@ -167,10 +153,7 @@ export type AdminApiErrorStats = {
 };
 
 export class AdminDashboardService {
-	async getUserStats(
-		period: AdminDashboardPeriod,
-		now = new Date(),
-	): Promise<AdminUserStats> {
+	async getUserStats(period: AdminDashboardPeriod, now = new Date()): Promise<AdminUserStats> {
 		const since = periodStart(period, now);
 		const previous = previousPeriodWindow(period, now);
 		const connectedSince = new Date(now.getTime() - CONNECTED_WINDOW_MS);
@@ -181,9 +164,7 @@ export class AdminDashboardService {
 					where: since ? { createdAt: { gte: since } } : {},
 				}),
 				prisma.user.count({
-					where: since
-						? { lastLoginAt: { gte: since } }
-						: { lastLoginAt: { not: null } },
+					where: since ? { lastLoginAt: { gte: since } } : { lastLoginAt: { not: null } },
 				}),
 				prisma.user.count({
 					where: { lastLoginAt: { gte: connectedSince } },
@@ -209,17 +190,12 @@ export class AdminDashboardService {
 			newCount,
 			activeCount,
 			connectedCount,
-			newCountDelta:
-				prevNewCount === null ? null : newCount - prevNewCount,
-			activeCountDelta:
-				prevActiveCount === null ? null : activeCount - prevActiveCount,
+			newCountDelta: prevNewCount === null ? null : newCount - prevNewCount,
+			activeCountDelta: prevActiveCount === null ? null : activeCount - prevActiveCount,
 		};
 	}
 
-	async getCvStats(
-		period: AdminDashboardPeriod,
-		now = new Date(),
-	): Promise<AdminCvStats> {
+	async getCvStats(period: AdminDashboardPeriod, now = new Date()): Promise<AdminCvStats> {
 		const since = periodStart(period, now);
 		const previous = previousPeriodWindow(period, now);
 		const currentWindow: DateWindow = { start: since, end: null };
@@ -270,10 +246,7 @@ export class AdminDashboardService {
 				? prisma.cV.groupBy({
 						by: ["templateId"],
 						where: {
-							createdAt: dateInWindow(
-								previousWindow.start,
-								previousWindow.end,
-							),
+							createdAt: dateInWindow(previousWindow.start, previousWindow.end),
 						},
 						_count: { _all: true },
 					})
@@ -282,10 +255,7 @@ export class AdminDashboardService {
 				? prisma.unlockedTemplate.groupBy({
 						by: ["templateId"],
 						where: {
-							unlockedAt: dateInWindow(
-								previousWindow.start,
-								previousWindow.end,
-							),
+							unlockedAt: dateInWindow(previousWindow.start, previousWindow.end),
 						},
 						_count: { _all: true },
 					})
@@ -294,10 +264,7 @@ export class AdminDashboardService {
 				? prisma.downloadEvent.groupBy({
 						by: ["templateId"],
 						where: {
-							createdAt: dateInWindow(
-								previousWindow.start,
-								previousWindow.end,
-							),
+							createdAt: dateInWindow(previousWindow.start, previousWindow.end),
 							templateId: { not: null },
 						},
 						_count: { _all: true },
@@ -323,10 +290,7 @@ export class AdminDashboardService {
 				? prisma.cV.groupBy({
 						by: ["primaryColorName"],
 						where: {
-							createdAt: dateInWindow(
-								previousWindow.start,
-								previousWindow.end,
-							),
+							createdAt: dateInWindow(previousWindow.start, previousWindow.end),
 							primaryColorName: { not: null },
 						},
 						_count: { _all: true },
@@ -336,10 +300,7 @@ export class AdminDashboardService {
 				? prisma.downloadEvent.groupBy({
 						by: ["primaryColorName"],
 						where: {
-							createdAt: dateInWindow(
-								previousWindow.start,
-								previousWindow.end,
-							),
+							createdAt: dateInWindow(previousWindow.start, previousWindow.end),
 							primaryColorName: { not: null },
 						},
 						_count: { _all: true },
@@ -352,12 +313,8 @@ export class AdminDashboardService {
 			uGroups: typeof unlockGroups,
 			dGroups: typeof downloadGroups,
 		) => {
-			const cvById = new Map(
-				cvGroups.map((g) => [g.templateId, g._count._all]),
-			);
-			const unlockById = new Map(
-				uGroups.map((g) => [g.templateId, g._count._all]),
-			);
+			const cvById = new Map(cvGroups.map((g) => [g.templateId, g._count._all]));
+			const unlockById = new Map(uGroups.map((g) => [g.templateId, g._count._all]));
 			const downloadsById = new Map(
 				dGroups
 					.filter((g) => g.templateId != null)
@@ -421,17 +378,9 @@ export class AdminDashboardService {
 				.slice(0, 5);
 		};
 
-		const topGroups = rankTemplates(
-			templateGroups,
-			unlockGroups,
-			downloadGroups,
-		);
+		const topGroups = rankTemplates(templateGroups, unlockGroups, downloadGroups);
 		const prevTopGroups = previousWindow
-			? rankTemplates(
-					prevTemplateGroups,
-					prevUnlockGroups,
-					prevDownloadGroups,
-				)
+			? rankTemplates(prevTemplateGroups, prevUnlockGroups, prevDownloadGroups)
 			: null;
 		const topColorGroups = rankColors(colorGroups, downloadColorGroups);
 		const prevTopColorGroups = previousWindow
@@ -460,13 +409,12 @@ export class AdminDashboardService {
 			downloadCount: g.downloadCount,
 			popularityScore: g.popularityScore,
 		}));
-		const previousTopTemplates: AdminPreviousTopTemplate[] | null =
-			prevTopGroups
-				? prevTopGroups.map((g) => ({
-						templateId: g.templateId,
-						name: nameById.get(g.templateId) ?? g.templateId,
-					}))
-				: null;
+		const previousTopTemplates: AdminPreviousTopTemplate[] | null = prevTopGroups
+			? prevTopGroups.map((g) => ({
+					templateId: g.templateId,
+					name: nameById.get(g.templateId) ?? g.templateId,
+				}))
+			: null;
 
 		const allColorNames = [
 			...topColorGroups.map((g) => g.name),
@@ -480,9 +428,7 @@ export class AdminDashboardService {
 						where: { name: { in: uniqueColorNames } },
 						select: { name: true, primary: true },
 					});
-		const shadeByName = new Map(
-			colorRows.map((c) => [c.name, c.primary]),
-		);
+		const shadeByName = new Map(colorRows.map((c) => [c.name, c.primary]));
 
 		const topColors: AdminTopColor[] = topColorGroups.map((g) => ({
 			name: g.name,
@@ -491,35 +437,26 @@ export class AdminDashboardService {
 			downloadCount: g.downloadCount,
 			popularityScore: g.popularityScore,
 		}));
-		const previousTopColors: AdminPreviousTopColor[] | null =
-			prevTopColorGroups
-				? prevTopColorGroups.map((g) => ({
-						name: g.name,
-						primary: shadeByName.get(g.name) ?? null,
-					}))
-				: null;
+		const previousTopColors: AdminPreviousTopColor[] | null = prevTopColorGroups
+			? prevTopColorGroups.map((g) => ({
+					name: g.name,
+					primary: shadeByName.get(g.name) ?? null,
+				}))
+			: null;
 
 		const templatesUsed = templateGroups.length;
 		const prevCreatedCount = previousWindow
 			? prevTemplateGroups.reduce((sum, g) => sum + g._count._all, 0)
 			: null;
-		const prevTemplatesUsed = previousWindow
-			? prevTemplateGroups.length
-			: null;
+		const prevTemplatesUsed = previousWindow ? prevTemplateGroups.length : null;
 
 		return {
 			ready: true,
 			createdCount,
 			existingCount,
 			templatesUsed,
-			createdCountDelta:
-				prevCreatedCount === null
-					? null
-					: createdCount - prevCreatedCount,
-			templatesUsedDelta:
-				prevTemplatesUsed === null
-					? null
-					: templatesUsed - prevTemplatesUsed,
+			createdCountDelta: prevCreatedCount === null ? null : createdCount - prevCreatedCount,
+			templatesUsedDelta: prevTemplatesUsed === null ? null : templatesUsed - prevTemplatesUsed,
 			topTemplates,
 			topColors,
 			previousTopTemplates,
@@ -580,23 +517,16 @@ export class AdminDashboardService {
 			total: withLogo + withoutLogo,
 			withLogoAllTime,
 			withoutLogoAllTime,
-			withLogoDelta:
-				prevWithLogo === null ? null : withLogo - prevWithLogo,
-			withoutLogoDelta:
-				prevWithoutLogo === null ? null : withoutLogo - prevWithoutLogo,
+			withLogoDelta: prevWithLogo === null ? null : withLogo - prevWithLogo,
+			withoutLogoDelta: prevWithoutLogo === null ? null : withoutLogo - prevWithoutLogo,
 		};
 	}
 
-	async getAiStats(
-		period: AdminDashboardPeriod,
-		now = new Date(),
-	): Promise<AdminAiStats> {
+	async getAiStats(period: AdminDashboardPeriod, now = new Date()): Promise<AdminAiStats> {
 		const since = periodStart(period, now);
 		const previous = previousPeriodWindow(period, now);
 		const whereBase = since ? { createdAt: { gte: since } } : {};
-		const prevWhere = previous
-			? { createdAt: { gte: previous.start, lt: previous.end } }
-			: null;
+		const prevWhere = previous ? { createdAt: { gte: previous.start, lt: previous.end } } : null;
 
 		const [
 			importCv,
@@ -655,13 +585,10 @@ export class AdminDashboardService {
 		const total = importCv + reviewCv + rewriteSection;
 		const uniqueUsers = uniqueGroups.length;
 		const prevTotal =
-			prevImportCv === null ||
-			prevReviewCv === null ||
-			prevRewriteSection === null
+			prevImportCv === null || prevReviewCv === null || prevRewriteSection === null
 				? null
 				: prevImportCv + prevReviewCv + prevRewriteSection;
-		const prevUniqueUsers =
-			prevUniqueGroups === null ? null : prevUniqueGroups.length;
+		const prevUniqueUsers = prevUniqueGroups === null ? null : prevUniqueGroups.length;
 
 		return {
 			ready: true,
@@ -672,18 +599,10 @@ export class AdminDashboardService {
 			uniqueUsers,
 			totalAllTime,
 			totalDelta: prevTotal === null ? null : total - prevTotal,
-			importCvDelta:
-				prevImportCv === null ? null : importCv - prevImportCv,
-			reviewCvDelta:
-				prevReviewCv === null ? null : reviewCv - prevReviewCv,
-			rewriteSectionDelta:
-				prevRewriteSection === null
-					? null
-					: rewriteSection - prevRewriteSection,
-			uniqueUsersDelta:
-				prevUniqueUsers === null
-					? null
-					: uniqueUsers - prevUniqueUsers,
+			importCvDelta: prevImportCv === null ? null : importCv - prevImportCv,
+			reviewCvDelta: prevReviewCv === null ? null : reviewCv - prevReviewCv,
+			rewriteSectionDelta: prevRewriteSection === null ? null : rewriteSection - prevRewriteSection,
+			uniqueUsersDelta: prevUniqueUsers === null ? null : uniqueUsers - prevUniqueUsers,
 		};
 	}
 
@@ -694,9 +613,7 @@ export class AdminDashboardService {
 		const since = periodStart(period, now);
 		const previous = previousPeriodWindow(period, now);
 		const whereBase = since ? { createdAt: { gte: since } } : {};
-		const prevWhere = previous
-			? { createdAt: { gte: previous.start, lt: previous.end } }
-			: null;
+		const prevWhere = previous ? { createdAt: { gte: previous.start, lt: previous.end } } : null;
 
 		const [
 			total,
@@ -729,9 +646,7 @@ export class AdminDashboardService {
 					userId: { not: null },
 				},
 			}),
-			prevWhere
-				? prisma.apiErrorEvent.count({ where: prevWhere })
-				: Promise.resolve(null),
+			prevWhere ? prisma.apiErrorEvent.count({ where: prevWhere }) : Promise.resolve(null),
 			prevWhere
 				? prisma.apiErrorEvent.count({
 						where: {
@@ -765,8 +680,7 @@ export class AdminDashboardService {
 		]);
 
 		const uniqueUsers = uniqueGroups.length;
-		const prevUniqueUsers =
-			prevUniqueGroups === null ? null : prevUniqueGroups.length;
+		const prevUniqueUsers = prevUniqueGroups === null ? null : prevUniqueGroups.length;
 
 		return {
 			ready: true,
@@ -778,19 +692,11 @@ export class AdminDashboardService {
 			totalAllTime,
 			totalDelta: prevTotal === null ? null : total - prevTotal,
 			internalServerErrorDelta:
-				prevInternalServerError === null
-					? null
-					: internalServerError - prevInternalServerError,
+				prevInternalServerError === null ? null : internalServerError - prevInternalServerError,
 			tooManyRequestsDelta:
-				prevTooManyRequests === null
-					? null
-					: tooManyRequests - prevTooManyRequests,
-			timeoutDelta:
-				prevTimeout === null ? null : timeout - prevTimeout,
-			uniqueUsersDelta:
-				prevUniqueUsers === null
-					? null
-					: uniqueUsers - prevUniqueUsers,
+				prevTooManyRequests === null ? null : tooManyRequests - prevTooManyRequests,
+			timeoutDelta: prevTimeout === null ? null : timeout - prevTimeout,
+			uniqueUsersDelta: prevUniqueUsers === null ? null : uniqueUsers - prevUniqueUsers,
 		};
 	}
 }

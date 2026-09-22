@@ -1,9 +1,6 @@
 import { prisma } from "../../../lib/prisma";
 import { ConflictError, NotFoundError } from "../errors";
-import type {
-	CreateMissionInput,
-	UpdateMissionInput,
-} from "../schemas/mission.schema";
+import type { CreateMissionInput, UpdateMissionInput } from "../schemas/mission.schema";
 
 export class CvMissionExperienceService {
 	async create(cvExperienceId: string, data: CreateMissionInput) {

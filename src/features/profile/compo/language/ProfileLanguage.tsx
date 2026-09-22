@@ -1,9 +1,6 @@
 import { AppCard } from "@/components/card/AppCard";
 import { TitleAppTwo } from "@/components/title/TitleAppTwo";
-import type {
-	LanguageInput,
-	ProfileSaveInput,
-} from "@/services/schemas/profileSave.schema";
+import type { LanguageInput, ProfileSaveInput } from "@/services/schemas/profileSave.schema";
 import type { MenuItem } from "primereact/menuitem";
 import { SpeedDial } from "primereact/speeddial";
 import { Tooltip } from "primereact/tooltip";
@@ -20,9 +17,7 @@ import { trpc } from "@utils/trpc";
 import { DialogSelectCv } from "../common/DialogSelectCv";
 import { DialogSelectLanguage } from "./DialogSelectLanguage";
 
-function createEmptyLanguage(opts?: {
-	order?: number;
-}): ListItem<LanguageInput> {
+function createEmptyLanguage(opts?: { order?: number }): ListItem<LanguageInput> {
 	return {
 		clientKey: `language-${uuid()}`,
 		order: opts?.order ?? 1,
@@ -39,10 +34,7 @@ export const ProfileLanguage = ({ cvs }: { cvs: CV[] }) => {
 	const [toDelete, setToDelete] = useState<Set<string>>(new Set());
 	const [visibleMaj, setVisibleMaj] = useState(false);
 	const [idCv, setIdCv] = useState<string | undefined>(undefined);
-	const { data: cvSelected } = trpc.cv.byId.useQuery(
-		{ id: idCv ?? "" },
-		{ enabled: !!idCv },
-	);
+	const { data: cvSelected } = trpc.cv.byId.useQuery({ id: idCv ?? "" }, { enabled: !!idCv });
 	const [visibleSelect, setVisibleSelect] = useState(false);
 
 	const { control, watch, setValue } = useFormContext<ProfileSaveInput>();
@@ -127,20 +119,12 @@ export const ProfileLanguage = ({ cvs }: { cvs: CV[] }) => {
 			/>
 			<AppCard className="relative group">
 				<div className="opacity-30 absolute top-2 left-3">
-					<TitleAppTwo
-						firstPart={""}
-						secondPart={"Langues"}
-						size={"text-2xl"}
-						withSpace
-					/>
+					<TitleAppTwo firstPart={""} secondPart={"Langues"} size={"text-2xl"} withSpace />
 				</div>
 				<div className="mt-10 grid grid-cols-1 md:grid-cols-2 gap-4">
 					{fields.map((field, idx) => {
 						return (
-							<div
-								key={field.clientKey}
-								className="w-full flex gap-2 items-center"
-							>
+							<div key={field.clientKey} className="w-full flex gap-2 items-center">
 								{openDelete && (
 									<Checkbox
 										checked={toDelete.has(field.clientKey)}
@@ -164,9 +148,7 @@ export const ProfileLanguage = ({ cvs }: { cvs: CV[] }) => {
 					})}
 				</div>
 				{fields.length === 0 && (
-					<p className="w-full font-light text-gray-400">
-						Aucune langue enregistrée
-					</p>
+					<p className="w-full font-light text-gray-400">Aucune langue enregistrée</p>
 				)}
 				{openDelete && (
 					<MiniFooterMultiFunc

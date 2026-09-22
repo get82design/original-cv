@@ -20,9 +20,7 @@ import { moduleField } from "@/features/cv-editor/utils/fields/moduleField";
 
 export const SectionExpertiseTwo = () => {
 	const { watch } = useFormContext();
-	const watchModelExpertiseTitle: BaseTextSettings = watch(
-		FieldNameExpertise.settingsSectionTitle,
-	);
+	const watchModelExpertiseTitle: BaseTextSettings = watch(FieldNameExpertise.settingsSectionTitle);
 	const watchGeneral = watch(FieldNameLayoutGeneral.layout);
 	const modules = watch("modules");
 	const path = moduleField(modules, "expertise", "settings", "content");
@@ -40,8 +38,7 @@ export const SectionExpertiseTwo = () => {
 	});
 
 	const itemKey =
-		watch("layoutGeneral.defaultStyles")?.components?.sectionExpertise?.item ??
-		"CardExpertiseOne";
+		watch("layoutGeneral.defaultStyles")?.components?.sectionExpertise?.item ?? "CardExpertiseOne";
 	const Card = ExpertiseCardRegister[itemKey] ?? CardExpertiseOne;
 
 	return (

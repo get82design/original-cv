@@ -4,10 +4,7 @@ import { TRPCError } from "@trpc/server";
 import { createCompetence } from "../utils/create-test-cv-full-flow";
 import { createProfileCompetenceGroup } from "../utils/create-test-user-with-profile";
 import { createTestUser } from "../utils/create-test-user";
-import {
-	createTestCaller,
-	createTestSession,
-} from "./helpers/create-test-caller";
+import { createTestCaller, createTestSession } from "./helpers/create-test-caller";
 
 describe("profileCompetenceRouter", () => {
 	async function setup() {
@@ -18,11 +15,7 @@ describe("profileCompetenceRouter", () => {
 			firstName: "John",
 			lastName: "Doe",
 		});
-		const group = await createProfileCompetenceGroup(
-			profile.id,
-			"Hard skills",
-			1,
-		);
+		const group = await createProfileCompetenceGroup(profile.id, "Hard skills", 1);
 
 		return { user, caller, profile, group };
 	}
@@ -223,8 +216,8 @@ describe("profileCompetenceRouter", () => {
 	it("delete returns NOT_FOUND for unknown id", async () => {
 		const { caller } = await setup();
 
-		await expect(
-			caller.profileCompetence.delete({ id: "unknown-id" }),
-		).rejects.toMatchObject({ code: "NOT_FOUND" });
+		await expect(caller.profileCompetence.delete({ id: "unknown-id" })).rejects.toMatchObject({
+			code: "NOT_FOUND",
+		});
 	});
 });

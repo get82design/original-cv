@@ -1,9 +1,6 @@
 import { AppCard } from "@/components/card/AppCard";
 import { TitleAppTwo } from "@/components/title/TitleAppTwo";
-import type {
-	ProfileSaveInput,
-	SocialMediaInput,
-} from "@/services/schemas/profileSave.schema";
+import type { ProfileSaveInput, SocialMediaInput } from "@/services/schemas/profileSave.schema";
 import type { MenuItem } from "primereact/menuitem";
 import { SpeedDial } from "primereact/speeddial";
 import { Tooltip } from "primereact/tooltip";
@@ -20,9 +17,7 @@ import { trpc } from "@utils/trpc";
 import { DialogSelectCv } from "../common/DialogSelectCv";
 import { DialogSelectSocialMedia } from "./DialogSelectSocialMedia";
 
-export function createEmptySocialMedia(opts?: {
-	order?: number;
-}): ListItem<SocialMediaInput> {
+export function createEmptySocialMedia(opts?: { order?: number }): ListItem<SocialMediaInput> {
 	return {
 		clientKey: `socialMedia-${uuid()}`,
 		order: opts?.order ?? 1,
@@ -40,10 +35,7 @@ export const ProfileSocialMedia = ({ cvs }: { cvs: CV[] }) => {
 	const [toDelete, setToDelete] = useState<Set<string>>(new Set());
 	const [visibleMaj, setVisibleMaj] = useState(false);
 	const [idCv, setIdCv] = useState<string | undefined>(undefined);
-	const { data: cvSelected } = trpc.cv.byId.useQuery(
-		{ id: idCv ?? "" },
-		{ enabled: !!idCv },
-	);
+	const { data: cvSelected } = trpc.cv.byId.useQuery({ id: idCv ?? "" }, { enabled: !!idCv });
 	const [visibleSelect, setVisibleSelect] = useState(false);
 
 	const { control, watch, setValue } = useFormContext<ProfileSaveInput>();
@@ -130,20 +122,12 @@ export const ProfileSocialMedia = ({ cvs }: { cvs: CV[] }) => {
 			)}
 			<AppCard className="relative group">
 				<div className="opacity-30 absolute top-2 left-3">
-					<TitleAppTwo
-						firstPart={""}
-						secondPart={"Réseaux"}
-						size={"text-2xl"}
-						withSpace
-					/>
+					<TitleAppTwo firstPart={""} secondPart={"Réseaux"} size={"text-2xl"} withSpace />
 				</div>
 				<div className="mt-10 flex flex-col gap-2">
 					{fields.map((field, idx) => {
 						return (
-							<div
-								className="w-full flex gap-0 items-center"
-								key={field.clientKey}
-							>
+							<div className="w-full flex gap-0 items-center" key={field.clientKey}>
 								{openDelete && (
 									<Checkbox
 										checked={toDelete.has(field.clientKey)}
@@ -180,9 +164,7 @@ export const ProfileSocialMedia = ({ cvs }: { cvs: CV[] }) => {
 						);
 					})}
 					{fields.length === 0 && (
-						<p className="w-full font-light text-gray-400">
-							Pas de réseaux sociaux enregistrés
-						</p>
+						<p className="w-full font-light text-gray-400">Pas de réseaux sociaux enregistrés</p>
 					)}
 					{openDelete && (
 						<MiniFooterMultiFunc

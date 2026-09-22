@@ -21,11 +21,7 @@ export class UnlockedTemplateService {
 	 * - gift (admin / Stripe plus tard) : unlockGifts complets (free DL + crédits)
 	 * - credits : consomme priceCredits, cadeaux free DL seulement (pas de crédits rendus)
 	 */
-	async unlockTemplate(
-		userId: string,
-		templateId: string,
-		opts: { method: UnlockPaymentMethod },
-	) {
+	async unlockTemplate(userId: string, templateId: string, opts: { method: UnlockPaymentMethod }) {
 		const method = opts.method;
 
 		const user = await prisma.user.findUnique({
@@ -69,18 +65,13 @@ export class UnlockedTemplateService {
 		});
 
 		if (existing) {
-			throw new ConflictError(
-				"TEMPLATE_ALREADY_UNLOCKED",
-				"Template already unlocked",
-			);
+			throw new ConflictError("TEMPLATE_ALREADY_UNLOCKED", "Template already unlocked");
 		}
 
 		const priceCredits = template.priceCredits;
 		if (method === "credits") {
 			if (priceCredits == null || priceCredits < 1) {
-				throw new ValidationError(
-					"Ce modèle n’est pas achetable en crédits",
-				);
+				throw new ValidationError("Ce modèle n’est pas achetable en crédits");
 			}
 			if (user.downloadCredits < priceCredits) {
 				throw new ValidationError(
@@ -92,8 +83,7 @@ export class UnlockedTemplateService {
 		const gifts = parseUnlockGifts(template.unlockGifts);
 		const freeGift = gifts?.freeDownloads ?? 0;
 		/** Cadeau crédits uniquement si unlock « gift » (pas si payé en crédits). */
-		const creditGift =
-			method === "gift" ? (gifts?.downloadCredits ?? 0) : 0;
+		const creditGift = method === "gift" ? (gifts?.downloadCredits ?? 0) : 0;
 
 		return prisma.$transaction(async (tx) => {
 			const unlocked = await tx.unlockedTemplate.create({
@@ -214,9 +204,7 @@ export class UnlockedTemplateService {
 
 		for (const t of templates) {
 			if (!canUnlockTemplate(t)) {
-				throw new ValidationError(
-					`Le modèle ${t.id} n’est pas disponible`,
-				);
+				throw new ValidationError(`Le modèle ${t.id} n’est pas disponible`);
 			}
 		}
 
@@ -266,9 +254,7 @@ export class UnlockedTemplateService {
 									},
 								}
 							: {}),
-						...(creditTotal > 0
-							? { downloadCredits: { increment: creditTotal } }
-							: {}),
+						...(creditTotal > 0 ? { downloadCredits: { increment: creditTotal } } : {}),
 					},
 				});
 			}

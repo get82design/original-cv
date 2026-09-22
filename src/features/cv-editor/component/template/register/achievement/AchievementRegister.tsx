@@ -19,16 +19,10 @@ export const IconRegister: Record<string, React.ComponentType> = {
 	GiAchievement,
 };
 
-export function AchievementRenderer({
-	templateConfig,
-}: {
-	templateConfig: TemplateDefaultStyles;
-}) {
+export function AchievementRenderer({ templateConfig }: { templateConfig: TemplateDefaultStyles }) {
 	const achievementKey =
-		templateConfig?.components?.sectionAchievement?.component ??
-		"SectionAchievementOne";
-	const AchievementComponent =
-		AchievementRegister[achievementKey] ?? DefaultAchievement;
+		templateConfig?.components?.sectionAchievement?.component ?? "SectionAchievementOne";
+	const AchievementComponent = AchievementRegister[achievementKey] ?? DefaultAchievement;
 	return <AchievementComponent />;
 }
 export function MiniatureAchievementRenderer({
@@ -37,10 +31,8 @@ export function MiniatureAchievementRenderer({
 	templateConfig: TemplateDefaultStyles;
 }) {
 	const miniatureKey =
-		templateConfig?.components?.sectionAchievement?.miniature ??
-		"MiniAchievementOne";
-	const MiniatureComponent =
-		MiniatureRegister[miniatureKey] ?? DefaultMiniature;
+		templateConfig?.components?.sectionAchievement?.miniature ?? "MiniAchievementOne";
+	const MiniatureComponent = MiniatureRegister[miniatureKey] ?? DefaultMiniature;
 	return <MiniatureComponent />;
 }
 export function IconAchievementRenderer({
@@ -48,8 +40,7 @@ export function IconAchievementRenderer({
 }: {
 	templateConfig: TemplateDefaultStyles;
 }) {
-	const iconKey =
-		templateConfig?.components?.sectionAchievement?.icon ?? "GiAchievement";
+	const iconKey = templateConfig?.components?.sectionAchievement?.icon ?? "GiAchievement";
 	const IconComponent = IconRegister[iconKey] ?? DefaultIcon;
 	return <IconComponent />;
 }

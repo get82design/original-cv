@@ -2,10 +2,7 @@ import { prisma } from "../../../lib/prisma";
 import { reorderItems } from "../../utils/reorderCvItems";
 import { ConflictError, NotFoundError } from "../errors";
 import { compactOrder } from "../../utils/compactOrder";
-import type {
-	CreatePrizeInput,
-	UpdatePrizeInput,
-} from "../schemas/prize.schema";
+import type { CreatePrizeInput, UpdatePrizeInput } from "../schemas/prize.schema";
 
 export class CvPrizeService {
 	async create(cvId: string, data: CreatePrizeInput) {
@@ -32,10 +29,7 @@ export class CvPrizeService {
 		});
 
 		if (existingNetwork) {
-			throw new ConflictError(
-				"CV_PRIZE_ALREADY_EXISTS",
-				"This prize already exists for this CV.",
-			);
+			throw new ConflictError("CV_PRIZE_ALREADY_EXISTS", "This prize already exists for this CV.");
 		}
 
 		const existingOrder = await prisma.cvPrize.findUnique({

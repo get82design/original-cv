@@ -1,9 +1,6 @@
 import { v4 as uuid } from "uuid";
 import { useCreateCvContext } from "@/features/cv-editor/component/context/CreateCvContext";
-import {
-	horizontalListSortingStrategy,
-	SortableContext,
-} from "@dnd-kit/sortable";
+import { horizontalListSortingStrategy, SortableContext } from "@dnd-kit/sortable";
 import { Button } from "primereact/button";
 import { useFormContext } from "react-hook-form";
 import type { ListItem } from "@utils/type";
@@ -44,13 +41,12 @@ export const SkillDnd = ({
 	const modulePath = moduleField(modules, "skill", "settings", "content");
 	const groupCols = Number(watch(`${modulePath}.groupColumns`) ?? 1) as 1 | 2 | 3;
 	const raw = Number(
-	watch(`datas.skillGroup.content.${groupIndex}.content.settings.itemColumns`) ?? 2,
+		watch(`datas.skillGroup.content.${groupIndex}.content.settings.itemColumns`) ?? 2,
 	);
 	const itemCols = clampItemColumns(groupCols, raw);
 
 	const isThisGroupActive =
-		itemSelected === clientKeyGroup ||
-		skills.some((s) => s.clientKey === itemSelected);
+		itemSelected === clientKeyGroup || skills.some((s) => s.clientKey === itemSelected);
 
 	const showAddSkill = sectionSelected === "section-skill" && isThisGroupActive;
 
@@ -60,7 +56,7 @@ export const SkillDnd = ({
 			strategy={horizontalListSortingStrategy}
 		>
 			<div
-				className={`skill-dnd-grid grid ${COL_CLASS[itemCols] ?? COL_CLASS[2]} ${itemCols === 1 ? 'gap-1' : 'gap-x-4 gap-y-1'}  min-h-[30px]`}
+				className={`skill-dnd-grid grid ${COL_CLASS[itemCols] ?? COL_CLASS[2]} ${itemCols === 1 ? "gap-1" : "gap-x-4 gap-y-1"}  min-h-[30px]`}
 			>
 				<CompoSkillDnd
 					CardComponent={CardComponent}

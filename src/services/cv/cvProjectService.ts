@@ -3,10 +3,7 @@ import { compactOrder } from "../../utils/compactOrder";
 import { reorderItems } from "../../utils/reorderCvItems";
 import { validateTimeline } from "../../utils/validateTimeline";
 import { ConflictError, NotFoundError } from "../errors";
-import type {
-	CreateProjectInput,
-	UpdateProjectInput,
-} from "../schemas/project.schema";
+import type { CreateProjectInput, UpdateProjectInput } from "../schemas/project.schema";
 
 export class CvProjectService {
 	async create(cvId: string, data: CreateProjectInput) {

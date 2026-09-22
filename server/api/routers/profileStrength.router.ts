@@ -9,10 +9,7 @@ import { protectedProcedure, router } from "../trpc";
 import { prisma } from "../../../lib/prisma";
 import { ForbiddenError, NotFoundError } from "../../../src/services/errors";
 
-async function assertStrengthProfileOwnership(
-	strengthId: string,
-	userId: string,
-) {
+async function assertStrengthProfileOwnership(strengthId: string, userId: string) {
 	const strength = await prisma.strength.findUnique({
 		where: { id: strengthId },
 		select: {
@@ -31,12 +28,10 @@ async function assertStrengthProfileOwnership(
 }
 
 export const profileStrengthRouter = router({
-	create: protectedProcedure
-		.input(createStrengthSchema)
-		.mutation(async ({ input, ctx }) => {
-			const profile = await getOwnedProfile(ctx.session.user.id);
-			return profileStrengthService.create(profile.id, input);
-		}),
+	create: protectedProcedure.input(createStrengthSchema).mutation(async ({ input, ctx }) => {
+		const profile = await getOwnedProfile(ctx.session.user.id);
+		return profileStrengthService.create(profile.id, input);
+	}),
 
 	findAll: protectedProcedure.query(async ({ ctx }) => {
 		const profile = await getOwnedProfile(ctx.session.user.id);

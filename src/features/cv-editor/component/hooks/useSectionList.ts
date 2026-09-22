@@ -1,67 +1,57 @@
-import { useEffect, useRef, useState } from "react"
-import { useFormContext } from "react-hook-form"
-import { moduleField } from "@/features/cv-editor/utils/fields/moduleField"
-import type { ListItem } from "@utils/type"
-import { useCreateCvContext } from "../context/CreateCvContext"
+import { useEffect, useRef, useState } from "react";
+import { useFormContext } from "react-hook-form";
+import { moduleField } from "@/features/cv-editor/utils/fields/moduleField";
+import type { ListItem } from "@utils/type";
+import { useCreateCvContext } from "../context/CreateCvContext";
 
 type UseSectionListArgs<TItem, TSettings> = {
-  contentField: string           // FieldNameX.content
-  moduleType: string             // 'language' | 'socialMedia' | 'skill' ...
-  createInit: (opts: {
-    order: number
-    settings?: TSettings
-  }) => ListItem<TItem>
-}
+	contentField: string; // FieldNameX.content
+	moduleType: string; // 'language' | 'socialMedia' | 'skill' ...
+	createInit: (opts: { order: number; settings?: TSettings }) => ListItem<TItem>;
+};
 export function useSectionList<TItem, TSettings>({
-  contentField,
-  moduleType,
-  createInit,
+	contentField,
+	moduleType,
+	createInit,
 }: UseSectionListArgs<TItem, TSettings>) {
-  const { watch, setValue } = useFormContext()
-  const { sectionSelected } = useCreateCvContext()
-  const hasSeededRef = useRef(false)
-  const [itemSelected, setItemSelected] = useState("")
-  const items: ListItem<TItem>[] = watch(contentField) || []
-  const pathSettingsContent = moduleField(
-    watch("modules"),
-    moduleType,
-    "settings",
-    "content",
-  )
-  
-  const settingsContent: TSettings | undefined = pathSettingsContent
-    ? watch(pathSettingsContent)
-    : undefined
+	const { watch, setValue } = useFormContext();
+	const { sectionSelected } = useCreateCvContext();
+	const hasSeededRef = useRef(false);
+	const [itemSelected, setItemSelected] = useState("");
+	const items: ListItem<TItem>[] = watch(contentField) || [];
+	const pathSettingsContent = moduleField(watch("modules"), moduleType, "settings", "content");
 
-  const createNewItem = () =>
-    createInit({
-      order: items.length + 1,
-      ...(settingsContent !== undefined
-        ? { settings: settingsContent }
-        : {}),
-    })
+	const settingsContent: TSettings | undefined = pathSettingsContent
+		? watch(pathSettingsContent)
+		: undefined;
 
-  useEffect(() => {
-    if (!hasSeededRef.current && items.length === 0 && settingsContent) {
-      hasSeededRef.current = true
-      setValue(contentField, [createInit({ order: 1, settings: settingsContent })])
-    }
-    if (items.length > 0) hasSeededRef.current = true
-  }, [items, setValue, settingsContent, contentField, createInit])
+	const createNewItem = () =>
+		createInit({
+			order: items.length + 1,
+			...(settingsContent !== undefined ? { settings: settingsContent } : {}),
+		});
 
-  // Clic hors section / autre section → reset la sélection d’item
-  // (sinon le champ « ajouter une mission » reste affiché)
-  useEffect(() => {
-    if (sectionSelected !== `section-${moduleType}`) {
-      setItemSelected("")
-    }
-  }, [sectionSelected, moduleType])
+	useEffect(() => {
+		if (!hasSeededRef.current && items.length === 0 && settingsContent) {
+			hasSeededRef.current = true;
+			setValue(contentField, [createInit({ order: 1, settings: settingsContent })]);
+		}
+		if (items.length > 0) hasSeededRef.current = true;
+	}, [items, setValue, settingsContent, contentField, createInit]);
 
-  return {
-    items,
-    settingsContent,
-    itemSelected,       // ex-sexionSelected
-    setItemSelected,
-    createNewItem,
-  }
+	// Clic hors section / autre section → reset la sélection d’item
+	// (sinon le champ « ajouter une mission » reste affiché)
+	useEffect(() => {
+		if (sectionSelected !== `section-${moduleType}`) {
+			setItemSelected("");
+		}
+	}, [sectionSelected, moduleType]);
+
+	return {
+		items,
+		settingsContent,
+		itemSelected, // ex-sexionSelected
+		setItemSelected,
+		createNewItem,
+	};
 }

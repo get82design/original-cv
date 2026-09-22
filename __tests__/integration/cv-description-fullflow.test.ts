@@ -6,10 +6,7 @@ describe("CV Fullflow Integration with description", () => {
 	it("should create a CV with description", async () => {
 		const { user, template } = await utils.createUserAndTemplate();
 		const cv = await utils.createCV(user.id, template.id);
-		const description = await utils.createDescription(
-			cv.id,
-			"Software Engineer",
-		);
+		const description = await utils.createDescription(cv.id, "Software Engineer");
 		expect(description.cvId).toBe(cv.id);
 		expect(description.description).toBe("Software Engineer");
 	});
@@ -17,10 +14,7 @@ describe("CV Fullflow Integration with description", () => {
 	it("should delete a CV with description", async () => {
 		const { user, template } = await utils.createUserAndTemplate();
 		const cv = await utils.createCV(user.id, template.id);
-		const description = await utils.createDescription(
-			cv.id,
-			"Software Engineer",
-		);
+		const description = await utils.createDescription(cv.id, "Software Engineer");
 		await prismaTest.cV.delete({ where: { id: cv.id } });
 		const descriptionAfterDelete = await prismaTest.cvDescription.findUnique({
 			where: { id: description.id },

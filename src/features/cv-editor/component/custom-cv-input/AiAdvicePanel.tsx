@@ -11,13 +11,7 @@ function formatTime(ts: number) {
 	});
 }
 
-function AdviceCard({
-	entry,
-	onRemove,
-}: {
-	entry: AiAdviceEntry;
-	onRemove: () => void;
-}) {
+function AdviceCard({ entry, onRemove }: { entry: AiAdviceEntry; onRemove: () => void }) {
 	const { review } = entry;
 	return (
 		<article className="rounded-lg border border-zinc-200 bg-zinc-50 p-3 dark:border-zinc-700 dark:bg-zinc-900/60">
@@ -28,9 +22,7 @@ function AdviceCard({
 					</p>
 					<p className="m-0 text-xs text-zinc-500 dark:text-zinc-400">
 						{formatTime(entry.createdAt)}
-						{typeof review.score === "number"
-							? ` · ${review.score}/10`
-							: ""}
+						{typeof review.score === "number" ? ` · ${review.score}/10` : ""}
 					</p>
 				</div>
 				<Button
@@ -51,16 +43,12 @@ function AdviceCard({
 				<ul className="m-0 list-disc space-y-1 pl-4 text-xs text-zinc-600 dark:text-zinc-400">
 					{review.improvements.slice(0, 4).map((item, i) => (
 						<li key={i}>
-							<span className="font-medium text-zinc-800 dark:text-zinc-200">
-								{item.area}
-							</span>
+							<span className="font-medium text-zinc-800 dark:text-zinc-200">{item.area}</span>
 							{" — "}
 							{item.suggestion}
 						</li>
 					))}
-					{review.improvements.length > 4 ? (
-						<li>… +{review.improvements.length - 4}</li>
-					) : null}
+					{review.improvements.length > 4 ? <li>… +{review.improvements.length - 4}</li> : null}
 				</ul>
 			) : null}
 			{review.quickWins.length > 0 ? (
@@ -99,11 +87,7 @@ export function AiAdvicePanel() {
 			</div>
 			<div className="flex max-h-[min(52vh,28rem)] flex-col gap-2 overflow-y-auto pr-1">
 				{entries.map((entry) => (
-					<AdviceCard
-						key={entry.id}
-						entry={entry}
-						onRemove={() => removeAdvice(entry.id)}
-					/>
+					<AdviceCard key={entry.id} entry={entry} onRemove={() => removeAdvice(entry.id)} />
 				))}
 			</div>
 		</div>

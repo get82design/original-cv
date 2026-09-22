@@ -26,10 +26,8 @@ export function MiniaturePublicationRenderer({
 	templateConfig: TemplateDefaultStyles;
 }) {
 	const miniatureKey =
-		templateConfig?.components?.sectionPublication?.miniature ??
-		"MiniPublicationOne";
-	const MiniatureComponent =
-		MiniatureRegister[miniatureKey] ?? DefaultMiniature;
+		templateConfig?.components?.sectionPublication?.miniature ?? "MiniPublicationOne";
+	const MiniatureComponent = MiniatureRegister[miniatureKey] ?? DefaultMiniature;
 	return <MiniatureComponent />;
 }
 export function IconPublicationRenderer({
@@ -37,20 +35,13 @@ export function IconPublicationRenderer({
 }: {
 	templateConfig: TemplateDefaultStyles;
 }) {
-	const iconKey =
-		templateConfig?.components?.sectionPublication?.icon ?? "IconPublication";
+	const iconKey = templateConfig?.components?.sectionPublication?.icon ?? "IconPublication";
 	const IconComponent = IconRegister[iconKey] ?? DefaultIcon;
 	return <IconComponent />;
 }
-export function PublicationRenderer({
-	templateConfig,
-}: {
-	templateConfig: TemplateDefaultStyles;
-}) {
+export function PublicationRenderer({ templateConfig }: { templateConfig: TemplateDefaultStyles }) {
 	const PublicationKey =
-		templateConfig?.components?.sectionPublication?.component ??
-		"SectionPublicationOne";
-	const PublicationComponent =
-		PublicationRegister[PublicationKey] ?? DefaultPublication;
+		templateConfig?.components?.sectionPublication?.component ?? "SectionPublicationOne";
+	const PublicationComponent = PublicationRegister[PublicationKey] ?? DefaultPublication;
 	return <PublicationComponent />;
 }

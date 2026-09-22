@@ -412,9 +412,7 @@ describe("ProfileSkillService.move", () => {
 
 	// TEST 2 : cvskill inexistant
 	it("throws if cvskill does not exist", async () => {
-		await expect(profileSkillService.move("unknown-id", 1)).rejects.toThrow(
-			NotFoundError,
-		);
+		await expect(profileSkillService.move("unknown-id", 1)).rejects.toThrow(NotFoundError);
 	});
 
 	// TEST 3 : ordre invalide
@@ -434,9 +432,7 @@ describe("ProfileSkillService.move", () => {
 			order: 1,
 			level: Level.Débutant,
 		});
-		await expect(
-			profileSkillService.move(profileSkill.id, 0),
-		).rejects.toThrow();
+		await expect(profileSkillService.move(profileSkill.id, 0)).rejects.toThrow();
 	});
 
 	it("move no-op if order is the same", async () => {
@@ -487,9 +483,7 @@ describe("ProfileSkillService.delete", () => {
 	});
 
 	it("throws if skill does not exist", async () => {
-		await expect(profileSkillService.delete("unknown-id")).rejects.toThrow(
-			NotFoundError,
-		);
+		await expect(profileSkillService.delete("unknown-id")).rejects.toThrow(NotFoundError);
 	});
 
 	it("reorders remaining skills", async () => {

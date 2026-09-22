@@ -8,12 +8,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import type { AppProps } from "next/app";
 import { SessionProvider } from "next-auth/react";
 import AppLayout from "../src/components/layout/AppLayout";
-import {
-	fontInter,
-	fontPlayfair,
-	fontLora,
-	fontSourceSans,
-} from "../src/styles/cvFonts";
+import { fontInter, fontPlayfair, fontLora, fontSourceSans } from "../src/styles/cvFonts";
 
 const queryClient = new QueryClient();
 

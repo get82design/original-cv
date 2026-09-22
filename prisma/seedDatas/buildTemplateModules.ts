@@ -1,4 +1,18 @@
-import type { CertificationContentSettings, ColorSelect, CompetenceContentSettings, EducationContentSettings, ExpertiseContentSettings, FormationContentSettings, LanguageContentSettings, PassionContentSettings, PrizeContentSettings, SkillContentSettings, SocialMediaContentSettings, StrengthContentSettings, TagContentSettings } from "@/services/schemas/cvTemplate.schema";
+import type {
+	CertificationContentSettings,
+	ColorSelect,
+	CompetenceContentSettings,
+	EducationContentSettings,
+	ExpertiseContentSettings,
+	FormationContentSettings,
+	LanguageContentSettings,
+	PassionContentSettings,
+	PrizeContentSettings,
+	SkillContentSettings,
+	SocialMediaContentSettings,
+	StrengthContentSettings,
+	TagContentSettings,
+} from "@/services/schemas/cvTemplate.schema";
 import type { ThemeTokens } from "./themeTokens";
 
 export function buildHeader(t: ThemeTokens) {
@@ -82,7 +96,12 @@ export function buildExperienceModule(
 
 export function buildEducationModule(
 	t: ThemeTokens,
-	opts: { order: number; title: string; isActive?: boolean; columns?: EducationContentSettings["columns"] },
+	opts: {
+		order: number;
+		title: string;
+		isActive?: boolean;
+		columns?: EducationContentSettings["columns"];
+	},
 ) {
 	return {
 		type: "education" as const,
@@ -135,7 +154,12 @@ export function buildSkillModule(
 
 export function buildCompetenceModule(
 	t: ThemeTokens,
-	opts: { order: number; title: string; isActive?: boolean; columns?: CompetenceContentSettings["columns"] },
+	opts: {
+		order: number;
+		title: string;
+		isActive?: boolean;
+		columns?: CompetenceContentSettings["columns"];
+	},
 ) {
 	return {
 		type: "competence" as const,
@@ -165,11 +189,7 @@ export function buildTagModule(
 ) {
 	const design = opts.design ?? "tag";
 	const tagsColorSelect: ColorSelect =
-		design === "tag"
-			? "white"
-			: design === "hashtag"
-				? "primaryColor"
-				: "black"; // border | none
+		design === "tag" ? "white" : design === "hashtag" ? "primaryColor" : "black"; // border | none
 
 	return {
 		type: "tag" as const,
@@ -248,7 +268,12 @@ export function buildProjectModule(
 
 export function buildSocialMediaModule(
 	t: ThemeTokens,
-	opts: { order: number; title: string; isActive?: boolean; columns?: SocialMediaContentSettings["columns"] },
+	opts: {
+		order: number;
+		title: string;
+		isActive?: boolean;
+		columns?: SocialMediaContentSettings["columns"];
+	},
 ) {
 	return {
 		type: "socialMedia" as const,
@@ -272,7 +297,12 @@ export function buildSocialMediaModule(
 
 export function buildStrengthModule(
 	t: ThemeTokens,
-	opts: { order: number; title: string; isActive?: boolean; columns?: StrengthContentSettings["columns"] },
+	opts: {
+		order: number;
+		title: string;
+		isActive?: boolean;
+		columns?: StrengthContentSettings["columns"];
+	},
 ) {
 	return {
 		type: "strength" as const,
@@ -296,7 +326,12 @@ export function buildStrengthModule(
 
 export function buildFormationModule(
 	t: ThemeTokens,
-	opts: { order: number; title: string; isActive?: boolean; columns?: FormationContentSettings["columns"] },
+	opts: {
+		order: number;
+		title: string;
+		isActive?: boolean;
+		columns?: FormationContentSettings["columns"];
+	},
 ) {
 	return {
 		type: "formation" as const,
@@ -322,7 +357,12 @@ export function buildFormationModule(
 
 export function buildCertificationModule(
 	t: ThemeTokens,
-	opts: { order: number; title: string; isActive?: boolean; columns?: CertificationContentSettings["columns"] },
+	opts: {
+		order: number;
+		title: string;
+		isActive?: boolean;
+		columns?: CertificationContentSettings["columns"];
+	},
 ) {
 	return {
 		type: "certification" as const,
@@ -344,7 +384,12 @@ export function buildCertificationModule(
 
 export function buildPrizeModule(
 	t: ThemeTokens,
-	opts: { order: number; title: string; isActive?: boolean; columns?: PrizeContentSettings["columns"] },
+	opts: {
+		order: number;
+		title: string;
+		isActive?: boolean;
+		columns?: PrizeContentSettings["columns"];
+	},
 ) {
 	return {
 		type: "prize" as const,
@@ -369,7 +414,12 @@ export function buildPrizeModule(
 
 export function buildPassionModule(
 	t: ThemeTokens,
-	opts: { order: number; title: string; isActive?: boolean; columns?: PassionContentSettings["columns"] },
+	opts: {
+		order: number;
+		title: string;
+		isActive?: boolean;
+		columns?: PassionContentSettings["columns"];
+	},
 ) {
 	return {
 		type: "passion" as const,
@@ -391,7 +441,13 @@ export function buildPassionModule(
 
 export function buildExpertiseModule(
 	t: ThemeTokens,
-	opts: { order: number; title: string; isActive?: boolean; design?: "stars" | "dots" | "bars"; columns?: ExpertiseContentSettings["columns"] },
+	opts: {
+		order: number;
+		title: string;
+		isActive?: boolean;
+		design?: "stars" | "dots" | "bars";
+		columns?: ExpertiseContentSettings["columns"];
+	},
 ) {
 	return {
 		type: "expertise" as const,

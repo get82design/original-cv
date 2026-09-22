@@ -27,12 +27,7 @@ export const CardLanguageOne = ({
 	const { watch, getValues, setValue } = useFormContext();
 	const { setSelectModifInput, setSelectInputForm } = useCreateCvContext();
 
-	const pathContentSettings = moduleField(
-		watch("modules"),
-		"language",
-		"settings",
-		"content",
-	);
+	const pathContentSettings = moduleField(watch("modules"), "language", "settings", "content");
 	const watchDesignLanguage = watch(`${pathContentSettings}.design`);
 	const watchGeneral = watch(FieldNameLayoutGeneral.layout);
 	const pathContent = `datas.language.content.${index}.content`;
@@ -88,12 +83,7 @@ export const CardLanguageOne = ({
 						}}
 					/>
 				}
-				levelCompo={
-					<RatingCvInput
-						name={`${pathContent}.level`}
-						design={watchDesignLanguage}
-					/>
-				}
+				levelCompo={<RatingCvInput name={`${pathContent}.level`} design={watchDesignLanguage} />}
 			/>
 		</SectionItemShell>
 	);

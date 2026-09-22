@@ -1,24 +1,24 @@
-import type { 
-    ExperienceInput, 
-    FormationInput, 
-    StrengthInput, 
-    ProjectInput, 
-    PublicationInput, 
-    AchievementInput, 
-    VolunteeringInput, 
-    EducationInput, 
-    LanguageInput, 
-    PassionInput, 
-    PrizeInput, 
-    CertificationInput, 
-    SocialMediaInput,
-    ExpertiseInput, 
-    SkillInput, 
-    SkillGroupInput, 
-    CompetenceInput, 
-    CompetenceGroupInput, 
-    TagInput, 
-    TagGroupInput 
+import type {
+	ExperienceInput,
+	FormationInput,
+	StrengthInput,
+	ProjectInput,
+	PublicationInput,
+	AchievementInput,
+	VolunteeringInput,
+	EducationInput,
+	LanguageInput,
+	PassionInput,
+	PrizeInput,
+	CertificationInput,
+	SocialMediaInput,
+	ExpertiseInput,
+	SkillInput,
+	SkillGroupInput,
+	CompetenceInput,
+	CompetenceGroupInput,
+	TagInput,
+	TagGroupInput,
 } from "@/services/schemas/profileSave.schema";
 import type { ListItem } from "@utils/type";
 
@@ -31,12 +31,8 @@ function hasMeaningfulDate(value: unknown): boolean {
 export function isBlankExperience(item: ListItem<ExperienceInput>) {
 	const c = item.content;
 	if (!c) return true;
-	const hasText = [c.title, c.company, c.location, c.description].some((s) =>
-		s?.trim(),
-	);
-	const hasPeriode = Boolean(
-		(c as { periode?: string | null }).periode?.trim(),
-	);
+	const hasText = [c.title, c.company, c.location, c.description].some((s) => s?.trim());
+	const hasPeriode = Boolean((c as { periode?: string | null }).periode?.trim());
 	const hasMissions = (c.missions ?? []).some((m) => m.content?.content?.trim());
 	const hasEnd = hasMeaningfulDate(c.end);
 	return !hasText && !hasPeriode && !hasMissions && !hasEnd;
@@ -56,9 +52,7 @@ export function isBlankFormation(item: ListItem<FormationInput>) {
 
 export function isBlankProject(item: ListItem<ProjectInput>) {
 	const c = item.content;
-	const hasText = [c.title, c.description, c.location, c.technology].some((s) =>
-		s?.trim(),
-	);
+	const hasText = [c.title, c.description, c.location, c.technology].some((s) => s?.trim());
 	const hasMissions = (c.missions ?? []).some((m) => m.content.content?.trim());
 	const hasEnd = c.end != null;
 	return !hasText && !hasMissions && !hasEnd;
@@ -66,9 +60,7 @@ export function isBlankProject(item: ListItem<ProjectInput>) {
 
 export function isBlankPublication(item: ListItem<PublicationInput>) {
 	const c = item.content;
-	const hasText = [c.title, c.description, c.url, c.journalName].some((s) =>
-		s?.trim(),
-	);
+	const hasText = [c.title, c.description, c.url, c.journalName].some((s) => s?.trim());
 	const hasEnd = c.end != null;
 	return !hasText && !hasEnd;
 }
@@ -81,9 +73,7 @@ export function isBlankAchievement(item: ListItem<AchievementInput>) {
 
 export function isBlankVolunteering(item: ListItem<VolunteeringInput>) {
 	const c = item.content;
-	const hasText = [c.title, c.description, c.organisation, c.location].some(
-		(s) => s?.trim(),
-	);
+	const hasText = [c.title, c.description, c.organisation, c.location].some((s) => s?.trim());
 	const hasMissions = (c.missions ?? []).some((m) => m.content.content?.trim());
 	const hasEnd = c.end != null;
 	return !hasText && !hasMissions && !hasEnd;
@@ -156,8 +146,6 @@ export function isBlankTag(item: ListItem<TagInput>) {
 
 export function isBlankTagGroup(item: ListItem<TagGroupInput>) {
 	const hasTitle = !!item.content?.title?.trim();
-	const hasTags = (item.content?.tags ?? []).some(
-		(s) => !isBlankTag(s as ListItem<TagInput>),
-	);
+	const hasTags = (item.content?.tags ?? []).some((s) => !isBlankTag(s as ListItem<TagInput>));
 	return !hasTitle && !hasTags;
 }

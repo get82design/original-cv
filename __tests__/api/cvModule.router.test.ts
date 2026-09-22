@@ -5,10 +5,7 @@ import { CVModuleType } from "../../generated/prisma/enums";
 import { createCV } from "../utils/create-test-cv-full-flow";
 import { createTestTemplate } from "../utils/create-test-template";
 import { createTestUser } from "../utils/create-test-user";
-import {
-	createTestCaller,
-	createTestSession,
-} from "./helpers/create-test-caller";
+import { createTestCaller, createTestSession } from "./helpers/create-test-caller";
 
 describe("cvModuleRouter", () => {
 	async function setup() {
@@ -123,14 +120,16 @@ describe("cvModuleRouter", () => {
 				settings: {},
 			},
 		});
-		await expect(caller.cvModule.create({
-			cvId: cv.id,
-			data: {
-				type: CVModuleType.description,
-				order: 1,
-				settings: {},
-			},
-		})).rejects.toMatchObject({ code: "CONFLICT" });
+		await expect(
+			caller.cvModule.create({
+				cvId: cv.id,
+				data: {
+					type: CVModuleType.description,
+					order: 1,
+					settings: {},
+				},
+			}),
+		).rejects.toMatchObject({ code: "CONFLICT" });
 	});
 
 	it("findAllByCvId returns modules ordered", async () => {
@@ -280,8 +279,8 @@ describe("cvModuleRouter", () => {
 	it("delete returns NOT_FOUND for unknown id", async () => {
 		const { caller } = await setup();
 
-		await expect(
-			caller.cvModule.delete({ id: "unknown-id" }),
-		).rejects.toMatchObject({ code: "NOT_FOUND" });
+		await expect(caller.cvModule.delete({ id: "unknown-id" })).rejects.toMatchObject({
+			code: "NOT_FOUND",
+		});
 	});
 });

@@ -31,14 +31,7 @@ export const SectionNoUse = ({ itemNoUse, addItem }: SectionNoUseProps) => {
 		<div className={"w-full flex flex-col gap-2"}>
 			<div className="w-full grid grid-flow-row gap-4">
 				{itemNoUse.map((item, idx) => {
-					return (
-						<OneSectionNoUse
-							idx={idx}
-							addItem={addItem}
-							item={item}
-							key={item.type}
-						/>
-					);
+					return <OneSectionNoUse idx={idx} addItem={addItem} item={item} key={item.type} />;
 				})}
 			</div>
 		</div>
@@ -51,259 +44,159 @@ interface OneSectionNoUseProps {
 	item: TemplateModule;
 }
 
-export const OneSectionNoUse = ({
-	idx,
-	addItem,
-	item,
-}: OneSectionNoUseProps) => {
+export const OneSectionNoUse = ({ idx, addItem, item }: OneSectionNoUseProps) => {
 	const { watch } = useFormContext();
-	const [MiniatureComponent, setMiniatureComponent] =
-		useState<React.ComponentType>();
+	const [MiniatureComponent, setMiniatureComponent] = useState<React.ComponentType>();
 	const [LabelComponent, setLabelComponent] = useState<string>();
 	const watchTemplateConfig = watch("layoutGeneral.defaultStyles");
 	useEffect(() => {
 		if (item.type === "experience") {
 			const key =
-				watchTemplateConfig?.components?.sectionExperience?.miniature ??
-				"MiniExperienceOne";
+				watchTemplateConfig?.components?.sectionExperience?.miniature ?? "MiniExperienceOne";
 			// console.log('key => ', key)
 			setMiniatureComponent(
-				() =>
-					ExperienceMiniatures[key] ?? ExperienceMiniatures.MiniExperienceOne,
+				() => ExperienceMiniatures[key] ?? ExperienceMiniatures.MiniExperienceOne,
 			);
-			setLabelComponent(
-				watchTemplateConfig?.components?.sectionExperience?.label ??
-					"Expérience",
-			);
+			setLabelComponent(watchTemplateConfig?.components?.sectionExperience?.label ?? "Expérience");
 		}
 		if (item.type === "description") {
 			const key =
-				watchTemplateConfig?.components?.sectionDescription?.miniature ??
-				"MiniDescriptionOne";
+				watchTemplateConfig?.components?.sectionDescription?.miniature ?? "MiniDescriptionOne";
 			// console.log('key => ', key)
 			setMiniatureComponent(
-				() =>
-					DescriptionMiniatures[key] ??
-					DescriptionMiniatures.MiniDescriptionOne,
+				() => DescriptionMiniatures[key] ?? DescriptionMiniatures.MiniDescriptionOne,
 			);
 			setLabelComponent(
-				watchTemplateConfig?.components?.sectionDescription?.label ??
-					"Présentation",
+				watchTemplateConfig?.components?.sectionDescription?.label ?? "Présentation",
 			);
 		}
 		if (item.type === "education") {
 			const key =
-				watchTemplateConfig?.components?.sectionEducation?.miniature ??
-				"MiniEducationOne";
+				watchTemplateConfig?.components?.sectionEducation?.miniature ?? "MiniEducationOne";
 			// console.log('key => ', key)
-			setMiniatureComponent(
-				() => EducationMiniatures[key] ?? EducationMiniatures.MiniEducationOne,
-			);
-			setLabelComponent(
-				watchTemplateConfig?.components?.sectionEducation?.label ?? "Diplôme",
-			);
+			setMiniatureComponent(() => EducationMiniatures[key] ?? EducationMiniatures.MiniEducationOne);
+			setLabelComponent(watchTemplateConfig?.components?.sectionEducation?.label ?? "Diplôme");
 		}
 		if (item.type === "skill") {
-			const key =
-				watchTemplateConfig?.components?.sectionSkill?.miniature ??
-				"MiniSkillOne";
+			const key = watchTemplateConfig?.components?.sectionSkill?.miniature ?? "MiniSkillOne";
 			// console.log('key => ', key)
-			setMiniatureComponent(
-				() => SkillMiniatures[key] ?? SkillMiniatures.MiniSkillOne,
-			);
-			setLabelComponent(
-				watchTemplateConfig?.components?.sectionSkill?.label ?? "Skill",
-			);
+			setMiniatureComponent(() => SkillMiniatures[key] ?? SkillMiniatures.MiniSkillOne);
+			setLabelComponent(watchTemplateConfig?.components?.sectionSkill?.label ?? "Skill");
 		}
 		if (item.type === "language") {
-			const key =
-				watchTemplateConfig?.components?.sectionLanguage?.miniature ??
-				"MiniLanguageOne";
+			const key = watchTemplateConfig?.components?.sectionLanguage?.miniature ?? "MiniLanguageOne";
 			// console.log('key => ', key)
-			setMiniatureComponent(
-				() => LanguageMiniatures[key] ?? LanguageMiniatures.MiniLanguageOne,
-			);
-			setLabelComponent(
-				watchTemplateConfig?.components?.sectionLanguage?.label ?? "Langue",
-			);
+			setMiniatureComponent(() => LanguageMiniatures[key] ?? LanguageMiniatures.MiniLanguageOne);
+			setLabelComponent(watchTemplateConfig?.components?.sectionLanguage?.label ?? "Langue");
 		}
 		if (item.type === "project") {
-			const key =
-				watchTemplateConfig?.components?.sectionProject?.miniature ??
-				"MiniProjectOne";
+			const key = watchTemplateConfig?.components?.sectionProject?.miniature ?? "MiniProjectOne";
 			// console.log('key => ', key)
-			setMiniatureComponent(
-				() => ProjectMiniatures[key] ?? ProjectMiniatures.MiniProjectOne,
-			);
-			setLabelComponent(
-				watchTemplateConfig?.components?.sectionProject?.label ?? "Projet",
-			);
+			setMiniatureComponent(() => ProjectMiniatures[key] ?? ProjectMiniatures.MiniProjectOne);
+			setLabelComponent(watchTemplateConfig?.components?.sectionProject?.label ?? "Projet");
 		}
 		if (item.type === "socialMedia") {
 			const key =
-				watchTemplateConfig?.components?.sectionSocialMedia?.miniature ??
-				"MiniSocialMediaOne";
+				watchTemplateConfig?.components?.sectionSocialMedia?.miniature ?? "MiniSocialMediaOne";
 			// console.log('key => ', key)
 			setMiniatureComponent(
-				() =>
-					SocialMediaMiniatures[key] ??
-					SocialMediaMiniatures.MiniSocialMediaOne,
+				() => SocialMediaMiniatures[key] ?? SocialMediaMiniatures.MiniSocialMediaOne,
 			);
 			setLabelComponent(
-				watchTemplateConfig?.components?.sectionSocialMedia?.label ??
-					"Réseau social",
+				watchTemplateConfig?.components?.sectionSocialMedia?.label ?? "Réseau social",
 			);
 		}
 		if (item.type === "strength") {
-			const key =
-				watchTemplateConfig?.components?.sectionStrength?.miniature ??
-				"MiniStrengthOne";
+			const key = watchTemplateConfig?.components?.sectionStrength?.miniature ?? "MiniStrengthOne";
 			// console.log('key => ', key)
-			setMiniatureComponent(
-				() => StrengthMiniatures[key] ?? StrengthMiniatures.MiniStrengthOne,
-			);
-			setLabelComponent(
-				watchTemplateConfig?.components?.sectionStrength?.label ?? "Atout",
-			);
+			setMiniatureComponent(() => StrengthMiniatures[key] ?? StrengthMiniatures.MiniStrengthOne);
+			setLabelComponent(watchTemplateConfig?.components?.sectionStrength?.label ?? "Atout");
 		}
 		if (item.type === "philosophy") {
 			const key =
-				watchTemplateConfig?.components?.sectionPhilosophy?.miniature ??
-				"MiniPhilosophyOne";
+				watchTemplateConfig?.components?.sectionPhilosophy?.miniature ?? "MiniPhilosophyOne";
 			// console.log('key => ', key)
 			setMiniatureComponent(
-				() =>
-					PhilosophyMiniatures[key] ?? PhilosophyMiniatures.MiniPhilosophyOne,
+				() => PhilosophyMiniatures[key] ?? PhilosophyMiniatures.MiniPhilosophyOne,
 			);
-			setLabelComponent(
-				watchTemplateConfig?.components?.sectionPhilosophy?.label ??
-					"Philosophie",
-			);
+			setLabelComponent(watchTemplateConfig?.components?.sectionPhilosophy?.label ?? "Philosophie");
 		}
 		if (item.type === "formation") {
 			const key =
-				watchTemplateConfig?.components?.sectionFormation?.miniature ??
-				"MiniFormationOne";
+				watchTemplateConfig?.components?.sectionFormation?.miniature ?? "MiniFormationOne";
 			// console.log('key => ', key)
-			setMiniatureComponent(
-				() => FormationMiniatures[key] ?? FormationMiniatures.MiniFormationOne,
-			);
-			setLabelComponent(
-				watchTemplateConfig?.components?.sectionFormation?.label ?? "Formation",
-			);
+			setMiniatureComponent(() => FormationMiniatures[key] ?? FormationMiniatures.MiniFormationOne);
+			setLabelComponent(watchTemplateConfig?.components?.sectionFormation?.label ?? "Formation");
 		}
 		if (item.type === "certification") {
 			const key =
-				watchTemplateConfig?.components?.sectionCertification?.miniature ??
-				"MiniCertificationOne";
+				watchTemplateConfig?.components?.sectionCertification?.miniature ?? "MiniCertificationOne";
 			// console.log('key => ', key)
 			setMiniatureComponent(
-				() =>
-					CertificationMiniatures[key] ??
-					CertificationMiniatures.MiniCertificationOne,
+				() => CertificationMiniatures[key] ?? CertificationMiniatures.MiniCertificationOne,
 			);
 			setLabelComponent(
-				watchTemplateConfig?.components?.sectionCertification?.label ??
-					"Certification",
+				watchTemplateConfig?.components?.sectionCertification?.label ?? "Certification",
 			);
 		}
 		if (item.type === "prize") {
-			const key =
-				watchTemplateConfig?.components?.sectionPrize?.miniature ??
-				"MiniPrizeOne";
-			setMiniatureComponent(
-				() => PrizeMiniatures[key] ?? PrizeMiniatures.MiniPrizeOne,
-			);
-			setLabelComponent(
-				watchTemplateConfig?.components?.sectionPrize?.label ?? "Prix",
-			);
+			const key = watchTemplateConfig?.components?.sectionPrize?.miniature ?? "MiniPrizeOne";
+			setMiniatureComponent(() => PrizeMiniatures[key] ?? PrizeMiniatures.MiniPrizeOne);
+			setLabelComponent(watchTemplateConfig?.components?.sectionPrize?.label ?? "Prix");
 		}
 		if (item.type === "passion") {
-			const key =
-				watchTemplateConfig?.components?.sectionPassion?.miniature ??
-				"MiniPassionOne";
-			setMiniatureComponent(
-				() => PassionMiniatures[key] ?? PassionMiniatures.MiniPassionOne,
-			);
-			setLabelComponent(
-				watchTemplateConfig?.components?.sectionPassion?.label ?? "Passion",
-			);
+			const key = watchTemplateConfig?.components?.sectionPassion?.miniature ?? "MiniPassionOne";
+			setMiniatureComponent(() => PassionMiniatures[key] ?? PassionMiniatures.MiniPassionOne);
+			setLabelComponent(watchTemplateConfig?.components?.sectionPassion?.label ?? "Passion");
 		}
 		if (item.type === "expertise") {
 			const key =
-				watchTemplateConfig?.components?.sectionExpertise?.miniature ??
-				"MiniExpertiseOne";
-			setMiniatureComponent(
-				() => ExpertiseMiniatures[key] ?? ExpertiseMiniatures.MiniExpertiseOne,
-			);
-			setLabelComponent(
-				watchTemplateConfig?.components?.sectionExpertise?.label ?? "Expertise",
-			);
+				watchTemplateConfig?.components?.sectionExpertise?.miniature ?? "MiniExpertiseOne";
+			setMiniatureComponent(() => ExpertiseMiniatures[key] ?? ExpertiseMiniatures.MiniExpertiseOne);
+			setLabelComponent(watchTemplateConfig?.components?.sectionExpertise?.label ?? "Expertise");
 		}
 		if (item.type === "volunteering") {
 			const key =
-				watchTemplateConfig?.components?.sectionVolunteering?.miniature ??
-				"MiniVolunteeringOne";
+				watchTemplateConfig?.components?.sectionVolunteering?.miniature ?? "MiniVolunteeringOne";
 			setMiniatureComponent(
-				() =>
-					VolunteeringMiniatures[key] ??
-					VolunteeringMiniatures.MiniVolunteeringOne,
+				() => VolunteeringMiniatures[key] ?? VolunteeringMiniatures.MiniVolunteeringOne,
 			);
 			setLabelComponent(
-				watchTemplateConfig?.components?.sectionVolunteering?.label ??
-					"Volontariat",
+				watchTemplateConfig?.components?.sectionVolunteering?.label ?? "Volontariat",
 			);
 		}
 		if (item.type === "publication") {
 			const key =
-				watchTemplateConfig?.components?.sectionPublication?.miniature ??
-				"MiniPublicationOne";
+				watchTemplateConfig?.components?.sectionPublication?.miniature ?? "MiniPublicationOne";
 			setMiniatureComponent(
-				() =>
-					PublicationMiniatures[key] ??
-					PublicationMiniatures.MiniPublicationOne,
+				() => PublicationMiniatures[key] ?? PublicationMiniatures.MiniPublicationOne,
 			);
 			setLabelComponent(
-				watchTemplateConfig?.components?.sectionPublication?.label ??
-					"Publication",
+				watchTemplateConfig?.components?.sectionPublication?.label ?? "Publication",
 			);
 		}
 		if (item.type === "achievement") {
 			const key =
-				watchTemplateConfig?.components?.sectionAchievement?.miniature ??
-				"MiniAchievementOne";
+				watchTemplateConfig?.components?.sectionAchievement?.miniature ?? "MiniAchievementOne";
 			setMiniatureComponent(
-				() =>
-					AchievementMiniatures[key] ??
-					AchievementMiniatures.MiniAchievementOne,
+				() => AchievementMiniatures[key] ?? AchievementMiniatures.MiniAchievementOne,
 			);
 			setLabelComponent(
-				watchTemplateConfig?.components?.sectionAchievement?.label ??
-					"Réalisation",
+				watchTemplateConfig?.components?.sectionAchievement?.label ?? "Réalisation",
 			);
 		}
 		if (item.type === "competence") {
 			const key =
-				watchTemplateConfig?.components?.sectionCompetence?.miniature ??
-				"MiniCompetenceOne";
+				watchTemplateConfig?.components?.sectionCompetence?.miniature ?? "MiniCompetenceOne";
 			setMiniatureComponent(
-				() =>
-					CompetenceMiniatures[key] ?? CompetenceMiniatures.MiniCompetenceOne,
+				() => CompetenceMiniatures[key] ?? CompetenceMiniatures.MiniCompetenceOne,
 			);
-			setLabelComponent(
-				watchTemplateConfig?.components?.sectionCompetence?.label ??
-					"Compétence",
-			);
+			setLabelComponent(watchTemplateConfig?.components?.sectionCompetence?.label ?? "Compétence");
 		}
 		if (item.type === "tag") {
-			const key =
-				watchTemplateConfig?.components?.sectionTag?.miniature ?? "MiniTagOne";
-			setMiniatureComponent(
-				() => TagMiniatures[key] ?? TagMiniatures.MiniTagOne,
-			);
-			setLabelComponent(
-				watchTemplateConfig?.components?.sectionTag?.label ?? "Tag",
-			);
+			const key = watchTemplateConfig?.components?.sectionTag?.miniature ?? "MiniTagOne";
+			setMiniatureComponent(() => TagMiniatures[key] ?? TagMiniatures.MiniTagOne);
+			setLabelComponent(watchTemplateConfig?.components?.sectionTag?.label ?? "Tag");
 		}
 	}, [item, watchTemplateConfig]);
 	return (

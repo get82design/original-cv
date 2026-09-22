@@ -3,10 +3,7 @@ import { useCreateCvContext } from "@/features/cv-editor/component/context/Creat
 import { FieldNamePrize } from "@/features/cv-editor/utils/fields/fieldNamePrize";
 import { dataFieldContent } from "@/features/cv-editor/utils/fields/moduleField";
 import type { PrizeItemContentInput } from "@/services/schemas/cvSave.schema";
-import {
-	SortableContext,
-	verticalListSortingStrategy,
-} from "@dnd-kit/sortable";
+import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import type { ListItem } from "@utils/type";
 import { Button } from "primereact/button";
 import { useFormContext } from "react-hook-form";
@@ -35,11 +32,7 @@ export const PrizeDnd = ({
 	const { setSectionSelected, sectionSelected } = useCreateCvContext();
 
 	const itemsMenu = (idx: number) => {
-		const pathContent = dataFieldContent(
-			"datas.prize.content",
-			idx,
-			"content.settings",
-		);
+		const pathContent = dataFieldContent("datas.prize.content", idx, "content.settings");
 		return [
 			{
 				label: "Options",

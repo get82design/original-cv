@@ -85,9 +85,7 @@ describe("CvMissionProjectService.findAllByCvProjectId", () => {
 			order: 1,
 		});
 
-		const missions = await cvMissionProjectService.findAllByCvProjectId(
-			project.id,
-		);
+		const missions = await cvMissionProjectService.findAllByCvProjectId(project.id);
 		expect(missions).toHaveLength(1);
 		expect(missions[0]?.content).toBe("Mission 1");
 		expect(missions[0]?.order).toBe(1);
@@ -102,9 +100,7 @@ describe("CvMissionProjectService.findAllByCvProjectId", () => {
 			start: new Date("2020-01-01"),
 			order: 1,
 		});
-		const missions = await cvMissionProjectService.findAllByCvProjectId(
-			project.id,
-		);
+		const missions = await cvMissionProjectService.findAllByCvProjectId(project.id);
 		expect(missions).toHaveLength(0);
 	});
 
@@ -130,9 +126,7 @@ describe("CvMissionProjectService.findAllByCvProjectId", () => {
 			content: "Mission 2",
 			order: 1,
 		});
-		const missions = await cvMissionProjectService.findAllByCvProjectId(
-			projectB.id,
-		);
+		const missions = await cvMissionProjectService.findAllByCvProjectId(projectB.id);
 		expect(missions).toHaveLength(1);
 		expect(missions[0]?.content).toBe("Mission 2");
 		expect(missions[0]?.order).toBe(1);
@@ -225,18 +219,16 @@ describe("CvMissionProjectService.move", () => {
 
 		await cvMissionProjectService.move(mission1.id, 2);
 
-		const result = await cvMissionProjectService.findAllByCvProjectId(
-			project.id,
-		);
+		const result = await cvMissionProjectService.findAllByCvProjectId(project.id);
 
 		expect(result[0]!.content).toBe("Mission 2");
 		expect(result[1]!.content).toBe("Mission 1");
 	});
 
 	it("throws if missions project does not exist", async () => {
-		await expect(
-			cvMissionProjectService.move("invalid-mission-id", 2),
-		).rejects.toThrow(NotFoundError);
+		await expect(cvMissionProjectService.move("invalid-mission-id", 2)).rejects.toThrow(
+			NotFoundError,
+		);
 	});
 
 	it("throws if order is invalid", async () => {
@@ -289,9 +281,7 @@ describe("CvMissionProjectService.move", () => {
 			content: "Mission 1",
 			order: 1,
 		});
-		await expect(
-			cvMissionProjectService.move(mission.id, 99),
-		).rejects.toThrow();
+		await expect(cvMissionProjectService.move(mission.id, 99)).rejects.toThrow();
 	});
 });
 
@@ -311,16 +301,14 @@ describe("CvMissionProjectService.delete", () => {
 			order: 1,
 		});
 		await cvMissionProjectService.delete(mission.id);
-		const missions = await cvMissionProjectService.findAllByCvProjectId(
-			project.id,
-		);
+		const missions = await cvMissionProjectService.findAllByCvProjectId(project.id);
 		expect(missions).toHaveLength(0);
 	});
 
 	it("throws if mission does not exist", async () => {
-		await expect(
-			cvMissionProjectService.delete("invalid-mission-id"),
-		).rejects.toThrow(NotFoundError);
+		await expect(cvMissionProjectService.delete("invalid-mission-id")).rejects.toThrow(
+			NotFoundError,
+		);
 	});
 
 	it("reorders remaining missions after deletion", async () => {
@@ -341,9 +329,7 @@ describe("CvMissionProjectService.delete", () => {
 			order: 2,
 		});
 		await cvMissionProjectService.delete(mission1.id);
-		const missions = await cvMissionProjectService.findAllByCvProjectId(
-			project.id,
-		);
+		const missions = await cvMissionProjectService.findAllByCvProjectId(project.id);
 		expect(missions).toHaveLength(1);
 		expect(missions[0]?.content).toBe("Mission 2");
 		expect(missions[0]?.order).toBe(1);

@@ -4,10 +4,7 @@ import { TRPCError } from "@trpc/server";
 import { createCV } from "../utils/create-test-cv-full-flow";
 import { createTestTemplate } from "../utils/create-test-template";
 import { createTestUser } from "../utils/create-test-user";
-import {
-	createTestCaller,
-	createTestSession,
-} from "./helpers/create-test-caller";
+import { createTestCaller, createTestSession } from "./helpers/create-test-caller";
 import { Level } from "../../generated/prisma/enums";
 
 describe("cvLanguageRouter", () => {
@@ -225,8 +222,8 @@ describe("cvLanguageRouter", () => {
 	it("delete returns NOT_FOUND for unknown language", async () => {
 		const { caller } = await setup();
 
-		await expect(
-			caller.cvLanguage.delete({ id: "unknown" }),
-		).rejects.toMatchObject({ code: "NOT_FOUND" });
+		await expect(caller.cvLanguage.delete({ id: "unknown" })).rejects.toMatchObject({
+			code: "NOT_FOUND",
+		});
 	});
 });

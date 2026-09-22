@@ -25,10 +25,8 @@ export function MiniatureCertificationRenderer({
 	templateConfig: TemplateDefaultStyles;
 }) {
 	const miniatureKey =
-		templateConfig?.components?.sectionCertification?.miniature ??
-		"MiniCertificationOne";
-	const MiniatureComponent =
-		MiniatureRegister[miniatureKey] ?? DefaultMiniature;
+		templateConfig?.components?.sectionCertification?.miniature ?? "MiniCertificationOne";
+	const MiniatureComponent = MiniatureRegister[miniatureKey] ?? DefaultMiniature;
 	return <MiniatureComponent />;
 }
 export function IconCertificationRenderer({
@@ -36,9 +34,7 @@ export function IconCertificationRenderer({
 }: {
 	templateConfig: TemplateDefaultStyles;
 }) {
-	const iconKey =
-		templateConfig?.components?.sectionCertification?.icon ??
-		"IconCertification";
+	const iconKey = templateConfig?.components?.sectionCertification?.icon ?? "IconCertification";
 	const IconComponent = IconRegister[iconKey] ?? DefaultIcon;
 	return <IconComponent />;
 }
@@ -48,9 +44,7 @@ export function CertificationRenderer({
 	templateConfig: TemplateDefaultStyles;
 }) {
 	const CertificationKey =
-		templateConfig?.components?.sectionCertification?.component ??
-		"SectionCertificationOne";
-	const CertificationComponent =
-		CertificationRegister[CertificationKey] ?? DefaultCertification;
+		templateConfig?.components?.sectionCertification?.component ?? "SectionCertificationOne";
+	const CertificationComponent = CertificationRegister[CertificationKey] ?? DefaultCertification;
 	return <CertificationComponent />;
 }

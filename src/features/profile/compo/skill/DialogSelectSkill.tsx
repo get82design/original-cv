@@ -1,7 +1,4 @@
-import type {
-	ProfileSaveInput,
-	SkillGroupInput,
-} from "@/services/schemas/profileSave.schema";
+import type { ProfileSaveInput, SkillGroupInput } from "@/services/schemas/profileSave.schema";
 import type { CvFull } from "@utils/trpc.types";
 import type { ListItem } from "@utils/type";
 import { Button } from "primereact/button";
@@ -11,9 +8,7 @@ import { useEffect, useState } from "react";
 import { v4 as uuid } from "uuid";
 
 type CvSkillGroup = NonNullable<CvFull>["skillGroups"][number];
-type ProfileSkillGroupItem = NonNullable<
-	ProfileSaveInput["skillGroups"]
->[number];
+type ProfileSkillGroupItem = NonNullable<ProfileSaveInput["skillGroups"]>[number];
 
 function cvSkillGroupToProfile(exp: CvSkillGroup): ProfileSkillGroupItem {
 	return {
@@ -55,9 +50,7 @@ export const DialogSelectSkillGroup = ({
 	useEffect(() => {
 		if (!visible) return;
 		setTarget(listSkillGroupInProfile);
-		const already = new Set(
-			listSkillGroupInProfile.map((e) => `${e.content.title}`),
-		);
+		const already = new Set(listSkillGroupInProfile.map((e) => `${e.content.title}`));
 		setSource(
 			listSkillGroupFromCv
 				.map((exp) => cvSkillGroupToProfile(exp))

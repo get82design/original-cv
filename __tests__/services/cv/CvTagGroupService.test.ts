@@ -198,9 +198,7 @@ describe("CvTagGroupService.move", () => {
 
 	// TEST 2 : tag group inexistant
 	it("throws if tag group does not exist", async () => {
-		await expect(cvTagGroupService.move("unknown-id", 1)).rejects.toThrow(
-			NotFoundError,
-		);
+		await expect(cvTagGroupService.move("unknown-id", 1)).rejects.toThrow(NotFoundError);
 	});
 
 	// TEST 3 : ordre invalide
@@ -253,9 +251,7 @@ describe("CvTagGroupService.delete", () => {
 
 	// TEST 2 : tag group inexistant
 	it("throws if tag group does not exist", async () => {
-		await expect(cvTagGroupService.delete("unknown-id")).rejects.toThrow(
-			NotFoundError,
-		);
+		await expect(cvTagGroupService.delete("unknown-id")).rejects.toThrow(NotFoundError);
 	});
 
 	// TEST 3 : réorganisation des tag groups après suppression

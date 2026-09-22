@@ -1,20 +1,12 @@
 import { describe, expect, it } from "vitest";
 import { createTestUser } from "../../utils/create-test-user";
 import { cvModuleService } from "../../../src/services/cv/cvModuleService";
-import {
-	CVModuleItemType,
-	CVModuleType,
-	Level,
-} from "../../../generated/prisma/enums";
+import { CVModuleItemType, CVModuleType, Level } from "../../../generated/prisma/enums";
 import { cvModuleItemService } from "../../../src/services/cv/cvModuleItemService";
 import { createCV } from "../../utils/create-test-cv-full-flow";
 import { createTestTemplate } from "../../utils/create-test-template";
 import { cvDescriptionService } from "../../../src/services/cv/cvDescriptionService";
-import {
-	ConflictError,
-	NotFoundError,
-	ValidationError,
-} from "../../../src/services/errors";
+import { ConflictError, NotFoundError, ValidationError } from "../../../src/services/errors";
 import { cvPhilosophyService } from "../../../src/services/cv/cvPhilosophyService";
 import { cvCompetenceGroupService } from "../../../src/services/cv/cvCompetenceGroupService";
 import { cvPassionService } from "../../../src/services/cv/cvPassionService";
@@ -39,13 +31,11 @@ type Case = {
 const cases: Case[] = [
 	{
 		type: CVModuleItemType.cvDescription,
-		createItem: (cvId) =>
-			cvDescriptionService.create(cvId, { description: "Desc" }),
+		createItem: (cvId) => cvDescriptionService.create(cvId, { description: "Desc" }),
 	},
 	{
 		type: CVModuleItemType.cvPhilosophy,
-		createItem: (cvId) =>
-			cvPhilosophyService.create(cvId, { citation: "Cite" }),
+		createItem: (cvId) => cvPhilosophyService.create(cvId, { citation: "Cite" }),
 	},
 	{
 		type: CVModuleItemType.cvSkillGroup,
@@ -305,10 +295,7 @@ describe("CvModuleItemService.create", () => {
 		).rejects.toThrow(ConflictError);
 	});
 
-	it.each(cases)("creates module item for $type", async ({
-		type,
-		createItem,
-	}) => {
+	it.each(cases)("creates module item for $type", async ({ type, createItem }) => {
 		const user = await createTestUser();
 		const template = await createTestTemplate();
 		const cv = await createCV(user.id, template.id);
@@ -457,9 +444,7 @@ describe("CvModuleItemService.move", () => {
 	});
 
 	it("throws if module item does not exist", async () => {
-		await expect(
-			cvModuleItemService.move("unknown-module-item", 1),
-		).rejects.toThrow(NotFoundError);
+		await expect(cvModuleItemService.move("unknown-module-item", 1)).rejects.toThrow(NotFoundError);
 	});
 
 	it("throws if order is invalid", async () => {
@@ -482,9 +467,7 @@ describe("CvModuleItemService.move", () => {
 			itemId: description.id,
 			order: 1,
 		});
-		await expect(cvModuleItemService.move(moduleItem.id, 0)).rejects.toThrow(
-			ValidationError,
-		);
+		await expect(cvModuleItemService.move(moduleItem.id, 0)).rejects.toThrow(ValidationError);
 	});
 
 	it("move no-op if order is the same", async () => {
@@ -543,9 +526,7 @@ describe("CvModuleItemService.delete", () => {
 	});
 
 	it("throws if module item does not exist", async () => {
-		await expect(
-			cvModuleItemService.delete("unknown-module-item"),
-		).rejects.toThrow(NotFoundError);
+		await expect(cvModuleItemService.delete("unknown-module-item")).rejects.toThrow(NotFoundError);
 	});
 
 	it("reorders remaining items after deletion", async () => {

@@ -28,12 +28,10 @@ async function assertTagGroupProfileOwnership(groupId: string, userId: string) {
 }
 
 export const profileTagGroupRouter = router({
-	create: protectedProcedure
-		.input(createTagGroupSchema)
-		.mutation(async ({ input, ctx }) => {
-			const profile = await getOwnedProfile(ctx.session.user.id);
-			return profileTagGroupService.create(profile.id, input);
-		}),
+	create: protectedProcedure.input(createTagGroupSchema).mutation(async ({ input, ctx }) => {
+		const profile = await getOwnedProfile(ctx.session.user.id);
+		return profileTagGroupService.create(profile.id, input);
+	}),
 
 	findAll: protectedProcedure.query(async ({ ctx }) => {
 		const profile = await getOwnedProfile(ctx.session.user.id);

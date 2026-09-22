@@ -1,20 +1,9 @@
 import { describe, expect, it } from "vitest";
-import {
-	CVModuleType,
-	CvTimelineStatus,
-	Level,
-} from "../../../generated/prisma/client";
+import { CVModuleType, CvTimelineStatus, Level } from "../../../generated/prisma/client";
 import { prismaTest } from "../../../lib/prismaTest";
 import { cvSaveService } from "../../../src/services/cv/cvSaveService";
-import {
-	cvSaveSchema,
-	type CvSaveInput,
-} from "../../../src/services/schemas/cvSave.schema";
-import {
-	ForbiddenError,
-	NotFoundError,
-	ValidationError,
-} from "../../../src/services/errors";
+import { cvSaveSchema, type CvSaveInput } from "../../../src/services/schemas/cvSave.schema";
+import { ForbiddenError, NotFoundError, ValidationError } from "../../../src/services/errors";
 import { createCV } from "../../utils/create-test-cv-full-flow";
 import { createTestTemplate } from "../../utils/create-test-template";
 import { createTestUser } from "../../utils/create-test-user";
@@ -673,9 +662,7 @@ describe("CvSaveService.save", () => {
 		const catalogSkill = await prismaTest.skill.create({
 			data: { name: `skill-${Date.now()}` }, // name unique
 		});
-		const catalogCompetence = await createCatalogCompetence(
-			`competence-${Date.now()}`,
-		);
+		const catalogCompetence = await createCatalogCompetence(`competence-${Date.now()}`);
 		const catalogTag = await createCatalogTag(`tag-${Date.now()}`);
 		const result = await cvSaveService.save(
 			user.id,
@@ -698,25 +685,19 @@ describe("CvSaveService.save", () => {
 		expect(result.experiences).toHaveLength(1);
 		expect(result.experiences[0]?.title).toBe("Développeur");
 		expect(result.experiences[0]?.cvMissions).toHaveLength(1);
-		expect(result.experiences[0]?.cvMissions[0]?.content).toBe(
-			"Développer des features",
-		);
+		expect(result.experiences[0]?.cvMissions[0]?.content).toBe("Développer des features");
 		expect(result.experiences[0]?.settings).toEqual(experienceItemSettings);
 		expect(result.projects).toHaveLength(1);
 		expect(result.projects[0]?.title).toBe("Projet 1");
 		expect(result.projects[0]?.cvMissions).toHaveLength(1);
-		expect(result.projects[0]?.cvMissions[0]?.content).toBe(
-			"Développer des features",
-		);
+		expect(result.projects[0]?.cvMissions[0]?.content).toBe("Développer des features");
 		expect(result.projects[0]?.technology).toBe("React");
 		expect(result.projects[0]?.status).toBe(CvTimelineStatus.INTERRUPTED);
 		expect(result.projects[0]?.settings).toEqual(projectItemSettings);
 		expect(result.volunteerings).toHaveLength(1);
 		expect(result.volunteerings[0]?.title).toBe("Volontariat 1");
 		expect(result.volunteerings[0]?.cvMissions).toHaveLength(1);
-		expect(result.volunteerings[0]?.cvMissions[0]?.content).toBe(
-			"Développer des features",
-		);
+		expect(result.volunteerings[0]?.cvMissions[0]?.content).toBe("Développer des features");
 		expect(result.volunteerings[0]?.settings).toEqual({
 			title: baseTextSettings,
 			organisation: baseTextSettings,
@@ -732,9 +713,7 @@ describe("CvSaveService.save", () => {
 			withMissions: true,
 		});
 		expect(result.volunteerings[0]?.organisation).toBe("Organisation 1");
-		expect(result.volunteerings[0]?.start).toStrictEqual(
-			new Date("2020-01-01"),
-		);
+		expect(result.volunteerings[0]?.start).toStrictEqual(new Date("2020-01-01"));
 		expect(result.volunteerings[0]?.end).toStrictEqual(new Date("2022-01-01"));
 		expect(result.volunteerings[0]?.location).toBe("Paris");
 		expect(result.volunteerings[0]?.description).toBe("Dev fullstack");
@@ -762,9 +741,7 @@ describe("CvSaveService.save", () => {
 			withTitle: true,
 			withOrganismeCertification: true,
 		});
-		expect(result.certifications[0]?.organismeCertification).toBe(
-			"Organisation 1",
-		);
+		expect(result.certifications[0]?.organismeCertification).toBe("Organisation 1");
 		expect(result.prizes).toHaveLength(1);
 		expect(result.prizes[0]?.title).toBe("Prix 1");
 		expect(result.prizes[0]?.settings).toEqual({
@@ -867,24 +844,16 @@ describe("CvSaveService.save", () => {
 		expect(result.skillGroups).toHaveLength(1);
 		expect(result.skillGroups[0]?.title).toBe("Skill Group 1");
 		expect(result.skillGroups[0]?.skills).toHaveLength(1);
-		expect(result.skillGroups[0]?.skills[0]?.skill?.name).toBe(
-			catalogSkill.name,
-		);
+		expect(result.skillGroups[0]?.skills[0]?.skill?.name).toBe(catalogSkill.name);
 		expect(result.skillGroups[0]?.skills[0]?.level).toBe(Level.Débutant);
 		expect(result.skillGroups[0]?.skills[0]?.order).toBe(1);
-		expect(result.skillGroups[0]?.skills[0]?.groupId).toBe(
-			result.skillGroups[0]?.id,
-		);
+		expect(result.skillGroups[0]?.skills[0]?.groupId).toBe(result.skillGroups[0]?.id);
 		expect(result.competences).toHaveLength(1);
 		expect(result.competences[0]?.title).toBe("Competence Group 1");
 		expect(result.competences[0]?.cvCompetences).toHaveLength(1);
-		expect(result.competences[0]?.cvCompetences[0]?.competence?.name).toBe(
-			catalogCompetence.name,
-		);
+		expect(result.competences[0]?.cvCompetences[0]?.competence?.name).toBe(catalogCompetence.name);
 		expect(result.competences[0]?.cvCompetences[0]?.order).toBe(1);
-		expect(result.competences[0]?.cvCompetences[0]?.groupId).toBe(
-			result.competences[0]?.id,
-		);
+		expect(result.competences[0]?.cvCompetences[0]?.groupId).toBe(result.competences[0]?.id);
 		expect(result.tagGroups).toHaveLength(1);
 		expect(result.tagGroups[0]?.title).toBe("Tag Group 1");
 		expect(result.tagGroups[0]?.tags).toHaveLength(1);
@@ -922,10 +891,7 @@ describe("CvSaveService.save", () => {
 		const user = await createTestUser();
 		const template = await createTestTemplate();
 
-		const created = await cvSaveService.save(
-			user.id,
-			buildSaveInput(template.id),
-		);
+		const created = await cvSaveService.save(user.id, buildSaveInput(template.id));
 
 		const updated = await cvSaveService.save(
 			user.id,
@@ -972,10 +938,7 @@ describe("CvSaveService.save", () => {
 		const template = await createTestTemplate();
 
 		await expect(
-			cvSaveService.save(
-				user.id,
-				buildSaveInput(template.id, { cvId: "unknown-cv" }),
-			),
+			cvSaveService.save(user.id, buildSaveInput(template.id, { cvId: "unknown-cv" })),
 		).rejects.toThrow(NotFoundError);
 	});
 
@@ -986,10 +949,7 @@ describe("CvSaveService.save", () => {
 		const cv = await createCV(owner.id, template.id);
 
 		await expect(
-			cvSaveService.save(
-				other.id,
-				buildSaveInput(template.id, { cvId: cv.id }),
-			),
+			cvSaveService.save(other.id, buildSaveInput(template.id, { cvId: cv.id })),
 		).rejects.toThrow(ForbiddenError);
 	});
 
@@ -998,9 +958,9 @@ describe("CvSaveService.save", () => {
 		const template = await createTestTemplate();
 		await createCV(user.id, template.id);
 
-		await expect(
-			cvSaveService.save(user.id, buildSaveInput(template.id)),
-		).rejects.toThrow(ValidationError);
+		await expect(cvSaveService.save(user.id, buildSaveInput(template.id))).rejects.toThrow(
+			ValidationError,
+		);
 	});
 
 	it("throws ValidationError when header title is missing", async () => {
@@ -1099,9 +1059,7 @@ describe("CvSaveService.save", () => {
 		expect(updated.experiences[0]?.id).toBe(keepId);
 		expect(updated.experiences[0]?.title).toBe("First updated");
 		expect(updated.experiences[0]?.cvMissions).toHaveLength(1);
-		expect(updated.experiences[0]?.cvMissions[0]?.content).toBe(
-			"Nouvelle mission",
-		);
+		expect(updated.experiences[0]?.cvMissions[0]?.content).toBe("Nouvelle mission");
 	});
 
 	it("replaces projects: keeps listed ids and deletes others", async () => {
@@ -1189,9 +1147,7 @@ describe("CvSaveService.save", () => {
 		expect(updated.projects[0]?.id).toBe(keepId);
 		expect(updated.projects[0]?.title).toBe("First updated");
 		expect(updated.projects[0]?.cvMissions).toHaveLength(1);
-		expect(updated.projects[0]?.cvMissions[0]?.content).toBe(
-			"Nouvelle mission",
-		);
+		expect(updated.projects[0]?.cvMissions[0]?.content).toBe("Nouvelle mission");
 		expect(updated.projects[0]?.technology).toBe("React");
 		expect(updated.projects[0]?.status).toBe(CvTimelineStatus.INTERRUPTED);
 		expect(updated.projects[0]?.settings).toEqual(projectItemSettings);
@@ -1297,9 +1253,7 @@ describe("CvSaveService.save", () => {
 		expect(updated.volunteerings[0]?.id).toBe(keepId);
 		expect(updated.volunteerings[0]?.title).toBe("First updated");
 		expect(updated.volunteerings[0]?.cvMissions).toHaveLength(1);
-		expect(updated.volunteerings[0]?.cvMissions[0]?.content).toBe(
-			"Nouvelle mission",
-		);
+		expect(updated.volunteerings[0]?.cvMissions[0]?.content).toBe("Nouvelle mission");
 		expect(updated.volunteerings[0]?.organisation).toBe("Organisation 1");
 		expect(updated.volunteerings[0]?.location).toBe("Paris");
 		expect(updated.volunteerings[0]?.description).toBe("Dev fullstack");
@@ -1488,9 +1442,7 @@ describe("CvSaveService.save", () => {
 		expect(updated.certifications).toHaveLength(1);
 		expect(updated.certifications[0]?.id).toBe(keepId);
 		expect(updated.certifications[0]?.title).toBe("First updated");
-		expect(updated.certifications[0]?.organismeCertification).toBe(
-			"Organisation 1",
-		);
+		expect(updated.certifications[0]?.organismeCertification).toBe("Organisation 1");
 		expect(updated.certifications[0]?.settings).toEqual({
 			title: baseTextSettings,
 			organismeCertification: baseTextSettings,
@@ -1700,9 +1652,7 @@ describe("CvSaveService.save", () => {
 			}),
 		);
 
-		const keepId = created.socialMedias.find(
-			(s) => s.socialNetwork === "Twitter",
-		)?.id;
+		const keepId = created.socialMedias.find((s) => s.socialNetwork === "Twitter")?.id;
 		expect(keepId).toBeDefined();
 
 		const updated = await cvSaveService.save(
@@ -1943,9 +1893,7 @@ describe("CvSaveService.save", () => {
 			}),
 		);
 
-		const keepId = created.publications.find(
-			(p) => p.title === "Publication 1",
-		)?.id;
+		const keepId = created.publications.find((p) => p.title === "Publication 1")?.id;
 		expect(keepId).toBeDefined();
 
 		const updated = await cvSaveService.save(
@@ -1991,9 +1939,7 @@ describe("CvSaveService.save", () => {
 		expect(updated.publications).toHaveLength(1);
 		expect(updated.publications[0]?.id).toBe(keepId);
 		expect(updated.publications[0]?.title).toBe("Publication 1 updated");
-		expect(updated.publications[0]?.start).toStrictEqual(
-			new Date("2020-01-01"),
-		);
+		expect(updated.publications[0]?.start).toStrictEqual(new Date("2020-01-01"));
 		expect(updated.publications[0]?.end).toStrictEqual(new Date("2022-01-01"));
 		expect(updated.publications[0]?.journalName).toBe("Journal 1 updated");
 		expect(updated.publications[0]?.description).toBe("Description 1 updated");
@@ -2154,9 +2100,7 @@ describe("CvSaveService.save", () => {
 			}),
 		);
 
-		const keepId = created.achievements.find(
-			(a) => a.title === "Achievement 1",
-		)?.id;
+		const keepId = created.achievements.find((a) => a.title === "Achievement 1")?.id;
 		expect(keepId).toBeDefined();
 
 		const updated = await cvSaveService.save(
@@ -2260,9 +2204,7 @@ describe("CvSaveService.save", () => {
 			}),
 		);
 
-		const keepId = created.educations.find(
-			(e) => e.title === "Education 1",
-		)?.id;
+		const keepId = created.educations.find((e) => e.title === "Education 1")?.id;
 		expect(keepId).toBeDefined();
 
 		const updated = await cvSaveService.save(
@@ -2428,9 +2370,7 @@ describe("CvSaveService.save", () => {
 		expect(updated.skillGroups[0]?.title).toBe("First updated");
 		expect(updated.skillGroups[0]?.skills).toHaveLength(2);
 		const skills = updated.skillGroups[0]!.skills;
-		expect(skills.find((s) => s.id === keepSkill!.id)?.level).toBe(
-			Level.Expert,
-		);
+		expect(skills.find((s) => s.id === keepSkill!.id)?.level).toBe(Level.Expert);
 		expect(skills.some((s) => s.skillId === skillB.id)).toBe(false);
 		expect(skills.some((s) => s.skillId === skillC.id)).toBe(true);
 	});
@@ -2482,9 +2422,7 @@ describe("CvSaveService.save", () => {
 		);
 		const group = result.skillGroups[0]!;
 		expect(group.skills).toHaveLength(2);
-		const linkedExisting = group.skills.find(
-			(s) => s.skill?.name === existingName,
-		);
+		const linkedExisting = group.skills.find((s) => s.skill?.name === existingName);
 		expect(linkedExisting?.skillId).toBe(existing.id);
 		const linkedNew = group.skills.find((s) => s.skill?.name === brandNewName);
 		expect(linkedNew).toBeDefined();
@@ -2557,9 +2495,7 @@ describe("CvSaveService.save", () => {
 		);
 		const keepGroup = created.competences.find((g) => g.title === "First");
 		expect(keepGroup).toBeDefined();
-		const keepCompetence = keepGroup!.cvCompetences.find(
-			(c) => c.competenceId === competenceA.id,
-		);
+		const keepCompetence = keepGroup!.cvCompetences.find((c) => c.competenceId === competenceA.id);
 		expect(keepCompetence).toBeDefined();
 		const updated = await cvSaveService.save(
 			user.id,
@@ -2607,15 +2543,9 @@ describe("CvSaveService.save", () => {
 		expect(updated.competences[0]?.title).toBe("First updated");
 		expect(updated.competences[0]?.cvCompetences).toHaveLength(2);
 		const competences = updated.competences[0]!.cvCompetences;
-		expect(
-			competences.find((c) => c.id === keepCompetence!.id)?.competenceId,
-		).toBe(competenceA.id);
-		expect(competences.some((c) => c.competenceId === competenceB.id)).toBe(
-			false,
-		);
-		expect(competences.some((c) => c.competenceId === competenceC.id)).toBe(
-			true,
-		);
+		expect(competences.find((c) => c.id === keepCompetence!.id)?.competenceId).toBe(competenceA.id);
+		expect(competences.some((c) => c.competenceId === competenceB.id)).toBe(false);
+		expect(competences.some((c) => c.competenceId === competenceC.id)).toBe(true);
 	});
 
 	it("replaces tagGroups: keeps listed ids and deletes others", async () => {
@@ -2802,10 +2732,7 @@ describe("CvSaveService.save", () => {
 		const user = await createTestUser();
 		const template = await createTestTemplate();
 
-		const created = await cvSaveService.save(
-			user.id,
-			buildSaveInput(template.id, { modules: [] }),
-		);
+		const created = await cvSaveService.save(user.id, buildSaveInput(template.id, { modules: [] }));
 		expect(created.experiences.length).toBeGreaterThan(0);
 
 		const updated = await cvSaveService.save(
@@ -2824,10 +2751,7 @@ describe("CvSaveService.save", () => {
 		const user = await createTestUser();
 		const template = await createTestTemplate();
 
-		const created = await cvSaveService.save(
-			user.id,
-			buildSaveInput(template.id, { modules: [] }),
-		);
+		const created = await cvSaveService.save(user.id, buildSaveInput(template.id, { modules: [] }));
 		expect(created.projects.length).toBeGreaterThan(0);
 
 		const updated = await cvSaveService.save(
@@ -2846,10 +2770,7 @@ describe("CvSaveService.save", () => {
 		const user = await createTestUser();
 		const template = await createTestTemplate();
 
-		const created = await cvSaveService.save(
-			user.id,
-			buildSaveInput(template.id, { modules: [] }),
-		);
+		const created = await cvSaveService.save(user.id, buildSaveInput(template.id, { modules: [] }));
 		expect(created.volunteerings.length).toBeGreaterThan(0);
 
 		const updated = await cvSaveService.save(
@@ -2870,10 +2791,7 @@ describe("CvSaveService.save", () => {
 		const user = await createTestUser();
 		const template = await createTestTemplate();
 
-		const created = await cvSaveService.save(
-			user.id,
-			buildSaveInput(template.id, { modules: [] }),
-		);
+		const created = await cvSaveService.save(user.id, buildSaveInput(template.id, { modules: [] }));
 		expect(created.formations.length).toBeGreaterThan(0);
 
 		const updated = await cvSaveService.save(
@@ -2892,10 +2810,7 @@ describe("CvSaveService.save", () => {
 		const user = await createTestUser();
 		const template = await createTestTemplate();
 
-		const created = await cvSaveService.save(
-			user.id,
-			buildSaveInput(template.id, { modules: [] }),
-		);
+		const created = await cvSaveService.save(user.id, buildSaveInput(template.id, { modules: [] }));
 		expect(created.certifications.length).toBeGreaterThan(0);
 
 		const updated = await cvSaveService.save(
@@ -2916,10 +2831,7 @@ describe("CvSaveService.save", () => {
 		const user = await createTestUser();
 		const template = await createTestTemplate();
 
-		const created = await cvSaveService.save(
-			user.id,
-			buildSaveInput(template.id, { modules: [] }),
-		);
+		const created = await cvSaveService.save(user.id, buildSaveInput(template.id, { modules: [] }));
 		expect(created.prizes.length).toBeGreaterThan(0);
 
 		const updated = await cvSaveService.save(
@@ -2938,10 +2850,7 @@ describe("CvSaveService.save", () => {
 		const user = await createTestUser();
 		const template = await createTestTemplate();
 
-		const created = await cvSaveService.save(
-			user.id,
-			buildSaveInput(template.id, { modules: [] }),
-		);
+		const created = await cvSaveService.save(user.id, buildSaveInput(template.id, { modules: [] }));
 		expect(created.expertises.length).toBeGreaterThan(0);
 
 		const updated = await cvSaveService.save(
@@ -2960,10 +2869,7 @@ describe("CvSaveService.save", () => {
 		const user = await createTestUser();
 		const template = await createTestTemplate();
 
-		const created = await cvSaveService.save(
-			user.id,
-			buildSaveInput(template.id, { modules: [] }),
-		);
+		const created = await cvSaveService.save(user.id, buildSaveInput(template.id, { modules: [] }));
 		expect(created.socialMedias.length).toBeGreaterThan(0);
 
 		const updated = await cvSaveService.save(
@@ -2982,10 +2888,7 @@ describe("CvSaveService.save", () => {
 		const user = await createTestUser();
 		const template = await createTestTemplate();
 
-		const created = await cvSaveService.save(
-			user.id,
-			buildSaveInput(template.id, { modules: [] }),
-		);
+		const created = await cvSaveService.save(user.id, buildSaveInput(template.id, { modules: [] }));
 		expect(created.passions.length).toBeGreaterThan(0);
 
 		const updated = await cvSaveService.save(
@@ -3004,10 +2907,7 @@ describe("CvSaveService.save", () => {
 		const user = await createTestUser();
 		const template = await createTestTemplate();
 
-		const created = await cvSaveService.save(
-			user.id,
-			buildSaveInput(template.id, { modules: [] }),
-		);
+		const created = await cvSaveService.save(user.id, buildSaveInput(template.id, { modules: [] }));
 		expect(created.languages.length).toBeGreaterThan(0);
 
 		const updated = await cvSaveService.save(
@@ -3026,10 +2926,7 @@ describe("CvSaveService.save", () => {
 		const user = await createTestUser();
 		const template = await createTestTemplate();
 
-		const created = await cvSaveService.save(
-			user.id,
-			buildSaveInput(template.id, { modules: [] }),
-		);
+		const created = await cvSaveService.save(user.id, buildSaveInput(template.id, { modules: [] }));
 		expect(created.publications.length).toBeGreaterThan(0);
 
 		const updated = await cvSaveService.save(
@@ -3048,10 +2945,7 @@ describe("CvSaveService.save", () => {
 		const user = await createTestUser();
 		const template = await createTestTemplate();
 
-		const created = await cvSaveService.save(
-			user.id,
-			buildSaveInput(template.id, { modules: [] }),
-		);
+		const created = await cvSaveService.save(user.id, buildSaveInput(template.id, { modules: [] }));
 		expect(created.strengths.length).toBeGreaterThan(0);
 
 		const updated = await cvSaveService.save(
@@ -3070,10 +2964,7 @@ describe("CvSaveService.save", () => {
 		const user = await createTestUser();
 		const template = await createTestTemplate();
 
-		const created = await cvSaveService.save(
-			user.id,
-			buildSaveInput(template.id, { modules: [] }),
-		);
+		const created = await cvSaveService.save(user.id, buildSaveInput(template.id, { modules: [] }));
 		expect(created.achievements.length).toBeGreaterThan(0);
 
 		const updated = await cvSaveService.save(
@@ -3092,10 +2983,7 @@ describe("CvSaveService.save", () => {
 		const user = await createTestUser();
 		const template = await createTestTemplate();
 
-		const created = await cvSaveService.save(
-			user.id,
-			buildSaveInput(template.id, { modules: [] }),
-		);
+		const created = await cvSaveService.save(user.id, buildSaveInput(template.id, { modules: [] }));
 		expect(created.educations.length).toBeGreaterThan(0);
 
 		const updated = await cvSaveService.save(
@@ -3116,11 +3004,7 @@ describe("CvSaveService.save", () => {
 		const catalogSkill = await createCatalogSkill();
 		const created = await cvSaveService.save(
 			user.id,
-			buildSaveInput(
-				template.id,
-				{ modules: [] },
-				{ skillId: catalogSkill.id },
-			),
+			buildSaveInput(template.id, { modules: [] }, { skillId: catalogSkill.id }),
 		);
 		expect(created.skillGroups.length).toBeGreaterThan(0);
 		const updated = await cvSaveService.save(
@@ -3140,11 +3024,7 @@ describe("CvSaveService.save", () => {
 		const catalogCompetence = await createCatalogCompetence();
 		const created = await cvSaveService.save(
 			user.id,
-			buildSaveInput(
-				template.id,
-				{ modules: [] },
-				{ competenceId: catalogCompetence.id },
-			),
+			buildSaveInput(template.id, { modules: [] }, { competenceId: catalogCompetence.id }),
 		);
 		expect(created.competences.length).toBeGreaterThan(0);
 		const updated = await cvSaveService.save(
@@ -3184,10 +3064,7 @@ describe("CvSaveService.save", () => {
 		const user = await createTestUser();
 		const template = await createTestTemplate();
 
-		const created = await cvSaveService.save(
-			user.id,
-			buildSaveInput(template.id),
-		);
+		const created = await cvSaveService.save(user.id, buildSaveInput(template.id));
 
 		await cvSaveService.save(
 			user.id,
@@ -3220,11 +3097,7 @@ describe("CvSaveService.save", () => {
 		const catalogSkill = await createCatalogSkill();
 		const created = await cvSaveService.save(
 			user.id,
-			buildSaveInput(
-				template.id,
-				{ modules: [] },
-				{ skillId: catalogSkill.id },
-			),
+			buildSaveInput(template.id, { modules: [] }, { skillId: catalogSkill.id }),
 		);
 
 		const updated = await cvSaveService.save(
@@ -3276,10 +3149,7 @@ describe("CvSaveService.save", () => {
 	it("roundtrips findById → mapCvToSaveInput → save", async () => {
 		const user = await createTestUser();
 		const template = await createTestTemplate();
-		const created = await cvSaveService.save(
-			user.id,
-			buildSaveInput(template.id),
-		);
+		const created = await cvSaveService.save(user.id, buildSaveInput(template.id));
 		const full = await cvService.findById(created.id);
 		const mapped = mapCvToSaveInput(full);
 		expect(cvSaveSchema.safeParse(mapped).success).toBe(true);
@@ -3330,9 +3200,8 @@ describe("CvSaveService.save", () => {
 			}),
 		);
 		const projectId = created.projects[0]?.id!;
-		const keepMissionId = created.projects[0]?.cvMissions.find(
-			(m) => m.content === "Mission A",
-		)?.id!;
+		const keepMissionId = created.projects[0]?.cvMissions.find((m) => m.content === "Mission A")
+			?.id!;
 		expect(keepMissionId).toBeDefined();
 		const updated = await cvSaveService.save(
 			user.id,
@@ -3371,9 +3240,7 @@ describe("CvSaveService.save", () => {
 		);
 		expect(updated.projects[0]?.cvMissions).toHaveLength(1);
 		expect(updated.projects[0]?.cvMissions[0]?.id).toBe(keepMissionId);
-		expect(updated.projects[0]?.cvMissions[0]?.content).toBe(
-			"Mission A updated",
-		);
+		expect(updated.projects[0]?.cvMissions[0]?.content).toBe("Mission A updated");
 	});
 
 	it("updates existing volunteering missions and deletes unlisted ones", async () => {
@@ -3414,9 +3281,8 @@ describe("CvSaveService.save", () => {
 			}),
 		);
 		const volunteeringId = created.volunteerings[0]?.id!;
-		const keepMissionId = created.volunteerings[0]?.cvMissions.find(
-			(m) => m.content === "Aide A",
-		)?.id!;
+		const keepMissionId = created.volunteerings[0]?.cvMissions.find((m) => m.content === "Aide A")
+			?.id!;
 		expect(keepMissionId).toBeDefined();
 		const updated = await cvSaveService.save(
 			user.id,
@@ -3453,18 +3319,13 @@ describe("CvSaveService.save", () => {
 		);
 		expect(updated.volunteerings[0]?.cvMissions).toHaveLength(1);
 		expect(updated.volunteerings[0]?.cvMissions[0]?.id).toBe(keepMissionId);
-		expect(updated.volunteerings[0]?.cvMissions[0]?.content).toBe(
-			"Aide A updated",
-		);
+		expect(updated.volunteerings[0]?.cvMissions[0]?.content).toBe("Aide A updated");
 	});
 
 	it("roundtrips findById → mapCvToSaveInput → save", async () => {
 		const user = await createTestUser();
 		const template = await createTestTemplate();
-		const created = await cvSaveService.save(
-			user.id,
-			buildSaveInput(template.id),
-		);
+		const created = await cvSaveService.save(user.id, buildSaveInput(template.id));
 		const full = await cvService.findById(created.id);
 		const mapped = mapCvToSaveInput(full);
 		expect(cvSaveSchema.safeParse(mapped).success).toBe(true);
@@ -3479,10 +3340,7 @@ describe("CvSaveService.save", () => {
 		const user = await createTestUser();
 		const template = await createTestTemplate();
 
-		const withColor = (
-			name: string,
-			cvId?: string,
-		): CvSaveInput =>
+		const withColor = (name: string, cvId?: string): CvSaveInput =>
 			({
 				...buildSaveInput(template.id, cvId ? { cvId } : {}),
 				layoutGeneral: {
@@ -3493,16 +3351,10 @@ describe("CvSaveService.save", () => {
 				},
 			}) as CvSaveInput;
 
-		const created = await cvSaveService.save(
-			user.id,
-			withColor("emerald"),
-		);
+		const created = await cvSaveService.save(user.id, withColor("emerald"));
 		expect(created.primaryColorName).toBe("emerald");
 
-		const updated = await cvSaveService.save(
-			user.id,
-			withColor("blue", created.id),
-		);
+		const updated = await cvSaveService.save(user.id, withColor("blue", created.id));
 		expect(updated.primaryColorName).toBe("blue");
 	});
 });

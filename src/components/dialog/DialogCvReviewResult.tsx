@@ -9,13 +9,7 @@ interface DialogCvReviewResultProps {
 	onHide: () => void;
 }
 
-function Section({
-	title,
-	children,
-}: {
-	title: string;
-	children: React.ReactNode;
-}) {
+function Section({ title, children }: { title: string; children: React.ReactNode }) {
 	return (
 		<section className="flex flex-col gap-1.5">
 			<p className="m-0 text-xs font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
@@ -72,26 +66,19 @@ export const DialogCvReviewResult = ({
 						Analyse du CV en cours…
 					</p>
 				) : !review ? (
-					<p className="m-0 text-sm text-zinc-500">
-						Aucun résultat pour le moment.
-					</p>
+					<p className="m-0 text-sm text-zinc-500">Aucun résultat pour le moment.</p>
 				) : (
 					<>
 						{typeof review.score === "number" ? (
 							<p className="m-0 text-sm">
 								<span className="font-semibold">Note : </span>
 								{review.score}
-								<span className="text-zinc-500 dark:text-zinc-400">
-									{" "}
-									/ 10
-								</span>
+								<span className="text-zinc-500 dark:text-zinc-400"> / 10</span>
 							</p>
 						) : null}
 
 						<Section title="Synthèse">
-							<p className="m-0 whitespace-pre-wrap text-sm leading-relaxed">
-								{review.summary}
-							</p>
+							<p className="m-0 whitespace-pre-wrap text-sm leading-relaxed">{review.summary}</p>
 						</Section>
 
 						{review.strengths.length > 0 ? (
@@ -113,8 +100,7 @@ export const DialogCvReviewResult = ({
 												{item.area}
 												{item.priority ? (
 													<span className="ml-2 text-xs font-medium text-zinc-500 dark:text-zinc-400">
-														{priorityLabel[item.priority] ??
-															item.priority}
+														{priorityLabel[item.priority] ?? item.priority}
 													</span>
 												) : null}
 											</p>

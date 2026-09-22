@@ -91,9 +91,7 @@ describe("CvMissionExperienceService.findAllByCvExperienceId", () => {
 			order: 1,
 		});
 
-		const missions = await cvMissionExperienceService.findAllByCvExperienceId(
-			experience.id,
-		);
+		const missions = await cvMissionExperienceService.findAllByCvExperienceId(experience.id);
 		expect(missions).toHaveLength(1);
 		expect(missions[0]?.content).toBe("Mission 1");
 		expect(missions[0]?.order).toBe(1);
@@ -110,9 +108,7 @@ describe("CvMissionExperienceService.findAllByCvExperienceId", () => {
 			start: new Date("2020-01-01"),
 			order: 1,
 		});
-		const missions = await cvMissionExperienceService.findAllByCvExperienceId(
-			experience.id,
-		);
+		const missions = await cvMissionExperienceService.findAllByCvExperienceId(experience.id);
 		expect(missions).toHaveLength(0);
 	});
 
@@ -142,9 +138,7 @@ describe("CvMissionExperienceService.findAllByCvExperienceId", () => {
 			content: "Mission 2",
 			order: 1,
 		});
-		const missions = await cvMissionExperienceService.findAllByCvExperienceId(
-			experienceB.id,
-		);
+		const missions = await cvMissionExperienceService.findAllByCvExperienceId(experienceB.id);
 		expect(missions).toHaveLength(1);
 		expect(missions[0]?.content).toBe("Mission 2");
 		expect(missions[0]?.order).toBe(1);
@@ -245,18 +239,16 @@ describe("CvMissionExperienceService.move", () => {
 
 		await cvMissionExperienceService.move(mission1.id, 2);
 
-		const result = await cvMissionExperienceService.findAllByCvExperienceId(
-			experience.id,
-		);
+		const result = await cvMissionExperienceService.findAllByCvExperienceId(experience.id);
 
 		expect(result[0]!.content).toBe("Mission 2");
 		expect(result[1]!.content).toBe("Mission 1");
 	});
 
 	it("throws if missions experience does not exist", async () => {
-		await expect(
-			cvMissionExperienceService.move("invalid-mission-id", 2),
-		).rejects.toThrow(NotFoundError);
+		await expect(cvMissionExperienceService.move("invalid-mission-id", 2)).rejects.toThrow(
+			NotFoundError,
+		);
 	});
 
 	it("throws if order is invalid", async () => {
@@ -274,9 +266,7 @@ describe("CvMissionExperienceService.move", () => {
 			content: "Mission 1",
 			order: 1,
 		});
-		await expect(
-			cvMissionExperienceService.move(mission.id, 0),
-		).rejects.toThrow();
+		await expect(cvMissionExperienceService.move(mission.id, 0)).rejects.toThrow();
 	});
 
 	it("move no-op if order is the same", async () => {
@@ -317,9 +307,7 @@ describe("CvMissionExperienceService.move", () => {
 			content: "Mission 1",
 			order: 1,
 		});
-		await expect(
-			cvMissionExperienceService.move(mission.id, 99),
-		).rejects.toThrow();
+		await expect(cvMissionExperienceService.move(mission.id, 99)).rejects.toThrow();
 	});
 });
 
@@ -341,16 +329,14 @@ describe("CvMissionExperienceService.delete", () => {
 			order: 1,
 		});
 		await cvMissionExperienceService.delete(mission.id);
-		const missions = await cvMissionExperienceService.findAllByCvExperienceId(
-			experience.id,
-		);
+		const missions = await cvMissionExperienceService.findAllByCvExperienceId(experience.id);
 		expect(missions).toHaveLength(0);
 	});
 
 	it("throws if mission does not exist", async () => {
-		await expect(
-			cvMissionExperienceService.delete("invalid-mission-id"),
-		).rejects.toThrow(NotFoundError);
+		await expect(cvMissionExperienceService.delete("invalid-mission-id")).rejects.toThrow(
+			NotFoundError,
+		);
 	});
 
 	it("reorders remaining missions after deletion", async () => {
@@ -373,9 +359,7 @@ describe("CvMissionExperienceService.delete", () => {
 			order: 2,
 		});
 		await cvMissionExperienceService.delete(mission1.id);
-		const missions = await cvMissionExperienceService.findAllByCvExperienceId(
-			experience.id,
-		);
+		const missions = await cvMissionExperienceService.findAllByCvExperienceId(experience.id);
 		expect(missions).toHaveLength(1);
 		expect(missions[0]?.content).toBe("Mission 2");
 		expect(missions[0]?.order).toBe(1);

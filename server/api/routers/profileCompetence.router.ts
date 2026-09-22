@@ -25,10 +25,7 @@ async function assertGroupProfileOwnership(groupId: string, userId: string) {
 	return group;
 }
 
-async function assertCompetenceProfileOwnership(
-	competenceId: string,
-	userId: string,
-) {
+async function assertCompetenceProfileOwnership(competenceId: string, userId: string) {
 	const competence = await prisma.profileCompetence.findUnique({
 		where: { id: competenceId },
 		select: {

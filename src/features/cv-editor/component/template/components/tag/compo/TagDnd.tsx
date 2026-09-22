@@ -1,8 +1,5 @@
 import { useCreateCvContext } from "@/features/cv-editor/component/context/CreateCvContext";
-import {
-	horizontalListSortingStrategy,
-	SortableContext,
-} from "@dnd-kit/sortable";
+import { horizontalListSortingStrategy, SortableContext } from "@dnd-kit/sortable";
 import type { ListItem } from "@utils/type";
 import { Button } from "primereact/button";
 import { useFormContext } from "react-hook-form";
@@ -39,19 +36,13 @@ export const TagDnd = ({
 	};
 
 	const isThisGroupActive =
-		itemSelected === clientKeyGroup ||
-		tags.some((t) => t.clientKey === itemSelected);
+		itemSelected === clientKeyGroup || tags.some((t) => t.clientKey === itemSelected);
 
 	const showAddTag = sectionSelected === "section-tag" && isThisGroupActive;
 
 	return (
-		<SortableContext
-			items={tags.map((t) => t.clientKey)}
-			strategy={horizontalListSortingStrategy}
-		>
-			<div
-				className={`tag-dnd-grid flex gap-2 flex-wrap min-h-[30px]`}
-			>
+		<SortableContext items={tags.map((t) => t.clientKey)} strategy={horizontalListSortingStrategy}>
+			<div className={`tag-dnd-grid flex gap-2 flex-wrap min-h-[30px]`}>
 				{tags.map((tag, index) => (
 					<button
 						type="button"

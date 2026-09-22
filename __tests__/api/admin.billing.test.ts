@@ -3,10 +3,7 @@ import { prismaTest } from "../../lib/prismaTest";
 import { adminCreditPackService } from "../../src/services/admin/adminCreditPackService";
 import { aiBillingService } from "../../src/services/ai/aiBillingService";
 import { createTestUser } from "../utils/create-test-user";
-import {
-	createTestCaller,
-	createTestSession,
-} from "./helpers/create-test-caller";
+import { createTestCaller, createTestSession } from "./helpers/create-test-caller";
 
 describe("admin billing (packs + AI prices)", () => {
 	it("rejects non-admin", async () => {
@@ -118,9 +115,9 @@ describe("admin billing (packs + AI prices)", () => {
 			}),
 		);
 
-		await expect(
-			caller.admin.deleteCreditPack({ id: "missing-pack-id" }),
-		).rejects.toMatchObject({ code: "NOT_FOUND" });
+		await expect(caller.admin.deleteCreditPack({ id: "missing-pack-id" })).rejects.toMatchObject({
+			code: "NOT_FOUND",
+		});
 	});
 
 	it("rejects updateCreditPack for unknown id", async () => {

@@ -3,10 +3,7 @@ import { useCreateCvContext } from "@/features/cv-editor/component/context/Creat
 import { FieldNamePublication } from "@/features/cv-editor/utils/fields/fieldNamePublication";
 import { dataFieldContent } from "@/features/cv-editor/utils/fields/moduleField";
 import type { PublicationItemContentInput } from "@/services/schemas/cvSave.schema";
-import {
-	SortableContext,
-	verticalListSortingStrategy,
-} from "@dnd-kit/sortable";
+import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import type { ListItem } from "@utils/type";
 import { Button } from "primereact/button";
 import { useFormContext } from "react-hook-form";
@@ -31,11 +28,7 @@ export const PublicationDnd = ({
 	const { setSectionSelected, sectionSelected } = useCreateCvContext();
 	const { setValue } = useFormContext();
 	const itemsMenu = (idx: number) => {
-		const pathContent = dataFieldContent(
-			"datas.publication.content",
-			idx,
-			"content.settings",
-		);
+		const pathContent = dataFieldContent("datas.publication.content", idx, "content.settings");
 		return [
 			{
 				label: "Options",
@@ -124,10 +117,7 @@ export const PublicationDnd = ({
 							const fresh = createNewItem();
 							setValue(
 								FieldNamePublication.content,
-								[
-									...watchPublications,
-									{ ...fresh, order: watchPublications.length + 1 },
-								],
+								[...watchPublications, { ...fresh, order: watchPublications.length + 1 }],
 								{ shouldDirty: true },
 							);
 						}}

@@ -97,12 +97,8 @@ describe("UserService.consumeDownloadCredit", () => {
 				downloadCredits: 2,
 			},
 		});
-		const finallyUpdatedUser = await userService.consumeDownloadCredit(
-			updatedUser.id,
-		);
-		expect(finallyUpdatedUser.downloadCredits).toBe(
-			updatedUser.downloadCredits - 1,
-		);
+		const finallyUpdatedUser = await userService.consumeDownloadCredit(updatedUser.id);
+		expect(finallyUpdatedUser.downloadCredits).toBe(updatedUser.downloadCredits - 1);
 	});
 
 	it("consumes the last credit then refuses another download", async () => {
@@ -114,22 +110,16 @@ describe("UserService.consumeDownloadCredit", () => {
 			},
 		});
 		await userService.consumeDownloadCredit(user.id);
-		await expect(userService.consumeDownloadCredit(user.id)).rejects.toThrow(
-			ValidationError,
-		);
+		await expect(userService.consumeDownloadCredit(user.id)).rejects.toThrow(ValidationError);
 	});
 
 	it("throws an error if the user is not found", async () => {
-		await expect(userService.consumeDownloadCredit("123")).rejects.toThrow(
-			NotFoundError,
-		);
+		await expect(userService.consumeDownloadCredit("123")).rejects.toThrow(NotFoundError);
 	});
 
 	it("throws an error if the user has no download credits", async () => {
 		const user = await createTestUser();
-		await expect(userService.consumeDownloadCredit(user.id)).rejects.toThrow(
-			ValidationError,
-		);
+		await expect(userService.consumeDownloadCredit(user.id)).rejects.toThrow(ValidationError);
 	});
 });
 
@@ -163,15 +153,9 @@ describe("UserService.getDownloadStatus / canDownload*", () => {
 	});
 
 	it("throws if the user is not found", async () => {
-		await expect(userService.getDownloadStatus("123")).rejects.toThrow(
-			NotFoundError,
-		);
-		await expect(userService.canDownloadFree("123")).rejects.toThrow(
-			NotFoundError,
-		);
-		await expect(userService.canDownloadPaid("123")).rejects.toThrow(
-			NotFoundError,
-		);
+		await expect(userService.getDownloadStatus("123")).rejects.toThrow(NotFoundError);
+		await expect(userService.canDownloadFree("123")).rejects.toThrow(NotFoundError);
+		await expect(userService.canDownloadPaid("123")).rejects.toThrow(NotFoundError);
 	});
 });
 
@@ -213,15 +197,11 @@ describe("UserService.consumeFreeDownload", () => {
 
 	it("refuses when no free downloads remain", async () => {
 		const user = await createTestUser();
-		await expect(userService.consumeFreeDownload(user.id)).rejects.toThrow(
-			ValidationError,
-		);
+		await expect(userService.consumeFreeDownload(user.id)).rejects.toThrow(ValidationError);
 	});
 
 	it("throws if the user is not found", async () => {
-		await expect(userService.consumeFreeDownload("123")).rejects.toThrow(
-			NotFoundError,
-		);
+		await expect(userService.consumeFreeDownload("123")).rejects.toThrow(NotFoundError);
 	});
 });
 
@@ -245,9 +225,7 @@ describe("UserService.consumePaidDownload", () => {
 
 	it("refuses when no paid credits remain", async () => {
 		const user = await createTestUser();
-		await expect(userService.consumePaidDownload(user.id)).rejects.toThrow(
-			ValidationError,
-		);
+		await expect(userService.consumePaidDownload(user.id)).rejects.toThrow(ValidationError);
 	});
 });
 
@@ -255,11 +233,7 @@ describe("UserService.grantFreeDownload", () => {
 	it("grants free downloads once and records the grant", async () => {
 		const user = await createTestUser();
 
-		const updated = await userService.grantFreeDownload(
-			user.id,
-			"PROFILE_CREATED",
-			1,
-		);
+		const updated = await userService.grantFreeDownload(user.id, "PROFILE_CREATED", 1);
 		expect(updated.freeDownloadsRemaining).toBe(1);
 
 		const grants = await prisma.downloadGrant.findMany({
@@ -275,11 +249,7 @@ describe("UserService.grantFreeDownload", () => {
 
 	it("accepts a custom amount", async () => {
 		const user = await createTestUser();
-		const updated = await userService.grantFreeDownload(
-			user.id,
-			"TEMPLATE_PURCHASED",
-			3,
-		);
+		const updated = await userService.grantFreeDownload(user.id, "TEMPLATE_PURCHASED", 3);
 		expect(updated.freeDownloadsRemaining).toBe(3);
 	});
 
@@ -287,9 +257,9 @@ describe("UserService.grantFreeDownload", () => {
 		const user = await createTestUser();
 		await userService.grantFreeDownload(user.id, "FIRST_CV_SAVED");
 
-		await expect(
-			userService.grantFreeDownload(user.id, "FIRST_CV_SAVED"),
-		).rejects.toThrow(ConflictError);
+		await expect(userService.grantFreeDownload(user.id, "FIRST_CV_SAVED")).rejects.toThrow(
+			ConflictError,
+		);
 
 		const reloaded = await prisma.user.findUniqueOrThrow({
 			where: { id: user.id },
@@ -300,24 +270,21 @@ describe("UserService.grantFreeDownload", () => {
 	it("allows different reasons on the same user", async () => {
 		const user = await createTestUser();
 		await userService.grantFreeDownload(user.id, "PROFILE_CREATED");
-		const updated = await userService.grantFreeDownload(
-			user.id,
-			"FIRST_CV_SAVED",
-		);
+		const updated = await userService.grantFreeDownload(user.id, "FIRST_CV_SAVED");
 		expect(updated.freeDownloadsRemaining).toBe(2);
 	});
 
 	it("rejects amount < 1", async () => {
 		const user = await createTestUser();
-		await expect(
-			userService.grantFreeDownload(user.id, "PROFILE_CREATED", 0),
-		).rejects.toThrow(ValidationError);
+		await expect(userService.grantFreeDownload(user.id, "PROFILE_CREATED", 0)).rejects.toThrow(
+			ValidationError,
+		);
 	});
 
 	it("throws if the user is not found", async () => {
-		await expect(
-			userService.grantFreeDownload("123", "PROFILE_CREATED"),
-		).rejects.toThrow(NotFoundError);
+		await expect(userService.grantFreeDownload("123", "PROFILE_CREATED")).rejects.toThrow(
+			NotFoundError,
+		);
 	});
 });
 
@@ -330,15 +297,11 @@ describe("UserService.grantPaidDownloadCredits", () => {
 
 	it("rejects amount < 1", async () => {
 		const user = await createTestUser();
-		await expect(
-			userService.grantPaidDownloadCredits(user.id, 0),
-		).rejects.toThrow(ValidationError);
+		await expect(userService.grantPaidDownloadCredits(user.id, 0)).rejects.toThrow(ValidationError);
 	});
 
 	it("throws if the user is not found", async () => {
-		await expect(
-			userService.grantPaidDownloadCredits("123", 1),
-		).rejects.toThrow(NotFoundError);
+		await expect(userService.grantPaidDownloadCredits("123", 1)).rejects.toThrow(NotFoundError);
 	});
 });
 
@@ -351,12 +314,8 @@ describe("UserService.incrementIaRequests", () => {
 				iaRequestsUsed: 1,
 			},
 		});
-		const finallyUpdatedUser = await userService.incrementIaRequests(
-			updatedUser.id,
-		);
-		expect(finallyUpdatedUser.iaRequestsUsed).toBe(
-			updatedUser.iaRequestsUsed + 1,
-		);
+		const finallyUpdatedUser = await userService.incrementIaRequests(updatedUser.id);
+		expect(finallyUpdatedUser.iaRequestsUsed).toBe(updatedUser.iaRequestsUsed + 1);
 	});
 
 	it("increments from zero", async () => {
@@ -368,9 +327,7 @@ describe("UserService.incrementIaRequests", () => {
 	});
 
 	it("throws an error if the user is not found", async () => {
-		await expect(userService.incrementIaRequests("123")).rejects.toThrow(
-			NotFoundError,
-		);
+		await expect(userService.incrementIaRequests("123")).rejects.toThrow(NotFoundError);
 	});
 });
 
@@ -383,9 +340,7 @@ describe("UserService.resetIaRequests", () => {
 				iaRequestsUsed: 2,
 			},
 		});
-		const finallyUpdatedUser = await userService.resetIaRequests(
-			updatedUser.id,
-		);
+		const finallyUpdatedUser = await userService.resetIaRequests(updatedUser.id);
 		expect(finallyUpdatedUser.iaRequestsUsed).toBe(0);
 	});
 
@@ -395,15 +350,11 @@ describe("UserService.resetIaRequests", () => {
 
 		const updated = await userService.resetIaRequests(user.id);
 
-		expect(updated.lastIaReset.getTime()).toBeGreaterThanOrEqual(
-			before.getTime(),
-		);
+		expect(updated.lastIaReset.getTime()).toBeGreaterThanOrEqual(before.getTime());
 	});
 
 	it("throws an error if the user is not found", async () => {
-		await expect(userService.resetIaRequests("123")).rejects.toThrow(
-			NotFoundError,
-		);
+		await expect(userService.resetIaRequests("123")).rejects.toThrow(NotFoundError);
 	});
 });
 
@@ -415,9 +366,7 @@ describe("UserService.updateMaxCvs", () => {
 	});
 
 	it("throws an error if the user is not found", async () => {
-		await expect(userService.updateMaxCvs("123", 2)).rejects.toThrow(
-			NotFoundError,
-		);
+		await expect(userService.updateMaxCvs("123", 2)).rejects.toThrow(NotFoundError);
 	});
 });
 
@@ -475,9 +424,7 @@ describe("UserService.countUserCvs", () => {
 	});
 
 	it("throws an error if the user is not found", async () => {
-		await expect(userService.countUserCvs("123")).rejects.toThrow(
-			NotFoundError,
-		);
+		await expect(userService.countUserCvs("123")).rejects.toThrow(NotFoundError);
 	});
 });
 
@@ -494,19 +441,15 @@ describe("UserService.updatePlan", () => {
 
 	it("throws an error if the subscription end date is not provided for premium plan", async () => {
 		const user = await createTestUser();
-		await expect(
-			userService.updatePlan(user.id, PlanRole.PREMIUM),
-		).rejects.toThrow(ValidationError);
+		await expect(userService.updatePlan(user.id, PlanRole.PREMIUM)).rejects.toThrow(
+			ValidationError,
+		);
 	});
 
 	it("throws an error if the subscription end date is in the past for premium plan", async () => {
 		const user = await createTestUser();
 		await expect(
-			userService.updatePlan(
-				user.id,
-				PlanRole.PREMIUM,
-				new Date(Date.now() - 1000),
-			),
+			userService.updatePlan(user.id, PlanRole.PREMIUM, new Date(Date.now() - 1000)),
 		).rejects.toThrow(ValidationError);
 	});
 
@@ -554,9 +497,7 @@ describe("UserService.updatePlan", () => {
 		expect(updated.plan).toBe(PlanRole.FREE);
 	});
 	it("throws an error if the user is not found", async () => {
-		await expect(
-			userService.updatePlan("123", PlanRole.PREMIUM),
-		).rejects.toThrow(NotFoundError);
+		await expect(userService.updatePlan("123", PlanRole.PREMIUM)).rejects.toThrow(NotFoundError);
 	});
 });
 
@@ -677,17 +618,17 @@ describe("UserService premium download gate", () => {
 		});
 		const cv = await createCV(user.id, template.id);
 
-		await expect(
-			userService.consumePaidDownload(user.id, { cvId: cv.id }),
-		).rejects.toBeInstanceOf(ForbiddenError);
+		await expect(userService.consumePaidDownload(user.id, { cvId: cv.id })).rejects.toBeInstanceOf(
+			ForbiddenError,
+		);
 	});
 });
 
 describe("UserService.updateProfile", () => {
 	it("throws NotFoundError for unknown user", async () => {
-		await expect(
-			userService.updateProfile("missing-user", { name: "x" }),
-		).rejects.toThrow(NotFoundError);
+		await expect(userService.updateProfile("missing-user", { name: "x" })).rejects.toThrow(
+			NotFoundError,
+		);
 	});
 });
 
@@ -695,9 +636,7 @@ describe("UserService password reset", () => {
 	it("requestPasswordReset creates a token for known email", async () => {
 		const user = await createTestUser();
 
-		const result = await userService.requestPasswordReset(
-			`  ${user.email.toUpperCase()}  `,
-		);
+		const result = await userService.requestPasswordReset(`  ${user.email.toUpperCase()}  `);
 		expect(result).toEqual({ ok: true });
 
 		const tokens = await prisma.passwordResetToken.findMany({
@@ -708,9 +647,7 @@ describe("UserService password reset", () => {
 	});
 
 	it("requestPasswordReset returns ok without leaking unknown emails", async () => {
-		const result = await userService.requestPasswordReset(
-			"nobody-exists@test.com",
-		);
+		const result = await userService.requestPasswordReset("nobody-exists@test.com");
 		expect(result).toEqual({ ok: true });
 
 		const tokens = await prisma.passwordResetToken.findMany({

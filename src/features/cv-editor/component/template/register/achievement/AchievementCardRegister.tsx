@@ -5,9 +5,6 @@ import {
 
 export type AchievementCardProps = CardAchievementOneProps;
 
-export const AchievementCardRegister: Record<
-	string,
-	React.ComponentType<AchievementCardProps>
-> = {
+export const AchievementCardRegister: Record<string, React.ComponentType<AchievementCardProps>> = {
 	CardAchievementOne,
 };

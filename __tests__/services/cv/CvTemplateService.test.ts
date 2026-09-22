@@ -66,9 +66,7 @@ describe("CvTemplateService.findById", () => {
 
 	// TEST 2 : template inexistant
 	it("throws if template does not exist", async () => {
-		await expect(
-			cvTemplateService.findById("unknown-template"),
-		).rejects.toThrow(NotFoundError);
+		await expect(cvTemplateService.findById("unknown-template")).rejects.toThrow(NotFoundError);
 	});
 });
 
@@ -98,12 +96,8 @@ describe("CvTemplateService.findAll", () => {
 		const templates = await cvTemplateService.findAll();
 
 		expect(templates).toHaveLength(2);
-		expect(templates.map((template) => template.name)).toContain(
-			"Template Moderne",
-		);
-		expect(templates.map((template) => template.name)).toContain(
-			"Template Classique",
-		);
+		expect(templates.map((template) => template.name)).toContain("Template Moderne");
+		expect(templates.map((template) => template.name)).toContain("Template Classique");
 		expect(templates.every((t) => t.isActive)).toBe(true);
 	});
 

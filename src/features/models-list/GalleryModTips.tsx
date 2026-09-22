@@ -29,21 +29,15 @@ export const GalleryModTips = () => {
 
 	return (
 		<div className="mt-auto pt-4 border-t border-gray-200 dark:border-gray-700">
-			<p className="my-0 mb-1 text-[10px] uppercase tracking-wide text-muted-color">
-				Astuce
-			</p>
+			<p className="my-0 mb-1 text-[10px] uppercase tracking-wide text-muted-color">Astuce</p>
 			<p className="my-0 font-semibold text-sm">{tip.title}</p>
-			<p className="my-0 mt-1 text-sm text-muted-color leading-snug">
-				{tip.text}
-			</p>
+			<p className="my-0 mt-1 text-sm text-muted-color leading-snug">{tip.text}</p>
 			<div className="flex items-center gap-3 mt-3">
 				<button
 					type="button"
 					className="text-muted-color hover:text-color text-xs"
 					aria-label="Astuce précédente"
-					onClick={() =>
-						setIndex((i) => (i - 1 + TIPS.length) % TIPS.length)
-					}
+					onClick={() => setIndex((i) => (i - 1 + TIPS.length) % TIPS.length)}
 				>
 					‹
 				</button>
@@ -55,9 +49,7 @@ export const GalleryModTips = () => {
 							aria-label={`Astuce ${i + 1}`}
 							aria-current={i === index}
 							className={`h-1.5 w-1.5 rounded-full transition ${
-								i === index
-									? "bg-teal-500"
-									: "bg-gray-300 dark:bg-gray-600"
+								i === index ? "bg-teal-500" : "bg-gray-300 dark:bg-gray-600"
 							}`}
 							onClick={() => setIndex(i)}
 						/>

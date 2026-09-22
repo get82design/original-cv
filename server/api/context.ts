@@ -24,9 +24,7 @@ export async function createTRPCContext(opts?: CreateContextOptions) {
 	}
 	// Runtime Next : lire le cookie / JWT
 	const session =
-		opts?.req && opts?.res
-			? await getServerSession(opts.req, opts.res, authOptions)
-			: null;
+		opts?.req && opts?.res ? await getServerSession(opts.req, opts.res, authOptions) : null;
 	return { prisma, session };
 }
 

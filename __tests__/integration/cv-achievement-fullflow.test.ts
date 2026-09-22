@@ -25,11 +25,7 @@ describe("CV Fullflow Integration with achievement", () => {
 	it("should create a CV with achievement without optional fields", async () => {
 		const { user, template } = await utils.createUserAndTemplate();
 		const cv = await utils.createCV(user.id, template.id);
-		const achievement = await utils.createAchievement(
-			cv.id,
-			"Achievement 1",
-			1,
-		);
+		const achievement = await utils.createAchievement(cv.id, "Achievement 1", 1);
 		expect(achievement.cvId).toBe(cv.id);
 		expect(achievement.title).toBe("Achievement 1");
 		expect(achievement.description).toBeNull();

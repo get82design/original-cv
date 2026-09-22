@@ -221,9 +221,7 @@ describe("CvPrizeService.move", () => {
 
 	// TEST 2 : prize inexistant
 	it("throws if prize does not exist", async () => {
-		await expect(cvPrizeService.move("unknown-id", 1)).rejects.toThrow(
-			NotFoundError,
-		);
+		await expect(cvPrizeService.move("unknown-id", 1)).rejects.toThrow(NotFoundError);
 	});
 
 	// TEST 3 : ordre invalide
@@ -276,9 +274,7 @@ describe("CvPrizeService.delete", () => {
 
 	// TEST 2 : prize inexistant
 	it("throws if prize does not exist", async () => {
-		await expect(cvPrizeService.delete("unknown-id")).rejects.toThrow(
-			NotFoundError,
-		);
+		await expect(cvPrizeService.delete("unknown-id")).rejects.toThrow(NotFoundError);
 	});
 
 	// TEST 3 : réorganisation des prizes après suppression

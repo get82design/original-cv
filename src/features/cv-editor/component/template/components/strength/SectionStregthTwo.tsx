@@ -19,14 +19,12 @@ import { moduleField } from "@/features/cv-editor/utils/fields/moduleField";
 
 export const SectionStrengthTwo = () => {
 	const { watch } = useFormContext();
-	const watchModelStrengthTitle: BaseTextSettings = watch(
-		FieldNameStrength.settingsSectionTitle,
-	);
+	const watchModelStrengthTitle: BaseTextSettings = watch(FieldNameStrength.settingsSectionTitle);
 	const watchGeneral: TemplateLayout = watch(FieldNameLayoutGeneral.layout);
 	const modules = watch("modules");
 	const path = moduleField(modules, "strength", "settings", "content");
 	const cols = watch(`${path}.columns`) ?? 2;
-	
+
 	const {
 		items: watchStrengths,
 		itemSelected,
@@ -39,8 +37,7 @@ export const SectionStrengthTwo = () => {
 	});
 
 	const itemKey =
-		watch("layoutGeneral.defaultStyles")?.components?.sectionStrength?.item ??
-		"CardStrengthOne";
+		watch("layoutGeneral.defaultStyles")?.components?.sectionStrength?.item ?? "CardStrengthOne";
 	const Card = StrengthCardRegister[itemKey] ?? CardStrengthOne;
 
 	return (

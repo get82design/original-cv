@@ -612,10 +612,7 @@ export async function createProfileCompetenceGroup(
 	});
 }
 
-export async function createProfileCompetence(
-	competenceId: string,
-	groupId: string,
-) {
+export async function createProfileCompetence(competenceId: string, groupId: string) {
 	return prismaTest.profileCompetence.create({
 		data: { competenceId, groupId },
 	});
@@ -626,11 +623,7 @@ export async function createTag(name: string) {
 	return prismaTest.tag.create({ data: { name } });
 }
 
-export async function createProfileTagGroup(
-	profileId: string,
-	title: string,
-	order: number,
-) {
+export async function createProfileTagGroup(profileId: string, title: string, order: number) {
 	return prismaTest.profileTagGroup.create({
 		data: { profileId, title, order },
 	});
@@ -643,10 +636,7 @@ export async function createProfileTag(tagId: string, groupId: string) {
 }
 
 // === DESCRIPTION ===
-export async function createDescription(
-	profileId: string,
-	description: string,
-) {
+export async function createDescription(profileId: string, description: string) {
 	return prismaTest.description.create({ data: { profileId, description } });
 }
 
@@ -720,24 +710,14 @@ export async function createFormation(
 }
 
 // === LANGUAGE ===
-export async function createLanguage(
-	profileId: string,
-	name: string,
-	level: Level,
-	order: number,
-) {
+export async function createLanguage(profileId: string, name: string, level: Level, order: number) {
 	return prismaTest.language.create({
 		data: { profileId, name, level, order },
 	});
 }
 
 // === PASSION ===
-export async function createPassion(
-	profileId: string,
-	title: string,
-	icon: string,
-	order: number,
-) {
+export async function createPassion(profileId: string, title: string, icon: string, order: number) {
 	return prismaTest.passion.create({ data: { profileId, title, icon, order } });
 }
 
@@ -827,21 +807,13 @@ export async function createSkill(name: string) {
 	return prismaTest.skill.create({ data: { name } });
 }
 
-export async function createProfileSkillGroup(
-	profileId: string,
-	title: string,
-	order: number,
-) {
+export async function createProfileSkillGroup(profileId: string, title: string, order: number) {
 	return prismaTest.profileSkillGroup.create({
 		data: { profileId, title, order },
 	});
 }
 
-export async function createProfileSkill(
-	skillId: string,
-	groupId: string,
-	level: Level,
-) {
+export async function createProfileSkill(skillId: string, groupId: string, level: Level) {
 	return prismaTest.profileSkill.create({ data: { skillId, groupId, level } });
 }
 

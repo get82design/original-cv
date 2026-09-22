@@ -27,9 +27,7 @@ function line(...parts: Array<string | null | undefined>): string | null {
 /**
  * Sections reformulables présentes (avec contenu) sur le CV courant.
  */
-export function listRewriteableSections(
-	cv: CvFormValues,
-): CvRewriteSectionOption[] {
+export function listRewriteableSections(cv: CvFormValues): CvRewriteSectionOption[] {
 	const d = cv.datas ?? {};
 	const options: CvRewriteSectionOption[] = [
 		{
@@ -75,8 +73,7 @@ export function extractCvSectionSourceText(
 			const text = d.description?.content?.description?.trim();
 			if (!text) return null;
 			return {
-				sectionLabel:
-					d.description?.title?.trim() || DEFAULT_LABELS.description,
+				sectionLabel: d.description?.title?.trim() || DEFAULT_LABELS.description,
 				sourceText: text,
 			};
 		}
@@ -98,8 +95,7 @@ export function extractCvSectionSourceText(
 					.join("\n");
 			});
 			return {
-				sectionLabel:
-					d.experience?.title?.trim() || DEFAULT_LABELS.experience,
+				sectionLabel: d.experience?.title?.trim() || DEFAULT_LABELS.experience,
 				sourceText: blocks.join("\n\n"),
 			};
 		}
@@ -143,8 +139,7 @@ export function extractCvSectionSourceText(
 					.join("\n");
 			});
 			return {
-				sectionLabel:
-					d.volunteering?.title?.trim() || DEFAULT_LABELS.volunteering,
+				sectionLabel: d.volunteering?.title?.trim() || DEFAULT_LABELS.volunteering,
 				sourceText: blocks.join("\n\n"),
 			};
 		}
@@ -157,16 +152,13 @@ export function extractCvSectionSourceText(
 					`[id=${item.clientKey}]`,
 					`${i + 1}. ${c.title?.trim() || "Réalisation"}`,
 					c.description?.trim() || null,
-					c.technology?.trim()
-						? `Techno : ${c.technology.trim()}`
-						: null,
+					c.technology?.trim() ? `Techno : ${c.technology.trim()}` : null,
 				]
 					.filter(Boolean)
 					.join("\n");
 			});
 			return {
-				sectionLabel:
-					d.achievement?.title?.trim() || DEFAULT_LABELS.achievement,
+				sectionLabel: d.achievement?.title?.trim() || DEFAULT_LABELS.achievement,
 				sourceText: blocks.join("\n\n"),
 			};
 		}

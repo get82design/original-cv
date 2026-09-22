@@ -428,9 +428,7 @@ describe("CvSkillService.move", () => {
 
 	// TEST 2 : cvskill inexistant
 	it("throws if cvskill does not exist", async () => {
-		await expect(cvSkillService.move("unknown-id", 1)).rejects.toThrow(
-			NotFoundError,
-		);
+		await expect(cvSkillService.move("unknown-id", 1)).rejects.toThrow(NotFoundError);
 	});
 
 	// TEST 3 : ordre invalide
@@ -504,9 +502,7 @@ describe("CvSkillService.delete", () => {
 	});
 
 	it("throws if skill does not exist", async () => {
-		await expect(cvSkillService.delete("unknown-id")).rejects.toThrow(
-			NotFoundError,
-		);
+		await expect(cvSkillService.delete("unknown-id")).rejects.toThrow(NotFoundError);
 	});
 
 	it("reorders remaining skills", async () => {

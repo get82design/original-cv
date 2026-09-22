@@ -93,9 +93,7 @@ describe("ProfileSocialMediaService.findAllByProfileId", () => {
 			order: 2,
 		});
 
-		const result = await profileSocialMediaService.findAllByProfileId(
-			profile.id,
-		);
+		const result = await profileSocialMediaService.findAllByProfileId(profile.id);
 
 		expect(result).toHaveLength(2);
 		expect(result[0]!.socialNetwork).toBe("LinkedIn");
@@ -107,9 +105,7 @@ describe("ProfileSocialMediaService.findAllByProfileId", () => {
 		const user = await createTestUser();
 		const profile = await createTestProfile(user.id, "John", "Doe");
 
-		const result = await profileSocialMediaService.findAllByProfileId(
-			profile.id,
-		);
+		const result = await profileSocialMediaService.findAllByProfileId(profile.id);
 
 		expect(result).toEqual([]);
 	});
@@ -130,9 +126,7 @@ describe("ProfileSocialMediaService.findAllByProfileId", () => {
 			username: "user-b",
 			icon: "faGithub",
 		});
-		const result = await profileSocialMediaService.findAllByProfileId(
-			profileA.id,
-		);
+		const result = await profileSocialMediaService.findAllByProfileId(profileA.id);
 
 		expect(result).toHaveLength(1);
 		expect(result[0]!.username).toBe("user-a");
@@ -209,9 +203,7 @@ describe("ProfileSocialMediaService.move", () => {
 			order: 2,
 		});
 		await profileSocialMediaService.move(github.id, 1);
-		const result = await profileSocialMediaService.findAllByProfileId(
-			profile.id,
-		);
+		const result = await profileSocialMediaService.findAllByProfileId(profile.id);
 
 		expect(result[0]!.id).toBe(github.id);
 		expect(result[1]!.id).toBe(linkedin.id);
@@ -219,9 +211,7 @@ describe("ProfileSocialMediaService.move", () => {
 
 	// TEST 2 : social media inexistant
 	it("throws if social media does not exist", async () => {
-		await expect(
-			profileSocialMediaService.move("unknown-id", 1),
-		).rejects.toThrow(NotFoundError);
+		await expect(profileSocialMediaService.move("unknown-id", 1)).rejects.toThrow(NotFoundError);
 	});
 
 	// TEST 3 : ordre invalide
@@ -233,9 +223,7 @@ describe("ProfileSocialMediaService.move", () => {
 			username: "john",
 			icon: "faLinkedin",
 		});
-		await expect(
-			profileSocialMediaService.move(social.id, 0),
-		).rejects.toThrow();
+		await expect(profileSocialMediaService.move(social.id, 0)).rejects.toThrow();
 	});
 
 	it("move no-op if order is the same", async () => {
@@ -268,18 +256,14 @@ describe("ProfileSocialMediaService.delete", () => {
 			order: 1,
 		});
 		await profileSocialMediaService.delete(socialMedia.id);
-		const result = await profileSocialMediaService.findAllByProfileId(
-			profile.id,
-		);
+		const result = await profileSocialMediaService.findAllByProfileId(profile.id);
 
 		expect(result).toHaveLength(0);
 	});
 
 	// TEST 2 : social media inexistant
 	it("throws if social media does not exist", async () => {
-		await expect(
-			profileSocialMediaService.delete("unknown-id"),
-		).rejects.toThrow(NotFoundError);
+		await expect(profileSocialMediaService.delete("unknown-id")).rejects.toThrow(NotFoundError);
 	});
 
 	// TEST 3 : réorganisation des social medias après suppression
@@ -305,9 +289,7 @@ describe("ProfileSocialMediaService.delete", () => {
 			order: 3,
 		});
 		await profileSocialMediaService.delete(github.id);
-		const result = await profileSocialMediaService.findAllByProfileId(
-			profile.id,
-		);
+		const result = await profileSocialMediaService.findAllByProfileId(profile.id);
 
 		expect(result).toHaveLength(2);
 		expect(result[0]!.order).toBe(1);

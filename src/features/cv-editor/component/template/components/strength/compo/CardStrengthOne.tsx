@@ -40,11 +40,7 @@ export const CardStrengthOne = ({
 	const { setSelectModifInput, setSelectInputForm } = useCreateCvContext();
 
 	const watchGeneral = watch(FieldNameLayoutGeneral.layout);
-	const pathContent = dataFieldContent(
-		"datas.strength.content",
-		index,
-		"content",
-	);
+	const pathContent = dataFieldContent("datas.strength.content", index, "content");
 	const watchWithIcon = watchGeneral?.titleSection.withIcon;
 	const watchListStyle = watchGeneral?.listStyle;
 	const menuLeft = useRef<Menu>(null);
@@ -94,12 +90,7 @@ export const CardStrengthOne = ({
 				itemsMenu ? (
 					<>
 						<ToolbarOptionsButton menuRef={menuLeft} />
-						<Menu
-							model={itemsMenu(index)}
-							popup
-							ref={menuLeft}
-							style={{ width: 300 }}
-						/>
+						<Menu model={itemsMenu(index)} popup ref={menuLeft} style={{ width: 300 }} />
 					</>
 				) : null
 			}
@@ -124,14 +115,15 @@ export const CardStrengthOne = ({
 						onClick={() => {
 							setSelectModifInput(`${pathContent}.settings.strength`);
 							setSelectInputForm(`${pathContent}.settings.withStrength`);
-						} }
+						}}
 						name={`${pathContent}.title`}
 						textColor={watchModelStrength?.colorSelect}
 						dataInput={{
 							changeSize: "1px",
 							model: watchModelStrength,
-						}} 
-						textAlign={watchModelStrength.textAlign}					/>
+						}}
+						textAlign={watchModelStrength.textAlign}
+					/>
 				}
 				descriptionCompo={
 					<TextareaCv

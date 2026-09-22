@@ -208,9 +208,7 @@ describe("Prize model", () => {
 		// 3-3: peut mettre à jour uniquement l'icon sans changer le title ou le domaine
 		it("should update only icon without changing title or domaine", async () => {
 			const user = await createTestUserWithProfile({
-				prizes: [
-					{ title: "Prix 1", domaine: "Domaine 1", icon: "faPlus", order: 1 },
-				],
+				prizes: [{ title: "Prix 1", domaine: "Domaine 1", icon: "faPlus", order: 1 }],
 			});
 
 			await prismaTest.prize.update({
@@ -230,9 +228,7 @@ describe("Prize model", () => {
 		// 3-4: peut mettre l'icon à null si optional
 		it("should allow setting icon to null", async () => {
 			const user = await createTestUserWithProfile({
-				prizes: [
-					{ title: "Prix 1", domaine: "Domaine 1", icon: "faPlus", order: 1 },
-				],
+				prizes: [{ title: "Prix 1", domaine: "Domaine 1", icon: "faPlus", order: 1 }],
 			});
 
 			await prismaTest.prize.update({

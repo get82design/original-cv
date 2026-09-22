@@ -24,10 +24,8 @@ export function MiniatureLanguageRenderer({
 }: {
 	templateConfig: TemplateDefaultStyles;
 }) {
-	const miniatureKey =
-		templateConfig?.components?.sectionLanguage?.miniature ?? "MiniLanguageOne";
-	const MiniatureComponent =
-		MiniatureRegister[miniatureKey] ?? DefaultMiniature;
+	const miniatureKey = templateConfig?.components?.sectionLanguage?.miniature ?? "MiniLanguageOne";
+	const MiniatureComponent = MiniatureRegister[miniatureKey] ?? DefaultMiniature;
 	return <MiniatureComponent />;
 }
 export function IconLanguageRenderer({
@@ -35,19 +33,13 @@ export function IconLanguageRenderer({
 }: {
 	templateConfig: TemplateDefaultStyles;
 }) {
-	const iconKey =
-		templateConfig?.components?.sectionLanguage?.icon ?? "IconLanguage";
+	const iconKey = templateConfig?.components?.sectionLanguage?.icon ?? "IconLanguage";
 	const IconComponent = IconRegister[iconKey] ?? DefaultIcon;
 	return <IconComponent />;
 }
-export function LanguageRenderer({
-	templateConfig,
-}: {
-	templateConfig: TemplateDefaultStyles;
-}) {
+export function LanguageRenderer({ templateConfig }: { templateConfig: TemplateDefaultStyles }) {
 	const languageKey =
-		templateConfig?.components?.sectionLanguage?.component ??
-		"SectionLanguageOne";
+		templateConfig?.components?.sectionLanguage?.component ?? "SectionLanguageOne";
 	const LanguageComponent = LanguageRegister[languageKey] ?? DefaultLanguage;
 	return <LanguageComponent />;
 }

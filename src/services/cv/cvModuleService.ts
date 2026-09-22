@@ -4,10 +4,7 @@ import { reorderItems } from "../../utils/reorderCvItems";
 import { ValidationError } from "../errors";
 import { ConflictError } from "../errors/ConflictError";
 import { NotFoundError } from "../errors/NotFoundError";
-import type {
-	CreateCvModuleInput,
-	UpdateCvModuleInput,
-} from "../schemas/cvModule.schema";
+import type { CreateCvModuleInput, UpdateCvModuleInput } from "../schemas/cvModule.schema";
 
 export class CvModuleService {
 	async create(cvId: string, data: CreateCvModuleInput) {

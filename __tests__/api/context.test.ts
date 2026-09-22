@@ -51,13 +51,12 @@ describe("createTRPCContext", () => {
 
 		const { createTRPCContext } = await import("../../server/api/context");
 		const { authOptions } = await import("../../server/auth");
-		
+
 		const ctx = await createTRPCContext({ req, res });
-		
+
 		expect(getServerSessionMock).toHaveBeenCalledTimes(1);
 		expect(getServerSessionMock).toHaveBeenCalledWith(req, res, authOptions);
 		expect(ctx.session).toEqual(fakeSession);
-		
 	});
 
 	it("returns null session when neither session nor req/res are provided", async () => {

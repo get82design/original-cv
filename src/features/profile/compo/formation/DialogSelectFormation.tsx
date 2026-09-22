@@ -1,7 +1,4 @@
-import type {
-	FormationInput,
-	ProfileSaveInput,
-} from "@/services/schemas/profileSave.schema";
+import type { FormationInput, ProfileSaveInput } from "@/services/schemas/profileSave.schema";
 import type { CvFull } from "@utils/trpc.types";
 import type { ListItem } from "@utils/type";
 import { Button } from "primereact/button";
@@ -53,19 +50,12 @@ export function DialogSelectFormation({
 		if (!visible) return;
 		setTarget(listFormationInProfile);
 		const already = new Set(
-			listFormationInProfile.map(
-				(e) => `${e.content.title}|${e.content.organismeFormation ?? ""}`,
-			),
+			listFormationInProfile.map((e) => `${e.content.title}|${e.content.organismeFormation ?? ""}`),
 		);
 		setSource(
 			listFormationFromCv
 				.map((form) => cvFormationToProfile(form))
-				.filter(
-					(e) =>
-						!already.has(
-							`${e.content.title}|${e.content.organismeFormation ?? ""}`,
-						),
-				),
+				.filter((e) => !already.has(`${e.content.title}|${e.content.organismeFormation ?? ""}`)),
 		);
 	}, [visible, listFormationFromCv]);
 

@@ -7,7 +7,7 @@ export const nara = defineTemplate({
 	slug: "nara-noLine-x",
 	tokens: naraTokens,
 	primaryColor: { name: "mauve", primary: "-600" },
-    
+
 	layout: {
 		...sharedLayout,
 		stylePhoto: "circle",
@@ -19,7 +19,7 @@ export const nara = defineTemplate({
 			textAlign: "center",
 		},
 	},
-    sectionHeader: "HeaderTwo",
+	sectionHeader: "HeaderTwo",
 	variant: 1,
 	modules: {
 		description: { title: "À propos", isActive: true, order: 1 },

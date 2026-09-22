@@ -2,10 +2,7 @@ import { describe, expect, it } from "vitest";
 import { TRPCError } from "@trpc/server";
 
 import { createTestUser } from "../utils/create-test-user";
-import {
-	createTestCaller,
-	createTestSession,
-} from "./helpers/create-test-caller";
+import { createTestCaller, createTestSession } from "./helpers/create-test-caller";
 
 describe("profileMissionProjectRouter", () => {
 	async function setup() {
@@ -202,8 +199,8 @@ describe("profileMissionProjectRouter", () => {
 	it("delete returns NOT_FOUND for unknown id", async () => {
 		const { caller } = await setup();
 
-		await expect(
-			caller.profileMissionProject.delete({ id: "unknown-id" }),
-		).rejects.toMatchObject({ code: "NOT_FOUND" });
+		await expect(caller.profileMissionProject.delete({ id: "unknown-id" })).rejects.toMatchObject({
+			code: "NOT_FOUND",
+		});
 	});
 });

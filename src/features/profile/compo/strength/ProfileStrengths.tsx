@@ -6,10 +6,7 @@ import { Tooltip } from "primereact/tooltip";
 import { useRef, useState } from "react";
 import { MiniFooterMultiFunc } from "../footer/MiniFooterMultiFunc";
 import { useFieldArray, useFormContext } from "react-hook-form";
-import type {
-	ProfileSaveInput,
-	StrengthInput,
-} from "@/services/schemas/profileSave.schema";
+import type { ProfileSaveInput, StrengthInput } from "@/services/schemas/profileSave.schema";
 import { v4 as uuid } from "uuid";
 import type { ListItem } from "@utils/type";
 import { TextareaProfile } from "../../input/TextareaProfile";
@@ -20,9 +17,7 @@ import { DialogSelectCv } from "../common/DialogSelectCv";
 import type { CV } from "../../CompoPage";
 import { DialogSelectStrength } from "./DailogSelectStrength";
 
-export function createEmptyStrength(opts?: {
-	order?: number;
-}): ListItem<StrengthInput> {
+export function createEmptyStrength(opts?: { order?: number }): ListItem<StrengthInput> {
 	return {
 		clientKey: "strength-" + uuid(),
 		order: opts?.order ?? 1,
@@ -40,10 +35,7 @@ export const ProfileStrengths = ({ cvs }: { cvs: CV[] }) => {
 	const [toDelete, setToDelete] = useState<Set<string>>(new Set());
 	const [visibleMaj, setVisibleMaj] = useState(false);
 	const [idCv, setIdCv] = useState<string | undefined>(undefined);
-	const { data: cvSelected } = trpc.cv.byId.useQuery(
-		{ id: idCv ?? "" },
-		{ enabled: !!idCv },
-	);
+	const { data: cvSelected } = trpc.cv.byId.useQuery({ id: idCv ?? "" }, { enabled: !!idCv });
 	const [visibleSelect, setVisibleSelect] = useState(false);
 
 	const { control, watch, setValue } = useFormContext<ProfileSaveInput>();
@@ -130,12 +122,7 @@ export const ProfileStrengths = ({ cvs }: { cvs: CV[] }) => {
 			)}
 			<AppCard className="relative group">
 				<div className="opacity-30 absolute top-2 left-3">
-					<TitleAppTwo
-						firstPart={"Vos"}
-						secondPart={"Atouts"}
-						size={"text-2xl"}
-						withSpace
-					/>
+					<TitleAppTwo firstPart={"Vos"} secondPart={"Atouts"} size={"text-2xl"} withSpace />
 				</div>
 				<div className="mt-10 flex flex-col gap-2 items-center">
 					{fields.map((field, idx: number) => {
@@ -180,9 +167,7 @@ export const ProfileStrengths = ({ cvs }: { cvs: CV[] }) => {
 						);
 					})}
 					{fields.length === 0 && (
-						<p className="w-full font-light text-gray-400">
-							Aucun atout enregistré.
-						</p>
+						<p className="w-full font-light text-gray-400">Aucun atout enregistré.</p>
 					)}
 					{openDelete && (
 						<MiniFooterMultiFunc

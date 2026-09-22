@@ -4,10 +4,7 @@ import { TRPCError } from "@trpc/server";
 import { createCV } from "../utils/create-test-cv-full-flow";
 import { createTestTemplate } from "../utils/create-test-template";
 import { createTestUser } from "../utils/create-test-user";
-import {
-	createTestCaller,
-	createTestSession,
-} from "./helpers/create-test-caller";
+import { createTestCaller, createTestSession } from "./helpers/create-test-caller";
 import { CVModuleType } from "../../generated/prisma/enums";
 
 describe("cvRouter", () => {
@@ -301,9 +298,7 @@ describe("cvRouter.setPreview", () => {
 			new RegExp(`^/uploads/cv-previews/${user.id}/${cv.id}-with\\.jpg$`),
 		);
 		expect(updated.previewUrlClean).toMatch(
-			new RegExp(
-				`^/uploads/cv-previews/${user.id}/${cv.id}-clean\\.jpg$`,
-			),
+			new RegExp(`^/uploads/cv-previews/${user.id}/${cv.id}-clean\\.jpg$`),
 		);
 	});
 

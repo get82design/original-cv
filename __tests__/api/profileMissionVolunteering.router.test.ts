@@ -2,10 +2,7 @@ import { describe, expect, it } from "vitest";
 import { TRPCError } from "@trpc/server";
 
 import { createTestUser } from "../utils/create-test-user";
-import {
-	createTestCaller,
-	createTestSession,
-} from "./helpers/create-test-caller";
+import { createTestCaller, createTestSession } from "./helpers/create-test-caller";
 
 describe("profileMissionVolunteeringRouter", () => {
 	async function setup() {
@@ -119,10 +116,9 @@ describe("profileMissionVolunteeringRouter", () => {
 			data: { content: "Second", order: 2 },
 		});
 
-		const list =
-			await caller.profileMissionVolunteering.findAllByVolunteeringId({
-				volunteeringId: volunteering.id,
-			});
+		const list = await caller.profileMissionVolunteering.findAllByVolunteeringId({
+			volunteeringId: volunteering.id,
+		});
 
 		expect(list).toHaveLength(2);
 		expect(list[0]?.content).toBe("First");
@@ -178,10 +174,9 @@ describe("profileMissionVolunteeringRouter", () => {
 
 		await caller.profileMissionVolunteering.move({ id: m2.id, newOrder: 1 });
 
-		const list =
-			await caller.profileMissionVolunteering.findAllByVolunteeringId({
-				volunteeringId: volunteering.id,
-			});
+		const list = await caller.profileMissionVolunteering.findAllByVolunteeringId({
+			volunteeringId: volunteering.id,
+		});
 
 		expect(list[0]?.id).toBe(m2.id);
 		expect(list[1]?.id).toBe(m1.id);
@@ -197,10 +192,9 @@ describe("profileMissionVolunteeringRouter", () => {
 
 		await caller.profileMissionVolunteering.delete({ id: created.id });
 
-		const list =
-			await caller.profileMissionVolunteering.findAllByVolunteeringId({
-				volunteeringId: volunteering.id,
-			});
+		const list = await caller.profileMissionVolunteering.findAllByVolunteeringId({
+			volunteeringId: volunteering.id,
+		});
 		expect(list).toHaveLength(0);
 	});
 

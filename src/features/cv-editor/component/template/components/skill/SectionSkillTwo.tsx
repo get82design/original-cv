@@ -1,9 +1,6 @@
 import { FieldNameSkill } from "@/features/cv-editor/utils/fields/fieldNameSkill";
 import type { SkillGroupItemContentInput } from "@/services/schemas/cvSave.schema";
-import type {
-	BaseTextSettings,
-	SkillContentSettings,
-} from "@/services/schemas/cvTemplate.schema";
+import type { BaseTextSettings, SkillContentSettings } from "@/services/schemas/cvTemplate.schema";
 import { useFormContext } from "react-hook-form";
 import { createInitSkill } from "./initSkill";
 import { FieldNameLayoutGeneral } from "@/features/cv-editor/utils/fields/fieldNameLayoutGeneral";
@@ -17,9 +14,7 @@ import { CardGroupSkillOne } from "./compo/CardGroupSkillOne";
 
 export const SectionSkillTwo = () => {
 	const { watch } = useFormContext();
-	const watchModelSkillTitle: BaseTextSettings = watch(
-		FieldNameSkill.settingsSectionTitle,
-	);
+	const watchModelSkillTitle: BaseTextSettings = watch(FieldNameSkill.settingsSectionTitle);
 	const watchGeneral = watch(FieldNameLayoutGeneral.layout);
 
 	const {
@@ -34,8 +29,7 @@ export const SectionSkillTwo = () => {
 	});
 
 	const groupKey =
-		watch("layoutGeneral.defaultStyles")?.components?.sectionSkill?.group ??
-		"CardGroupSkillOne";
+		watch("layoutGeneral.defaultStyles")?.components?.sectionSkill?.group ?? "CardGroupSkillOne";
 	const GroupCard = GroupSkillCardRegister[groupKey] ?? CardGroupSkillOne;
 
 	return (

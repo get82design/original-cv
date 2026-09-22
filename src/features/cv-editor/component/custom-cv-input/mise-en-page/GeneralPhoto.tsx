@@ -42,10 +42,7 @@ export const GeneralPhoto = ({
 			<div className="flex flex-col gap-1">
 				<p className="my-0 font-semibold text-xs">Photo</p>
 				<div className="flex gap-1 items-center general-photo">
-					<ToggleAfficherCacher
-						name="layoutGeneral.layout.withPhoto"
-						compact
-					/>
+					<ToggleAfficherCacher name="layoutGeneral.layout.withPhoto" compact />
 					{watchWithPhoto && (
 						<SelectButtonRhf
 							className="shadow-none"

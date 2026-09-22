@@ -1,10 +1,7 @@
 // src/features/cv-editor/mapCvToSaveInput.ts
 import type { inferRouterOutputs } from "@trpc/server";
 import type { AppRouter } from "../../../server/api/root";
-import type {
-	CvSaveInput,
-	CvFormValues,
-} from "../../services/schemas/cvSave.schema";
+import type { CvSaveInput, CvFormValues } from "../../services/schemas/cvSave.schema";
 import {
 	educationContentSchema,
 	experienceContentSchema,
@@ -30,54 +27,36 @@ import { dateToStringMonthYear } from "../../utils/date";
 
 type RouterOutputs = inferRouterOutputs<AppRouter>;
 export type CvFull = RouterOutputs["cv"]["byId"];
-type ExperienceSettings = NonNullable<
-    NonNullable<CvSaveInput["datas"]["experience"]
->["settings"]>;
-type EducationSettings = NonNullable<
-    NonNullable<CvSaveInput["datas"]["education"]
->["settings"]>;
-type SkillGroupSettings = NonNullable<
-    NonNullable<CvSaveInput["datas"]["skillGroup"]
->["settings"]>;
-type LanguageSettings = NonNullable<
-    NonNullable<CvSaveInput["datas"]["language"]
->["settings"]>;
+type ExperienceSettings = NonNullable<NonNullable<CvSaveInput["datas"]["experience"]>["settings"]>;
+type EducationSettings = NonNullable<NonNullable<CvSaveInput["datas"]["education"]>["settings"]>;
+type SkillGroupSettings = NonNullable<NonNullable<CvSaveInput["datas"]["skillGroup"]>["settings"]>;
+type LanguageSettings = NonNullable<NonNullable<CvSaveInput["datas"]["language"]>["settings"]>;
 type ProjectSettings = NonNullable<NonNullable<CvSaveInput["datas"]["project"]>["settings"]>;
 type SocialMediaSettings = NonNullable<
-    NonNullable<CvSaveInput["datas"]["socialMedia"]
->["settings"]>;
-type StrengthSettings = NonNullable<
-    NonNullable<CvSaveInput["datas"]["strength"]
->["settings"]>;
-type PhilosophySettings = NonNullable<
-    NonNullable<CvSaveInput["datas"]["philosophy"]
->["settings"]>;
-type FormationSettings = NonNullable<
-    NonNullable<CvSaveInput["datas"]["formation"]
->["settings"]>;
+	NonNullable<CvSaveInput["datas"]["socialMedia"]>["settings"]
+>;
+type StrengthSettings = NonNullable<NonNullable<CvSaveInput["datas"]["strength"]>["settings"]>;
+type PhilosophySettings = NonNullable<NonNullable<CvSaveInput["datas"]["philosophy"]>["settings"]>;
+type FormationSettings = NonNullable<NonNullable<CvSaveInput["datas"]["formation"]>["settings"]>;
 type CertificationSettings = NonNullable<
-    NonNullable<CvSaveInput["datas"]["certification"]
->["settings"]>;
+	NonNullable<CvSaveInput["datas"]["certification"]>["settings"]
+>;
 type PrizeSettings = NonNullable<NonNullable<CvSaveInput["datas"]["prize"]>["settings"]>;
 type PassionSettings = NonNullable<NonNullable<CvSaveInput["datas"]["passion"]>["settings"]>;
-type ExpertiseSettings = NonNullable<
-    NonNullable<CvSaveInput["datas"]["expertise"]
->["settings"]>;
+type ExpertiseSettings = NonNullable<NonNullable<CvSaveInput["datas"]["expertise"]>["settings"]>;
 type VolunteeringSettings = NonNullable<
-    NonNullable<CvSaveInput["datas"]["volunteering"]
->["settings"]>;
+	NonNullable<CvSaveInput["datas"]["volunteering"]>["settings"]
+>;
 type PublicationSettings = NonNullable<
-    NonNullable<CvSaveInput["datas"]["publication"]
->["settings"]>;
+	NonNullable<CvSaveInput["datas"]["publication"]>["settings"]
+>;
 type AchievementSettings = NonNullable<
-    NonNullable<CvSaveInput["datas"]["achievement"]
->["settings"]>;
+	NonNullable<CvSaveInput["datas"]["achievement"]>["settings"]
+>;
 type CompetenceGroupSettings = NonNullable<
-    NonNullable<CvSaveInput["datas"]["competenceGroup"]
->["settings"]>;
-type TagGroupSettings = NonNullable<
-    NonNullable<CvSaveInput["datas"]["tagGroup"]
->["settings"]>;
+	NonNullable<CvSaveInput["datas"]["competenceGroup"]>["settings"]
+>;
+type TagGroupSettings = NonNullable<NonNullable<CvSaveInput["datas"]["tagGroup"]>["settings"]>;
 
 const defaultTitleSettings: ExperienceSettings["title"] = {
 	sizeModel: "18px",
@@ -116,43 +95,46 @@ export function mapFormToSaveInput(cv: CvFormValues): CvSaveInput {
 			m.type === "description"
 				? { ...m, title: cv.datas?.description?.title ?? m.title }
 				: m.type === "experience"
-				? { ...m, title: cv.datas?.experience?.title ?? m.title }
-				: m.type === "education"
-				? { ...m, title: cv.datas?.education?.title ?? m.title }
-				: m.type === "skill"
-				? { ...m, title: cv.datas?.skillGroup?.title ?? m.title }
-				: m.type === "language"
-				? { ...m, title: cv.datas?.language?.title ?? m.title }
-				: m.type === "project"
-				? { ...m, title: cv.datas?.project?.title ?? m.title }
-				: m.type === "volunteering"
-				? { ...m, title: cv.datas?.volunteering?.title ?? m.title }
-				: m.type === "formation"
-				? { ...m, title: cv.datas?.formation?.title ?? m.title }
-				: m.type === "certification"
-				? { ...m, title: cv.datas?.certification?.title ?? m.title }
-				: m.type === "prize"
-				? { ...m, title: cv.datas?.prize?.title ?? m.title }
-				: m.type === "expertise"
-				? { ...m, title: cv.datas?.expertise?.title ?? m.title }
-				: m.type === "socialMedia"
-				? { ...m, title: cv.datas?.socialMedia?.title ?? m.title }
-				: m.type === "strength"
-				? { ...m, title: cv.datas?.strength?.title ?? m.title }
-				: m.type === "philosophy"
-				? { ...m, title: cv.datas?.philosophy?.title ?? m.title }
-				: m.type === "passion"
-				? { ...m, title: cv.datas?.passion?.title ?? m.title }
-				: m.type === "competence"
-				? { ...m, title: cv.datas?.competenceGroup?.title ?? m.title }
-				: m.type === "tag"
-				? { ...m, title: cv.datas?.tagGroup?.title ?? m.title }
-				: m.type === "publication"
-				? { ...m, title: cv.datas?.publication?.title ?? m.title }
-				: m.type === "achievement"
-				? { ...m, title: cv.datas?.achievement?.title ?? m.title }
-				: m,
-        ),
+					? { ...m, title: cv.datas?.experience?.title ?? m.title }
+					: m.type === "education"
+						? { ...m, title: cv.datas?.education?.title ?? m.title }
+						: m.type === "skill"
+							? { ...m, title: cv.datas?.skillGroup?.title ?? m.title }
+							: m.type === "language"
+								? { ...m, title: cv.datas?.language?.title ?? m.title }
+								: m.type === "project"
+									? { ...m, title: cv.datas?.project?.title ?? m.title }
+									: m.type === "volunteering"
+										? { ...m, title: cv.datas?.volunteering?.title ?? m.title }
+										: m.type === "formation"
+											? { ...m, title: cv.datas?.formation?.title ?? m.title }
+											: m.type === "certification"
+												? { ...m, title: cv.datas?.certification?.title ?? m.title }
+												: m.type === "prize"
+													? { ...m, title: cv.datas?.prize?.title ?? m.title }
+													: m.type === "expertise"
+														? { ...m, title: cv.datas?.expertise?.title ?? m.title }
+														: m.type === "socialMedia"
+															? { ...m, title: cv.datas?.socialMedia?.title ?? m.title }
+															: m.type === "strength"
+																? { ...m, title: cv.datas?.strength?.title ?? m.title }
+																: m.type === "philosophy"
+																	? { ...m, title: cv.datas?.philosophy?.title ?? m.title }
+																	: m.type === "passion"
+																		? { ...m, title: cv.datas?.passion?.title ?? m.title }
+																		: m.type === "competence"
+																			? { ...m, title: cv.datas?.competenceGroup?.title ?? m.title }
+																			: m.type === "tag"
+																				? { ...m, title: cv.datas?.tagGroup?.title ?? m.title }
+																				: m.type === "publication"
+																					? { ...m, title: cv.datas?.publication?.title ?? m.title }
+																					: m.type === "achievement"
+																						? {
+																								...m,
+																								title: cv.datas?.achievement?.title ?? m.title,
+																							}
+																						: m,
+		),
 		datas: {
 			...cv.datas,
 			header: cv.datas?.header
@@ -165,10 +147,7 @@ export function mapFormToSaveInput(cv: CvFormValues): CvSaveInput {
 				? {
 						...cv.datas.experience,
 						content: cv.datas.experience.content
-							.filter(
-								(item) =>
-									item.content.title.trim() || item.content.company.trim(),
-							)
+							.filter((item) => item.content.title.trim() || item.content.company.trim())
 							.map((item) => ({
 								...item,
 								content: {
@@ -207,19 +186,13 @@ export function mapFormToSaveInput(cv: CvFormValues): CvSaveInput {
 				? {
 						...cv.datas.volunteering,
 						content: cv.datas.volunteering.content
-							.filter(
-								(item) =>
-									item.content.title.trim() || item.content.organisation.trim(),
-							)
+							.filter((item) => item.content.title.trim() || item.content.organisation.trim())
 							.map((item) => ({
 								...item,
 								content: {
 									...item.content,
 									title: withFallback(item.content.title, "Intitulé"),
-									organisation: withFallback(
-										item.content.organisation,
-										"Organisation",
-									),
+									organisation: withFallback(item.content.organisation, "Organisation"),
 									start: asDate(item.content.start),
 									end: item.content.end ? asDate(item.content.end) : null,
 									missions: (item.content.missions ?? []).filter(
@@ -261,9 +234,7 @@ export function mapFormToSaveInput(cv: CvFormValues): CvSaveInput {
 							})),
 					}
 				: undefined,
-			philosophy: cv.datas?.philosophy?.content?.citation?.trim()
-				? cv.datas.philosophy
-				: undefined,
+			philosophy: cv.datas?.philosophy?.content?.citation?.trim() ? cv.datas.philosophy : undefined,
 			certification: cv.datas?.certification
 				? {
 						...cv.datas.certification,
@@ -371,9 +342,7 @@ export function mapFormToSaveInput(cv: CvFormValues): CvSaveInput {
 						...cv.datas.socialMedia,
 						content: cv.datas.socialMedia.content
 							.filter(
-								(item) =>
-									item.content.username.trim() ||
-									(item.content.socialNetwork ?? "").trim(),
+								(item) => item.content.username.trim() || (item.content.socialNetwork ?? "").trim(),
 							)
 							.map((item) => ({
 								...item,
@@ -411,9 +380,7 @@ export function mapFormToSaveInput(cv: CvFormValues): CvSaveInput {
 								content: {
 									...group.content,
 									skills: (group.content.skills ?? []).filter(
-										(s) =>
-											(s.content.name ?? "").trim().length > 0 ||
-											!!s.content.skillId,
+										(s) => (s.content.name ?? "").trim().length > 0 || !!s.content.skillId,
 									),
 								},
 							}))
@@ -433,9 +400,7 @@ export function mapFormToSaveInput(cv: CvFormValues): CvSaveInput {
 								content: {
 									...group.content,
 									competences: (group.content.competences ?? []).filter(
-										(c) =>
-											(c.content.name ?? "").trim().length > 0 ||
-											!!c.content.competenceId,
+										(c) => (c.content.name ?? "").trim().length > 0 || !!c.content.competenceId,
 									),
 								},
 							}))
@@ -455,9 +420,7 @@ export function mapFormToSaveInput(cv: CvFormValues): CvSaveInput {
 								content: {
 									...group.content,
 									tags: (group.content.tags ?? []).filter(
-										(t) =>
-											(t.content.name ?? "").trim().length > 0 ||
-											!!t.content.tagId,
+										(t) => (t.content.name ?? "").trim().length > 0 || !!t.content.tagId,
 									),
 								},
 							}))
@@ -483,9 +446,7 @@ export function mapCvToSaveInput(cv: CvFull): CvSaveInput {
 	const strengthModule = cv.modules.find((m) => m.type === "strength");
 	const philosophyModule = cv.modules.find((m) => m.type === "philosophy");
 	const formationModule = cv.modules.find((m) => m.type === "formation");
-	const certificationModule = cv.modules.find(
-		(m) => m.type === "certification",
-	);
+	const certificationModule = cv.modules.find((m) => m.type === "certification");
 	const prizeModule = cv.modules.find((m) => m.type === "prize");
 	const passionModule = cv.modules.find((m) => m.type === "passion");
 	const expertiseModule = cv.modules.find((m) => m.type === "expertise");
@@ -500,12 +461,9 @@ export function mapCvToSaveInput(cv: CvFull): CvSaveInput {
 		templateId: cv.templateId,
 		title: cv.title,
 		...(cv.photo !== undefined ? { photo: cv.photo } : {}),
-		...(cv.layoutGeneral != null &&
-		Object.keys(cv.layoutGeneral as object).length > 0
+		...(cv.layoutGeneral != null && Object.keys(cv.layoutGeneral as object).length > 0
 			? {
-					layoutGeneral: cv.layoutGeneral as NonNullable<
-						CvSaveInput["layoutGeneral"]
-					>,
+					layoutGeneral: cv.layoutGeneral as NonNullable<CvSaveInput["layoutGeneral"]>,
 				}
 			: {}),
 		datas: {
@@ -514,25 +472,13 @@ export function mapCvToSaveInput(cv: CvFull): CvSaveInput {
 						header: {
 							id: cv.headerCv.id,
 							title: cv.headerCv.title,
-							...(cv.headerCv.subtitle != null
-								? { subtitle: cv.headerCv.subtitle }
-								: {}),
-							...(cv.headerCv.phone != null
-								? { phone: cv.headerCv.phone }
-								: {}),
-							...(cv.headerCv.email != null
-								? { email: cv.headerCv.email }
-								: {}),
-							...(cv.headerCv.location != null
-								? { location: cv.headerCv.location }
-								: {}),
-							...(cv.headerCv.portfolio != null
-								? { portfolio: cv.headerCv.portfolio }
-								: {}),
+							...(cv.headerCv.subtitle != null ? { subtitle: cv.headerCv.subtitle } : {}),
+							...(cv.headerCv.phone != null ? { phone: cv.headerCv.phone } : {}),
+							...(cv.headerCv.email != null ? { email: cv.headerCv.email } : {}),
+							...(cv.headerCv.location != null ? { location: cv.headerCv.location } : {}),
+							...(cv.headerCv.portfolio != null ? { portfolio: cv.headerCv.portfolio } : {}),
 							...(cv.headerCv.nom != null ? { nom: cv.headerCv.nom } : {}),
-							...(cv.headerCv.prenom != null
-								? { prenom: cv.headerCv.prenom }
-								: {}),
+							...(cv.headerCv.prenom != null ? { prenom: cv.headerCv.prenom } : {}),
 							...(cv.headerCv.settings != null
 								? {
 										settings: cv.headerCv.settings as NonNullable<
@@ -558,9 +504,9 @@ export function mapCvToSaveInput(cv: CvFull): CvSaveInput {
 									)?.title ?? defaultTitleSettings,
 								content:
 									(
-									  descriptionModule?.settings as {
-										content?: { description?: typeof defaultTitleSettings };
-									  } | null
+										descriptionModule?.settings as {
+											content?: { description?: typeof defaultTitleSettings };
+										} | null
 									)?.content?.description ?? defaultTitleSettings,
 							},
 						},
@@ -582,11 +528,11 @@ export function mapCvToSaveInput(cv: CvFull): CvSaveInput {
 							periode: [
 								exp.start ? `De ${dateToStringMonthYear(exp.start)}` : null,
 								exp.end ? `à ${dateToStringMonthYear(exp.end)}` : null,
-							].filter(Boolean).join(" "),
+							]
+								.filter(Boolean)
+								.join(" "),
 							...(exp.location != null ? { location: exp.location } : {}),
-							...(exp.description != null
-								? { description: exp.description }
-								: {}),
+							...(exp.description != null ? { description: exp.description } : {}),
 							settings: experienceContentSchema.safeParse({
 								...((experienceModule?.settings as { content?: object } | null)?.content ?? {}),
 								...(exp.settings && typeof exp.settings === "object" ? exp.settings : {}),
@@ -625,16 +571,12 @@ export function mapCvToSaveInput(cv: CvFull): CvSaveInput {
 							periode: [
 								project.start ? `De ${dateToStringMonthYear(project.start)}` : null,
 								project.end ? `à ${dateToStringMonthYear(project.end)}` : null,
-							].filter(Boolean).join(" "),
-							...(project.location != null
-								? { location: project.location }
-								: {}),
-							...(project.description != null
-								? { description: project.description }
-								: {}),
-							...(project.technology != null
-								? { technology: project.technology }
-								: {}),
+							]
+								.filter(Boolean)
+								.join(" "),
+							...(project.location != null ? { location: project.location } : {}),
+							...(project.description != null ? { description: project.description } : {}),
+							...(project.technology != null ? { technology: project.technology } : {}),
 							...(project.status != null ? { status: project.status } : {}),
 							missions: [...project.cvMissions]
 								.sort((a, b) => a.order - b.order)
@@ -646,7 +588,9 @@ export function mapCvToSaveInput(cv: CvFull): CvSaveInput {
 								})),
 							settings: projectContentSchema.safeParse({
 								...((projectModule?.settings as { content?: object } | null)?.content ?? {}),
-								...(project.settings && typeof project.settings === "object" ? project.settings : {}),
+								...(project.settings && typeof project.settings === "object"
+									? project.settings
+									: {}),
 							}).data,
 						},
 					})),
@@ -671,22 +615,22 @@ export function mapCvToSaveInput(cv: CvFull): CvSaveInput {
 							title: volunteering.title,
 							organisation: volunteering.organisation,
 							start: volunteering.start,
-							...(volunteering.end !== undefined
-								? { end: volunteering.end }
-								: {}),
+							...(volunteering.end !== undefined ? { end: volunteering.end } : {}),
 							periode: [
 								volunteering.start ? `De ${dateToStringMonthYear(volunteering.start)}` : null,
 								volunteering.end ? `à ${dateToStringMonthYear(volunteering.end)}` : null,
-							].filter(Boolean).join(" "),
-							...(volunteering.location != null
-								? { location: volunteering.location }
-								: {}),
+							]
+								.filter(Boolean)
+								.join(" "),
+							...(volunteering.location != null ? { location: volunteering.location } : {}),
 							...(volunteering.description != null
 								? { description: volunteering.description }
 								: {}),
 							settings: volunteeringContentSchema.safeParse({
 								...((volunteeringModule?.settings as { content?: object } | null)?.content ?? {}),
-								...(volunteering.settings && typeof volunteering.settings === "object" ? volunteering.settings : {}),
+								...(volunteering.settings && typeof volunteering.settings === "object"
+									? volunteering.settings
+									: {}),
 							}).data,
 							missions: [...volunteering.cvMissions]
 								.sort((a, b) => a.order - b.order)
@@ -725,7 +669,9 @@ export function mapCvToSaveInput(cv: CvFull): CvSaveInput {
 							...(formation.status != null ? { status: formation.status } : {}),
 							settings: formationContentSchema.safeParse({
 								...((formationModule?.settings as { content?: object } | null)?.content ?? {}),
-								...(formation.settings && typeof formation.settings === "object" ? formation.settings : {}),
+								...(formation.settings && typeof formation.settings === "object"
+									? formation.settings
+									: {}),
 							}).data,
 						},
 					})),
@@ -748,11 +694,12 @@ export function mapCvToSaveInput(cv: CvFull): CvSaveInput {
 						order: certification.order,
 						content: {
 							title: certification.title,
-							organismeCertification:
-								certification.organismeCertification ?? "",
+							organismeCertification: certification.organismeCertification ?? "",
 							settings: certificationContentSchema.safeParse({
 								...((certificationModule?.settings as { content?: object } | null)?.content ?? {}),
-								...(certification.settings && typeof certification.settings === "object" ? certification.settings : {}),
+								...(certification.settings && typeof certification.settings === "object"
+									? certification.settings
+									: {}),
 							}).data,
 						},
 					})),
@@ -805,7 +752,9 @@ export function mapCvToSaveInput(cv: CvFull): CvSaveInput {
 							level: expertise.level,
 							settings: expertiseContentSchema.safeParse({
 								...((expertiseModule?.settings as { content?: object } | null)?.content ?? {}),
-								...(expertise.settings && typeof expertise.settings === "object" ? expertise.settings : {}),
+								...(expertise.settings && typeof expertise.settings === "object"
+									? expertise.settings
+									: {}),
 							}).data,
 						},
 					})),
@@ -828,10 +777,7 @@ export function mapCvToSaveInput(cv: CvFull): CvSaveInput {
 								author: cv.philosophy.author ?? undefined,
 								...(cv.philosophy.settings != null
 									? {
-											settings: cv.philosophy.settings as Record<
-												string,
-												boolean
-											>,
+											settings: cv.philosophy.settings as Record<string, boolean>,
 										}
 									: {}),
 							},
@@ -842,9 +788,7 @@ export function mapCvToSaveInput(cv: CvFull): CvSaveInput {
 											title?: PhilosophySettings["title"];
 										} | null
 									)?.title ?? defaultTitleSettings,
-								content: (
-									philosophyModule?.settings as PhilosophySettings | null
-								)?.content ?? {
+								content: (philosophyModule?.settings as PhilosophySettings | null)?.content ?? {
 									citation: defaultTitleSettings,
 									author: defaultTitleSettings,
 									withAuthor: true,
@@ -867,7 +811,9 @@ export function mapCvToSaveInput(cv: CvFull): CvSaveInput {
 							icon: socialMedia.icon,
 							settings: socialMediaContentSchema.safeParse({
 								...((socialMediaModule?.settings as { content?: object } | null)?.content ?? {}),
-								...(socialMedia.settings && typeof socialMedia.settings === "object" ? socialMedia.settings : {}),
+								...(socialMedia.settings && typeof socialMedia.settings === "object"
+									? socialMedia.settings
+									: {}),
 							}).data,
 						},
 					})),
@@ -893,7 +839,9 @@ export function mapCvToSaveInput(cv: CvFull): CvSaveInput {
 							icon: passion.icon,
 							settings: passionContentSchema.safeParse({
 								...((passionModule?.settings as { content?: object } | null)?.content ?? {}),
-								...(passion.settings && typeof passion.settings === "object" ? passion.settings : {}),
+								...(passion.settings && typeof passion.settings === "object"
+									? passion.settings
+									: {}),
 							}).data,
 						},
 					})),
@@ -919,7 +867,9 @@ export function mapCvToSaveInput(cv: CvFull): CvSaveInput {
 							level: language.level,
 							settings: languageContentSchema.safeParse({
 								...((languageModule?.settings as { content?: object } | null)?.content ?? {}),
-								...(language.settings && typeof language.settings === "object" ? language.settings : {}),
+								...(language.settings && typeof language.settings === "object"
+									? language.settings
+									: {}),
 							}).data,
 						},
 					})),
@@ -943,19 +893,15 @@ export function mapCvToSaveInput(cv: CvFull): CvSaveInput {
 						content: {
 							title: publication.title,
 							start: publication.start,
-							...(publication.end !== undefined
-								? { end: publication.end }
-								: {}),
-							...(publication.journalName != null
-								? { journalName: publication.journalName }
-								: {}),
-							...(publication.description != null
-								? { description: publication.description }
-								: {}),
+							...(publication.end !== undefined ? { end: publication.end } : {}),
+							...(publication.journalName != null ? { journalName: publication.journalName } : {}),
+							...(publication.description != null ? { description: publication.description } : {}),
 							...(publication.url != null ? { url: publication.url } : {}),
 							settings: publicationContentSchema.safeParse({
 								...((publicationModule?.settings as { content?: object } | null)?.content ?? {}),
-								...(publication.settings && typeof publication.settings === "object" ? publication.settings : {}),
+								...(publication.settings && typeof publication.settings === "object"
+									? publication.settings
+									: {}),
 							}).data,
 						},
 					})),
@@ -982,7 +928,9 @@ export function mapCvToSaveInput(cv: CvFull): CvSaveInput {
 							description: strength.description ?? undefined,
 							settings: strengthContentSchema.safeParse({
 								...((strengthModule?.settings as { content?: object } | null)?.content ?? {}),
-								...(strength.settings && typeof strength.settings === "object" ? strength.settings : {}),
+								...(strength.settings && typeof strength.settings === "object"
+									? strength.settings
+									: {}),
 							}).data,
 						},
 					})),
@@ -1008,7 +956,9 @@ export function mapCvToSaveInput(cv: CvFull): CvSaveInput {
 							description: achievement.description ?? undefined,
 							settings: achievementContentSchema.safeParse({
 								...((achievementModule?.settings as { content?: object } | null)?.content ?? {}),
-								...(achievement.settings && typeof achievement.settings === "object" ? achievement.settings : {}),
+								...(achievement.settings && typeof achievement.settings === "object"
+									? achievement.settings
+									: {}),
 							}).data,
 						},
 					})),
@@ -1040,11 +990,13 @@ export function mapCvToSaveInput(cv: CvFull): CvSaveInput {
 							year: education.end
 								? String(new Date(education.end).getFullYear())
 								: education.start
-								? String(new Date(education.start).getFullYear())
-								: "",
+									? String(new Date(education.start).getFullYear())
+									: "",
 							settings: educationContentSchema.safeParse({
 								...((educationModule?.settings as { content?: object } | null)?.content ?? {}),
-								...(education.settings && typeof education.settings === "object" ? education.settings : {}),
+								...(education.settings && typeof education.settings === "object"
+									? education.settings
+									: {}),
 							}).data,
 						},
 					})),

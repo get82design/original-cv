@@ -1,10 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { createTestUser } from "../../utils/create-test-user";
-import {
-	ConflictError,
-	NotFoundError,
-	ValidationError,
-} from "../../../src/services/errors";
+import { ConflictError, NotFoundError, ValidationError } from "../../../src/services/errors";
 import { CvTimelineStatus } from "../../../generated/prisma/enums";
 import { createTestProfile } from "../../utils/create-test-profile";
 import { profileProjectService } from "../../../src/services/profile/profileProjectService";
@@ -499,9 +495,7 @@ describe("ProfileProjectService.move", () => {
 
 	// TEST 2 : project inexistant
 	it("throws if project does not exist", async () => {
-		await expect(profileProjectService.move("unknown-id", 1)).rejects.toThrow(
-			NotFoundError,
-		);
+		await expect(profileProjectService.move("unknown-id", 1)).rejects.toThrow(NotFoundError);
 	});
 
 	// TEST 3 : ordre invalide
@@ -560,9 +554,7 @@ describe("ProfileProjectService.delete", () => {
 
 	// TEST 2 : project inexistant
 	it("throws if project does not exist", async () => {
-		await expect(profileProjectService.delete("unknown-id")).rejects.toThrow(
-			NotFoundError,
-		);
+		await expect(profileProjectService.delete("unknown-id")).rejects.toThrow(NotFoundError);
 	});
 
 	// TEST 3 : réorganisation des projects après suppression

@@ -17,9 +17,7 @@ import { CardPassionOne } from "./compo/CardPassionOne";
 
 export const SectionPassionTwo = () => {
 	const { watch } = useFormContext();
-	const watchModelPassionTitle: BaseTextSettings = watch(
-		FieldNamePassion.settingsSectionTitle,
-	);
+	const watchModelPassionTitle: BaseTextSettings = watch(FieldNamePassion.settingsSectionTitle);
 	const watchGeneral = watch(FieldNameLayoutGeneral.layout);
 
 	const {
@@ -34,8 +32,7 @@ export const SectionPassionTwo = () => {
 	});
 
 	const itemKey =
-		watch("layoutGeneral.defaultStyles")?.components?.sectionPassion?.item ??
-		"CardPassionOne";
+		watch("layoutGeneral.defaultStyles")?.components?.sectionPassion?.item ?? "CardPassionOne";
 	const Card = PassionCardRegister[itemKey] ?? CardPassionOne;
 
 	return (
@@ -47,9 +44,7 @@ export const SectionPassionTwo = () => {
 					name={FieldNamePassion.titleSection}
 					placeholder={"Passion"}
 					watchInput={watchModelPassionTitle}
-					icon={
-						<BsBalloonHeartFill style={{ width: "16px", height: "16px" }} />
-					}
+					icon={<BsBalloonHeartFill style={{ width: "16px", height: "16px" }} />}
 					setSectionSelected={setItemSelected}
 				/>
 			}

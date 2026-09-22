@@ -10,7 +10,7 @@ import type { GetServerSidePropsContext, NextApiRequest, NextApiResponse } from 
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 
 export const authOptions: NextAuthOptions = {
-    adapter: PrismaAdapter(prisma),
+	adapter: PrismaAdapter(prisma),
 	providers: [
 		CredentialsProvider({
 			name: "Credentials",
@@ -26,100 +26,97 @@ export const authOptions: NextAuthOptions = {
 			},
 
 			async authorize(credentials) {
-                if (!credentials?.email || !credentials?.password) {
-                    return null;
-                }
-            
-                const user = await userService.findByEmail(credentials.email);
-            
-                if (!user) {
-                    return null;
-                }
-            
-                if (!user.password) {
-                    return null;
-                }
+				if (!credentials?.email || !credentials?.password) {
+					return null;
+				}
 
-                if(!user.isActive) {
-                    return null;
-                }
-            
-                const isValidPassword = await compare(
-                    credentials.password,
-                    user.password,
-                );
-            
-                if (!isValidPassword) {
-                    return null;
-                }
+				const user = await userService.findByEmail(credentials.email);
 
-                await prisma.user.update({
-                    where: { id: user.id },
-                    data: { lastLoginAt: new Date() },
-                });
-            
-                return {
-                    id: user.id,
-                    email: user.email,
-                    name: user.name,
-                    image: user.image,
-                    plan: user.plan,
-                    role: user.role,
-                };
-            }
+				if (!user) {
+					return null;
+				}
+
+				if (!user.password) {
+					return null;
+				}
+
+				if (!user.isActive) {
+					return null;
+				}
+
+				const isValidPassword = await compare(credentials.password, user.password);
+
+				if (!isValidPassword) {
+					return null;
+				}
+
+				await prisma.user.update({
+					where: { id: user.id },
+					data: { lastLoginAt: new Date() },
+				});
+
+				return {
+					id: user.id,
+					email: user.email,
+					name: user.name,
+					image: user.image,
+					plan: user.plan,
+					role: user.role,
+				};
+			},
 		}),
-        GoogleProvider({
-            clientId: process.env.GOOGLE_CLIENT_ID!,
-            clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
-            allowDangerousEmailAccountLinking: true,
-        }),
-        GitHubProvider({
-            clientId: process.env.GITHUB_CLIENT_ID!,
-            clientSecret: process.env.GITHUB_CLIENT_SECRET!,
-            allowDangerousEmailAccountLinking: true,
-            authorization: { params: { scope: "read:user user:email" } },
-          }),
+		GoogleProvider({
+			clientId: process.env.GOOGLE_CLIENT_ID!,
+			clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+			allowDangerousEmailAccountLinking: true,
+		}),
+		GitHubProvider({
+			clientId: process.env.GITHUB_CLIENT_ID!,
+			clientSecret: process.env.GITHUB_CLIENT_SECRET!,
+			allowDangerousEmailAccountLinking: true,
+			authorization: { params: { scope: "read:user user:email" } },
+		}),
 	],
 
 	session: {
 		strategy: "jwt",
 	},
 
-    events: {
-        async signIn({ user }) {
-            if (!user.id) return;
-            // Couvre OAuth (Google / GitHub) ; Credentials a déjà maj lastLoginAt
-            await prisma.user.update({
-                where: { id: user.id },
-                data: { lastLoginAt: new Date() },
-            });
-        },
-    },
+	events: {
+		async signIn({ user }) {
+			if (!user.id) return;
+			// Couvre OAuth (Google / GitHub) ; Credentials a déjà maj lastLoginAt
+			await prisma.user.update({
+				where: { id: user.id },
+				data: { lastLoginAt: new Date() },
+			});
+		},
+	},
 
-    callbacks: {
-        async jwt({ token, user }) {
-            if (user?.id) {
-                token.id = user.id;
-                const dbUser = await prisma.user.findUnique({
-                  where: { id: user.id },
-                  select: { plan: true, role: true },
-                });
-                token.plan = dbUser?.plan ?? "FREE";
-                token.role = dbUser?.role ?? "USER";
-            }
-            return token;
-        },
-    
-        async session({ session, token }) {
-            if (session.user) {
-                session.user.id = token.id as string;
-                session.user.plan = token.plan as PlanRole;
-                session.user.role = (token.role as UserRole) ?? "USER";
-            }
-    
-            return session;
-        },
-    },
+	callbacks: {
+		async jwt({ token, user }) {
+			if (user?.id) {
+				token.id = user.id;
+				const dbUser = await prisma.user.findUnique({
+					where: { id: user.id },
+					select: { plan: true, role: true },
+				});
+				token.plan = dbUser?.plan ?? "FREE";
+				token.role = dbUser?.role ?? "USER";
+			}
+			return token;
+		},
+
+		async session({ session, token }) {
+			if (session.user) {
+				session.user.id = token.id as string;
+				session.user.plan = token.plan as PlanRole;
+				session.user.role = (token.role as UserRole) ?? "USER";
+			}
+
+			return session;
+		},
+	},
 
 	pages: {
 		signIn: "/login",

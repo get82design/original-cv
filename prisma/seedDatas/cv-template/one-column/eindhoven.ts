@@ -15,15 +15,15 @@ export const eindhoven = defineTemplate({
 		stylePhoto: "circle",
 		photoSide: "left",
 		listStyle: "line",
-        titleSection: {
+		titleSection: {
 			...sharedLayout.titleSection,
 			bgColor: "primaryColor",
 			textTransform: "uppercase",
 			shadeBgColor: "-200",
 			textAlign: "center",
 		},
-    },
-    modules: {
+	},
+	modules: {
 		description: { title: "À propos", isActive: true, order: 1 },
 		experience: { title: "Expériences", isActive: true, order: 2 },
 		education: { title: "Formations", isActive: true, order: 3, columns: 2 },

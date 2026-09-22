@@ -18,10 +18,7 @@ export const ProfilePhilosophy = ({ cvs }: { cvs: CV[] }) => {
 	const watchPhilosophie = watch("philosophy");
 	const [visibleMaj, setVisibleMaj] = useState(false);
 	const [idCv, setIdCv] = useState<string>("");
-	const { data: cvSelected } = trpc.cv.byId.useQuery(
-		{ id: idCv ?? "" },
-		{ enabled: !!idCv },
-	);
+	const { data: cvSelected } = trpc.cv.byId.useQuery({ id: idCv ?? "" }, { enabled: !!idCv });
 
 	useEffect(() => {
 		if (cvSelected) {
@@ -56,12 +53,7 @@ export const ProfilePhilosophy = ({ cvs }: { cvs: CV[] }) => {
 			)}
 			<AppCard className="relative group">
 				<div className="opacity-30 absolute top-2 left-3">
-					<TitleAppTwo
-						firstPart={"Votre"}
-						secondPart={"Philosophie"}
-						size={"text-2xl"}
-						withSpace
-					/>
+					<TitleAppTwo firstPart={"Votre"} secondPart={"Philosophie"} size={"text-2xl"} withSpace />
 				</div>
 				<div className="mt-10 w-full flex flex-col gap-2">
 					<div

@@ -24,28 +24,17 @@ export function MiniatureSkillRenderer({
 }: {
 	templateConfig: TemplateDefaultStyles;
 }) {
-	const miniatureKey =
-		templateConfig?.components?.sectionSkill?.miniature ?? "MiniSkillOne";
-	const MiniatureComponent =
-		MiniatureRegister[miniatureKey] ?? DefaultMiniature;
+	const miniatureKey = templateConfig?.components?.sectionSkill?.miniature ?? "MiniSkillOne";
+	const MiniatureComponent = MiniatureRegister[miniatureKey] ?? DefaultMiniature;
 	return <MiniatureComponent />;
 }
-export function IconSkillRenderer({
-	templateConfig,
-}: {
-	templateConfig: TemplateDefaultStyles;
-}) {
+export function IconSkillRenderer({ templateConfig }: { templateConfig: TemplateDefaultStyles }) {
 	const iconKey = templateConfig?.components?.sectionSkill?.icon ?? "MdTag";
 	const IconComponent = IconRegister[iconKey] ?? DefaultIcon;
 	return <IconComponent />;
 }
-export function SkillRenderer({
-	templateConfig,
-}: {
-	templateConfig: TemplateDefaultStyles;
-}) {
-	const skillKey =
-		templateConfig?.components?.sectionSkill?.component ?? "SectionSkillOne";
+export function SkillRenderer({ templateConfig }: { templateConfig: TemplateDefaultStyles }) {
+	const skillKey = templateConfig?.components?.sectionSkill?.component ?? "SectionSkillOne";
 	const SkillComponent = SkillRegister[skillKey] ?? DefaultSkill;
 	return <SkillComponent />;
 }

@@ -266,9 +266,7 @@ describe("CvAchievementService.move", () => {
 
 	// TEST 2 : achievement inexistant
 	it("throws if achievement does not exist", async () => {
-		await expect(cvAchievementService.move("unknown-id", 1)).rejects.toThrow(
-			NotFoundError,
-		);
+		await expect(cvAchievementService.move("unknown-id", 1)).rejects.toThrow(NotFoundError);
 	});
 
 	// TEST 3 : ordre invalide
@@ -283,9 +281,7 @@ describe("CvAchievementService.move", () => {
 			technology: "Technology 1",
 			order: 1,
 		});
-		await expect(
-			cvAchievementService.move(achievement1.id, 0),
-		).rejects.toThrow();
+		await expect(cvAchievementService.move(achievement1.id, 0)).rejects.toThrow();
 	});
 
 	it("move no-op if order is the same", async () => {
@@ -329,9 +325,7 @@ describe("CvAchievementService.delete", () => {
 
 	// TEST 2 : achievement inexistant
 	it("throws if achievement does not exist", async () => {
-		await expect(cvAchievementService.delete("unknown-id")).rejects.toThrow(
-			NotFoundError,
-		);
+		await expect(cvAchievementService.delete("unknown-id")).rejects.toThrow(NotFoundError);
 	});
 
 	// TEST 3 : réorganisation des achievements après suppression

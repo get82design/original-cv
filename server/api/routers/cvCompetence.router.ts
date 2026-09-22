@@ -21,10 +21,7 @@ async function assertGroupCvOwnership(groupId: string, userId: string) {
 	return group;
 }
 
-async function assertCompetenceCvOwnership(
-	competenceId: string,
-	userId: string,
-) {
+async function assertCompetenceCvOwnership(competenceId: string, userId: string) {
 	const competence = await prisma.cvCompetence.findUnique({
 		where: { id: competenceId },
 		select: {

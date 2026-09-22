@@ -13,11 +13,7 @@ interface DialogDataFromProfileProps extends DialogProps {
 	profile: ProfileComplete;
 }
 
-export const DialogDataFromProfile = ({
-	visible,
-	onHide,
-	profile,
-}: DialogDataFromProfileProps) => {
+export const DialogDataFromProfile = ({ visible, onHide, profile }: DialogDataFromProfileProps) => {
 	const { reset, getValues } = useFormContext();
 	const { modeles } = useModelAndColorContext();
 
@@ -78,8 +74,8 @@ export const DialogDataFromProfile = ({
 			<div className="flex flex-col gap-4 p-4">
 				<div className="flex justify-center items-center gap-4">
 					<p className="text-zinc-900 dark:text-zinc-100">
-						Souhaitez vous remplacer le contenu de votre CV par les infos
-						stockées sur votre tableau de bord ?
+						Souhaitez vous remplacer le contenu de votre CV par les infos stockées sur votre tableau
+						de bord ?
 					</p>
 					<SelectButton
 						value={selectedOption}
@@ -97,28 +93,25 @@ export const DialogDataFromProfile = ({
 							{selectedOption === "yes" ? (
 								<div className="flex flex-col gap-2">
 									<p>
-										Les informations de votre tableau de bord seront utilisées
-										pour remplir votre CV. Elles viendront écraser les données
-										actuelles de votre CV.
+										Les informations de votre tableau de bord seront utilisées pour remplir votre
+										CV. Elles viendront écraser les données actuelles de votre CV.
 									</p>
 									<p>
-										Si une section n&apos;est pas présente sur le modèle par
-										défaut, vous la retrouverez dans l&apos;onglet
-										&quot;Sections&quot; avec les données que vous avez
-										enregistré dans votre tableau de bord.
+										Si une section n&apos;est pas présente sur le modèle par défaut, vous la
+										retrouverez dans l&apos;onglet &quot;Sections&quot; avec les données que vous
+										avez enregistré dans votre tableau de bord.
 									</p>
 								</div>
 							) : (
 								<div className="flex flex-col gap-2">
 									<p>
-										Les informations de votre tableau de bord ne seront pas
-										utilisées pour remplir votre CV.
+										Les informations de votre tableau de bord ne seront pas utilisées pour remplir
+										votre CV.
 									</p>
 									<p>
-										Vous pouvez toujours, si vous le souhaitez, récupérer les
-										données d&apos;une section depuis votre tableau de bord en
-										cliquant sur le bouton &quot;Récupérer les données&quot;
-										présent dans chaque section.
+										Vous pouvez toujours, si vous le souhaitez, récupérer les données d&apos;une
+										section depuis votre tableau de bord en cliquant sur le bouton &quot;Récupérer
+										les données&quot; présent dans chaque section.
 									</p>
 								</div>
 							)}

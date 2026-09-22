@@ -25,10 +25,8 @@ export function MiniatureFormationRenderer({
 	templateConfig: TemplateDefaultStyles;
 }) {
 	const miniatureKey =
-		templateConfig?.components?.sectionFormation?.miniature ??
-		"MiniFormationOne";
-	const MiniatureComponent =
-		MiniatureRegister[miniatureKey] ?? DefaultMiniature;
+		templateConfig?.components?.sectionFormation?.miniature ?? "MiniFormationOne";
+	const MiniatureComponent = MiniatureRegister[miniatureKey] ?? DefaultMiniature;
 	return <MiniatureComponent />;
 }
 export function IconFormationRenderer({
@@ -36,20 +34,13 @@ export function IconFormationRenderer({
 }: {
 	templateConfig: TemplateDefaultStyles;
 }) {
-	const iconKey =
-		templateConfig?.components?.sectionFormation?.icon ?? "IconFormation";
+	const iconKey = templateConfig?.components?.sectionFormation?.icon ?? "IconFormation";
 	const IconComponent = IconRegister[iconKey] ?? DefaultIcon;
 	return <IconComponent />;
 }
-export function FormationRenderer({
-	templateConfig,
-}: {
-	templateConfig: TemplateDefaultStyles;
-}) {
+export function FormationRenderer({ templateConfig }: { templateConfig: TemplateDefaultStyles }) {
 	const FormationKey =
-		templateConfig?.components?.sectionFormation?.component ??
-		"SectionFormationOne";
-	const FormationComponent =
-		FormationRegister[FormationKey] ?? DefaultFormation;
+		templateConfig?.components?.sectionFormation?.component ?? "SectionFormationOne";
+	const FormationComponent = FormationRegister[FormationKey] ?? DefaultFormation;
 	return <FormationComponent />;
 }

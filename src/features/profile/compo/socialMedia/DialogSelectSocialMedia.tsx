@@ -1,7 +1,4 @@
-import type {
-	ProfileSaveInput,
-	SocialMediaInput,
-} from "@/services/schemas/profileSave.schema";
+import type { ProfileSaveInput, SocialMediaInput } from "@/services/schemas/profileSave.schema";
 import type { CvFull } from "@utils/trpc.types";
 import type { ListItem } from "@utils/type";
 import { Button } from "primereact/button";
@@ -11,9 +8,7 @@ import { useEffect, useState } from "react";
 import { v4 as uuid } from "uuid";
 
 type CvSocialMedia = NonNullable<CvFull>["socialMedias"][number];
-type ProfileSocialMediaItem = NonNullable<
-	ProfileSaveInput["socialMedias"]
->[number];
+type ProfileSocialMediaItem = NonNullable<ProfileSaveInput["socialMedias"]>[number];
 
 function cvSocialMediaToProfile(exp: CvSocialMedia): ProfileSocialMediaItem {
 	return {
@@ -53,17 +48,12 @@ export function DialogSelectSocialMedia({
 		if (!visible) return;
 		setTarget(listSocialMediaInProfile);
 		const already = new Set(
-			listSocialMediaInProfile.map(
-				(e) => `${e.content.icon}|${e.content.socialNetwork ?? ""}`,
-			),
+			listSocialMediaInProfile.map((e) => `${e.content.icon}|${e.content.socialNetwork ?? ""}`),
 		);
 		setSource(
 			listSocialMediaFromCv
 				.map((exp) => cvSocialMediaToProfile(exp))
-				.filter(
-					(e) =>
-						!already.has(`${e.content.icon}|${e.content.socialNetwork ?? ""}`),
-				),
+				.filter((e) => !already.has(`${e.content.icon}|${e.content.socialNetwork ?? ""}`)),
 		);
 	}, [visible, listSocialMediaFromCv]);
 

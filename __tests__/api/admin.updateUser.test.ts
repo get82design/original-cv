@@ -1,18 +1,15 @@
 import { describe, expect, it } from "vitest";
 import { prismaTest } from "../../lib/prismaTest";
 import { createTestUser } from "../utils/create-test-user";
-import {
-	createTestCaller,
-	createTestSession,
-} from "./helpers/create-test-caller";
+import { createTestCaller, createTestSession } from "./helpers/create-test-caller";
 
 describe("admin.updateUser", () => {
 	it("rejects non-admin", async () => {
 		const user = await createTestUser();
 		const caller = await createTestCaller(createTestSession(user));
-		await expect(
-			caller.admin.updateUser({ id: user.id, isActive: false }),
-		).rejects.toMatchObject({ code: "FORBIDDEN" });
+		await expect(caller.admin.updateUser({ id: user.id, isActive: false })).rejects.toMatchObject({
+			code: "FORBIDDEN",
+		});
 	});
 
 	it("updates isActive, credits and free downloads", async () => {
@@ -49,10 +46,7 @@ describe("admin.updateUser", () => {
 			orderBy: { kind: "asc" },
 		});
 		expect(logs).toHaveLength(2);
-		expect(logs.map((l) => l.kind).sort()).toEqual([
-			"DOWNLOAD_CREDITS",
-			"FREE_DOWNLOADS",
-		]);
+		expect(logs.map((l) => l.kind).sort()).toEqual(["DOWNLOAD_CREDITS", "FREE_DOWNLOADS"]);
 		expect(logs.every((l) => l.actorUserId === admin.id)).toBe(true);
 		expect(logs.every((l) => l.reason === "ADMIN_SET")).toBe(true);
 	});
@@ -67,9 +61,9 @@ describe("admin.updateUser", () => {
 			}),
 		);
 
-		await expect(
-			caller.admin.updateUser({ id: admin.id, isActive: false }),
-		).rejects.toMatchObject({ code: "BAD_REQUEST" });
+		await expect(caller.admin.updateUser({ id: admin.id, isActive: false })).rejects.toMatchObject({
+			code: "BAD_REQUEST",
+		});
 	});
 
 	it("returns NOT_FOUND for unknown id", async () => {
@@ -123,9 +117,9 @@ describe("admin.updateUser", () => {
 			}),
 		);
 
-		await expect(
-			caller.admin.updateUser({ id: target.id, plan: "PREMIUM" }),
-		).rejects.toMatchObject({ code: "BAD_REQUEST" });
+		await expect(caller.admin.updateUser({ id: target.id, plan: "PREMIUM" })).rejects.toMatchObject(
+			{ code: "BAD_REQUEST" },
+		);
 	});
 
 	it("rejects update with no mutable field (Zod refine)", async () => {
@@ -139,9 +133,7 @@ describe("admin.updateUser", () => {
 			}),
 		);
 
-		await expect(
-			caller.admin.updateUser({ id: target.id }),
-		).rejects.toMatchObject({
+		await expect(caller.admin.updateUser({ id: target.id })).rejects.toMatchObject({
 			code: "BAD_REQUEST",
 			message: expect.stringContaining("Au moins un champ à mettre à jour"),
 		});

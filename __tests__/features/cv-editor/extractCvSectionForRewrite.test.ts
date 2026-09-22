@@ -42,10 +42,7 @@ describe("extractCvSectionForRewrite", () => {
 
 	it("lists only sections with content", () => {
 		const list = listRewriteableSections(cv);
-		expect(list.map((s) => s.sectionType)).toEqual([
-			"description",
-			"experience",
-		]);
+		expect(list.map((s) => s.sectionType)).toEqual(["description", "experience"]);
 	});
 
 	it("extracts description text", () => {

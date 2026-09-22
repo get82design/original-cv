@@ -49,9 +49,7 @@ describe("cvImportService", () => {
 	});
 
 	it("pipelines PDF pages into gemini parseCvFromImages", async () => {
-		const parseSpy = vi
-			.spyOn(geminiService, "parseCvFromImages")
-			.mockResolvedValue(emptyDraft);
+		const parseSpy = vi.spyOn(geminiService, "parseCvFromImages").mockResolvedValue(emptyDraft);
 
 		const result = await cvImportService.importCvFromPdf(minimalPdfBytes(), {
 			maxPages: 1,
@@ -69,9 +67,7 @@ describe("cvImportService", () => {
 	});
 
 	it("forwards model option to gemini when provided", async () => {
-		const parseSpy = vi
-			.spyOn(geminiService, "parseCvFromImages")
-			.mockResolvedValue(emptyDraft);
+		const parseSpy = vi.spyOn(geminiService, "parseCvFromImages").mockResolvedValue(emptyDraft);
 
 		await cvImportService.importCvFromPdf(minimalPdfBytes(), {
 			maxPages: 1,
@@ -79,16 +75,11 @@ describe("cvImportService", () => {
 			model: "gemini-test-model",
 		});
 
-		expect(parseSpy).toHaveBeenCalledWith(
-			expect.any(Array),
-			{ model: "gemini-test-model" },
-		);
+		expect(parseSpy).toHaveBeenCalledWith(expect.any(Array), { model: "gemini-test-model" });
 	});
 
 	it("passes through pageCount from rendered pages", async () => {
-		vi.spyOn(geminiService, "parseCvFromImages").mockResolvedValue(
-			emptyDraft,
-		);
+		vi.spyOn(geminiService, "parseCvFromImages").mockResolvedValue(emptyDraft);
 		// Smoke: real render still returns ≥1 page for minimal PDF
 		const pages = await pdfPagesToImages(minimalPdfBytes(), {
 			maxPages: 1,

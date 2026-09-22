@@ -29,18 +29,15 @@ export function SectionCertificationOne() {
 		itemSelected,
 		setItemSelected,
 		createNewItem,
-	} = useSectionList<
-		CertificationItemContentInput,
-		CertificationContentSettings
-	>({
+	} = useSectionList<CertificationItemContentInput, CertificationContentSettings>({
 		contentField: FieldNameCertification.content,
 		moduleType: "certification",
 		createInit: createInitCertification,
 	});
 
 	const itemKey =
-		watch("layoutGeneral.defaultStyles")?.components?.sectionCertification
-			?.item ?? "CardCertificationOne";
+		watch("layoutGeneral.defaultStyles")?.components?.sectionCertification?.item ??
+		"CardCertificationOne";
 	const Card = CertificationCardRegister[itemKey] ?? CardCertificationOne;
 
 	return (

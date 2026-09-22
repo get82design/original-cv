@@ -6,13 +6,7 @@ describe("CV Fullflow Integration with prize", () => {
 	it("should create a CV with prize", async () => {
 		const { user, template } = await utils.createUserAndTemplate();
 		const cv = await utils.createCV(user.id, template.id);
-		const prize = await utils.createPrize(
-			cv.id,
-			"Prize 1",
-			"Domaine 1",
-			1,
-			"💰",
-		);
+		const prize = await utils.createPrize(cv.id, "Prize 1", "Domaine 1", 1, "💰");
 		expect(prize.cvId).toBe(cv.id);
 		expect(prize.title).toBe("Prize 1");
 		expect(prize.domaine).toBe("Domaine 1");
@@ -33,13 +27,7 @@ describe("CV Fullflow Integration with prize", () => {
 	it("should delete a CV with prize", async () => {
 		const { user, template } = await utils.createUserAndTemplate();
 		const cv = await utils.createCV(user.id, template.id);
-		const prize = await utils.createPrize(
-			cv.id,
-			"Prize 1",
-			"Domaine 1",
-			1,
-			"💰",
-		);
+		const prize = await utils.createPrize(cv.id, "Prize 1", "Domaine 1", 1, "💰");
 		await prismaTest.cV.delete({ where: { id: cv.id } });
 		const prizeAfterDelete = await prismaTest.cvPrize.findUnique({
 			where: { id: prize.id },

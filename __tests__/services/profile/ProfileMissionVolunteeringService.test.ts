@@ -20,13 +20,10 @@ describe("ProfileMissionVolunteeringService.create", () => {
 			order: 1,
 		});
 
-		const mission = await profileMissionVolunteeringService.create(
-			volunteering.id,
-			{
-				content: "Développement API REST",
-				order: 1,
-			},
-		);
+		const mission = await profileMissionVolunteeringService.create(volunteering.id, {
+			content: "Développement API REST",
+			order: 1,
+		});
 
 		expect(mission.volunteeringId).toBe(volunteering.id);
 		expect(mission.content).toBe("Développement API REST");
@@ -89,10 +86,9 @@ describe("ProfileMissionVolunteeringService.findAllByProfileVolunteeringId", () 
 			order: 1,
 		});
 
-		const missions =
-			await profileMissionVolunteeringService.findAllByProfileVolunteeringId(
-				volunteering.id,
-			);
+		const missions = await profileMissionVolunteeringService.findAllByProfileVolunteeringId(
+			volunteering.id,
+		);
 		expect(missions).toHaveLength(1);
 		expect(missions[0]?.content).toBe("Mission 1");
 		expect(missions[0]?.order).toBe(1);
@@ -108,10 +104,9 @@ describe("ProfileMissionVolunteeringService.findAllByProfileVolunteeringId", () 
 			start: new Date("2020-01-01"),
 			order: 1,
 		});
-		const missions =
-			await profileMissionVolunteeringService.findAllByProfileVolunteeringId(
-				volunteering.id,
-			);
+		const missions = await profileMissionVolunteeringService.findAllByProfileVolunteeringId(
+			volunteering.id,
+		);
 		expect(missions).toHaveLength(0);
 	});
 
@@ -142,10 +137,9 @@ describe("ProfileMissionVolunteeringService.findAllByProfileVolunteeringId", () 
 			content: "Mission 2",
 			order: 1,
 		});
-		const missions =
-			await profileMissionVolunteeringService.findAllByProfileVolunteeringId(
-				volunteeringB.id,
-			);
+		const missions = await profileMissionVolunteeringService.findAllByProfileVolunteeringId(
+			volunteeringB.id,
+		);
 		expect(missions).toHaveLength(1);
 		expect(missions[0]?.content).toBe("Mission 2");
 		expect(missions[0]?.order).toBe(1);
@@ -164,19 +158,13 @@ describe("ProfileMissionVolunteeringService.update", () => {
 			start: new Date("2020-01-01"),
 			order: 1,
 		});
-		const mission = await profileMissionVolunteeringService.create(
-			volunteering.id,
-			{
-				content: "Mission 1",
-				order: 1,
-			},
-		);
-		const updatedMission = await profileMissionVolunteeringService.update(
-			mission.id,
-			{
-				content: "Mission 2",
-			},
-		);
+		const mission = await profileMissionVolunteeringService.create(volunteering.id, {
+			content: "Mission 1",
+			order: 1,
+		});
+		const updatedMission = await profileMissionVolunteeringService.update(mission.id, {
+			content: "Mission 2",
+		});
 		expect(updatedMission.content).toBe("Mission 2");
 	});
 
@@ -190,13 +178,10 @@ describe("ProfileMissionVolunteeringService.update", () => {
 			start: new Date("2020-01-01"),
 			order: 1,
 		});
-		const mission = await profileMissionVolunteeringService.create(
-			volunteering.id,
-			{
-				content: "Mission 1",
-				order: 1,
-			},
-		);
+		const mission = await profileMissionVolunteeringService.create(volunteering.id, {
+			content: "Mission 1",
+			order: 1,
+		});
 		await expect(
 			profileMissionVolunteeringService.update("invalid-mission-id", {
 				content: "Mission 2",
@@ -214,19 +199,13 @@ describe("ProfileMissionVolunteeringService.update", () => {
 			start: new Date("2020-01-01"),
 			order: 1,
 		});
-		const mission = await profileMissionVolunteeringService.create(
-			volunteering.id,
-			{
-				content: "Mission 1",
-				order: 1,
-			},
-		);
-		const updatedMission = await profileMissionVolunteeringService.update(
-			mission.id,
-			{
-				content: "Mission 2",
-			},
-		);
+		const mission = await profileMissionVolunteeringService.create(volunteering.id, {
+			content: "Mission 1",
+			order: 1,
+		});
+		const updatedMission = await profileMissionVolunteeringService.update(mission.id, {
+			content: "Mission 2",
+		});
 		expect(updatedMission.order).toBe(1);
 	});
 });
@@ -245,37 +224,30 @@ describe("ProfileMissionVolunteeringService.move", () => {
 			order: 1,
 		});
 
-		const mission1 = await profileMissionVolunteeringService.create(
-			volunteering.id,
-			{
-				content: "Mission 1",
-				order: 1,
-			},
-		);
+		const mission1 = await profileMissionVolunteeringService.create(volunteering.id, {
+			content: "Mission 1",
+			order: 1,
+		});
 
-		const mission2 = await profileMissionVolunteeringService.create(
-			volunteering.id,
-			{
-				content: "Mission 2",
-				order: 2,
-			},
-		);
+		const mission2 = await profileMissionVolunteeringService.create(volunteering.id, {
+			content: "Mission 2",
+			order: 2,
+		});
 
 		await profileMissionVolunteeringService.move(mission1.id, 2);
 
-		const result =
-			await profileMissionVolunteeringService.findAllByProfileVolunteeringId(
-				volunteering.id,
-			);
+		const result = await profileMissionVolunteeringService.findAllByProfileVolunteeringId(
+			volunteering.id,
+		);
 
 		expect(result[0]!.content).toBe("Mission 2");
 		expect(result[1]!.content).toBe("Mission 1");
 	});
 
 	it("throws if missions volunteering does not exist", async () => {
-		await expect(
-			profileMissionVolunteeringService.move("invalid-mission-id", 2),
-		).rejects.toThrow(NotFoundError);
+		await expect(profileMissionVolunteeringService.move("invalid-mission-id", 2)).rejects.toThrow(
+			NotFoundError,
+		);
 	});
 
 	it("throws if order is invalid", async () => {
@@ -288,16 +260,11 @@ describe("ProfileMissionVolunteeringService.move", () => {
 			start: new Date("2020-01-01"),
 			order: 1,
 		});
-		const mission = await profileMissionVolunteeringService.create(
-			volunteering.id,
-			{
-				content: "Mission 1",
-				order: 1,
-			},
-		);
-		await expect(
-			profileMissionVolunteeringService.move(mission.id, 0),
-		).rejects.toThrow();
+		const mission = await profileMissionVolunteeringService.create(volunteering.id, {
+			content: "Mission 1",
+			order: 1,
+		});
+		await expect(profileMissionVolunteeringService.move(mission.id, 0)).rejects.toThrow();
 	});
 
 	it("move no-op if order is the same", async () => {
@@ -312,17 +279,13 @@ describe("ProfileMissionVolunteeringService.move", () => {
 		});
 		return await expectMoveNoOp({
 			createEntity: async () => {
-				const mission = await profileMissionVolunteeringService.create(
-					volunteering.id,
-					{
-						content: "Mission 1",
-						order: 1,
-					},
-				);
+				const mission = await profileMissionVolunteeringService.create(volunteering.id, {
+					content: "Mission 1",
+					order: 1,
+				});
 				return { id: mission.id, order: mission.order };
 			},
-			moveEntity: (id, order) =>
-				profileMissionVolunteeringService.move(id, order),
+			moveEntity: (id, order) => profileMissionVolunteeringService.move(id, order),
 		});
 	});
 
@@ -336,16 +299,11 @@ describe("ProfileMissionVolunteeringService.move", () => {
 			start: new Date("2020-01-01"),
 			order: 1,
 		});
-		const mission = await profileMissionVolunteeringService.create(
-			volunteering.id,
-			{
-				content: "Mission 1",
-				order: 1,
-			},
-		);
-		await expect(
-			profileMissionVolunteeringService.move(mission.id, 99),
-		).rejects.toThrow();
+		const mission = await profileMissionVolunteeringService.create(volunteering.id, {
+			content: "Mission 1",
+			order: 1,
+		});
+		await expect(profileMissionVolunteeringService.move(mission.id, 99)).rejects.toThrow();
 	});
 });
 
@@ -361,25 +319,21 @@ describe("ProfileMissionVolunteeringService.delete", () => {
 			start: new Date("2020-01-01"),
 			order: 1,
 		});
-		const mission = await profileMissionVolunteeringService.create(
-			volunteering.id,
-			{
-				content: "Mission 1",
-				order: 1,
-			},
-		);
+		const mission = await profileMissionVolunteeringService.create(volunteering.id, {
+			content: "Mission 1",
+			order: 1,
+		});
 		await profileMissionVolunteeringService.delete(mission.id);
-		const missions =
-			await profileMissionVolunteeringService.findAllByProfileVolunteeringId(
-				volunteering.id,
-			);
+		const missions = await profileMissionVolunteeringService.findAllByProfileVolunteeringId(
+			volunteering.id,
+		);
 		expect(missions).toHaveLength(0);
 	});
 
 	it("throws if mission does not exist", async () => {
-		await expect(
-			profileMissionVolunteeringService.delete("invalid-mission-id"),
-		).rejects.toThrow(NotFoundError);
+		await expect(profileMissionVolunteeringService.delete("invalid-mission-id")).rejects.toThrow(
+			NotFoundError,
+		);
 	});
 
 	it("reorders remaining missions after deletion", async () => {
@@ -392,25 +346,18 @@ describe("ProfileMissionVolunteeringService.delete", () => {
 			start: new Date("2020-01-01"),
 			order: 1,
 		});
-		const mission1 = await profileMissionVolunteeringService.create(
-			volunteering.id,
-			{
-				content: "Mission 1",
-				order: 1,
-			},
-		);
-		const mission2 = await profileMissionVolunteeringService.create(
-			volunteering.id,
-			{
-				content: "Mission 2",
-				order: 2,
-			},
-		);
+		const mission1 = await profileMissionVolunteeringService.create(volunteering.id, {
+			content: "Mission 1",
+			order: 1,
+		});
+		const mission2 = await profileMissionVolunteeringService.create(volunteering.id, {
+			content: "Mission 2",
+			order: 2,
+		});
 		await profileMissionVolunteeringService.delete(mission1.id);
-		const missions =
-			await profileMissionVolunteeringService.findAllByProfileVolunteeringId(
-				volunteering.id,
-			);
+		const missions = await profileMissionVolunteeringService.findAllByProfileVolunteeringId(
+			volunteering.id,
+		);
 		expect(missions).toHaveLength(1);
 		expect(missions[0]?.content).toBe("Mission 2");
 		expect(missions[0]?.order).toBe(1);

@@ -29,11 +29,7 @@ export interface CardExperienceOneProps {
 			template: JSX.Element;
 		}[];
 	}[];
-	addElmList: (
-		e: ListItem<ExperienceItemContentInput>,
-		elm: string,
-		index: number,
-	) => void;
+	addElmList: (e: ListItem<ExperienceItemContentInput>, elm: string, index: number) => void;
 	deleteMission: (index: number, idx: number) => void;
 }
 
@@ -50,35 +46,19 @@ export const CardExperienceOne = ({
 	const { setSelectModifInput, setSelectInputForm } = useCreateCvContext();
 
 	const watchGeneral = watch(FieldNameLayoutGeneral.layout);
-	const pathContent = dataFieldContent(
-		"datas.experience.content",
-		index,
-		"content",
-	);
+	const pathContent = dataFieldContent("datas.experience.content", index, "content");
 	const watchWithIcon = watchGeneral?.titleSection.withIcon;
 	const watchListStyle = watchGeneral?.listStyle;
 	const menuLeft = useRef<Menu>(null);
 
 	const watchModelTitleOfExperience = watch(`${pathContent}.settings.title`);
-	const watchModelCompanyOfExperience = watch(
-		`${pathContent}.settings.company`,
-	);
-	const watchModelPeriodeOfExperience = watch(
-		`${pathContent}.settings.periode`,
-	);
-	const watchModelLocationOfExperience = watch(
-		`${pathContent}.settings.location`,
-	);
-	const watchModelDescriptionOfExperience = watch(
-		`${pathContent}.settings.description`,
-	);
-	const watchModelMissionOfExperience = watch(
-		`${pathContent}.settings.missions`,
-	);
+	const watchModelCompanyOfExperience = watch(`${pathContent}.settings.company`);
+	const watchModelPeriodeOfExperience = watch(`${pathContent}.settings.periode`);
+	const watchModelLocationOfExperience = watch(`${pathContent}.settings.location`);
+	const watchModelDescriptionOfExperience = watch(`${pathContent}.settings.description`);
+	const watchModelMissionOfExperience = watch(`${pathContent}.settings.missions`);
 
-	const deleteExperience = (
-		itemToDelete: ListItem<ExperienceItemContentInput>,
-	) => {
+	const deleteExperience = (itemToDelete: ListItem<ExperienceItemContentInput>) => {
 		const list = (getValues(FieldNameExperience.content) ??
 			[]) as ListItem<ExperienceItemContentInput>[];
 
@@ -96,8 +76,7 @@ export const CardExperienceOne = ({
 			(itemToDelete.content?.missions ?? []).map((s) => s.clientKey),
 		);
 		const selectionWasInGroup =
-			itemSelected === itemToDelete.clientKey ||
-			deleteMissionKeys.has(itemSelected);
+			itemSelected === itemToDelete.clientKey || deleteMissionKeys.has(itemSelected);
 
 		if (selectionWasInGroup) {
 			setItemSelected(newList[0]?.clientKey ?? "");
@@ -150,12 +129,7 @@ export const CardExperienceOne = ({
 				itemsMenu ? (
 					<>
 						<ToolbarOptionsButton menuRef={menuLeft} />
-						<Menu
-							model={itemsMenu(index)}
-							popup
-							ref={menuLeft}
-							style={{ width: 300 }}
-						/>
+						<Menu model={itemsMenu(index)} popup ref={menuLeft} style={{ width: 300 }} />
 					</>
 				) : null
 			}
@@ -250,9 +224,7 @@ export const CardExperienceOne = ({
 				listCompo={
 					<ListInSection
 						pathContent={pathContent}
-						watchIfListAffiche={watch(
-							`${pathContent}.settings.withListMissions`,
-						)}
+						watchIfListAffiche={watch(`${pathContent}.settings.withListMissions`)}
 						item={item}
 						index={index}
 						itemSelected={itemSelected}
@@ -308,9 +280,7 @@ export const ContentExperienceContainer = ({
 			<div className="w-full -mt-1">
 				{item?.content?.settings?.withDescription && descriptionCompo}
 			</div>
-			<div className="w-full -mt-1">
-				{item?.content?.settings?.withListMissions && listCompo}
-			</div>
+			<div className="w-full -mt-1">{item?.content?.settings?.withListMissions && listCompo}</div>
 		</div>
 	);
 };

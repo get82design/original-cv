@@ -52,9 +52,7 @@ export function flattenCvFormToText(cv: CvFormValues): string {
 
 	const desc = d.description?.content?.description?.trim();
 	if (desc) {
-		blocks.push(
-			`## ${d.description?.title?.trim() || "Description"}\n${desc}`,
-		);
+		blocks.push(`## ${d.description?.title?.trim() || "Description"}\n${desc}`);
 	}
 
 	const experiences = d.experience?.content ?? [];
@@ -68,17 +66,13 @@ export function flattenCvFormToText(cv: CvFormValues): string {
 			return [
 				`${i + 1}. ${head ?? "Expérience"}`,
 				c.location?.trim() ? `   Lieu : ${c.location.trim()}` : null,
-				c.description?.trim()
-					? `   ${c.description.trim()}`
-					: null,
+				c.description?.trim() ? `   ${c.description.trim()}` : null,
 				missions.length ? missions.join("\n") : null,
 			]
 				.filter(Boolean)
 				.join("\n");
 		});
-		blocks.push(
-			`## ${d.experience?.title?.trim() || "Expériences"}\n${lines.join("\n")}`,
-		);
+		blocks.push(`## ${d.experience?.title?.trim() || "Expériences"}\n${lines.join("\n")}`);
 	}
 
 	const educations = d.education?.content ?? [];
@@ -87,9 +81,7 @@ export function flattenCvFormToText(cv: CvFormValues): string {
 			const c = item.content;
 			return `${i + 1}. ${line(c.title, c.degree, c.school, c.city, dateRange(c.start, c.end)) ?? "Formation"}`;
 		});
-		blocks.push(
-			`## ${d.education?.title?.trim() || "Études"}\n${lines.join("\n")}`,
-		);
+		blocks.push(`## ${d.education?.title?.trim() || "Études"}\n${lines.join("\n")}`);
 	}
 
 	const formations = d.formation?.content ?? [];
@@ -98,9 +90,7 @@ export function flattenCvFormToText(cv: CvFormValues): string {
 			const c = item.content;
 			return `${i + 1}. ${line(c.title, c.organismeFormation, dateRange(c.start, c.end)) ?? "Formation"}`;
 		});
-		blocks.push(
-			`## ${d.formation?.title?.trim() || "Formations"}\n${lines.join("\n")}`,
-		);
+		blocks.push(`## ${d.formation?.title?.trim() || "Formations"}\n${lines.join("\n")}`);
 	}
 
 	const skillGroups = d.skillGroup?.content ?? [];
@@ -114,9 +104,7 @@ export function flattenCvFormToText(cv: CvFormValues): string {
 			return [title ? `${title} : ${skills.join(", ")}` : skills.join(", ")];
 		});
 		if (lines.length) {
-			blocks.push(
-				`## ${d.skillGroup?.title?.trim() || "Compétences"}\n${lines.join("\n")}`,
-			);
+			blocks.push(`## ${d.skillGroup?.title?.trim() || "Compétences"}\n${lines.join("\n")}`);
 		}
 	}
 
@@ -126,9 +114,7 @@ export function flattenCvFormToText(cv: CvFormValues): string {
 			const c = item.content;
 			return line(c.name, c.level) ?? c.name;
 		});
-		blocks.push(
-			`## ${d.language?.title?.trim() || "Langues"}\n${lines.join("\n")}`,
-		);
+		blocks.push(`## ${d.language?.title?.trim() || "Langues"}\n${lines.join("\n")}`);
 	}
 
 	const certifications = d.certification?.content ?? [];
@@ -137,9 +123,7 @@ export function flattenCvFormToText(cv: CvFormValues): string {
 			const c = item.content;
 			return `${i + 1}. ${line(c.title, c.organismeCertification) ?? "Certification"}`;
 		});
-		blocks.push(
-			`## ${d.certification?.title?.trim() || "Certifications"}\n${lines.join("\n")}`,
-		);
+		blocks.push(`## ${d.certification?.title?.trim() || "Certifications"}\n${lines.join("\n")}`);
 	}
 
 	const projects = d.project?.content ?? [];
@@ -150,9 +134,7 @@ export function flattenCvFormToText(cv: CvFormValues): string {
 				c.description?.trim() ? `\n   ${c.description.trim()}` : ""
 			}`;
 		});
-		blocks.push(
-			`## ${d.project?.title?.trim() || "Projets"}\n${lines.join("\n")}`,
-		);
+		blocks.push(`## ${d.project?.title?.trim() || "Projets"}\n${lines.join("\n")}`);
 	}
 
 	const socials = d.socialMedia?.content ?? [];
@@ -161,9 +143,7 @@ export function flattenCvFormToText(cv: CvFormValues): string {
 			const c = item.content;
 			return line(c.socialNetwork, c.username) ?? c.username;
 		});
-		blocks.push(
-			`## ${d.socialMedia?.title?.trim() || "Réseaux"}\n${lines.join("\n")}`,
-		);
+		blocks.push(`## ${d.socialMedia?.title?.trim() || "Réseaux"}\n${lines.join("\n")}`);
 	}
 
 	return blocks.join("\n\n").trim();

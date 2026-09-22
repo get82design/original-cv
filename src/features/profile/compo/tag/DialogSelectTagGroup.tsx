@@ -1,7 +1,4 @@
-import type {
-	ProfileSaveInput,
-	TagGroupInput,
-} from "@/services/schemas/profileSave.schema";
+import type { ProfileSaveInput, TagGroupInput } from "@/services/schemas/profileSave.schema";
 import type { CvFull } from "@utils/trpc.types";
 import type { ListItem } from "@utils/type";
 import { Button } from "primereact/button";
@@ -53,9 +50,7 @@ export const DialogSelectTagGroup = ({
 	useEffect(() => {
 		if (!visible) return;
 		setTarget(listTagGroupInProfile);
-		const already = new Set(
-			listTagGroupInProfile.map((e) => `${e.content.title}`),
-		);
+		const already = new Set(listTagGroupInProfile.map((e) => `${e.content.title}`));
 		setSource(
 			listTagGroupFromCv
 				.map((exp) => cvTagGroupToProfile(exp))

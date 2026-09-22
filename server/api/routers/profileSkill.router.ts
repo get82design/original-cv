@@ -2,10 +2,7 @@ import z from "zod";
 import { prisma } from "../../../lib/prisma";
 import { ForbiddenError, NotFoundError } from "../../../src/services/errors";
 import { profileSkillService } from "../../../src/services/profile/profileSkillService";
-import {
-	createSkillSchema,
-	updateSkillSchema,
-} from "../../../src/services/schemas/skill.schema";
+import { createSkillSchema, updateSkillSchema } from "../../../src/services/schemas/skill.schema";
 import { protectedProcedure, router } from "../trpc";
 
 async function assertGroupProfileOwnership(groupId: string, userId: string) {

@@ -39,23 +39,15 @@ export const CardCertificationOne = ({
 	const { setSelectModifInput, setSelectInputForm } = useCreateCvContext();
 
 	const watchGeneral = watch(FieldNameLayoutGeneral.layout);
-	const pathContent = dataFieldContent(
-		"datas.certification.content",
-		index,
-		"content",
-	);
+	const pathContent = dataFieldContent("datas.certification.content", index, "content");
 	const watchWithIcon = watchGeneral?.titleSection.withIcon;
 	const watchListStyle = watchGeneral?.listStyle;
 	const menuLeft = useRef<Menu>(null);
 
 	const watchModelTitleOfCertification = watch(`${pathContent}.settings.title`);
-	const watchModelOrganismeCertification = watch(
-		`${pathContent}.settings.organismeCertification`,
-	);
+	const watchModelOrganismeCertification = watch(`${pathContent}.settings.organismeCertification`);
 
-	const deleteCertification = (
-		itemToDelete: ListItem<CertificationItemContentInput>,
-	) => {
+	const deleteCertification = (itemToDelete: ListItem<CertificationItemContentInput>) => {
 		const list = (getValues(FieldNameCertification.content) ??
 			[]) as ListItem<CertificationItemContentInput>[];
 
@@ -97,12 +89,7 @@ export const CardCertificationOne = ({
 				itemsMenu ? (
 					<>
 						<ToolbarOptionsButton menuRef={menuLeft} />
-						<Menu
-							model={itemsMenu(index)}
-							popup
-							ref={menuLeft}
-							style={{ width: 300 }}
-						/>
+						<Menu model={itemsMenu(index)} popup ref={menuLeft} style={{ width: 300 }} />
 					</>
 				) : null
 			}
@@ -130,12 +117,8 @@ export const CardCertificationOne = ({
 					<InputTextCv
 						placeholder="Organisme de la certification"
 						onClick={() => {
-							setSelectModifInput(
-								`${pathContent}.settings.organismeCertification`,
-							);
-							setSelectInputForm(
-								`${pathContent}.settings.withOrganismeCertification`,
-							);
+							setSelectModifInput(`${pathContent}.settings.organismeCertification`);
+							setSelectInputForm(`${pathContent}.settings.withOrganismeCertification`);
 						}}
 						name={`${pathContent}.organismeCertification`}
 						textColor={watchModelOrganismeCertification?.colorSelect}
@@ -167,8 +150,7 @@ export const ContentCertificationContainer = ({
 		<div className="w-full flex flex-col gap-0 px-2 relative mt-1">
 			<CommonPointList general={general} />
 			{item?.content?.settings?.withTitle && certificationNameCompo}
-			{item?.content?.settings?.withOrganismeCertification &&
-				certificationOrganismeCompo}
+			{item?.content?.settings?.withOrganismeCertification && certificationOrganismeCompo}
 		</div>
 	);
 };

@@ -12,7 +12,7 @@ export const EducationSectionMenu = () => {
 	const pathDesign = moduleField(modules, "education", "settings", "content");
 
 	const educationMod = modules?.find((m: { type: string }) => m.type === "education");
-    const inSidebar = (educationMod?.column ?? 0) === 0;
+	const inSidebar = (educationMod?.column ?? 0) === 0;
 
 	// → modules.{i}.settings.content
 	const columnsPath = `${pathDesign}.columns`;
@@ -26,18 +26,8 @@ export const EducationSectionMenu = () => {
 						<div className="flex flex-col py-1 px-4 gap-2">
 							<p>Nombre de colonnes</p>
 							<div className="grid grid-cols-2 gap-2">
-								<RadioRhf
-									name={columnsPath}
-									label="1"
-									value="1"
-									checked={watchColumns === "1"}
-								/>
-								<RadioRhf
-									name={columnsPath}
-									label="2"
-									value="2"
-									checked={watchColumns === "2"}
-								/>
+								<RadioRhf name={columnsPath} label="1" value="1" checked={watchColumns === "1"} />
+								<RadioRhf name={columnsPath} label="2" value="2" checked={watchColumns === "2"} />
 							</div>
 						</div>
 					),
@@ -47,7 +37,7 @@ export const EducationSectionMenu = () => {
 	];
 
 	if (inSidebar) return null;
-	
+
 	return (
 		<>
 			<ToolbarOptionsButton menuRef={menuRef} />

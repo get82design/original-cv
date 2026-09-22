@@ -80,8 +80,7 @@ describe("ProfileMissionProjectService.findAllByProfileProjectId", () => {
 			order: 1,
 		});
 
-		const missions =
-			await profileMissionProjectService.findAllByProfileProjectId(project.id);
+		const missions = await profileMissionProjectService.findAllByProfileProjectId(project.id);
 		expect(missions).toHaveLength(1);
 		expect(missions[0]?.content).toBe("Mission 1");
 		expect(missions[0]?.order).toBe(1);
@@ -95,8 +94,7 @@ describe("ProfileMissionProjectService.findAllByProfileProjectId", () => {
 			start: new Date("2020-01-01"),
 			order: 1,
 		});
-		const missions =
-			await profileMissionProjectService.findAllByProfileProjectId(project.id);
+		const missions = await profileMissionProjectService.findAllByProfileProjectId(project.id);
 		expect(missions).toHaveLength(0);
 	});
 
@@ -121,8 +119,7 @@ describe("ProfileMissionProjectService.findAllByProfileProjectId", () => {
 			content: "Mission 2",
 			order: 1,
 		});
-		const missions =
-			await profileMissionProjectService.findAllByProfileProjectId(projectB.id);
+		const missions = await profileMissionProjectService.findAllByProfileProjectId(projectB.id);
 		expect(missions).toHaveLength(1);
 		expect(missions[0]?.content).toBe("Mission 2");
 		expect(missions[0]?.order).toBe(1);
@@ -143,12 +140,9 @@ describe("ProfileMissionProjectService.update", () => {
 			content: "Mission 1",
 			order: 1,
 		});
-		const updatedMission = await profileMissionProjectService.update(
-			mission.id,
-			{
-				content: "Mission 2",
-			},
-		);
+		const updatedMission = await profileMissionProjectService.update(mission.id, {
+			content: "Mission 2",
+		});
 		expect(updatedMission.content).toBe("Mission 2");
 	});
 
@@ -183,12 +177,9 @@ describe("ProfileMissionProjectService.update", () => {
 			content: "Mission 1",
 			order: 1,
 		});
-		const updatedMission = await profileMissionProjectService.update(
-			mission.id,
-			{
-				content: "Mission 2",
-			},
-		);
+		const updatedMission = await profileMissionProjectService.update(mission.id, {
+			content: "Mission 2",
+		});
 		expect(updatedMission.order).toBe(1);
 	});
 });
@@ -217,18 +208,16 @@ describe("ProfileMissionProjectService.move", () => {
 
 		await profileMissionProjectService.move(mission1.id, 2);
 
-		const result = await profileMissionProjectService.findAllByProfileProjectId(
-			project.id,
-		);
+		const result = await profileMissionProjectService.findAllByProfileProjectId(project.id);
 
 		expect(result[0]!.content).toBe("Mission 2");
 		expect(result[1]!.content).toBe("Mission 1");
 	});
 
 	it("throws if missions project does not exist", async () => {
-		await expect(
-			profileMissionProjectService.move("invalid-mission-id", 2),
-		).rejects.toThrow(NotFoundError);
+		await expect(profileMissionProjectService.move("invalid-mission-id", 2)).rejects.toThrow(
+			NotFoundError,
+		);
 	});
 
 	it("throws if order is invalid", async () => {
@@ -243,9 +232,7 @@ describe("ProfileMissionProjectService.move", () => {
 			content: "Mission 1",
 			order: 1,
 		});
-		await expect(
-			profileMissionProjectService.move(mission.id, 0),
-		).rejects.toThrow();
+		await expect(profileMissionProjectService.move(mission.id, 0)).rejects.toThrow();
 	});
 
 	it("move no-op if order is the same", async () => {
@@ -280,9 +267,7 @@ describe("ProfileMissionProjectService.move", () => {
 			content: "Mission 1",
 			order: 1,
 		});
-		await expect(
-			profileMissionProjectService.move(mission.id, 99),
-		).rejects.toThrow();
+		await expect(profileMissionProjectService.move(mission.id, 99)).rejects.toThrow();
 	});
 });
 
@@ -301,15 +286,14 @@ describe("ProfileMissionProjectService.delete", () => {
 			order: 1,
 		});
 		await profileMissionProjectService.delete(mission.id);
-		const missions =
-			await profileMissionProjectService.findAllByProfileProjectId(project.id);
+		const missions = await profileMissionProjectService.findAllByProfileProjectId(project.id);
 		expect(missions).toHaveLength(0);
 	});
 
 	it("throws if mission does not exist", async () => {
-		await expect(
-			profileMissionProjectService.delete("invalid-mission-id"),
-		).rejects.toThrow(NotFoundError);
+		await expect(profileMissionProjectService.delete("invalid-mission-id")).rejects.toThrow(
+			NotFoundError,
+		);
 	});
 
 	it("reorders remaining missions after deletion", async () => {
@@ -329,8 +313,7 @@ describe("ProfileMissionProjectService.delete", () => {
 			order: 2,
 		});
 		await profileMissionProjectService.delete(mission1.id);
-		const missions =
-			await profileMissionProjectService.findAllByProfileProjectId(project.id);
+		const missions = await profileMissionProjectService.findAllByProfileProjectId(project.id);
 		expect(missions).toHaveLength(1);
 		expect(missions[0]?.content).toBe("Mission 2");
 		expect(missions[0]?.order).toBe(1);

@@ -35,11 +35,7 @@ export const CertificationDnd = ({
 	const { setSectionSelected, sectionSelected } = useCreateCvContext();
 	const { setValue } = useFormContext();
 	const itemsMenu = (idx: number) => {
-		const pathContent = dataFieldContent(
-			"datas.certification.content",
-			idx,
-			"content.settings",
-		);
+		const pathContent = dataFieldContent("datas.certification.content", idx, "content.settings");
 		return [
 			{
 				label: "Options",
@@ -56,9 +52,7 @@ export const CertificationDnd = ({
 						template: (
 							<div className="flex justify-between py-1 px-4 items-center">
 								<p>Organisme Certification</p>
-								<ToggleAfficherCacher
-									name={`${pathContent}.withOrganismeCertification`}
-								/>
+								<ToggleAfficherCacher name={`${pathContent}.withOrganismeCertification`} />
 							</div>
 						),
 					},
@@ -72,9 +66,13 @@ export const CertificationDnd = ({
 	return (
 		<SortableContext
 			items={watchCertifications.map((s) => s.clientKey)}
-			strategy={colOfCertification === 1 ? verticalListSortingStrategy : horizontalListSortingStrategy}
+			strategy={
+				colOfCertification === 1 ? verticalListSortingStrategy : horizontalListSortingStrategy
+			}
 		>
-			<div className={`certifications-grid grid ${COL_CLASS[colOfCertification as keyof typeof COL_CLASS] ?? "grid-cols-2"} ${colOfCertification === 1 ? "gap-1" : "gap-x-4 gap-y-1"}`}>
+			<div
+				className={`certifications-grid grid ${COL_CLASS[colOfCertification as keyof typeof COL_CLASS] ?? "grid-cols-2"} ${colOfCertification === 1 ? "gap-1" : "gap-x-4 gap-y-1"}`}
+			>
 				{watchCertifications.map((certification, index) => (
 					<button
 						type="button"
@@ -106,10 +104,7 @@ export const CertificationDnd = ({
 							const fresh = createNewItem();
 							setValue(
 								FieldNameCertification.content,
-								[
-									...watchCertifications,
-									{ ...fresh, order: watchCertifications.length + 1 },
-								],
+								[...watchCertifications, { ...fresh, order: watchCertifications.length + 1 }],
 								{ shouldDirty: true },
 							);
 						}}

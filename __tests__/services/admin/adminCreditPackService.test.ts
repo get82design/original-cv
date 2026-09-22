@@ -63,9 +63,9 @@ describe("adminCreditPackService", () => {
 	});
 
 	it("deletePack rejects unknown id", async () => {
-		await expect(
-			adminCreditPackService.deletePack("missing-pack-id"),
-		).rejects.toBeInstanceOf(NotFoundError);
+		await expect(adminCreditPackService.deletePack("missing-pack-id")).rejects.toBeInstanceOf(
+			NotFoundError,
+		);
 	});
 
 	it("updatePack re-validates merged fields", async () => {

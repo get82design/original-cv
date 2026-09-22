@@ -15,17 +15,11 @@ export const ProfileDescription = ({ cvs }: { cvs: CV[] }) => {
 	const [visibleMaj, setVisibleMaj] = useState(false);
 	const { setValue } = useFormContext();
 	const [idCv, setIdCv] = useState<string>("");
-	const { data: cvSelected } = trpc.cv.byId.useQuery(
-		{ id: idCv ?? "" },
-		{ enabled: !!idCv },
-	);
+	const { data: cvSelected } = trpc.cv.byId.useQuery({ id: idCv ?? "" }, { enabled: !!idCv });
 
 	useEffect(() => {
 		if (cvSelected) {
-			setValue(
-				"description.description",
-				cvSelected.description?.description ?? "",
-			);
+			setValue("description.description", cvSelected.description?.description ?? "");
 		}
 	}, [cvSelected, setValue]);
 
@@ -53,12 +47,7 @@ export const ProfileDescription = ({ cvs }: { cvs: CV[] }) => {
 			/>
 			<AppCard className="relative group">
 				<div className="opacity-30 absolute top-2 left-3">
-					<TitleAppTwo
-						firstPart={"Votre"}
-						secondPart={"Description"}
-						size={"text-2xl"}
-						withSpace
-					/>
+					<TitleAppTwo firstPart={"Votre"} secondPart={"Description"} size={"text-2xl"} withSpace />
 				</div>
 				<div className="mt-10 flex flex-col gap-2">
 					<TextareaProfile

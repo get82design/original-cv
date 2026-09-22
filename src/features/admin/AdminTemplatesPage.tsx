@@ -55,12 +55,8 @@ export function AdminTemplatesPage() {
 	const [draftFeatured, setDraftFeatured] = useState(false);
 	const [draftSort, setDraftSort] = useState(0);
 	const [draftPriceEuros, setDraftPriceEuros] = useState<number | null>(null);
-	const [draftPriceCredits, setDraftPriceCredits] = useState<number | null>(
-		null,
-	);
-	const [draftGiftCredits, setDraftGiftCredits] = useState<number | null>(
-		null,
-	);
+	const [draftPriceCredits, setDraftPriceCredits] = useState<number | null>(null);
+	const [draftGiftCredits, setDraftGiftCredits] = useState<number | null>(null);
 	const [draftGiftFree, setDraftGiftFree] = useState<number | null>(null);
 
 	useEffect(() => {
@@ -118,9 +114,7 @@ export function AdminTemplatesPage() {
 		setDraftPremium(row.isPremium);
 		setDraftFeatured(row.isFeatured);
 		setDraftSort(row.sortOrder);
-		setDraftPriceEuros(
-			row.priceCents != null ? row.priceCents / 100 : null,
-		);
+		setDraftPriceEuros(row.priceCents != null ? row.priceCents / 100 : null);
 		setDraftPriceCredits(row.priceCredits);
 		setDraftGiftCredits(row.unlockGifts?.downloadCredits ?? null);
 		setDraftGiftFree(row.unlockGifts?.freeDownloads ?? null);
@@ -139,19 +133,14 @@ export function AdminTemplatesPage() {
 			isPremium: draftPremium,
 			isFeatured: draftFeatured,
 			sortOrder: draftSort,
-			priceCents:
-				draftPriceEuros == null
-					? null
-					: Math.round(draftPriceEuros * 100),
+			priceCents: draftPriceEuros == null ? null : Math.round(draftPriceEuros * 100),
 			priceCredits: draftPriceCredits,
 			unlockGifts: hasGifts
 				? {
 						...(draftGiftCredits != null && draftGiftCredits > 0
 							? { downloadCredits: draftGiftCredits }
 							: {}),
-						...(draftGiftFree != null && draftGiftFree > 0
-							? { freeDownloads: draftGiftFree }
-							: {}),
+						...(draftGiftFree != null && draftGiftFree > 0 ? { freeDownloads: draftGiftFree } : {}),
 					}
 				: null,
 		});
@@ -203,9 +192,7 @@ export function AdminTemplatesPage() {
 			<AppCard className="admin-filters mb-4">
 				<div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
 					<div className="min-w-0 flex-1 sm:max-w-md">
-						<label className="mb-1 block text-xs text-zinc-500">
-							Recherche
-						</label>
+						<label className="mb-1 block text-xs text-zinc-500">Recherche</label>
 						<div className="relative w-full">
 							<i className="pi pi-search pointer-events-none absolute top-1/2 left-3 z-10 -translate-y-1/2 text-sm text-zinc-500 dark:text-zinc-400" />
 							<InputText
@@ -218,9 +205,7 @@ export function AdminTemplatesPage() {
 					</div>
 					<div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:items-end">
 						<div className="w-full sm:w-32">
-							<label className="mb-1 block text-xs text-zinc-500">
-								Actif
-							</label>
+							<label className="mb-1 block text-xs text-zinc-500">Actif</label>
 							<Dropdown
 								value={isActive}
 								options={BOOL_OPTIONS}
@@ -234,9 +219,7 @@ export function AdminTemplatesPage() {
 							/>
 						</div>
 						<div className="w-full sm:w-32">
-							<label className="mb-1 block text-xs text-zinc-500">
-								Premium
-							</label>
+							<label className="mb-1 block text-xs text-zinc-500">Premium</label>
 							<Dropdown
 								value={isPremium}
 								options={BOOL_OPTIONS}
@@ -250,9 +233,7 @@ export function AdminTemplatesPage() {
 							/>
 						</div>
 						<div className="w-full sm:w-36">
-							<label className="mb-1 block text-xs text-zinc-500">
-								À la une
-							</label>
+							<label className="mb-1 block text-xs text-zinc-500">À la une</label>
 							<Dropdown
 								value={isFeatured}
 								options={BOOL_OPTIONS}
@@ -287,32 +268,21 @@ export function AdminTemplatesPage() {
 					<tbody>
 						{listQuery.isLoading ? (
 							<tr>
-								<td
-									colSpan={9}
-									className="px-4 py-8 text-center text-zinc-500"
-								>
+								<td colSpan={9} className="px-4 py-8 text-center text-zinc-500">
 									Chargement…
 								</td>
 							</tr>
 						) : (listQuery.data?.items.length ?? 0) === 0 ? (
 							<tr>
-								<td
-									colSpan={9}
-									className="px-4 py-8 text-center text-zinc-500"
-								>
+								<td colSpan={9} className="px-4 py-8 text-center text-zinc-500">
 									Aucun modèle.
 								</td>
 							</tr>
 						) : (
 							listQuery.data!.items.map((t) => (
-								<tr
-									key={t.id}
-									className="border-b border-zinc-100 dark:border-zinc-800"
-								>
+								<tr key={t.id} className="border-b border-zinc-100 dark:border-zinc-800">
 									<td className="px-4 py-3">
-										<span className="font-medium text-zinc-900 dark:text-zinc-100">
-											{t.name}
-										</span>
+										<span className="font-medium text-zinc-900 dark:text-zinc-100">{t.name}</span>
 										{t.isFeatured ? (
 											<span className="ml-2 text-xs font-medium text-amber-600 dark:text-amber-400">
 												★ À la une
@@ -325,9 +295,7 @@ export function AdminTemplatesPage() {
 												Actif
 											</span>
 										) : (
-											<span className="text-zinc-500">
-												Inactif
-											</span>
+											<span className="text-zinc-500">Inactif</span>
 										)}
 									</td>
 									<td className="px-3 py-3 text-xs">
@@ -336,9 +304,7 @@ export function AdminTemplatesPage() {
 												Premium
 											</span>
 										) : (
-											<span className="text-zinc-500">
-												Free
-											</span>
+											<span className="text-zinc-500">Free</span>
 										)}
 									</td>
 									<td className="px-3 py-3 text-zinc-700 dark:text-zinc-300">
@@ -347,15 +313,9 @@ export function AdminTemplatesPage() {
 									<td className="px-3 py-3 text-zinc-700 dark:text-zinc-300">
 										{formatCredits(t.priceCredits)}
 									</td>
-									<td className="px-3 py-3 text-zinc-600 dark:text-zinc-400">
-										{t.sortOrder}
-									</td>
-									<td className="px-3 py-3 text-zinc-600 dark:text-zinc-400">
-										{t.cvCount}
-									</td>
-									<td className="px-3 py-3 text-zinc-600 dark:text-zinc-400">
-										{t.unlockCount}
-									</td>
+									<td className="px-3 py-3 text-zinc-600 dark:text-zinc-400">{t.sortOrder}</td>
+									<td className="px-3 py-3 text-zinc-600 dark:text-zinc-400">{t.cvCount}</td>
+									<td className="px-3 py-3 text-zinc-600 dark:text-zinc-400">{t.unlockCount}</td>
 									<td className="px-3 py-3 text-right">
 										<Button
 											type="button"
@@ -391,12 +351,8 @@ export function AdminTemplatesPage() {
 							size="small"
 							outlined
 							label="Suivant"
-							disabled={
-								page >= totalPages || listQuery.isFetching
-							}
-							onClick={() =>
-								setPage((p) => Math.min(totalPages, p + 1))
-							}
+							disabled={page >= totalPages || listQuery.isFetching}
+							onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
 						/>
 					</div>
 				</div>
@@ -432,47 +388,26 @@ export function AdminTemplatesPage() {
 					<div className="admin-user-actions flex flex-col gap-4">
 						<div className="flex flex-wrap gap-4">
 							<label className="flex items-center gap-2 text-sm">
-								<Checkbox
-									checked={draftActive}
-									onChange={(e) =>
-										setDraftActive(!!e.checked)
-									}
-								/>
+								<Checkbox checked={draftActive} onChange={(e) => setDraftActive(!!e.checked)} />
 								Actif
 							</label>
 							<label className="flex items-center gap-2 text-sm">
-								<Checkbox
-									checked={draftPremium}
-									onChange={(e) =>
-										setDraftPremium(!!e.checked)
-									}
-								/>
+								<Checkbox checked={draftPremium} onChange={(e) => setDraftPremium(!!e.checked)} />
 								Premium
 							</label>
 							<label className="flex items-center gap-2 text-sm">
-								<Checkbox
-									checked={draftFeatured}
-									onChange={(e) =>
-										setDraftFeatured(!!e.checked)
-									}
-								/>
+								<Checkbox checked={draftFeatured} onChange={(e) => setDraftFeatured(!!e.checked)} />
 								À la une
 							</label>
 						</div>
 
 						<div className="grid gap-3 sm:grid-cols-3">
 							<div>
-								<label className="mb-1 block text-xs text-zinc-500">
-									Prix (€)
-								</label>
+								<label className="mb-1 block text-xs text-zinc-500">Prix (€)</label>
 								<InputNumber
 									value={draftPriceEuros}
 									onValueChange={(e) =>
-										setDraftPriceEuros(
-											e.value == null
-												? null
-												: Number(e.value),
-										)
+										setDraftPriceEuros(e.value == null ? null : Number(e.value))
 									}
 									mode="currency"
 									currency="EUR"
@@ -483,17 +418,11 @@ export function AdminTemplatesPage() {
 								/>
 							</div>
 							<div>
-								<label className="mb-1 block text-xs text-zinc-500">
-									Prix (crédits)
-								</label>
+								<label className="mb-1 block text-xs text-zinc-500">Prix (crédits)</label>
 								<InputNumber
 									value={draftPriceCredits}
 									onValueChange={(e) =>
-										setDraftPriceCredits(
-											e.value == null
-												? null
-												: Number(e.value),
-										)
+										setDraftPriceCredits(e.value == null ? null : Number(e.value))
 									}
 									min={0}
 									showButtons
@@ -502,18 +431,10 @@ export function AdminTemplatesPage() {
 								/>
 							</div>
 							<div>
-								<label className="mb-1 block text-xs text-zinc-500">
-									Ordre
-								</label>
+								<label className="mb-1 block text-xs text-zinc-500">Ordre</label>
 								<InputNumber
 									value={draftSort}
-									onValueChange={(e) =>
-										setDraftSort(
-											typeof e.value === "number"
-												? e.value
-												: 0,
-										)
-									}
+									onValueChange={(e) => setDraftSort(typeof e.value === "number" ? e.value : 0)}
 									min={0}
 									showButtons
 									className="w-full"
@@ -528,17 +449,11 @@ export function AdminTemplatesPage() {
 							</p>
 							<div className="grid gap-3 sm:grid-cols-2">
 								<div>
-									<label className="mb-1 block text-xs text-zinc-500">
-										Crédits DL
-									</label>
+									<label className="mb-1 block text-xs text-zinc-500">Crédits DL</label>
 									<InputNumber
 										value={draftGiftCredits}
 										onValueChange={(e) =>
-											setDraftGiftCredits(
-												e.value == null
-													? null
-													: Number(e.value),
-											)
+											setDraftGiftCredits(e.value == null ? null : Number(e.value))
 										}
 										min={0}
 										className="w-full"
@@ -546,17 +461,11 @@ export function AdminTemplatesPage() {
 									/>
 								</div>
 								<div>
-									<label className="mb-1 block text-xs text-zinc-500">
-										Free DL
-									</label>
+									<label className="mb-1 block text-xs text-zinc-500">Free DL</label>
 									<InputNumber
 										value={draftGiftFree}
 										onValueChange={(e) =>
-											setDraftGiftFree(
-												e.value == null
-													? null
-													: Number(e.value),
-											)
+											setDraftGiftFree(e.value == null ? null : Number(e.value))
 										}
 										min={0}
 										className="w-full"

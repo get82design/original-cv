@@ -18,9 +18,7 @@ import { DialogSelectCv } from "../common/DialogSelectCv";
 import type { CV } from "../../CompoPage";
 import { DialogSelectFormation } from "./DialogSelectFormation";
 
-function createEmptyFormation(opts?: {
-	order?: number;
-}): ListItem<FormationInput> {
+function createEmptyFormation(opts?: { order?: number }): ListItem<FormationInput> {
 	return {
 		clientKey: `formation-${uuid()}`,
 		order: opts?.order ?? 1,
@@ -40,10 +38,7 @@ export function ProfileFormation({ cvs }: { cvs: CV[] }) {
 	const [toDelete, setToDelete] = useState<Set<string>>(new Set());
 	const [visibleMaj, setVisibleMaj] = useState(false);
 	const [idCv, setIdCv] = useState<string | undefined>(undefined);
-	const { data: cvSelected } = trpc.cv.byId.useQuery(
-		{ id: idCv ?? "" },
-		{ enabled: !!idCv },
-	);
+	const { data: cvSelected } = trpc.cv.byId.useQuery({ id: idCv ?? "" }, { enabled: !!idCv });
 	const [visibleSelect, setVisibleSelect] = useState(false);
 
 	const { control, watch, setValue } = useFormContext<ProfileSaveInput>();
@@ -130,11 +125,7 @@ export function ProfileFormation({ cvs }: { cvs: CV[] }) {
 			)}
 			<AppCard className="relative group">
 				<div className="opacity-30 absolute top-2 left-3">
-					<TitleAppTwo
-						firstPart={""}
-						secondPart={"Formations"}
-						size={"text-2xl"}
-					/>
+					<TitleAppTwo firstPart={""} secondPart={"Formations"} size={"text-2xl"} />
 				</div>
 				<div className="mt-10 flex flex-col gap-4">
 					{fields.map((field, idx: number) => {
@@ -179,9 +170,7 @@ export function ProfileFormation({ cvs }: { cvs: CV[] }) {
 						);
 					})}
 					{fields.length === 0 && (
-						<p className="w-full font-light text-gray-400">
-							Aucune formation enregistrée.
-						</p>
+						<p className="w-full font-light text-gray-400">Aucune formation enregistrée.</p>
 					)}
 					{openDelete && (
 						<MiniFooterMultiFunc

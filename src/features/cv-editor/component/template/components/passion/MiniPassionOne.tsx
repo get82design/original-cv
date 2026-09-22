@@ -17,11 +17,7 @@ export const MiniPassionOne = () => {
 								color: `var(--${ColorForMiniCard()})`,
 							}}
 						/>
-						<Skeleton
-							className="dark:bg-gray-700"
-							width="80%"
-							height="8px"
-						></Skeleton>
+						<Skeleton className="dark:bg-gray-700" width="80%" height="8px"></Skeleton>
 					</div>
 				))}
 			</div>

@@ -22,10 +22,7 @@ const SIDEBAR_ALLOWED = new Set([
 	"expertise",
 ]);
 
-function forceSidebarInnerColumns(
-	modules: CvModulesInput[],
-	movedType: string,
-): CvModulesInput[] {
+function forceSidebarInnerColumns(modules: CvModulesInput[], movedType: string): CvModulesInput[] {
 	return modules.map((mod) => {
 		if (mod.type !== movedType) return mod;
 		if (mod.type === "skill") {
@@ -70,9 +67,7 @@ export function useCvPageDnd(
 	const { watch, setValue, getValues } = useFormContext();
 	const watchModules = watch("modules") as CvModulesInput[];
 
-	const sensors = useSensors(
-		useSensor(PointerSensor, { activationConstraint: { distance: 6 } }),
-	);
+	const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 6 } }));
 
 	const findColumnOf = (sectionId: string | number) => {
 		for (let col = 0; col < columns.length; col++) {
@@ -87,9 +82,7 @@ export function useCvPageDnd(
 		column: number,
 		orderedTypes: string[],
 	) => {
-		const orderByType = Object.fromEntries(
-			orderedTypes.map((type, index) => [type, index + 1]),
-		);
+		const orderByType = Object.fromEntries(orderedTypes.map((type, index) => [type, index + 1]));
 		return modules.map((mod) => {
 			const nextOrder = orderByType[mod.type];
 			if (nextOrder == null) return mod;
@@ -97,11 +90,7 @@ export function useCvPageDnd(
 		});
 	};
 
-	const reorderByClientKey = (
-		path: string,
-		activeId: string | number,
-		overId: string | number,
-	) => {
+	const reorderByClientKey = (path: string, activeId: string | number, overId: string | number) => {
 		const list = (getValues(path) ?? []) as Array<{
 			clientKey: string;
 			order?: number;
@@ -138,11 +127,7 @@ export function useCvPageDnd(
 
 			// Même colonne + drop sur le conteneur → rien à faire
 			if (activeCol === overCol) return;
-			if (
-				sidebarColumn != null &&
-				overCol === sidebarColumn &&
-				!SIDEBAR_ALLOWED.has(movedType)
-			)
+			if (sidebarColumn != null && overCol === sidebarColumn && !SIDEBAR_ALLOWED.has(movedType))
 				return;
 
 			const sourceTypes = sourceList
@@ -167,10 +152,7 @@ export function useCvPageDnd(
 		// ——— Drop sur une autre section ———
 		if (overData?.type !== "section") return;
 
-		const overCol =
-			typeof overData.column === "number"
-				? overData.column
-				: findColumnOf(overId);
+		const overCol = typeof overData.column === "number" ? overData.column : findColumnOf(overId);
 		if (overCol < 0) return;
 
 		// —— Même colonne : reorder classique ——
@@ -183,27 +165,19 @@ export function useCvPageDnd(
 			const reorderedTypes = arrayMove(list, oldIndex, newIndex).map((item) =>
 				sectionIdToType(item.id),
 			);
-			setValue(
-				"modules",
-				applyOrdersForColumn(watchModules, activeCol, reorderedTypes),
-				{ shouldDirty: true },
-			);
+			setValue("modules", applyOrdersForColumn(watchModules, activeCol, reorderedTypes), {
+				shouldDirty: true,
+			});
 			return;
 		}
-        if (
-			sidebarColumn != null &&
-			overCol === sidebarColumn &&
-			!SIDEBAR_ALLOWED.has(movedType)
-		)
+		if (sidebarColumn != null && overCol === sidebarColumn && !SIDEBAR_ALLOWED.has(movedType))
 			return;
 		// —— Autre colonne : change column + recalcule les 2 orders ——
 		const sourceTypes = sourceList
 			.filter((item) => item.id !== activeId)
 			.map((item) => sectionIdToType(item.id));
 
-		const targetList = (columns[overCol] ?? []).filter(
-			(item) => item.id !== activeId,
-		);
+		const targetList = (columns[overCol] ?? []).filter((item) => item.id !== activeId);
 		const insertAt = targetList.findIndex((i) => i.id === overId);
 		const safeInsert = insertAt === -1 ? targetList.length : insertAt;
 		const targetTypes = [
@@ -243,10 +217,7 @@ export function useCvPageDnd(
 
 		// ——— Niveau 2 : cards (même conteneur) ———
 		if (activeData.type === "card") {
-			if (
-				overData?.type !== "card" ||
-				overData.containerId !== activeData.containerId
-			) {
+			if (overData?.type !== "card" || overData.containerId !== activeData.containerId) {
 				return;
 			}
 
@@ -297,13 +268,9 @@ export function useCvPageDnd(
 				insertAt = (columns[overCol] ?? []).length;
 			} else if (overData.type === "section") {
 				overCol =
-					typeof overData.column === "number"
-						? (overData.column as number)
-						: findColumnOf(over.id);
+					typeof overData.column === "number" ? (overData.column as number) : findColumnOf(over.id);
 				if (overCol < 0) return;
-				const targetList = (columns[overCol] ?? []).filter(
-					(i) => i.id !== active.id,
-				);
+				const targetList = (columns[overCol] ?? []).filter((i) => i.id !== active.id);
 				const idx = targetList.findIndex((i) => i.id === over.id);
 				insertAt = idx === -1 ? targetList.length : idx;
 			} else {
@@ -312,18 +279,12 @@ export function useCvPageDnd(
 			// déjà dans la colonne cible → laisse le sortable / dragEnd gérer
 			if (activeCol === overCol) return;
 			const movedType = sectionIdToType(active.id);
-			if (
-				sidebarColumn != null &&
-				overCol === sidebarColumn &&
-				!SIDEBAR_ALLOWED.has(movedType)
-			)
+			if (sidebarColumn != null && overCol === sidebarColumn && !SIDEBAR_ALLOWED.has(movedType))
 				return;
 			const sourceTypes = (columns[activeCol] ?? [])
 				.filter((i) => i.id !== active.id)
 				.map((i) => sectionIdToType(i.id));
-			const targetList = (columns[overCol] ?? []).filter(
-				(i) => i.id !== active.id,
-			);
+			const targetList = (columns[overCol] ?? []).filter((i) => i.id !== active.id);
 			const targetTypes = [
 				...targetList.slice(0, insertAt).map((i) => sectionIdToType(i.id)),
 				movedType,
@@ -353,14 +314,9 @@ export function useCvPageDnd(
 			if (activeContainer === overContainer) return;
 
 			const overList = [...(getValues(overPath) ?? [])];
-			const overIndex = overList.findIndex(
-				(i) => i.clientKey === String(over.id),
-			);
+			const overIndex = overList.findIndex((i) => i.clientKey === String(over.id));
 			insertIndex = overIndex === -1 ? overList.length : overIndex;
-		} else if (
-			overData.type === "card" &&
-			overData.containerId === "skillGroup"
-		) {
+		} else if (overData.type === "card" && overData.containerId === "skillGroup") {
 			const overContainer = String(over.id);
 			if (activeContainer === overContainer) return;
 
@@ -371,9 +327,7 @@ export function useCvPageDnd(
 					const gi = groups.findIndex(
 						(g: { clientKey: string }) => g.clientKey === String(over.id),
 					);
-					return gi === -1
-						? null
-						: `datas.skillGroup.content.${gi}.content.skills`;
+					return gi === -1 ? null : `datas.skillGroup.content.${gi}.content.skills`;
 				})();
 			if (!overPath) return;
 			insertIndex = (getValues(overPath) ?? []).length;
@@ -384,9 +338,7 @@ export function useCvPageDnd(
 		const activeList = [...(getValues(activePath) ?? [])];
 		const overList = [...(getValues(overPath) ?? [])];
 
-		const activeIndex = activeList.findIndex(
-			(i) => i.clientKey === String(active.id),
-		);
+		const activeIndex = activeList.findIndex((i) => i.clientKey === String(active.id));
 		if (activeIndex === -1) return;
 		if (overList.some((i) => i.clientKey === String(active.id))) return;
 
@@ -413,9 +365,7 @@ export function useCvPageDnd(
 
 		const findByType = (type: string) =>
 			list.find((collision) => {
-				const container = args.droppableContainers.find(
-					(c) => c.id === collision.id,
-				);
+				const container = args.droppableContainers.find((c) => c.id === collision.id);
 				return container?.data.current?.type === type;
 			});
 
@@ -437,9 +387,7 @@ export function useCvPageDnd(
 			if (subcard) return [subcard];
 
 			const groupCard = list.find((collision) => {
-				const container = args.droppableContainers.find(
-					(c) => c.id === collision.id,
-				);
+				const container = args.droppableContainers.find((c) => c.id === collision.id);
 				const data = container?.data.current;
 				return data?.type === "card" && data?.containerId === "skillGroup";
 			});

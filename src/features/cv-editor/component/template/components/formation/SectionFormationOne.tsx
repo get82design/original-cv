@@ -17,9 +17,7 @@ import { moduleField } from "@/features/cv-editor/utils/fields/moduleField";
 
 export const SectionFormationOne = () => {
 	const { watch } = useFormContext();
-	const watchModelFormationTitle: BaseTextSettings = watch(
-		FieldNameFormation.settingsSectionTitle,
-	);
+	const watchModelFormationTitle: BaseTextSettings = watch(FieldNameFormation.settingsSectionTitle);
 	const modules = watch("modules");
 	const path = moduleField(modules, "formation", "settings", "content");
 	const cols = watch(`${path}.columns`) ?? 2;
@@ -36,8 +34,7 @@ export const SectionFormationOne = () => {
 	});
 
 	const itemKey =
-		watch("layoutGeneral.defaultStyles")?.components?.sectionFormation?.item ??
-		"CardFormationOne";
+		watch("layoutGeneral.defaultStyles")?.components?.sectionFormation?.item ?? "CardFormationOne";
 	const Card = FormationCardRegister[itemKey] ?? CardFormationOne;
 
 	return (

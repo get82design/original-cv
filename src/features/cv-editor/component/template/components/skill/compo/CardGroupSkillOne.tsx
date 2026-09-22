@@ -42,11 +42,7 @@ export const CardGroupSkillOne = ({
 	const { setSelectModifInput, setSelectInputForm } = useCreateCvContext();
 	const { watch, getValues, setValue } = useFormContext();
 	const watchGeneral = watch(FieldNameLayoutGeneral.layout);
-	const pathContent = dataFieldContent(
-		"datas.skillGroup.content",
-		index,
-		"content",
-	);
+	const pathContent = dataFieldContent("datas.skillGroup.content", index, "content");
 	const watchWithIcon = watchGeneral?.titleSection.withIcon;
 	const watchListStyle = watchGeneral?.listStyle;
 	const menuLeft = useRef<Menu>(null);
@@ -67,12 +63,9 @@ export const CardGroupSkillOne = ({
 		});
 
 		// sélection : groupe lui-même OU un skill de ce groupe
-		const deletedSkillKeys = new Set(
-			(itemToDelete.content?.skills ?? []).map((s) => s.clientKey),
-		);
+		const deletedSkillKeys = new Set((itemToDelete.content?.skills ?? []).map((s) => s.clientKey));
 		const selectionWasInGroup =
-			itemSelected === itemToDelete.clientKey ||
-			deletedSkillKeys.has(itemSelected);
+			itemSelected === itemToDelete.clientKey || deletedSkillKeys.has(itemSelected);
 
 		if (selectionWasInGroup) {
 			setItemSelected(newList[0]?.clientKey ?? "");
@@ -80,8 +73,7 @@ export const CardGroupSkillOne = ({
 	};
 
 	const itemKey =
-		watch("layoutGeneral.defaultStyles")?.components?.sectionSkill?.item ??
-		"CardSkillOne";
+		watch("layoutGeneral.defaultStyles")?.components?.sectionSkill?.item ?? "CardSkillOne";
 	const Card = SkillCardRegister[itemKey] ?? CardSkillOne;
 
 	return (
@@ -110,12 +102,7 @@ export const CardGroupSkillOne = ({
 				itemsMenu ? (
 					<>
 						<ToolbarOptionsButton menuRef={menuLeft} />
-						<Menu
-							model={itemsMenu(index)}
-							popup
-							ref={menuLeft}
-							style={{ width: 300 }}
-						/>
+						<Menu model={itemsMenu(index)} popup ref={menuLeft} style={{ width: 300 }} />
 					</>
 				) : null
 			}
@@ -173,9 +160,7 @@ export const ContentSkillGroupContainer = ({
 		<div className="w-full flex flex-col gap-1 pb-1 mt-1">
 			<div className="w-full flex justify-between items-center relative -mb-2">
 				<CommonPointList general={general} />
-				<div className="w-full">
-					{item?.content?.settings?.withGroupTitle && titleGroupCompo}
-				</div>
+				<div className="w-full">{item?.content?.settings?.withGroupTitle && titleGroupCompo}</div>
 			</div>
 			<div className="w-full flex flex-col gap-0">{skillsCompo}</div>
 		</div>

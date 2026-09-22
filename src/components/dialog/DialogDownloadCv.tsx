@@ -65,11 +65,8 @@ export const DialogDownloadCv = ({
 	const canPaid = downloadCredits > 0 && !premiumLocked;
 
 	const canUnlockCredits =
-		unlockPriceCredits != null &&
-		unlockPriceCredits > 0 &&
-		downloadCredits >= unlockPriceCredits;
-	const hasCreditsPrice =
-		unlockPriceCredits != null && unlockPriceCredits > 0;
+		unlockPriceCredits != null && unlockPriceCredits > 0 && downloadCredits >= unlockPriceCredits;
+	const hasCreditsPrice = unlockPriceCredits != null && unlockPriceCredits > 0;
 	const hasEuroPrice = unlockPriceCents != null && unlockPriceCents > 0;
 
 	const previewUrl =
@@ -204,26 +201,18 @@ export const DialogDownloadCv = ({
 					{premiumLocked ? (
 						<>
 							<div className="rounded-lg border border-amber-500/40 bg-amber-500/10 px-3.5 py-3 text-sm text-amber-800 dark:text-amber-200">
-								<p className="m-0 font-semibold">
-									Modèle premium
-								</p>
+								<p className="m-0 font-semibold">Modèle premium</p>
 								<p className="m-0 mt-1 text-xs leading-relaxed opacity-90">
-									Vous pouvez éditer ce CV librement. Débloquez
-									le modèle pour télécharger l’export.
+									Vous pouvez éditer ce CV librement. Débloquez le modèle pour télécharger l’export.
 								</p>
 							</div>
 
 							{hasCreditsPrice ? (
 								<div className="rounded-lg border border-zinc-200 bg-white px-3.5 py-3 dark:border-zinc-700 dark:bg-zinc-900">
-									<p className="m-0 text-sm font-semibold">
-										Débloquer avec des crédits
-									</p>
+									<p className="m-0 text-sm font-semibold">Débloquer avec des crédits</p>
 									<p className="m-0 mt-1 text-xs leading-relaxed text-zinc-500 dark:text-zinc-400">
 										{unlockPriceCredits} crédit
-										{(unlockPriceCredits ?? 0) > 1
-											? "s"
-											: ""}{" "}
-										— vous en avez {downloadCredits}.
+										{(unlockPriceCredits ?? 0) > 1 ? "s" : ""} — vous en avez {downloadCredits}.
 									</p>
 									<Button
 										type="button"
@@ -252,12 +241,9 @@ export const DialogDownloadCv = ({
 
 							{hasEuroPrice ? (
 								<div className="rounded-lg border border-zinc-200 bg-white px-3.5 py-3 dark:border-zinc-700 dark:bg-zinc-900">
-									<p className="m-0 text-sm font-semibold">
-										Payer en euros
-									</p>
+									<p className="m-0 text-sm font-semibold">Payer en euros</p>
 									<p className="m-0 mt-1 text-xs leading-relaxed text-zinc-500 dark:text-zinc-400">
-										{formatEuros(unlockPriceCents!)} —
-										paiement sécurisé (bientôt).
+										{formatEuros(unlockPriceCents!)} — paiement sécurisé (bientôt).
 									</p>
 									<Button
 										type="button"
@@ -272,16 +258,15 @@ export const DialogDownloadCv = ({
 
 							{!hasCreditsPrice && !hasEuroPrice ? (
 								<p className="m-0 text-xs text-zinc-500 dark:text-zinc-400">
-									Aucun tarif de déblocage configuré pour ce
-									modèle.
+									Aucun tarif de déblocage configuré pour ce modèle.
 								</p>
 							) : null}
 						</>
 					) : (
 						<>
 							<p className="m-0 text-sm leading-relaxed text-zinc-700 dark:text-zinc-300">
-								Deux formats d’export : gratuit avec la signature
-								OriginalCV, ou sans logo en consommant un crédit.
+								Deux formats d’export : gratuit avec la signature OriginalCV, ou sans logo en
+								consommant un crédit.
 							</p>
 
 							<button
@@ -296,13 +281,10 @@ export const DialogDownloadCv = ({
 							>
 								<div className="flex items-start justify-between gap-3">
 									<div className="min-w-0">
-										<p className="m-0 text-sm font-semibold">
-											Gratuit — avec logo
-										</p>
+										<p className="m-0 text-sm font-semibold">Gratuit — avec logo</p>
 										<p className="m-0 mt-1 text-xs leading-relaxed text-zinc-500 dark:text-zinc-400">
-											Export PDF/JPEG avec la signature
-											OriginalCV en bas de page. Idéal pour
-											tester ou partager rapidement.
+											Export PDF/JPEG avec la signature OriginalCV en bas de page. Idéal pour tester
+											ou partager rapidement.
 										</p>
 										<p className="m-0 mt-2 text-xs font-medium text-zinc-600 dark:text-zinc-300">
 											{canFree
@@ -333,12 +315,9 @@ export const DialogDownloadCv = ({
 							>
 								<div className="flex items-start justify-between gap-3">
 									<div className="min-w-0">
-										<p className="m-0 text-sm font-semibold">
-											Sans logo — 1 crédit
-										</p>
+										<p className="m-0 text-sm font-semibold">Sans logo — 1 crédit</p>
 										<p className="m-0 mt-1 text-xs leading-relaxed text-zinc-500 dark:text-zinc-400">
-											Version propre, sans signature, prête
-											pour un envoi recruteur.
+											Version propre, sans signature, prête pour un envoi recruteur.
 										</p>
 										<p className="m-0 mt-2 text-xs font-medium text-zinc-600 dark:text-zinc-300">
 											{canPaid
@@ -359,15 +338,14 @@ export const DialogDownloadCv = ({
 
 							{mode === "free" && !canFree && (
 								<p className="m-0 text-xs text-amber-700 dark:text-amber-300">
-									Plus de téléchargements gratuits. Choisissez
-									l’export sans logo ou obtenez un crédit.
+									Plus de téléchargements gratuits. Choisissez l’export sans logo ou obtenez un
+									crédit.
 								</p>
 							)}
 							{mode === "paid" && !canPaid && (
 								<p className="m-0 text-xs text-amber-700 dark:text-amber-300">
-									Pas de crédit pour l’instant. Vous pouvez en
-									acheter, ou utiliser un export gratuit s’il
-									vous en reste.
+									Pas de crédit pour l’instant. Vous pouvez en acheter, ou utiliser un export
+									gratuit s’il vous en reste.
 								</p>
 							)}
 						</>

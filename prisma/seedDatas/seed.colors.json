@@ -1,137 +1,137 @@
 [
-  {
-    "name": "black",
-    "primary": "",
-    "order": 0
-  },
-  {
-    "name": "red",
-    "primary": "-600",
-    "order": 1
-  },
-  {
-    "name": "orange",
-    "primary": "-400",
-    "order": 2
-  },
-  {
-    "name": "amber",
-    "primary": "-600",
-    "order": 3
-  },
-  {
-    "name": "yellow",
-    "primary": "-600",
-    "order": 4
-  },
-  {
-    "name": "lime",
-    "primary": "-400",
-    "order": 5
-  },
-  {
-    "name": "green",
-    "primary": "-600",
-    "order": 6
-  },
-  {
-    "name": "emerald",
-    "primary": "-600",
-    "order": 7
-  },
-  {
-    "name": "teal",
-    "primary": "-600",
-    "order": 8
-  },
-  {
-    "name": "cyan",
-    "primary": "-500",
-    "order": 9
-  },
-  {
-    "name": "sky",
-    "primary": "-500",
-    "order": 10
-  },
-  {
-    "name": "blue",
-    "primary": "-600",
-    "order": 11
-  },
-  {
-    "name": "indigo",
-    "primary": "-500",
-    "order": 12
-  },
-  {
-    "name": "violet",
-    "primary": "-400",
-    "order": 13
-  },
-  {
-    "name": "purple",
-    "primary": "-500",
-    "order": 14
-  },
-  {
-    "name": "fuchsia",
-    "primary": "-500",
-    "order": 15
-  },
-  {
-    "name": "pink",
-    "primary": "-400",
-    "order": 16
-  },
-  {
-    "name": "rose",
-    "primary": "-500",
-    "order": 17
-  },
-  {
-    "name": "slate",
-    "primary": "-600",
-    "order": 18
-  },
-  {
-    "name": "gray",
-    "primary": "-500",
-    "order": 19
-  },
-  {
-    "name": "zinc",
-    "primary": "-600",
-    "order": 20
-  },
-  {
-    "name": "neutral",
-    "primary": "-600",
-    "order": 21
-  },
-  {
-    "name": "stone",
-    "primary": "-600",
-    "order": 22
-  },
-  {
-    "name": "taupe",
-    "primary": "-600",
-    "order": 23
-  },
-  {
-    "name": "mauve",
-    "primary": "-600",
-    "order": 24
-  },
-  {
-    "name": "mist",
-    "primary": "-600",
-    "order": 25
-  },
-  {
-    "name": "olive",
-    "primary": "-600",
-    "order": 26
-  }
+	{
+		"name": "black",
+		"primary": "",
+		"order": 0
+	},
+	{
+		"name": "red",
+		"primary": "-600",
+		"order": 1
+	},
+	{
+		"name": "orange",
+		"primary": "-400",
+		"order": 2
+	},
+	{
+		"name": "amber",
+		"primary": "-600",
+		"order": 3
+	},
+	{
+		"name": "yellow",
+		"primary": "-600",
+		"order": 4
+	},
+	{
+		"name": "lime",
+		"primary": "-400",
+		"order": 5
+	},
+	{
+		"name": "green",
+		"primary": "-600",
+		"order": 6
+	},
+	{
+		"name": "emerald",
+		"primary": "-600",
+		"order": 7
+	},
+	{
+		"name": "teal",
+		"primary": "-600",
+		"order": 8
+	},
+	{
+		"name": "cyan",
+		"primary": "-500",
+		"order": 9
+	},
+	{
+		"name": "sky",
+		"primary": "-500",
+		"order": 10
+	},
+	{
+		"name": "blue",
+		"primary": "-600",
+		"order": 11
+	},
+	{
+		"name": "indigo",
+		"primary": "-500",
+		"order": 12
+	},
+	{
+		"name": "violet",
+		"primary": "-400",
+		"order": 13
+	},
+	{
+		"name": "purple",
+		"primary": "-500",
+		"order": 14
+	},
+	{
+		"name": "fuchsia",
+		"primary": "-500",
+		"order": 15
+	},
+	{
+		"name": "pink",
+		"primary": "-400",
+		"order": 16
+	},
+	{
+		"name": "rose",
+		"primary": "-500",
+		"order": 17
+	},
+	{
+		"name": "slate",
+		"primary": "-600",
+		"order": 18
+	},
+	{
+		"name": "gray",
+		"primary": "-500",
+		"order": 19
+	},
+	{
+		"name": "zinc",
+		"primary": "-600",
+		"order": 20
+	},
+	{
+		"name": "neutral",
+		"primary": "-600",
+		"order": 21
+	},
+	{
+		"name": "stone",
+		"primary": "-600",
+		"order": 22
+	},
+	{
+		"name": "taupe",
+		"primary": "-600",
+		"order": 23
+	},
+	{
+		"name": "mauve",
+		"primary": "-600",
+		"order": 24
+	},
+	{
+		"name": "mist",
+		"primary": "-600",
+		"order": 25
+	},
+	{
+		"name": "olive",
+		"primary": "-600",
+		"order": 26
+	}
 ]

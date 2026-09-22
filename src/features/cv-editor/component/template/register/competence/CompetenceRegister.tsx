@@ -19,16 +19,10 @@ export const IconRegister: Record<string, React.ComponentType> = {
 	MdBookmarkAdd,
 };
 
-export function CompetenceRenderer({
-	templateConfig,
-}: {
-	templateConfig: TemplateDefaultStyles;
-}) {
+export function CompetenceRenderer({ templateConfig }: { templateConfig: TemplateDefaultStyles }) {
 	const competenceKey =
-		templateConfig?.components?.sectionCompetence?.component ??
-		"SectionCompetenceOne";
-	const CompetenceComponent =
-		CompetenceRegister[competenceKey] ?? DefaultCompetence;
+		templateConfig?.components?.sectionCompetence?.component ?? "SectionCompetenceOne";
+	const CompetenceComponent = CompetenceRegister[competenceKey] ?? DefaultCompetence;
 	return <CompetenceComponent />;
 }
 export function MiniatureCompetenceRenderer({
@@ -37,10 +31,8 @@ export function MiniatureCompetenceRenderer({
 	templateConfig: TemplateDefaultStyles;
 }) {
 	const miniatureKey =
-		templateConfig?.components?.sectionCompetence?.miniature ??
-		"MiniCompetenceOne";
-	const MiniatureComponent =
-		MiniatureRegister[miniatureKey] ?? DefaultMiniature;
+		templateConfig?.components?.sectionCompetence?.miniature ?? "MiniCompetenceOne";
+	const MiniatureComponent = MiniatureRegister[miniatureKey] ?? DefaultMiniature;
 	return <MiniatureComponent />;
 }
 export function IconCompetenceRenderer({
@@ -48,8 +40,7 @@ export function IconCompetenceRenderer({
 }: {
 	templateConfig: TemplateDefaultStyles;
 }) {
-	const iconKey =
-		templateConfig?.components?.sectionCompetence?.icon ?? "MdBookmarkAdd";
+	const iconKey = templateConfig?.components?.sectionCompetence?.icon ?? "MdBookmarkAdd";
 	const IconComponent = IconRegister[iconKey] ?? DefaultIcon;
 	return <IconComponent />;
 }

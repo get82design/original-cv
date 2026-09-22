@@ -19,13 +19,8 @@ export const IconRegister: Record<string, React.ComponentType> = {
 	PiMedal,
 };
 
-export function PrizeRenderer({
-	templateConfig,
-}: {
-	templateConfig: TemplateDefaultStyles;
-}) {
-	const prizeKey =
-		templateConfig?.components?.sectionPrize?.component ?? "SectionPrizeOne";
+export function PrizeRenderer({ templateConfig }: { templateConfig: TemplateDefaultStyles }) {
+	const prizeKey = templateConfig?.components?.sectionPrize?.component ?? "SectionPrizeOne";
 	const PrizeComponent = PrizeRegister[prizeKey] ?? DefaultPrize;
 	return <PrizeComponent />;
 }
@@ -34,17 +29,11 @@ export function MiniaturePrizeRenderer({
 }: {
 	templateConfig: TemplateDefaultStyles;
 }) {
-	const miniatureKey =
-		templateConfig?.components?.sectionPrize?.miniature ?? "MiniPrizeOne";
-	const MiniatureComponent =
-		MiniatureRegister[miniatureKey] ?? DefaultMiniature;
+	const miniatureKey = templateConfig?.components?.sectionPrize?.miniature ?? "MiniPrizeOne";
+	const MiniatureComponent = MiniatureRegister[miniatureKey] ?? DefaultMiniature;
 	return <MiniatureComponent />;
 }
-export function IconPrizeRenderer({
-	templateConfig,
-}: {
-	templateConfig: TemplateDefaultStyles;
-}) {
+export function IconPrizeRenderer({ templateConfig }: { templateConfig: TemplateDefaultStyles }) {
 	const iconKey = templateConfig?.components?.sectionPrize?.icon ?? "PiMedal";
 	const IconComponent = IconRegister[iconKey] ?? DefaultIcon;
 	return <IconComponent />;

@@ -4,10 +4,7 @@ import type { TagContentSettings } from "@/services/schemas/cvTemplate.schema";
 import { useCreateCvContext } from "@/features/cv-editor/component/context/CreateCvContext";
 import { useFormContext } from "react-hook-form";
 import { ToggleAfficherCacher } from "@/components/input/toggle-button/AfficherCacher";
-import {
-	SortableContext,
-	verticalListSortingStrategy,
-} from "@dnd-kit/sortable";
+import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { Button } from "primereact/button";
 import { FieldNameTag } from "@/features/cv-editor/utils/fields/fieldNameTag";
 import { MdAdd } from "react-icons/md";
@@ -46,11 +43,7 @@ export const TagGroupDnd = ({
 	const applyDesign = (idx: number, design: TagDesign) => {
 		const settingsBase = `datas.tagGroup.content.${idx}.content.settings`;
 		setValue(`${settingsBase}.design`, design, { shouldDirty: true });
-		setValue(
-			`${settingsBase}.tags.colorSelect`,
-			colorForTagDesign(design),
-			{ shouldDirty: true },
-		);
+		setValue(`${settingsBase}.tags.colorSelect`, colorForTagDesign(design), { shouldDirty: true });
 	};
 
 	const itemsMenu = (idx: number) => {

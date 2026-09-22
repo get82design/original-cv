@@ -2,10 +2,7 @@ import { prisma } from "../../../lib/prisma";
 import { reorderItems } from "../../utils/reorderCvItems";
 import { ConflictError, NotFoundError } from "../errors";
 import { compactOrder } from "../../utils/compactOrder";
-import type {
-	CreateExpertiseInput,
-	UpdateExpertiseInput,
-} from "../schemas/expertise.schema";
+import type { CreateExpertiseInput, UpdateExpertiseInput } from "../schemas/expertise.schema";
 
 export class CvExpertiseService {
 	async create(cvId: string, data: CreateExpertiseInput) {

@@ -43,12 +43,8 @@ describe("applyCvRewriteToForm", () => {
 			rewrittenText: "Nouveau profil percutant.",
 			items: [],
 		});
-		expect(next.datas?.description?.content?.description).toBe(
-			"Nouveau profil percutant.",
-		);
-		expect(base.datas?.description?.content?.description).toBe(
-			"Ancien texte.",
-		);
+		expect(next.datas?.description?.content?.description).toBe("Nouveau profil percutant.");
+		expect(base.datas?.description?.content?.description).toBe("Ancien texte.");
 	});
 
 	it("met à jour une expérience via id clientKey", () => {
@@ -68,10 +64,7 @@ describe("applyCvRewriteToForm", () => {
 		expect(exp?.clientKey).toBe("exp-1");
 		expect(exp?.content.title).toBe("Développeur full-stack");
 		expect(exp?.content.description).toBe("Backend et APIs");
-		expect(exp?.content.missions?.map((m) => m.content.content)).toEqual([
-			"APIs REST",
-			"CI/CD",
-		]);
+		expect(exp?.content.missions?.map((m) => m.content.content)).toEqual(["APIs REST", "CI/CD"]);
 		expect(exp?.content.missions?.[0]?.clientKey).toBe("m1");
 	});
 });

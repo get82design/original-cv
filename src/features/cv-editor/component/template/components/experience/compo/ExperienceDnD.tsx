@@ -4,10 +4,7 @@ import { v4 as uuid } from "uuid";
 import { ToggleAfficherCacher } from "@/components/input/toggle-button/AfficherCacher";
 import { dataFieldContent } from "@/features/cv-editor/utils/fields/moduleField";
 import { FieldNameExperience } from "@/features/cv-editor/utils/fields/fieldNameExperience";
-import {
-	SortableContext,
-	verticalListSortingStrategy,
-} from "@dnd-kit/sortable";
+import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { useCreateCvContext } from "@/features/cv-editor/component/context/CreateCvContext";
 import { MdAdd } from "react-icons/md";
 import { Button } from "primereact/button";
@@ -32,16 +29,8 @@ export const ExperiencesDnd = ({
 	const { setValue } = useFormContext();
 	const { setSectionSelected, sectionSelected } = useCreateCvContext();
 
-	const addElmList = (
-		item: ListItem<ExperienceItemContentInput>,
-		elm: string,
-		index: number,
-	) => {
-		const pathContent = dataFieldContent(
-			"datas.experience.content",
-			index,
-			"content.missions",
-		);
+	const addElmList = (item: ListItem<ExperienceItemContentInput>, elm: string, index: number) => {
+		const pathContent = dataFieldContent("datas.experience.content", index, "content.missions");
 
 		const newMission = {
 			clientKey: "mission-" + uuid(),
@@ -56,11 +45,7 @@ export const ExperiencesDnd = ({
 	};
 
 	const deleteMission = (index: number, idx: number) => {
-		const pathContent = dataFieldContent(
-			"datas.experience.content",
-			index,
-			"content.missions",
-		);
+		const pathContent = dataFieldContent("datas.experience.content", index, "content.missions");
 		const currentMissions = watchExperiences[index]?.content?.missions ?? [];
 		const nextMissions = currentMissions
 			.filter((_, i) => i !== idx)
@@ -72,11 +57,7 @@ export const ExperiencesDnd = ({
 	};
 
 	const itemsMenu = (idx: number) => {
-		const pathContent = dataFieldContent(
-			"datas.experience.content",
-			idx,
-			"content.settings",
-		);
+		const pathContent = dataFieldContent("datas.experience.content", idx, "content.settings");
 		return [
 			{
 				label: "Options",
@@ -125,9 +106,7 @@ export const ExperiencesDnd = ({
 						template: (
 							<div className="flex justify-between py-1 px-4 items-center">
 								<p>Liste</p>
-								<ToggleAfficherCacher
-									name={`${pathContent}.withListMissions`}
-								/>
+								<ToggleAfficherCacher name={`${pathContent}.withListMissions`} />
 							</div>
 						),
 					},
@@ -177,10 +156,7 @@ export const ExperiencesDnd = ({
 							const fresh = createNewItem();
 							setValue(
 								FieldNameExperience.content,
-								[
-									...watchExperiences,
-									{ ...fresh, order: watchExperiences.length + 1 },
-								],
+								[...watchExperiences, { ...fresh, order: watchExperiences.length + 1 }],
 								{ shouldDirty: true },
 							);
 						}}

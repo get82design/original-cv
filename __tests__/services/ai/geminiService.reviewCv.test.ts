@@ -36,13 +36,9 @@ describe("geminiService.reviewCv", () => {
 			response: { text: () => validReviewJson },
 		});
 
-		const { geminiService } = await import(
-			"../../../src/services/ai/geminiService"
-		);
+		const { geminiService } = await import("../../../src/services/ai/geminiService");
 
-		const review = await geminiService.reviewCv(
-			"Ada Lovelace — Analyste chez Analytical Engine",
-		);
+		const review = await geminiService.reviewCv("Ada Lovelace — Analyste chez Analytical Engine");
 
 		expect(review.score).toBe(7);
 		expect(review.strengths).toEqual(["Parcours cohérent"]);
@@ -63,9 +59,7 @@ describe("geminiService.reviewCv", () => {
 				response: { text: () => validReviewJson },
 			});
 
-		const { geminiService } = await import(
-			"../../../src/services/ai/geminiService"
-		);
+		const { geminiService } = await import("../../../src/services/ai/geminiService");
 
 		const review = await geminiService.reviewCv("CV minimal");
 		expect(review.summary).toContain("clair");
@@ -76,16 +70,10 @@ describe("geminiService.reviewCv", () => {
 	});
 
 	it("rejects empty CV text", async () => {
-		const { geminiService } = await import(
-			"../../../src/services/ai/geminiService"
-		);
-		const { ValidationError } = await import(
-			"../../../src/services/errors"
-		);
+		const { geminiService } = await import("../../../src/services/ai/geminiService");
+		const { ValidationError } = await import("../../../src/services/errors");
 
-		await expect(geminiService.reviewCv("   ")).rejects.toBeInstanceOf(
-			ValidationError,
-		);
+		await expect(geminiService.reviewCv("   ")).rejects.toBeInstanceOf(ValidationError);
 	});
 
 	it("rejects after retry if still invalid", async () => {
@@ -93,16 +81,12 @@ describe("geminiService.reviewCv", () => {
 			response: { text: () => "not-json" },
 		});
 
-		const { geminiService } = await import(
-			"../../../src/services/ai/geminiService"
-		);
-		const { ValidationError } = await import(
-			"../../../src/services/errors"
-		);
+		const { geminiService } = await import("../../../src/services/ai/geminiService");
+		const { ValidationError } = await import("../../../src/services/errors");
 
-		await expect(
-			geminiService.reviewCv("Un CV quelconque"),
-		).rejects.toBeInstanceOf(ValidationError);
+		await expect(geminiService.reviewCv("Un CV quelconque")).rejects.toBeInstanceOf(
+			ValidationError,
+		);
 		expect(generateContent).toHaveBeenCalledTimes(2);
 	});
 
@@ -111,15 +95,11 @@ describe("geminiService.reviewCv", () => {
 			new Error("[503 Service Unavailable] The model is overloaded"),
 			{ status: 503 },
 		);
-		generateContent
-			.mockRejectedValueOnce(overloaded)
-			.mockResolvedValueOnce({
-				response: { text: () => validReviewJson },
-			});
+		generateContent.mockRejectedValueOnce(overloaded).mockResolvedValueOnce({
+			response: { text: () => validReviewJson },
+		});
 
-		const { geminiService } = await import(
-			"../../../src/services/ai/geminiService"
-		);
+		const { geminiService } = await import("../../../src/services/ai/geminiService");
 
 		const review = await geminiService.reviewCv("CV minimal");
 		expect(review.score).toBe(7);
@@ -132,13 +112,9 @@ describe("geminiService.reviewCv", () => {
 		});
 		generateContent.mockRejectedValueOnce(badKey);
 
-		const { geminiService } = await import(
-			"../../../src/services/ai/geminiService"
-		);
+		const { geminiService } = await import("../../../src/services/ai/geminiService");
 
-		await expect(geminiService.reviewCv("CV")).rejects.toThrow(
-			"401 Unauthorized",
-		);
+		await expect(geminiService.reviewCv("CV")).rejects.toThrow("401 Unauthorized");
 		expect(generateContent).toHaveBeenCalledOnce();
 	});
 });

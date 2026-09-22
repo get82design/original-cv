@@ -36,11 +36,7 @@ export const StrengthDnd = ({
 	const { setSectionSelected, sectionSelected } = useCreateCvContext();
 
 	const itemsMenu = (idx: number) => {
-		const pathContent = dataFieldContent(
-			"datas.strength.content",
-			idx,
-			"content.settings",
-		);
+		const pathContent = dataFieldContent("datas.strength.content", idx, "content.settings");
 		return [
 			{
 				label: "Options",
@@ -78,11 +74,7 @@ export const StrengthDnd = ({
 	return (
 		<SortableContext
 			items={watchStrengths.map((s) => s.clientKey)}
-			strategy={
-				colOfStrength === 1
-					? verticalListSortingStrategy
-					: horizontalListSortingStrategy
-			}
+			strategy={colOfStrength === 1 ? verticalListSortingStrategy : horizontalListSortingStrategy}
 		>
 			<div
 				className={`strengths-grid grid ${COL_CLASS[colOfStrength as keyof typeof COL_CLASS] ?? "grid-cols-1"} ${colOfStrength === 1 ? "gap-1" : "gap-x-4 gap-y-0"}`}
@@ -109,10 +101,7 @@ export const StrengthDnd = ({
 							const fresh = createNewItem();
 							setValue(
 								FieldNameStrength.content,
-								[
-									...watchStrengths,
-									{ ...fresh, order: watchStrengths.length + 1 },
-								],
+								[...watchStrengths, { ...fresh, order: watchStrengths.length + 1 }],
 								{ shouldDirty: true },
 							);
 						}}

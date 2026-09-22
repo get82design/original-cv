@@ -5,9 +5,6 @@ import {
 
 export type SocialMediaCardProps = CardSocialMediaOneProps;
 
-export const SocialMediaCardRegister: Record<
-	string,
-	React.ComponentType<SocialMediaCardProps>
-> = {
+export const SocialMediaCardRegister: Record<string, React.ComponentType<SocialMediaCardProps>> = {
 	CardSocialMediaOne,
 };

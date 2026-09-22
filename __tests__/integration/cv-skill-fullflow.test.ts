@@ -22,9 +22,7 @@ describe("CV Fullflow Integration with skills", () => {
 	});
 
 	it("should cascade delete CV modules and items", async () => {
-		const { user, template } = await utils.createUserAndTemplate(
-			"delete@fullflow.com",
-		);
+		const { user, template } = await utils.createUserAndTemplate("delete@fullflow.com");
 		const cv = await utils.createCV(user.id, template.id);
 		const skillGroup = await utils.createSkillGroup(cv.id, "Skills", 1);
 		const skill = await utils.createSkill("TypeScript");

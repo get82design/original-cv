@@ -1,19 +1,9 @@
 import { z } from "zod";
 
-export const LevelSchema = z.enum([
-	"Débutant",
-	"Junior",
-	"Intermédiaire",
-	"Senior",
-	"Expert",
-]);
+export const LevelSchema = z.enum(["Débutant", "Junior", "Intermédiaire", "Senior", "Expert"]);
 export type Level = z.infer<typeof LevelSchema>;
 
-export const CvTimelineStatusSchema = z.enum([
-	"COMPLETED",
-	"ABANDONED",
-	"INTERRUPTED",
-]);
+export const CvTimelineStatusSchema = z.enum(["COMPLETED", "ABANDONED", "INTERRUPTED"]);
 export type CvTimelineStatus = z.infer<typeof CvTimelineStatusSchema>;
 
 export const CVModuleItemTypeSchema = z.enum([

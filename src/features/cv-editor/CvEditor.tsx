@@ -5,15 +5,9 @@ import { useFormContext } from "react-hook-form";
 import type { TemplateModule } from "@/services/schemas/cvTemplate.schema";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { OneColumnModel } from "./component/kit-dnd/one-column-model/OneColumnModel";
-import {
-	clearEditorSelection,
-	useCreateCvContext,
-} from "./component/context/CreateCvContext";
+import { clearEditorSelection, useCreateCvContext } from "./component/context/CreateCvContext";
 import type { ItemGeneralProps } from "@utils/type";
-import {
-	compactActiveOrders,
-	nextActiveOrderInColumn,
-} from "@/utils/moduleOrder";
+import { compactActiveOrders, nextActiveOrderInColumn } from "@/utils/moduleOrder";
 import { PageLayoutRegister } from "./component/kit-dnd/register/PageLayoutRegister";
 import { getCvTypographyVars } from "./utils/utilsCv/font";
 import type { CvFormValues } from "@/services/schemas/cvSave.schema";
@@ -25,10 +19,7 @@ import { DialogAssistantIa, type AiActionId } from "@/components/dialog/DialogAs
 import { DialogAiPayment } from "@/components/dialog/DialogAiPayment";
 import { DialogCvReviewResult } from "@/components/dialog/DialogCvReviewResult";
 import { DialogRewriteSection } from "@/components/dialog/DialogRewriteSection";
-import {
-	CV_MODIF_DOCK_WIDTH,
-	CvModifDock,
-} from "./component/custom-cv-input/CvModifDock";
+import { CV_MODIF_DOCK_WIDTH, CvModifDock } from "./component/custom-cv-input/CvModifDock";
 import { DialogDownloadCv } from "@/components/dialog/DialogDownloadCv";
 import { captureDownloadPreviews } from "./utils/captureCvPreview";
 import type { CvReview } from "@/services/schemas/cvReview.schema";
@@ -37,10 +28,7 @@ import type { CvRewriteSectionType } from "@/services/schemas/cvRewriteSection.s
 import { Toast } from "primereact/toast";
 import { flattenCvFormToText } from "./utils/flattenCvFormToText";
 import { extractPrimaryColorName } from "@/services/cv/extractPrimaryColorName";
-import {
-	getClientErrorMessage,
-	isTooManyRequestsError,
-} from "@/utils/clientError";
+import { getClientErrorMessage, isTooManyRequestsError } from "@/utils/clientError";
 import {
 	extractCvSectionSourceText,
 	listRewriteableSections,
@@ -58,23 +46,16 @@ export const CvEditor = () => {
 	const { data: session, status } = useSession();
 	const { data: profile } = trpc.profile.completeMe.useQuery();
 	const [itemNoUse, setItemNoUse] = useState<TemplateModule[]>([]);
-	const [visibleDialogDataFromProfile, setVisibleDialogDataFromProfile] =
-		useState(false);
+	const [visibleDialogDataFromProfile, setVisibleDialogDataFromProfile] = useState(false);
 	const [visibleAssistantIa, setVisibleAssistantIa] = useState(false);
 	const [visibleCvReview, setVisibleCvReview] = useState(false);
 	const [cvReview, setCvReview] = useState<CvReview | null>(null);
 	const [visibleRewrite, setVisibleRewrite] = useState(false);
-	const [rewriteResult, setRewriteResult] = useState<CvRewriteResult | null>(
-		null,
-	);
-	const [rewriteSectionType, setRewriteSectionType] =
-		useState<CvRewriteSectionType | null>(null);
+	const [rewriteResult, setRewriteResult] = useState<CvRewriteResult | null>(null);
+	const [rewriteSectionType, setRewriteSectionType] = useState<CvRewriteSectionType | null>(null);
 	const [visibleDownloadDialog, setVisibleDownloadDialog] = useState(false);
-	const [downloadPreviewWithLogo, setDownloadPreviewWithLogo] = useState<
-		string | null
-	>(null);
-	const [downloadPreviewWithoutLogo, setDownloadPreviewWithoutLogo] =
-		useState<string | null>(null);
+	const [downloadPreviewWithLogo, setDownloadPreviewWithLogo] = useState<string | null>(null);
+	const [downloadPreviewWithoutLogo, setDownloadPreviewWithoutLogo] = useState<string | null>(null);
 	const [downloadPreviewLoading, setDownloadPreviewLoading] = useState(false);
 	const [dockOpen, setDockOpen] = useState(false);
 	const [paymentDialog, setPaymentDialog] = useState<{
@@ -89,10 +70,9 @@ export const CvEditor = () => {
 					sourceText: string;
 			  };
 	} | null>(null);
-	const { data: downloadStatus } = trpc.user.getDownloadStatus.useQuery(
-		undefined,
-		{ enabled: visibleDownloadDialog && status === "authenticated" },
-	);
+	const { data: downloadStatus } = trpc.user.getDownloadStatus.useQuery(undefined, {
+		enabled: visibleDownloadDialog && status === "authenticated",
+	});
 	const billingOptionsQuery = trpc.ai.getBillingOptions.useQuery(
 		{ feature: paymentDialog?.feature ?? "REVIEW_CV" },
 		{ enabled: !!paymentDialog && status === "authenticated" },
@@ -140,8 +120,7 @@ export const CvEditor = () => {
 			priceCents: model?.priceCents ?? null,
 		};
 	}, [watchTemplateId, modeles]);
-	const { setSectionSelected, setSelectModifInput, setSelectInputForm } =
-		useCreateCvContext();
+	const { setSectionSelected, setSelectModifInput, setSelectInputForm } = useCreateCvContext();
 	const typography = watch("layoutGeneral.layout.typography");
 
 	// XL : dock toujours ouvert. LG : repliable, fermé par défaut.
@@ -168,12 +147,7 @@ export const CvEditor = () => {
 			if (target.closest(".p-dialog, .p-menu, .p-overlaypanel")) return;
 
 			if (target.closest(".cv-page-document")) {
-				if (
-					target.closest(
-						"input, textarea, .section-card, [data-cv-selectable]",
-					)
-				)
-					return;
+				if (target.closest("input, textarea, .section-card, [data-cv-selectable]")) return;
 			}
 
 			if (target.closest(".p-dialog")) return;
@@ -196,9 +170,7 @@ export const CvEditor = () => {
 		const column = target?.column ?? 0;
 		const newOrder = nextActiveOrderInColumn(modules, column);
 		const updated = modules.map((mod) =>
-			mod.type === item.type
-				? { ...mod, isActive: true, order: newOrder }
-				: mod,
+			mod.type === item.type ? { ...mod, isActive: true, order: newOrder } : mod,
 		);
 		setValue("modules", compactActiveOrders(updated), { shouldDirty: true });
 	};
@@ -218,9 +190,7 @@ export const CvEditor = () => {
 		setSelectModifInput("");
 	};
 
-	const key =
-		watch("layoutGeneral.defaultStyles.components.pageLayout") ??
-		"OneColumnModel";
+	const key = watch("layoutGeneral.defaultStyles.components.pageLayout") ?? "OneColumnModel";
 	const PageLayout = PageLayoutRegister[key] ?? OneColumnModel;
 
 	const items = [
@@ -292,9 +262,7 @@ export const CvEditor = () => {
 		const cv = getValues() as CvFormValues;
 		const cvId = cv.cvId?.trim();
 		const templateId = cv.templateId?.trim();
-		const primaryColorName = extractPrimaryColorName(
-			cv.layoutGeneral ?? null,
-		);
+		const primaryColorName = extractPrimaryColorName(cv.layoutGeneral ?? null);
 		return {
 			...(cvId && cvId !== "0" ? { cvId } : {}),
 			...(templateId ? { templateId } : {}),
@@ -326,10 +294,7 @@ export const CvEditor = () => {
 			toast.current?.show({
 				severity: "error",
 				summary: "Export impossible",
-				detail:
-					err instanceof Error
-						? err.message
-						: "Une erreur est survenue.",
+				detail: err instanceof Error ? err.message : "Une erreur est survenue.",
 				life: 5000,
 			});
 		}
@@ -359,10 +324,7 @@ export const CvEditor = () => {
 			toast.current?.show({
 				severity: "error",
 				summary: "Export impossible",
-				detail:
-					err instanceof Error
-						? err.message
-						: "Une erreur est survenue.",
+				detail: err instanceof Error ? err.message : "Une erreur est survenue.",
 				life: 5000,
 			});
 		}
@@ -390,10 +352,7 @@ export const CvEditor = () => {
 			toast.current?.show({
 				severity: "error",
 				summary: "Déblocage impossible",
-				detail:
-					err instanceof Error
-						? err.message
-						: "Une erreur est survenue.",
+				detail: err instanceof Error ? err.message : "Une erreur est survenue.",
 				life: 5000,
 			});
 		}
@@ -540,16 +499,11 @@ export const CvEditor = () => {
 	const onApplyRewrite = () => {
 		if (!rewriteResult || !rewriteSectionType) return;
 		const cv = getValues() as CvFormValues;
-		const next = applyCvRewriteToForm(
-			cv,
-			rewriteSectionType,
-			rewriteResult,
-		);
+		const next = applyCvRewriteToForm(cv, rewriteSectionType, rewriteResult);
 		reset(next);
 		const sectionLabel =
-			listRewriteableSections(cv).find(
-				(s) => s.sectionType === rewriteSectionType,
-			)?.label ?? rewriteSectionType;
+			listRewriteableSections(cv).find((s) => s.sectionType === rewriteSectionType)?.label ??
+			rewriteSectionType;
 		pushAdvice({
 			kind: "rewrite-section",
 			title: `Reformulation · ${sectionLabel}`,
@@ -631,10 +585,7 @@ export const CvEditor = () => {
 				<DialogAiPayment
 					visible={!!paymentDialog}
 					onHide={() => {
-						if (
-							reviewCvMutation.isPending ||
-							rewriteSectionMutation.isPending
-						) {
+						if (reviewCvMutation.isPending || rewriteSectionMutation.isPending) {
 							return;
 						}
 						setPaymentDialog(null);
@@ -642,10 +593,7 @@ export const CvEditor = () => {
 					title={paymentDialog?.title ?? "Payer l’action IA"}
 					options={billingOptionsQuery.data}
 					loading={billingOptionsQuery.isFetching}
-					confirming={
-						reviewCvMutation.isPending ||
-						rewriteSectionMutation.isPending
-					}
+					confirming={reviewCvMutation.isPending || rewriteSectionMutation.isPending}
 					onConfirm={(choice) => {
 						void executePaidAiAction(choice);
 					}}
@@ -662,9 +610,7 @@ export const CvEditor = () => {
 				/>
 				<DialogRewriteSection
 					visible={visibleRewrite}
-					sections={listRewriteableSections(
-						getValues() as CvFormValues,
-					)}
+					sections={listRewriteableSections(getValues() as CvFormValues)}
 					loading={rewriteSectionMutation.isPending}
 					rewrite={rewriteResult}
 					selectedType={rewriteSectionType}
@@ -685,10 +631,7 @@ export const CvEditor = () => {
 							onHide={() => setVisibleDialogDataFromProfile(false)}
 							profile={profile}
 						/>
-						<Tooltip
-							target=".speeddial-bottom-right .p-speeddial-action"
-							position="left"
-						/>
+						<Tooltip target=".speeddial-bottom-right .p-speeddial-action" position="left" />
 						<SpeedDial
 							className="speeddial-bottom-right z-50"
 							model={items}
@@ -701,16 +644,9 @@ export const CvEditor = () => {
 				)}
 				<div className="w-full">
 					<div className="w-full flex gap-8 my-4">
-						<div
-							className="flex flex-col items-center gap-12 relative"
-							style={{ width: cvWidth }}
-						>
+						<div className="flex flex-col items-center gap-12 relative" style={{ width: cvWidth }}>
 							<div className="w-full px-4 xl:px-0 flex justify-between items-center">
-								<TitleAppOne
-									firstPart="Atelier"
-									secondPart="CV"
-									withSpace
-								/>
+								<TitleAppOne firstPart="Atelier" secondPart="CV" withSpace />
 							</div>
 							<div
 								id="modele-cv-page"

@@ -5,9 +5,6 @@ import {
 
 export type PublicationCardProps = CardPublicationOneProps;
 
-export const PublicationCardRegister: Record<
-	string,
-	React.ComponentType<PublicationCardProps>
-> = {
+export const PublicationCardRegister: Record<string, React.ComponentType<PublicationCardProps>> = {
 	CardPublicationOne,
 };

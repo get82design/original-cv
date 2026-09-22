@@ -1,7 +1,11 @@
 import { userService } from "../../../src/services/user/userService";
 import { updateUserSchema } from "../../../src/services/schemas/user.schema";
 import { protectedProcedure, publicProcedure, router } from "../trpc";
-import { forgotPasswordSchema, registerSchema, resetPasswordSchema } from "../../../src/services/schemas/auth.schema";
+import {
+	forgotPasswordSchema,
+	registerSchema,
+	resetPasswordSchema,
+} from "../../../src/services/schemas/auth.schema";
 import { z } from "zod";
 
 const consumeDownloadMetaSchema = z
@@ -13,15 +17,11 @@ const consumeDownloadMetaSchema = z
 	.optional();
 
 export const userRouter = router({
-	me: protectedProcedure.query(({ ctx }) =>
-		userService.findById(ctx.session.user.id),
-	),
+	me: protectedProcedure.query(({ ctx }) => userService.findById(ctx.session.user.id)),
 
 	updateProfile: protectedProcedure
 		.input(updateUserSchema)
-		.mutation(({ input, ctx }) =>
-			userService.updateProfile(ctx.session.user.id, input),
-		),
+		.mutation(({ input, ctx }) => userService.updateProfile(ctx.session.user.id, input)),
 
 	/** Statut free/paid pour la modal de téléchargement */
 	getDownloadStatus: protectedProcedure.query(({ ctx }) =>
@@ -31,16 +31,12 @@ export const userRouter = router({
 	/** Export gratuit (avec logo) */
 	consumeFreeDownload: protectedProcedure
 		.input(consumeDownloadMetaSchema)
-		.mutation(({ ctx, input }) =>
-			userService.consumeFreeDownload(ctx.session.user.id, input),
-		),
+		.mutation(({ ctx, input }) => userService.consumeFreeDownload(ctx.session.user.id, input)),
 
 	/** Export payant (sans logo) */
 	consumePaidDownload: protectedProcedure
 		.input(consumeDownloadMetaSchema)
-		.mutation(({ ctx, input }) =>
-			userService.consumePaidDownload(ctx.session.user.id, input),
-		),
+		.mutation(({ ctx, input }) => userService.consumePaidDownload(ctx.session.user.id, input)),
 
 	/** @deprecated alias de consumePaidDownload — garder pour compat */
 	consumeDownloadCredit: protectedProcedure.mutation(({ ctx }) =>
@@ -51,22 +47,26 @@ export const userRouter = router({
 		userService.incrementIaRequests(ctx.session.user.id),
 	),
 
-	canCreateCv: protectedProcedure.query(({ ctx }) =>
-		userService.canCreateCv(ctx.session.user.id),
-	),
+	canCreateCv: protectedProcedure.query(({ ctx }) => userService.canCreateCv(ctx.session.user.id)),
 
 	countUserCvs: protectedProcedure.query(({ ctx }) =>
 		userService.countUserCvs(ctx.session.user.id),
 	),
 
 	register: publicProcedure
-	.input(registerSchema)
-	.mutation(({ input }) => userService.register({ email: input.email, password: input.password, name: input.name ?? "" })),
+		.input(registerSchema)
+		.mutation(({ input }) =>
+			userService.register({
+				email: input.email,
+				password: input.password,
+				name: input.name ?? "",
+			}),
+		),
 
 	forgotPassword: publicProcedure
 		.input(forgotPasswordSchema)
 		.mutation(({ input }) => userService.requestPasswordReset(input.email)),
-	
+
 	resetPassword: publicProcedure
 		.input(resetPasswordSchema)
 		.mutation(({ input }) =>

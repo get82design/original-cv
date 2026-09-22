@@ -1,17 +1,10 @@
 import { describe, expect, it } from "vitest";
 import { TRPCError } from "@trpc/server";
 
-import {
-	createSkill,
-	createSkillGroup,
-	createCV,
-} from "../utils/create-test-cv-full-flow";
+import { createSkill, createSkillGroup, createCV } from "../utils/create-test-cv-full-flow";
 import { createTestTemplate } from "../utils/create-test-template";
 import { createTestUser } from "../utils/create-test-user";
-import {
-	createTestCaller,
-	createTestSession,
-} from "./helpers/create-test-caller";
+import { createTestCaller, createTestSession } from "./helpers/create-test-caller";
 import { Level } from "../../generated/prisma/enums";
 
 describe("cvSkillRouter", () => {
@@ -221,8 +214,8 @@ describe("cvSkillRouter", () => {
 	it("delete returns NOT_FOUND for unknown id", async () => {
 		const { caller } = await setup();
 
-		await expect(
-			caller.cvSkill.delete({ id: "unknown-id" }),
-		).rejects.toMatchObject({ code: "NOT_FOUND" });
+		await expect(caller.cvSkill.delete({ id: "unknown-id" })).rejects.toMatchObject({
+			code: "NOT_FOUND",
+		});
 	});
 });

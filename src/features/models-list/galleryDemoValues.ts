@@ -60,8 +60,7 @@ export const galleryDemoValues: CvFormValues = {
 								clientKey: "demo-m1-3",
 								order: 3,
 								content: {
-									content:
-										"Formation et intégration de 4 nouveaux vendeurs saisonniers.",
+									content: "Formation et intégration de 4 nouveaux vendeurs saisonniers.",
 								},
 							},
 							{
@@ -74,9 +73,9 @@ export const galleryDemoValues: CvFormValues = {
 						],
 						settings: {
 							title: classiqueTokens.itemTitle,
-							company: {...classiqueTokens.meta, colorSelect: "primaryColor"},
+							company: { ...classiqueTokens.meta, colorSelect: "primaryColor" },
 							periode: classiqueTokens.meta,
-							location: {...classiqueTokens.meta, colorSelect: "primaryColor"},
+							location: { ...classiqueTokens.meta, colorSelect: "primaryColor" },
 							description: classiqueTokens.body,
 							missions: classiqueTokens.body,
 							withTitle: true,
@@ -85,7 +84,7 @@ export const galleryDemoValues: CvFormValues = {
 							withLocation: true,
 							withDescription: false,
 							withListMissions: true,
-						  }
+						},
 					},
 				},
 				{
@@ -110,9 +109,9 @@ export const galleryDemoValues: CvFormValues = {
 						],
 						settings: {
 							title: classiqueTokens.itemTitle,
-							company: {...classiqueTokens.meta, colorSelect: "primaryColor"},
+							company: { ...classiqueTokens.meta, colorSelect: "primaryColor" },
 							periode: classiqueTokens.meta,
-							location: {...classiqueTokens.meta, colorSelect: "primaryColor"},
+							location: { ...classiqueTokens.meta, colorSelect: "primaryColor" },
 							description: classiqueTokens.body,
 							missions: classiqueTokens.body,
 							withTitle: true,
@@ -121,7 +120,7 @@ export const galleryDemoValues: CvFormValues = {
 							withLocation: true,
 							withDescription: false,
 							withListMissions: true,
-						  }
+						},
 					},
 				},
 			],
@@ -143,13 +142,13 @@ export const galleryDemoValues: CvFormValues = {
 						end: new Date("2021-06-30"),
 						settings: {
 							diplome: classiqueTokens.itemTitle,
-							etablissement: {...classiqueTokens.meta, colorSelect: 'gray'},
-							ville: {...classiqueTokens.meta, colorSelect: 'gray'},
-							year: classiqueTokens.meta,	
+							etablissement: { ...classiqueTokens.meta, colorSelect: "gray" },
+							ville: { ...classiqueTokens.meta, colorSelect: "gray" },
+							year: classiqueTokens.meta,
 							withEtablissement: true,
 							withVille: true,
 							withYear: true,
-						}
+						},
 					},
 				},
 				{
@@ -164,13 +163,13 @@ export const galleryDemoValues: CvFormValues = {
 						end: new Date("2019-06-30"),
 						settings: {
 							diplome: classiqueTokens.itemTitle,
-							etablissement: {...classiqueTokens.meta, colorSelect: 'gray'},
-							ville: {...classiqueTokens.meta, colorSelect: 'gray'},
-							year: classiqueTokens.meta,	
+							etablissement: { ...classiqueTokens.meta, colorSelect: "gray" },
+							ville: { ...classiqueTokens.meta, colorSelect: "gray" },
+							year: classiqueTokens.meta,
 							withEtablissement: true,
 							withVille: true,
 							withYear: true,
-						}
+						},
 					},
 				},
 			],
@@ -183,24 +182,24 @@ export const galleryDemoValues: CvFormValues = {
 				{
 					clientKey: "demo-lang-1",
 					order: 1,
-					content: { 
-						name: "Français", 
-						level: "Expert", 
-				 	},
+					content: {
+						name: "Français",
+						level: "Expert",
+					},
 				},
 				{
 					clientKey: "demo-lang-2",
 					order: 2,
-					content: { 
-						name: "Anglais", 
+					content: {
+						name: "Anglais",
 						level: "Senior",
 					},
 				},
 				{
 					clientKey: "demo-lang-3",
 					order: 3,
-					content: { 
-						name: "Espagnol", 
+					content: {
+						name: "Espagnol",
 						level: "Intermédiaire",
 					},
 				},
@@ -216,8 +215,7 @@ export const galleryDemoValues: CvFormValues = {
 					order: 1,
 					content: {
 						title: "Intelligence émotionnelle",
-						description:
-							"Capacité à décoder rapidement les attentes du client.",
+						description: "Capacité à décoder rapidement les attentes du client.",
 						icon: "faBrain",
 						settings: {
 							strength: classiqueTokens.itemTitle,
@@ -227,7 +225,7 @@ export const galleryDemoValues: CvFormValues = {
 							withIcon: true,
 							iconColor: "primaryColor",
 							columns: 2,
-						}
+						},
 					},
 				},
 				{
@@ -245,7 +243,7 @@ export const galleryDemoValues: CvFormValues = {
 							withIcon: true,
 							iconColor: "primaryColor",
 							columns: 2,
-						}
+						},
 					},
 				},
 				{
@@ -263,15 +261,16 @@ export const galleryDemoValues: CvFormValues = {
 							withIcon: true,
 							iconColor: "primaryColor",
 							columns: 2,
-						}
+						},
 					},
 				},
 				{
 					clientKey: "demo-str-4",
 					order: 4,
-					content: { 
-						title: "Proactivité", 
-						description: "Force de proposition constante pour améliorer la présentation des rayons ou fluidifier l'organisation interne.",
+					content: {
+						title: "Proactivité",
+						description:
+							"Force de proposition constante pour améliorer la présentation des rayons ou fluidifier l'organisation interne.",
 						icon: "faChartLine",
 						settings: {
 							strength: classiqueTokens.itemTitle,
@@ -281,7 +280,7 @@ export const galleryDemoValues: CvFormValues = {
 							withIcon: true,
 							iconColor: "primaryColor",
 							columns: 2,
-						}
+						},
 					},
 				},
 			],
@@ -301,7 +300,7 @@ export const galleryDemoValues: CvFormValues = {
 							passion: classiqueTokens.itemTitle,
 							withIcon: true,
 							iconColor: "primaryColor",
-						}
+						},
 					},
 				},
 				{
@@ -314,7 +313,7 @@ export const galleryDemoValues: CvFormValues = {
 							passion: classiqueTokens.itemTitle,
 							withIcon: true,
 							iconColor: "primaryColor",
-						}
+						},
 					},
 				},
 				{
@@ -327,7 +326,7 @@ export const galleryDemoValues: CvFormValues = {
 							passion: classiqueTokens.itemTitle,
 							withIcon: true,
 							iconColor: "primaryColor",
-						}
+						},
 					},
 				},
 			],
@@ -360,7 +359,7 @@ export const galleryDemoValues: CvFormValues = {
 							groupTitle: classiqueTokens.itemTitle,
 							competences: classiqueTokens.body,
 							withGroupTitle: true,
-						}
+						},
 					},
 				},
 				{
@@ -368,24 +367,21 @@ export const galleryDemoValues: CvFormValues = {
 					order: 2,
 					content: {
 						title: "Soft Skills",
-						competences: [
-							"Écoute active",
-							"Empathie",
-							"Gestion du stress",
-							"Esprit d'équipe",
-						].map((name, i) => ({
-							clientKey: `demo-comp-h-${i}`,
-							order: i + 1,
-							content: {
-								name,
-								competenceId: `demo-comp-h-${i}`, // faux id, pas en DB
-							},
-						})),
+						competences: ["Écoute active", "Empathie", "Gestion du stress", "Esprit d'équipe"].map(
+							(name, i) => ({
+								clientKey: `demo-comp-h-${i}`,
+								order: i + 1,
+								content: {
+									name,
+									competenceId: `demo-comp-h-${i}`, // faux id, pas en DB
+								},
+							}),
+						),
 						settings: {
 							groupTitle: classiqueTokens.itemTitle,
 							competences: classiqueTokens.body,
 							withGroupTitle: true,
-						}
+						},
 					},
 				},
 			],
@@ -412,11 +408,15 @@ export const galleryDemoValues: CvFormValues = {
 							content: { name, tagId: `demo-tag-${i}` },
 						})),
 						settings: {
-							groupTitle: {...classiqueTokens.itemTitle, colorSelect: 'black', weightSelect: 'xl'},
+							groupTitle: {
+								...classiqueTokens.itemTitle,
+								colorSelect: "black",
+								weightSelect: "xl",
+							},
 							tags: classiqueTokens.body,
 							withGroupTitle: true,
 							design: "border",
-						}
+						},
 					},
 				},
 				{
@@ -436,11 +436,15 @@ export const galleryDemoValues: CvFormValues = {
 							content: { name, tagId: `demo-tag-${i}` },
 						})),
 						settings: {
-							groupTitle: {...classiqueTokens.itemTitle, colorSelect: 'black', weightSelect: 'xl'},
+							groupTitle: {
+								...classiqueTokens.itemTitle,
+								colorSelect: "black",
+								weightSelect: "xl",
+							},
 							tags: classiqueTokens.body,
 							withGroupTitle: true,
 							design: "border",
-						}
+						},
 					},
 				},
 			],
@@ -465,7 +469,7 @@ export const galleryDemoValues: CvFormValues = {
 							withIcon: true,
 							iconColor: "primaryColor",
 							columns: 3,
-						}
+						},
 					},
 				},
 				{
@@ -483,7 +487,7 @@ export const galleryDemoValues: CvFormValues = {
 							withIcon: true,
 							iconColor: "primaryColor",
 							columns: 3,
-						}
+						},
 					},
 				},
 				{
@@ -501,7 +505,7 @@ export const galleryDemoValues: CvFormValues = {
 							withIcon: true,
 							iconColor: "primaryColor",
 							columns: 3,
-						}
+						},
 					},
 				},
 			],
@@ -516,8 +520,9 @@ export const galleryDemoValues: CvFormValues = {
 					order: 1,
 					content: {
 						title: "Refonte du Parcours Client Phygital & Merchandising",
-						description: "Contexte : Baisse de la fréquentation physique de 10 % face à la montée de la vente en ligne.",
-						technology: '',
+						description:
+							"Contexte : Baisse de la fréquentation physique de 10 % face à la montée de la vente en ligne.",
+						technology: "",
 						location: "Boutique L'Élégance (Paris)",
 						start: new Date("2024-01-01"),
 						end: new Date("2024-06-30"),
@@ -525,20 +530,25 @@ export const galleryDemoValues: CvFormValues = {
 							{
 								clientKey: "m1-1",
 								order: 1,
-								content: { 
-									content: "Pilotage d'un projet pilote d'intégration de caisses mobiles (tablettes)." },
+								content: {
+									content:
+										"Pilotage d'un projet pilote d'intégration de caisses mobiles (tablettes).",
+								},
 							},
 							{
 								clientKey: "m1-2",
 								order: 2,
-								content: { 
-									content: "Réorganisation de la zone d'essayage VIP." },
+								content: {
+									content: "Réorganisation de la zone d'essayage VIP.",
+								},
 							},
 							{
 								clientKey: "m1-3",
 								order: 3,
-								content: { 
-									content: "Élaboration d'un guide de recommandations visuelles pour la mise en valeur des pièces phares." },
+								content: {
+									content:
+										"Élaboration d'un guide de recommandations visuelles pour la mise en valeur des pièces phares.",
+								},
 							},
 						],
 						settings: {
@@ -554,7 +564,7 @@ export const galleryDemoValues: CvFormValues = {
 							withLocation: true,
 							withPeriode: true,
 							withMissions: true,
-						}
+						},
 					},
 				},
 			],

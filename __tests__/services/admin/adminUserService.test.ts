@@ -31,9 +31,7 @@ describe("adminUserService", () => {
 
 	it("updateUser rejects empty patch", async () => {
 		const user = await createTestUser();
-		await expect(adminUserService.updateUser(user.id, {})).rejects.toThrow(
-			ValidationError,
-		);
+		await expect(adminUserService.updateUser(user.id, {})).rejects.toThrow(ValidationError);
 	});
 
 	it("updateUser clears subscriptionEnd when downgrading to FREE", async () => {
@@ -52,9 +50,7 @@ describe("adminUserService", () => {
 	});
 
 	it("softResetUser returns NOT_FOUND for unknown id", async () => {
-		await expect(
-			adminUserService.softResetUser("missing-user-id"),
-		).rejects.toThrow(NotFoundError);
+		await expect(adminUserService.softResetUser("missing-user-id")).rejects.toThrow(NotFoundError);
 	});
 
 	it("softResetUser skips credit logs when already zero", async () => {
@@ -153,16 +149,9 @@ describe("adminUserService", () => {
 			.map((p) => p.label);
 
 		expect(labels).toEqual(
-			expect.arrayContaining([
-				"Cadeau · 1er CV sauvé",
-				"Cadeau · achat template",
-				"CUSTOM_PROMO",
-			]),
+			expect.arrayContaining(["Cadeau · 1er CV sauvé", "Cadeau · achat template", "CUSTOM_PROMO"]),
 		);
-		expect(
-			detail.purchaseHistory.find((p) => p.label === "CUSTOM_PROMO")
-				?.amountLabel,
-		).toBeNull();
+		expect(detail.purchaseHistory.find((p) => p.label === "CUSTOM_PROMO")?.amountLabel).toBeNull();
 	});
 
 	it("getUserDetail resolves template names from unlock grants without unlock row", async () => {
@@ -178,11 +167,7 @@ describe("adminUserService", () => {
 
 		const detail = await adminUserService.getUserDetail(user.id);
 		// TEMPLATE_UNLOCK grants are filtered out of purchaseHistory
-		expect(
-			detail.purchaseHistory.some((p) =>
-				p.label.includes(template.name),
-			),
-		).toBe(false);
+		expect(detail.purchaseHistory.some((p) => p.label.includes(template.name))).toBe(false);
 		expect(detail.id).toBe(user.id);
 	});
 });

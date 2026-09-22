@@ -39,27 +39,17 @@ export const CardAchievementOne = ({
 	const { setSelectModifInput, setSelectInputForm } = useCreateCvContext();
 
 	const watchGeneral = watch(FieldNameLayoutGeneral.layout);
-	const pathContent = dataFieldContent(
-		"datas.achievement.content",
-		index,
-		"content",
-	);
+	const pathContent = dataFieldContent("datas.achievement.content", index, "content");
 	const watchWithIcon = watchGeneral?.titleSection.withIcon;
 	const watchListStyle = watchGeneral?.listStyle;
 	const menuLeft = useRef<Menu>(null);
 
 	const watchModelTitleOfAchievement = watch(`${pathContent}.settings.title`);
-	const watchModelDescriptionOfAchievement = watch(
-		`${pathContent}.settings.description`,
-	);
+	const watchModelDescriptionOfAchievement = watch(`${pathContent}.settings.description`);
 	const watchModelYearOfAchievement = watch(`${pathContent}.settings.year`);
-	const watchModelTechnologyOfAchievement = watch(
-		`${pathContent}.settings.technology`,
-	);
+	const watchModelTechnologyOfAchievement = watch(`${pathContent}.settings.technology`);
 
-	const deleteAchievement = (
-		itemToDelete: ListItem<AchievementItemContentInput>,
-	) => {
+	const deleteAchievement = (itemToDelete: ListItem<AchievementItemContentInput>) => {
 		const list = (getValues(FieldNameAchievement.content) ??
 			[]) as ListItem<AchievementItemContentInput>[];
 
@@ -101,12 +91,7 @@ export const CardAchievementOne = ({
 				itemsMenu ? (
 					<>
 						<ToolbarOptionsButton menuRef={menuLeft} />
-						<Menu
-							model={itemsMenu(index)}
-							popup
-							ref={menuLeft}
-							style={{ width: 300 }}
-						/>
+						<Menu model={itemsMenu(index)} popup ref={menuLeft} style={{ width: 300 }} />
 					</>
 				) : null
 			}
@@ -207,12 +192,8 @@ export const ContentAchievementContainer = ({
 		<div className="w-full flex flex-col gap-0 relative mt-1">
 			<CommonPointList general={general} />
 			<div className="w-full flex justify-between gap-2">
-				<div className="w-4/5">
-					{item?.content?.settings?.withTitle && realisationCompo}
-				</div>
-				<div className="w=1/5">
-					{item?.content?.settings?.withYear && yearCompo}
-				</div>
+				<div className="w-4/5">{item?.content?.settings?.withTitle && realisationCompo}</div>
+				<div className="w=1/5">{item?.content?.settings?.withYear && yearCompo}</div>
 			</div>
 			{item?.content?.settings?.withTechnology && technologyCompo}
 			{item?.content?.settings?.withDescription && descriptionCompo}

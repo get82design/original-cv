@@ -12,10 +12,7 @@ export const GeneralColor = () => {
 			<div className="flex gap-1 items-center">
 				<p className="my-0 font-semibold text-xs">Couleur du thème</p>
 				<MdInfo className="infoColorPrincipale text-sm text-muted-color" />
-				<Tooltip
-					target=".infoColorPrincipale"
-					content="Couleur principale de votre CV"
-				/>
+				<Tooltip target=".infoColorPrincipale" content="Couleur principale de votre CV" />
 			</div>
 			<div className="flex flex-wrap gap-1 items-center">
 				{colors

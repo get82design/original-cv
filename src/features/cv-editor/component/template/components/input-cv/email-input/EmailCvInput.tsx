@@ -1,50 +1,38 @@
-import { InputTextCv } from "@/components/input-writer/input-text-cv/InputTextCv"
-import { useCreateCvContext } from "@/features/cv-editor/component/context/CreateCvContext"
-import { FieldNameHeader } from "@/features/cv-editor/utils/fields/fieldNameHeader"
-import { useInputCvColor } from "@/features/cv-editor/utils/utilsCv/color"
-import { GetAlignementHeader } from "@/features/cv-editor/utils/utilsCv/marge"
-import type { BaseTextSettings } from "@/services/schemas/cvTemplate.schema"
-import { useFormContext } from "react-hook-form"
-import { MdOutlineEmail } from "react-icons/md"
+import { InputTextCv } from "@/components/input-writer/input-text-cv/InputTextCv";
+import { useCreateCvContext } from "@/features/cv-editor/component/context/CreateCvContext";
+import { FieldNameHeader } from "@/features/cv-editor/utils/fields/fieldNameHeader";
+import { useInputCvColor } from "@/features/cv-editor/utils/utilsCv/color";
+import { GetAlignementHeader } from "@/features/cv-editor/utils/utilsCv/marge";
+import type { BaseTextSettings } from "@/services/schemas/cvTemplate.schema";
+import { useFormContext } from "react-hook-form";
+import { MdOutlineEmail } from "react-icons/md";
 
 interface EmailInputProps {
-	withIcon?: boolean
+	withIcon?: boolean;
 	/** Override hex sans # (ex. "000000"). Sinon = couleur du texte (fg colonne inclus). */
-	colorIcon?: string
-	textAlign?: "left" | "center" | "right"
+	colorIcon?: string;
+	textAlign?: "left" | "center" | "right";
 }
 
-export const EmailInput = ({
-	withIcon,
-	colorIcon,
-	textAlign = "left",
-}: EmailInputProps) => {
-	const { watch } = useFormContext()
-	const { setSelectModifInput, setSelectInputForm } = useCreateCvContext()
-	const iconAfter = textAlign === "right"
-	const watchModelHeaderContent: BaseTextSettings = watch(
-		FieldNameHeader.settingsContent,
-	)
-	const textCss = useInputCvColor(
-		watchModelHeaderContent?.colorSelect ?? "black",
-	)
-	const iconColor = colorIcon ? `#${colorIcon}` : textCss ? `var(--${textCss})` : undefined
+export const EmailInput = ({ withIcon, colorIcon, textAlign = "left" }: EmailInputProps) => {
+	const { watch } = useFormContext();
+	const { setSelectModifInput, setSelectInputForm } = useCreateCvContext();
+	const iconAfter = textAlign === "right";
+	const watchModelHeaderContent: BaseTextSettings = watch(FieldNameHeader.settingsContent);
+	const textCss = useInputCvColor(watchModelHeaderContent?.colorSelect ?? "black");
+	const iconColor = colorIcon ? `#${colorIcon}` : textCss ? `var(--${textCss})` : undefined;
 
-	const icon = withIcon ? (
-		<MdOutlineEmail style={{ color: iconColor }} />
-	) : null
+	const icon = withIcon ? <MdOutlineEmail style={{ color: iconColor }} /> : null;
 
 	return (
-		<div
-			className={`w-full flex ${GetAlignementHeader(textAlign)} gap-2 items-center`}
-		>
+		<div className={`w-full flex ${GetAlignementHeader(textAlign)} gap-2 items-center`}>
 			{!iconAfter && icon}
 			<InputTextCv
 				placeholder="email"
 				name={FieldNameHeader.email}
 				onClick={() => {
-					setSelectModifInput(FieldNameHeader.settingsContent)
-					setSelectInputForm("")
+					setSelectModifInput(FieldNameHeader.settingsContent);
+					setSelectInputForm("");
 				}}
 				textColor={watchModelHeaderContent?.colorSelect}
 				textAlign={textAlign}
@@ -56,5 +44,5 @@ export const EmailInput = ({
 			/>
 			{iconAfter && icon}
 		</div>
-	)
-}
+	);
+};

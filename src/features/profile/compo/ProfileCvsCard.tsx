@@ -49,9 +49,7 @@ export const ProfileCvsCard = ({
 						? {
 								description: {
 									description: mapped.description.description,
-									...(current.description?.id != null
-										? { id: current.description.id }
-										: {}),
+									...(current.description?.id != null ? { id: current.description.id } : {}),
 								},
 							}
 						: { description: null }),
@@ -60,9 +58,7 @@ export const ProfileCvsCard = ({
 								philosophy: {
 									citation: mapped.philosophy.citation,
 									author: mapped.philosophy.author ?? null,
-									...(current.philosophy?.id != null
-										? { id: current.philosophy.id }
-										: {}),
+									...(current.philosophy?.id != null ? { id: current.philosophy.id } : {}),
 								},
 							}
 						: { philosophy: null }),
@@ -72,18 +68,14 @@ export const ProfileCvsCard = ({
 			toast.current?.show({
 				severity: "success",
 				summary: "Données récupérées",
-				detail:
-					"Le formulaire profil a été rempli avec ce CV. Pensez à enregistrer.",
+				detail: "Le formulaire profil a été rempli avec ce CV. Pensez à enregistrer.",
 				life: 4500,
 			});
 		} catch (err) {
 			toast.current?.show({
 				severity: "error",
 				summary: "Récupération impossible",
-				detail:
-					err instanceof Error
-						? err.message
-						: "Une erreur est survenue.",
+				detail: err instanceof Error ? err.message : "Une erreur est survenue.",
 				life: 5000,
 			});
 		} finally {
@@ -95,12 +87,7 @@ export const ProfileCvsCard = ({
 		<>
 			<Toast ref={toast} position="top-center" />
 			<AppCard className={"min-h-full flex flex-col gap-4"}>
-				<TitleAppTwo
-					firstPart={"Vos"}
-					secondPart={"CVs"}
-					size={"text-2xl"}
-					withSpace
-				/>
+				<TitleAppTwo firstPart={"Vos"} secondPart={"CVs"} size={"text-2xl"} withSpace />
 				{isLoading ? (
 					<ProgressSpinner
 						style={{ width: "50px", height: "50px" }}
@@ -120,20 +107,14 @@ export const ProfileCvsCard = ({
 								cvs.map((cv) => {
 									const busy = loadingCvId === cv.id;
 									return (
-										<div
-											key={cv?.id}
-											className="w-full flex flex-col items-center gap-4"
-										>
+										<div key={cv?.id} className="w-full flex flex-col items-center gap-4">
 											<PreviewImage
 												width={!isMd ? "w-full p-2" : "w-2/3"}
 												cv={cv}
 												action={
 													<>
 														{isMd && (
-															<Button
-																size="small"
-																onClick={() => onVisionner(cv)}
-															>
+															<Button size="small" onClick={() => onVisionner(cv)}>
 																Visionner
 															</Button>
 														)}

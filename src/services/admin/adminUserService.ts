@@ -95,9 +95,7 @@ export class AdminUserService {
 		const search = input.search?.trim();
 
 		const where: Prisma.UserWhereInput = {
-			...(typeof input.isActive === "boolean"
-				? { isActive: input.isActive }
-				: {}),
+			...(typeof input.isActive === "boolean" ? { isActive: input.isActive } : {}),
 			...(input.plan ? { plan: input.plan } : {}),
 			...(search
 				? {
@@ -251,10 +249,7 @@ export class AdminUserService {
 		}
 
 		const templateNameById = new Map(
-			user.unlockedTemplates.map((t) => [
-				t.templateId,
-				t.template.name,
-			]),
+			user.unlockedTemplates.map((t) => [t.templateId, t.template.name]),
 		);
 
 		const missingGrantTemplateIds = new Set<string>();
@@ -324,27 +319,21 @@ export class AdminUserService {
 					kind: "TEMPLATE" as const,
 					label: t.template.name,
 					amount: null,
-					amountLabel: unlockGiftsAmountLabel(
-						t.method,
-						t.template.unlockGifts,
-					),
+					amountLabel: unlockGiftsAmountLabel(t.method, t.template.unlockGifts),
 					templateId: t.templateId,
 					method: t.method,
 				})),
 				...user.downloadGrants
 					.filter((g) => !isTemplateUnlockGrantReason(g.reason))
 					.map((g) => ({
-					id: g.id,
-					createdAt: g.createdAt,
-					kind: "FREE_GRANT" as const,
-					label: grantReasonLabel(g.reason, templateNameById),
-					amount: g.amount,
-					amountLabel:
-						g.amount > 0 ? `${g.amount} free DL` : null,
-				})),
-			].sort(
-				(a, b) => b.createdAt.getTime() - a.createdAt.getTime(),
-			),
+						id: g.id,
+						createdAt: g.createdAt,
+						kind: "FREE_GRANT" as const,
+						label: grantReasonLabel(g.reason, templateNameById),
+						amount: g.amount,
+						amountLabel: g.amount > 0 ? `${g.amount} free DL` : null,
+					})),
+			].sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime()),
 		};
 	}
 
@@ -377,13 +366,7 @@ export class AdminUserService {
 		const hasPlan = input.plan != null;
 		const hasSubEnd = input.subscriptionEnd !== undefined;
 
-		if (
-			!hasIsActive &&
-			!hasCredits &&
-			!hasFree &&
-			!hasPlan &&
-			!hasSubEnd
-		) {
+		if (!hasIsActive && !hasCredits && !hasFree && !hasPlan && !hasSubEnd) {
 			throw new ValidationError("Aucun champ à mettre à jour");
 		}
 		if (hasCredits && input.downloadCredits! < 0) {
@@ -409,23 +392,16 @@ export class AdminUserService {
 
 		const nextPlan = hasPlan ? input.plan! : existing.plan;
 		const premiumPlans: PlanRole[] = ["PREMIUM", "PREMIUM_PLUS_IA"];
-		let nextSubEnd: Date | null | undefined = hasSubEnd
-			? input.subscriptionEnd
-			: undefined;
+		let nextSubEnd: Date | null | undefined = hasSubEnd ? input.subscriptionEnd : undefined;
 
 		if (hasPlan && !premiumPlans.includes(nextPlan) && !hasSubEnd) {
 			nextSubEnd = null;
 		}
 
-		const effectiveSubEnd =
-			nextSubEnd !== undefined
-				? nextSubEnd
-				: existing.subscriptionEnd;
+		const effectiveSubEnd = nextSubEnd !== undefined ? nextSubEnd : existing.subscriptionEnd;
 
 		if (premiumPlans.includes(nextPlan) && !effectiveSubEnd) {
-			throw new ValidationError(
-				"Une date de fin d’abonnement est requise pour ce plan",
-			);
+			throw new ValidationError("Une date de fin d’abonnement est requise pour ce plan");
 		}
 
 		const data: {
@@ -453,18 +429,13 @@ export class AdminUserService {
 				actorUserId: actorUserId ?? null,
 			});
 		}
-		if (
-			hasFree &&
-			input.freeDownloadsRemaining! !== existing.freeDownloadsRemaining
-		) {
+		if (hasFree && input.freeDownloadsRemaining! !== existing.freeDownloadsRemaining) {
 			creditLogs.push({
 				kind: "FREE_DOWNLOADS",
 				reason: "ADMIN_SET",
 				before: existing.freeDownloadsRemaining,
 				after: input.freeDownloadsRemaining!,
-				delta:
-					input.freeDownloadsRemaining! -
-					existing.freeDownloadsRemaining,
+				delta: input.freeDownloadsRemaining! - existing.freeDownloadsRemaining,
 				targetUserId: id,
 				actorUserId: actorUserId ?? null,
 			});
@@ -568,22 +539,15 @@ export class AdminUserService {
 }
 
 function isTemplateUnlockGrantReason(reason: string): boolean {
-	return (
-		reason.startsWith("TEMPLATE_UNLOCK:") ||
-		reason.startsWith("TEMPLATE_UNLOCK_BULK:")
-	);
+	return reason.startsWith("TEMPLATE_UNLOCK:") || reason.startsWith("TEMPLATE_UNLOCK_BULK:");
 }
 
-function unlockGiftsAmountLabel(
-	method: UnlockMethod,
-	unlockGifts: unknown,
-): string | null {
+function unlockGiftsAmountLabel(method: UnlockMethod, unlockGifts: unknown): string | null {
 	const gifts = parseUnlockGifts(unlockGifts);
 	if (!gifts) return null;
 	const free = gifts.freeDownloads ?? 0;
 	/** Cadeau crédits uniquement hors paiement crédits */
-	const credits =
-		method === "CREDITS" ? 0 : (gifts.downloadCredits ?? 0);
+	const credits = method === "CREDITS" ? 0 : (gifts.downloadCredits ?? 0);
 	const parts: string[] = [];
 	if (free > 0) parts.push(`${free} free DL`);
 	if (credits > 0) {
@@ -607,15 +571,10 @@ function templateIdsFromGrantReason(reason: string): string[] {
 	return [];
 }
 
-function grantReasonLabel(
-	reason: string,
-	templateNameById?: ReadonlyMap<string, string>,
-): string {
+function grantReasonLabel(reason: string, templateNameById?: ReadonlyMap<string, string>): string {
 	if (reason.startsWith("TEMPLATE_UNLOCK_BULK:")) {
 		const ids = templateIdsFromGrantReason(reason);
-		const names = ids
-			.map((id) => templateNameById?.get(id))
-			.filter((n): n is string => !!n);
+		const names = ids.map((id) => templateNameById?.get(id)).filter((n): n is string => !!n);
 		if (names.length > 0) {
 			return `Free DL · unlock ${names.join(", ")}`;
 		}
@@ -624,9 +583,7 @@ function grantReasonLabel(
 	if (reason.startsWith("TEMPLATE_UNLOCK:")) {
 		const [id] = templateIdsFromGrantReason(reason);
 		const name = id ? templateNameById?.get(id) : undefined;
-		return name
-			? `Free DL · unlock ${name}`
-			: "Free DL · unlock template";
+		return name ? `Free DL · unlock ${name}` : "Free DL · unlock template";
 	}
 	switch (reason) {
 		case "PROFILE_CREATED":

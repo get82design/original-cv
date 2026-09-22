@@ -1,7 +1,4 @@
-import type {
-	AchievementInput,
-	ProfileSaveInput,
-} from "@/services/schemas/profileSave.schema";
+import type { AchievementInput, ProfileSaveInput } from "@/services/schemas/profileSave.schema";
 import type { CvFull } from "@utils/trpc.types";
 import type { ListItem } from "@utils/type";
 import { Button } from "primereact/button";
@@ -12,9 +9,7 @@ import { useEffect } from "react";
 import { v4 as uuid } from "uuid";
 
 type CvAchievement = NonNullable<CvFull>["achievements"][number];
-type ProfileAchievementItem = NonNullable<
-	ProfileSaveInput["achievements"]
->[number];
+type ProfileAchievementItem = NonNullable<ProfileSaveInput["achievements"]>[number];
 
 function cvAchievementToProfile(exp: CvAchievement): ProfileAchievementItem {
 	return {
@@ -55,17 +50,12 @@ export const DialogSelectAchievement = ({
 		if (!visible) return;
 		setTarget(listAchievementInProfile);
 		const already = new Set(
-			listAchievementInProfile.map(
-				(e) => `${e.content.title}|${e.content.technology ?? ""}`,
-			),
+			listAchievementInProfile.map((e) => `${e.content.title}|${e.content.technology ?? ""}`),
 		);
 		setSource(
 			listAchievementFromCv
 				.map((exp) => cvAchievementToProfile(exp))
-				.filter(
-					(e) =>
-						!already.has(`${e.content.title}|${e.content.technology ?? ""}`),
-				),
+				.filter((e) => !already.has(`${e.content.title}|${e.content.technology ?? ""}`)),
 		);
 	}, [visible, listAchievementFromCv]);
 

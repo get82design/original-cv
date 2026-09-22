@@ -9,10 +9,7 @@ import {
 import { getOwnedProfile } from "../helpers/getOwnedProfile";
 import { protectedProcedure, router } from "../trpc";
 
-async function assertCompetenceGroupProfileOwnership(
-	groupId: string,
-	userId: string,
-) {
+async function assertCompetenceGroupProfileOwnership(groupId: string, userId: string) {
 	const group = await prisma.profileCompetenceGroup.findUnique({
 		where: { id: groupId },
 		select: {
@@ -31,12 +28,10 @@ async function assertCompetenceGroupProfileOwnership(
 }
 
 export const profileCompetenceGroupRouter = router({
-	create: protectedProcedure
-		.input(createCompetenceGroupSchema)
-		.mutation(async ({ input, ctx }) => {
-			const profile = await getOwnedProfile(ctx.session.user.id);
-			return profileCompetenceGroupService.create(profile.id, input);
-		}),
+	create: protectedProcedure.input(createCompetenceGroupSchema).mutation(async ({ input, ctx }) => {
+		const profile = await getOwnedProfile(ctx.session.user.id);
+		return profileCompetenceGroupService.create(profile.id, input);
+	}),
 
 	findAll: protectedProcedure.query(async ({ ctx }) => {
 		const profile = await getOwnedProfile(ctx.session.user.id);
@@ -46,30 +41,21 @@ export const profileCompetenceGroupRouter = router({
 	update: protectedProcedure
 		.input(z.object({ id: z.string(), data: updateCompetenceGroupSchema }))
 		.mutation(async ({ input, ctx }) => {
-			await assertCompetenceGroupProfileOwnership(
-				input.id,
-				ctx.session.user.id,
-			);
+			await assertCompetenceGroupProfileOwnership(input.id, ctx.session.user.id);
 			return profileCompetenceGroupService.update(input.id, input.data);
 		}),
 
 	move: protectedProcedure
 		.input(z.object({ id: z.string(), newOrder: z.number().int().min(1) }))
 		.mutation(async ({ input, ctx }) => {
-			await assertCompetenceGroupProfileOwnership(
-				input.id,
-				ctx.session.user.id,
-			);
+			await assertCompetenceGroupProfileOwnership(input.id, ctx.session.user.id);
 			return profileCompetenceGroupService.move(input.id, input.newOrder);
 		}),
 
 	delete: protectedProcedure
 		.input(z.object({ id: z.string() }))
 		.mutation(async ({ input, ctx }) => {
-			await assertCompetenceGroupProfileOwnership(
-				input.id,
-				ctx.session.user.id,
-			);
+			await assertCompetenceGroupProfileOwnership(input.id, ctx.session.user.id);
 			return profileCompetenceGroupService.delete(input.id);
 		}),
 });

@@ -9,10 +9,7 @@ import {
 	updateVolunteeringSchema,
 } from "../../../src/services/schemas/volunteering.schema";
 
-async function assertVolunteeringCvOwnership(
-	volunteeringId: string,
-	userId: string,
-) {
+async function assertVolunteeringCvOwnership(volunteeringId: string, userId: string) {
 	const volunteering = await prisma.cvVolunteering.findUnique({
 		where: { id: volunteeringId },
 		select: { id: true, cvId: true },

@@ -2,10 +2,7 @@ import type { Prisma } from "../../../generated/prisma/client";
 import { Prisma as PrismaNS } from "../../../generated/prisma/client";
 import { prisma } from "../../../lib/prisma";
 import { NotFoundError, ValidationError } from "../errors";
-import {
-	parseUnlockGifts,
-	type TemplateUnlockGifts,
-} from "../commons/templateAccess";
+import { parseUnlockGifts, type TemplateUnlockGifts } from "../commons/templateAccess";
 
 export type AdminTemplateListItem = {
 	id: string;
@@ -53,15 +50,9 @@ export class AdminTemplateService {
 		const search = input.search?.trim();
 
 		const where: Prisma.CVTemplateWhereInput = {
-			...(typeof input.isActive === "boolean"
-				? { isActive: input.isActive }
-				: {}),
-			...(typeof input.isPremium === "boolean"
-				? { isPremium: input.isPremium }
-				: {}),
-			...(typeof input.isFeatured === "boolean"
-				? { isFeatured: input.isFeatured }
-				: {}),
+			...(typeof input.isActive === "boolean" ? { isActive: input.isActive } : {}),
+			...(typeof input.isPremium === "boolean" ? { isPremium: input.isPremium } : {}),
+			...(typeof input.isFeatured === "boolean" ? { isFeatured: input.isFeatured } : {}),
 			...(search
 				? {
 						name: {
@@ -188,11 +179,7 @@ export class AdminTemplateService {
 		if (hasPrice && patch.priceCents != null && patch.priceCents < 0) {
 			throw new ValidationError("priceCents doit être ≥ 0");
 		}
-		if (
-			hasPriceCredits &&
-			patch.priceCredits != null &&
-			patch.priceCredits < 0
-		) {
+		if (hasPriceCredits && patch.priceCredits != null && patch.priceCredits < 0) {
 			throw new ValidationError("priceCredits doit être ≥ 0");
 		}
 
@@ -216,10 +203,7 @@ export class AdminTemplateService {
 				data.unlockGifts = PrismaNS.DbNull;
 			} else {
 				const parsed = parseUnlockGifts(patch.unlockGifts);
-				data.unlockGifts =
-					parsed == null
-						? PrismaNS.DbNull
-						: (parsed as Prisma.InputJsonValue);
+				data.unlockGifts = parsed == null ? PrismaNS.DbNull : (parsed as Prisma.InputJsonValue);
 			}
 		}
 

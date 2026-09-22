@@ -12,7 +12,7 @@ export const ExpertiseSectionMenu = () => {
 	const pathDesign = moduleField(modules, "expertise", "settings", "content");
 
 	const expertiseMod = modules?.find((m: { type: string }) => m.type === "expertise");
-    const inSidebar = (expertiseMod?.column ?? 0) === 0;
+	const inSidebar = (expertiseMod?.column ?? 0) === 0;
 
 	// → modules.{i}.settings.content
 	const designPath = `${pathDesign}.design`;
@@ -51,33 +51,36 @@ export const ExpertiseSectionMenu = () => {
 					),
 				},
 				...(!inSidebar
-					? [{template: (
-						<div className="flex flex-col py-1 px-4 gap-2">
-							<p>Nombre de colonnes</p>
-							<div className="grid grid-cols-3 gap-2">
-								<RadioRhf
-									name={columnsPath}
-									label="2"
-									value="2"
-									checked={watchColumns === "2"}
-								/>
-								<RadioRhf
-									name={columnsPath}
-									label="3"
-									value="3"
-									checked={watchColumns === "3"}
-								/>
-								<RadioRhf
-									name={columnsPath}
-									label="4"
-									value="4"
-									checked={watchColumns === "4"}
-								/>
-							</div>
-						</div>
-					),
-				}]
-				: [])
+					? [
+							{
+								template: (
+									<div className="flex flex-col py-1 px-4 gap-2">
+										<p>Nombre de colonnes</p>
+										<div className="grid grid-cols-3 gap-2">
+											<RadioRhf
+												name={columnsPath}
+												label="2"
+												value="2"
+												checked={watchColumns === "2"}
+											/>
+											<RadioRhf
+												name={columnsPath}
+												label="3"
+												value="3"
+												checked={watchColumns === "3"}
+											/>
+											<RadioRhf
+												name={columnsPath}
+												label="4"
+												value="4"
+												checked={watchColumns === "4"}
+											/>
+										</div>
+									</div>
+								),
+							},
+						]
+					: []),
 			],
 		},
 	];

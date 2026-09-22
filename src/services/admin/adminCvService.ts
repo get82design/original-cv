@@ -1,9 +1,6 @@
 import type { Prisma } from "../../../generated/prisma/client";
 import { prisma } from "../../../lib/prisma";
-import {
-	periodStart,
-	type AdminDashboardPeriod,
-} from "./adminDashboardService";
+import { periodStart, type AdminDashboardPeriod } from "./adminDashboardService";
 
 export type AdminCvListItem = {
 	id: string;
@@ -93,9 +90,7 @@ export class AdminCvService {
 		const where: Prisma.CVWhereInput = {
 			...(since ? { createdAt: { gte: since } } : {}),
 			...(input.templateId ? { templateId: input.templateId } : {}),
-			...(input.primaryColorName
-				? { primaryColorName: input.primaryColorName }
-				: {}),
+			...(input.primaryColorName ? { primaryColorName: input.primaryColorName } : {}),
 			...(search
 				? {
 						user: {
@@ -129,11 +124,7 @@ export class AdminCvService {
 		]);
 
 		const colorNames = [
-			...new Set(
-				rows
-					.map((r) => r.primaryColorName)
-					.filter((n): n is string => n != null),
-			),
+			...new Set(rows.map((r) => r.primaryColorName).filter((n): n is string => n != null)),
 		];
 		const colorRows =
 			colorNames.length === 0
@@ -142,9 +133,7 @@ export class AdminCvService {
 						where: { name: { in: colorNames } },
 						select: { name: true, primary: true },
 					});
-		const shadeByName = new Map(
-			colorRows.map((c) => [c.name, c.primary] as const),
-		);
+		const shadeByName = new Map(colorRows.map((c) => [c.name, c.primary] as const));
 
 		return {
 			total,
@@ -159,9 +148,7 @@ export class AdminCvService {
 				templateId: r.templateId,
 				templateName: r.template.name,
 				primaryColorName: r.primaryColorName,
-				colorPrimary: r.primaryColorName
-					? (shadeByName.get(r.primaryColorName) ?? null)
-					: null,
+				colorPrimary: r.primaryColorName ? (shadeByName.get(r.primaryColorName) ?? null) : null,
 			})),
 		};
 	}
@@ -204,12 +191,8 @@ export class AdminCvService {
 			}),
 		]);
 
-		const cvById = new Map(
-			cvGroups.map((g) => [g.templateId, g._count._all]),
-		);
-		const unlockById = new Map(
-			unlockGroups.map((g) => [g.templateId, g._count._all]),
-		);
+		const cvById = new Map(cvGroups.map((g) => [g.templateId, g._count._all]));
+		const unlockById = new Map(unlockGroups.map((g) => [g.templateId, g._count._all]));
 		const freeById = new Map<string, number>();
 		const paidById = new Map<string, number>();
 		for (const g of dlGroups) {
@@ -291,9 +274,7 @@ export class AdminCvService {
 				.filter((g) => g.primaryColorName != null)
 				.map((g) => [g.primaryColorName as string, g._count._all]),
 		);
-		const shadeByName = new Map(
-			colors.map((c) => [c.name, c.primary] as const),
-		);
+		const shadeByName = new Map(colors.map((c) => [c.name, c.primary] as const));
 
 		const names = new Set<string>([
 			...colors.map((c) => c.name),

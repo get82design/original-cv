@@ -2,10 +2,7 @@ import { describe, expect, it } from "vitest";
 import { TRPCError } from "@trpc/server";
 
 import { createTestUser } from "../utils/create-test-user";
-import {
-	createTestCaller,
-	createTestSession,
-} from "./helpers/create-test-caller";
+import { createTestCaller, createTestSession } from "./helpers/create-test-caller";
 import { CvTimelineStatus } from "../../generated/prisma/enums";
 
 describe("profileEducationRouter", () => {
@@ -267,8 +264,8 @@ describe("profileEducationRouter", () => {
 	it("delete returns NOT_FOUND for unknown education", async () => {
 		const { caller } = await createUserWithProfile();
 
-		await expect(
-			caller.profileEducation.delete({ id: "unknown" }),
-		).rejects.toMatchObject({ code: "NOT_FOUND" });
+		await expect(caller.profileEducation.delete({ id: "unknown" })).rejects.toMatchObject({
+			code: "NOT_FOUND",
+		});
 	});
 });

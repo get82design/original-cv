@@ -74,11 +74,7 @@ describe("adminDashboardService.getCvStats previous period", () => {
 		});
 
 		// Fenêtre précédente [now-14j, now-7j)
-		const previousCv = await createCV(
-			user.id,
-			previousTpl.id,
-			"CV previous",
-		);
+		const previousCv = await createCV(user.id, previousTpl.id, "CV previous");
 		await prismaTest.cV.update({
 			where: { id: previousCv.id },
 			data: {
@@ -110,21 +106,13 @@ describe("adminDashboardService.getCvStats previous period", () => {
 		expect(stats.previousTopTemplates).not.toBeNull();
 		expect(stats.previousTopColors).not.toBeNull();
 
-		expect(
-			stats.topTemplates.some((t) => t.templateId === currentTpl.id),
-		).toBe(true);
-		expect(
-			stats.previousTopTemplates!.some(
-				(t) => t.templateId === previousTpl.id,
-			),
-		).toBe(true);
+		expect(stats.topTemplates.some((t) => t.templateId === currentTpl.id)).toBe(true);
+		expect(stats.previousTopTemplates!.some((t) => t.templateId === previousTpl.id)).toBe(true);
 
 		const indigo = stats.topColors.find((c) => c.name === "dashboard-indigo");
 		expect(indigo?.primary).toBe("-700");
 
-		const ghost = stats.previousTopColors!.find(
-			(c) => c.name === "ghost-color",
-		);
+		const ghost = stats.previousTopColors!.find((c) => c.name === "ghost-color");
 		expect(ghost).toBeTruthy();
 		expect(ghost!.primary).toBeNull();
 	});

@@ -139,9 +139,7 @@ export function AdminDownloadsPage() {
 			<AppCard className="admin-filters mb-4">
 				<div className="flex flex-col gap-3 lg:flex-row lg:items-end">
 					<div className="flex-1">
-						<label className="mb-1 block text-xs text-zinc-500">
-							Recherche
-						</label>
+						<label className="mb-1 block text-xs text-zinc-500">Recherche</label>
 						<div className="relative w-full">
 							<i className="pi pi-search pointer-events-none absolute top-1/2 left-3 z-10 -translate-y-1/2 text-sm text-zinc-500 dark:text-zinc-400" />
 							<InputText
@@ -153,9 +151,7 @@ export function AdminDownloadsPage() {
 						</div>
 					</div>
 					<div className="w-full lg:w-44">
-						<label className="mb-1 block text-xs text-zinc-500">
-							Type
-						</label>
+						<label className="mb-1 block text-xs text-zinc-500">Type</label>
 						<Dropdown
 							value={variant}
 							options={VARIANT_OPTIONS}
@@ -186,28 +182,19 @@ export function AdminDownloadsPage() {
 					<tbody>
 						{listQuery.isLoading ? (
 							<tr>
-								<td
-									colSpan={6}
-									className="px-4 py-8 text-center text-zinc-500"
-								>
+								<td colSpan={6} className="px-4 py-8 text-center text-zinc-500">
 									Chargement…
 								</td>
 							</tr>
 						) : (listQuery.data?.items.length ?? 0) === 0 ? (
 							<tr>
-								<td
-									colSpan={6}
-									className="px-4 py-8 text-center text-zinc-500"
-								>
+								<td colSpan={6} className="px-4 py-8 text-center text-zinc-500">
 									Aucun téléchargement.
 								</td>
 							</tr>
 						) : (
 							listQuery.data!.items.map((d) => (
-								<tr
-									key={d.id}
-									className="border-b border-zinc-100 dark:border-zinc-800"
-								>
+								<tr key={d.id} className="border-b border-zinc-100 dark:border-zinc-800">
 									<td className="px-4 py-3 text-xs whitespace-nowrap text-zinc-500">
 										{formatDate(d.createdAt)}
 									</td>
@@ -217,9 +204,7 @@ export function AdminDownloadsPage() {
 												Gratuit
 											</span>
 										) : (
-											<span className="font-medium text-amber-600 dark:text-amber-400">
-												Payant
-											</span>
+											<span className="font-medium text-amber-600 dark:text-amber-400">Payant</span>
 										)}
 									</td>
 									<td className="px-3 py-3">
@@ -231,14 +216,10 @@ export function AdminDownloadsPage() {
 												{d.userEmail}
 											</Link>
 										) : (
-											<span className="text-zinc-500">
-												Anonyme
-											</span>
+											<span className="text-zinc-500">Anonyme</span>
 										)}
 									</td>
-									<td className="px-3 py-3 text-zinc-800 dark:text-zinc-200">
-										{d.cvTitle ?? "—"}
-									</td>
+									<td className="px-3 py-3 text-zinc-800 dark:text-zinc-200">{d.cvTitle ?? "—"}</td>
 									<td className="px-3 py-3 text-xs text-zinc-600 dark:text-zinc-400">
 										{d.templateName ?? "—"}
 									</td>
@@ -248,9 +229,7 @@ export function AdminDownloadsPage() {
 												Oui
 											</span>
 										) : (
-											<span className="text-zinc-500">
-												Non
-											</span>
+											<span className="text-zinc-500">Non</span>
 										)}
 									</td>
 								</tr>
@@ -279,12 +258,8 @@ export function AdminDownloadsPage() {
 							size="small"
 							outlined
 							label="Suivant"
-							disabled={
-								page >= totalPages || listQuery.isFetching
-							}
-							onClick={() =>
-								setPage((p) => Math.min(totalPages, p + 1))
-							}
+							disabled={page >= totalPages || listQuery.isFetching}
+							onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
 						/>
 					</div>
 				</div>

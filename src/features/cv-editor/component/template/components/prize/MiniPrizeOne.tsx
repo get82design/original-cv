@@ -18,16 +18,8 @@ export const MiniPrizeOne = () => {
 							}}
 						/>
 						<div className="w-full flex flex-col gap-0.5">
-							<Skeleton
-								className="dark:bg-gray-700"
-								width="60%"
-								height="8px"
-							></Skeleton>
-							<Skeleton
-								className="dark:bg-gray-700"
-								width="80%"
-								height="8px"
-							></Skeleton>
+							<Skeleton className="dark:bg-gray-700" width="60%" height="8px"></Skeleton>
+							<Skeleton className="dark:bg-gray-700" width="80%" height="8px"></Skeleton>
 						</div>
 					</div>
 				))}

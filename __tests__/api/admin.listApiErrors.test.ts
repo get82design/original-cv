@@ -1,18 +1,15 @@
 import { describe, expect, it } from "vitest";
 import { prismaTest } from "../../lib/prismaTest";
 import { createTestUser } from "../utils/create-test-user";
-import {
-	createTestCaller,
-	createTestSession,
-} from "./helpers/create-test-caller";
+import { createTestCaller, createTestSession } from "./helpers/create-test-caller";
 
 describe("admin.listApiErrors", () => {
 	it("rejects non-admin", async () => {
 		const user = await createTestUser();
 		const caller = await createTestCaller(createTestSession(user));
-		await expect(
-			caller.admin.listApiErrors({ period: "7d" }),
-		).rejects.toMatchObject({ code: "FORBIDDEN" });
+		await expect(caller.admin.listApiErrors({ period: "7d" })).rejects.toMatchObject({
+			code: "FORBIDDEN",
+		});
 	});
 
 	it("returns API error events for ADMIN", async () => {
@@ -73,12 +70,8 @@ describe("admin.listApiErrors", () => {
 			period: "all",
 			code: "TOO_MANY_REQUESTS",
 		});
-		expect(filtered.items.every((i) => i.code === "TOO_MANY_REQUESTS")).toBe(
-			true,
-		);
-		expect(
-			filtered.items.some((i) => i.message === "429 gemini"),
-		).toBe(true);
+		expect(filtered.items.every((i) => i.code === "TOO_MANY_REQUESTS")).toBe(true);
+		expect(filtered.items.some((i) => i.message === "429 gemini")).toBe(true);
 	});
 
 	it("filters by path contains", async () => {
@@ -105,10 +98,8 @@ describe("admin.listApiErrors", () => {
 			period: "all",
 			path: "unlockedTemplate",
 		});
-		expect(
-			filtered.items.every((i) =>
-				i.path.toLowerCase().includes("unlockedtemplate"),
-			),
-		).toBe(true);
+		expect(filtered.items.every((i) => i.path.toLowerCase().includes("unlockedtemplate"))).toBe(
+			true,
+		);
 	});
 });

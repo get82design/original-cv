@@ -207,9 +207,7 @@ describe("CvPassionService.move", () => {
 
 	// TEST 2 : passion inexistante
 	it("throws if passion does not exist", async () => {
-		await expect(cvPassionService.move("unknown-id", 1)).rejects.toThrow(
-			NotFoundError,
-		);
+		await expect(cvPassionService.move("unknown-id", 1)).rejects.toThrow(NotFoundError);
 	});
 
 	// TEST 3 : ordre invalide
@@ -262,9 +260,7 @@ describe("CvPassionService.delete", () => {
 
 	// TEST 2 : passion inexistante
 	it("throws if passion does not exist", async () => {
-		await expect(cvPassionService.delete("unknown-id")).rejects.toThrow(
-			NotFoundError,
-		);
+		await expect(cvPassionService.delete("unknown-id")).rejects.toThrow(NotFoundError);
 	});
 
 	// TEST 3 : reordonnancement des passions après suppression

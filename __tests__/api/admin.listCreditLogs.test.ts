@@ -1,18 +1,15 @@
 import { describe, expect, it } from "vitest";
 import { prismaTest } from "../../lib/prismaTest";
 import { createTestUser } from "../utils/create-test-user";
-import {
-	createTestCaller,
-	createTestSession,
-} from "./helpers/create-test-caller";
+import { createTestCaller, createTestSession } from "./helpers/create-test-caller";
 
 describe("admin.listCreditLogs", () => {
 	it("rejects non-admin", async () => {
 		const user = await createTestUser();
 		const caller = await createTestCaller(createTestSession(user));
-		await expect(
-			caller.admin.listCreditLogs({ period: "7d" }),
-		).rejects.toMatchObject({ code: "FORBIDDEN" });
+		await expect(caller.admin.listCreditLogs({ period: "7d" })).rejects.toMatchObject({
+			code: "FORBIDDEN",
+		});
 	});
 
 	it("lists credit movements for ADMIN", async () => {
@@ -84,16 +81,12 @@ describe("admin.listCreditLogs", () => {
 			period: "all",
 			kind: "FREE_DOWNLOADS",
 		});
-		expect(byKind.items.every((i) => i.kind === "FREE_DOWNLOADS")).toBe(
-			true,
-		);
+		expect(byKind.items.every((i) => i.kind === "FREE_DOWNLOADS")).toBe(true);
 
 		const bySearch = await caller.admin.listCreditLogs({
 			period: "all",
 			search: unique,
 		});
-		expect(bySearch.items.some((i) => i.targetUserId === target.id)).toBe(
-			true,
-		);
+		expect(bySearch.items.some((i) => i.targetUserId === target.id)).toBe(true);
 	});
 });

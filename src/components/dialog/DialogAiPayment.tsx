@@ -37,8 +37,7 @@ export function DialogAiPayment({
 		else setChoice(null);
 	}, [visible, options]);
 
-	const noneAvailable =
-		options != null && !options.canPayFree && !options.canPayPaid;
+	const noneAvailable = options != null && !options.canPayFree && !options.canPayPaid;
 
 	const footer = (
 		<div className="flex flex-wrap justify-end gap-2">
@@ -80,25 +79,17 @@ export function DialogAiPayment({
 				<p className="m-0 text-sm text-zinc-500">Chargement des tarifs…</p>
 			) : noneAvailable ? (
 				<div className="flex flex-col gap-2 text-sm text-zinc-600 dark:text-zinc-300">
-					<p className="m-0">
-						Solde insuffisant pour cette action.
-					</p>
+					<p className="m-0">Solde insuffisant pour cette action.</p>
 					<p className="m-0 text-xs text-zinc-500">
-						Soldes : {options.freeDownloadsRemaining} free ·{" "}
-						{options.downloadCredits} payants
-						{options.costFree != null
-							? ` · tarif free ${options.costFree}`
-							: ""}
-						{options.costPaid != null
-							? ` · tarif payant ${options.costPaid}`
-							: ""}
+						Soldes : {options.freeDownloadsRemaining} free · {options.downloadCredits} payants
+						{options.costFree != null ? ` · tarif free ${options.costFree}` : ""}
+						{options.costPaid != null ? ` · tarif payant ${options.costPaid}` : ""}
 					</p>
 				</div>
 			) : (
 				<div className="flex flex-col gap-3">
 					<p className="m-0 text-xs text-zinc-500 dark:text-zinc-400">
-						Soldes : {options.freeDownloadsRemaining} free ·{" "}
-						{options.downloadCredits} payants
+						Soldes : {options.freeDownloadsRemaining} free · {options.downloadCredits} payants
 					</p>
 					<div className="flex flex-col gap-2">
 						{options.costFree != null ? (
@@ -122,9 +113,7 @@ export function DialogAiPayment({
 									{options.costFree > 1 ? "s" : ""}
 								</span>
 								{!options.canPayFree ? (
-									<span className="mt-0.5 block text-xs text-zinc-500">
-										Solde insuffisant
-									</span>
+									<span className="mt-0.5 block text-xs text-zinc-500">Solde insuffisant</span>
 								) : null}
 							</button>
 						) : null}
@@ -149,9 +138,7 @@ export function DialogAiPayment({
 									{options.costPaid > 1 ? "s" : ""}
 								</span>
 								{!options.canPayPaid ? (
-									<span className="mt-0.5 block text-xs text-zinc-500">
-										Solde insuffisant
-									</span>
+									<span className="mt-0.5 block text-xs text-zinc-500">Solde insuffisant</span>
 								) : null}
 							</button>
 						) : null}

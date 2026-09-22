@@ -32,13 +32,7 @@ describe("CV Fullflow Integration with experience", () => {
 		const { user, template } = await utils.createUserAndTemplate();
 		const cv = await utils.createCV(user.id, template.id);
 		const start = new Date();
-		const experience = await utils.createExperience(
-			cv.id,
-			"Experience 1",
-			"Company 1",
-			start,
-			1,
-		);
+		const experience = await utils.createExperience(cv.id, "Experience 1", "Company 1", start, 1);
 		expect(experience.cvId).toBe(cv.id);
 		expect(experience.title).toBe("Experience 1");
 		expect(experience.company).toBe("Company 1");

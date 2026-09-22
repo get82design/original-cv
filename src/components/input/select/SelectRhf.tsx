@@ -3,11 +3,7 @@ import { Controller, useFormContext } from "react-hook-form";
 interface SelectRhfProps extends DropdownProps {
 	name: string;
 }
-export const SelectRhf = ({
-	name,
-	className = "",
-	...props
-}: SelectRhfProps) => {
+export const SelectRhf = ({ name, className = "", ...props }: SelectRhfProps) => {
 	const { control } = useFormContext();
 	return (
 		<Controller

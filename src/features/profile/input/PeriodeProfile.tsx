@@ -84,11 +84,7 @@ export const PeriodeProfile = ({
 				<TabView>
 					<TabPanel
 						headerClassName="w-1/2"
-						header={`De ${
-							periode?.start
-								? dateToStringMonthYear(periode?.start as Date)
-								: null
-						}`}
+						header={`De ${periode?.start ? dateToStringMonthYear(periode?.start as Date) : null}`}
 					>
 						<div className="w-full flex gap-2">
 							<Calendar
@@ -144,9 +140,7 @@ export const PeriodeProfile = ({
 					</TabPanel>
 				</TabView>
 				<div className="mt-2 w-full flex justify-between">
-					<Button onClick={(e) => op.current && op.current.toggle(e)}>
-						Annuler
-					</Button>
+					<Button onClick={(e) => op.current && op.current.toggle(e)}>Annuler</Button>
 					<Button
 						disabled={!periode.start && !periode.end}
 						// Valider
@@ -157,9 +151,7 @@ export const PeriodeProfile = ({
 							}
 							setValue(
 								endName,
-								periode.end === "aujourd'hui" || !periode.end
-									? null
-									: periode.end,
+								periode.end === "aujourd'hui" || !periode.end ? null : periode.end,
 								{ shouldDirty: true },
 							);
 						}}

@@ -14,9 +14,7 @@ export const SelectColor = ({ watchSelectInput, select }: SelectColorProps) => {
 	const [primaryColor, setPrimaryColor] = useState("");
 	useEffect(() => {
 		if (watchPrimaryColor) {
-			setPrimaryColor(
-				"--" + watchPrimaryColor.name + watchPrimaryColor.primary,
-			);
+			setPrimaryColor("--" + watchPrimaryColor.name + watchPrimaryColor.primary);
 		}
 	}, [watchPrimaryColor]);
 	return (

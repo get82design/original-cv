@@ -39,25 +39,17 @@ export const CardEducationOne = ({
 	const { setSelectModifInput, setSelectInputForm } = useCreateCvContext();
 
 	const watchGeneral = watch(FieldNameLayoutGeneral.layout);
-	const pathContent = dataFieldContent(
-		"datas.education.content",
-		index,
-		"content",
-	);
+	const pathContent = dataFieldContent("datas.education.content", index, "content");
 	const watchWithIcon = watchGeneral?.titleSection.withIcon;
 	const watchListStyle = watchGeneral?.listStyle;
 	const menuLeft = useRef<Menu>(null);
 
 	const watchModelTitleOfEducation = watch(`${pathContent}.settings.diplome`);
-	const watchModelSchoolOfEducation = watch(
-		`${pathContent}.settings.etablissement`,
-	);
+	const watchModelSchoolOfEducation = watch(`${pathContent}.settings.etablissement`);
 	const watchModelYearOfEducation = watch(`${pathContent}.settings.year`);
 	const watchModelCityOfEducation = watch(`${pathContent}.settings.ville`);
 
-	const deleteEducation = (
-		itemToDelete: ListItem<EducationItemContentInput>,
-	) => {
+	const deleteEducation = (itemToDelete: ListItem<EducationItemContentInput>) => {
 		const list = (getValues(FieldNameEducation.content) ??
 			[]) as ListItem<EducationItemContentInput>[];
 
@@ -99,12 +91,7 @@ export const CardEducationOne = ({
 				itemsMenu ? (
 					<>
 						<ToolbarOptionsButton menuRef={menuLeft} />
-						<Menu
-							model={itemsMenu(index)}
-							popup
-							ref={menuLeft}
-							style={{ width: 300 }}
-						/>
+						<Menu model={itemsMenu(index)} popup ref={menuLeft} style={{ width: 300 }} />
 					</>
 				) : null
 			}
@@ -203,15 +190,13 @@ export const ContentEducationContainer = ({
 			<div className="w-full flex justify-between items-start relative -mb-2">
 				<CommonPointList general={general} />
 				<div className="w-4/5">{educationNameCompo}</div>
-				<div className="w-1/5">
-					{item?.content?.settings?.withYear && educationYearCompo}
-				</div>
+				<div className="w-1/5">{item?.content?.settings?.withYear && educationYearCompo}</div>
 			</div>
 			<div className="flex gap-1 items-end">
-				{item?.content?.settings?.withEtablissement &&
-					educationEtablissementCompo}
-				{item?.content?.settings?.withVille &&
-					item?.content?.settings?.withEtablissement && <p>/</p>}
+				{item?.content?.settings?.withEtablissement && educationEtablissementCompo}
+				{item?.content?.settings?.withVille && item?.content?.settings?.withEtablissement && (
+					<p>/</p>
+				)}
 				{item?.content?.settings?.withVille && educationVilleCompo}
 			</div>
 		</div>

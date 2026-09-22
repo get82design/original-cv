@@ -3,10 +3,7 @@ import { compactOrder } from "../../utils/compactOrder";
 import { reorderItems } from "../../utils/reorderCvItems";
 import { validateTimeline } from "../../utils/validateTimeline";
 import { ConflictError, NotFoundError } from "../errors";
-import type {
-	CreateExperienceInput,
-	UpdateExperienceInput,
-} from "../schemas/experience.schema";
+import type { CreateExperienceInput, UpdateExperienceInput } from "../schemas/experience.schema";
 
 export class ProfileExperienceService {
 	async create(profileId: string, data: CreateExperienceInput) {

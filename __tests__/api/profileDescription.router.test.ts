@@ -2,10 +2,7 @@ import { describe, expect, it } from "vitest";
 import { TRPCError } from "@trpc/server";
 
 import { createTestUser } from "../utils/create-test-user";
-import {
-	createTestCaller,
-	createTestSession,
-} from "./helpers/create-test-caller";
+import { createTestCaller, createTestSession } from "./helpers/create-test-caller";
 
 describe("profileDescriptionRouter", () => {
 	async function createUserWithProfile() {

@@ -21,9 +21,7 @@ import { trpc } from "@utils/trpc";
 import { DialogSelectCv } from "../common/DialogSelectCv";
 import { DialogSelectTagGroup } from "./DialogSelectTagGroup";
 
-function createEmptyTagGroup(opts?: {
-	order?: number;
-}): ListItem<TagGroupInput> {
+function createEmptyTagGroup(opts?: { order?: number }): ListItem<TagGroupInput> {
 	return {
 		clientKey: `tagGroup-${uuid()}`,
 		order: opts?.order ?? 0,
@@ -45,10 +43,7 @@ export const ProfileTag = ({ cvs }: { cvs: CV[] }) => {
 	const [toDelete, setToDelete] = useState<Set<string>>(new Set());
 	const [visibleMaj, setVisibleMaj] = useState(false);
 	const [idCv, setIdCv] = useState<string | undefined>(undefined);
-	const { data: cvSelected } = trpc.cv.byId.useQuery(
-		{ id: idCv ?? "" },
-		{ enabled: !!idCv },
-	);
+	const { data: cvSelected } = trpc.cv.byId.useQuery({ id: idCv ?? "" }, { enabled: !!idCv });
 	const [visibleSelect, setVisibleSelect] = useState(false);
 
 	const { control, watch, setValue } = useFormContext<ProfileSaveInput>();
@@ -133,12 +128,7 @@ export const ProfileTag = ({ cvs }: { cvs: CV[] }) => {
 			/>
 			<AppCard className="relative group">
 				<div className="opacity-30 absolute top-2 left-3">
-					<TitleAppTwo
-						firstPart={"Vos"}
-						secondPart={"Tags"}
-						size={"text-2xl"}
-						withSpace
-					/>
+					<TitleAppTwo firstPart={"Vos"} secondPart={"Tags"} size={"text-2xl"} withSpace />
 				</div>
 				<div className="mt-10 flex flex-col gap-4">
 					{fields.map((field, idx) => {
@@ -166,9 +156,7 @@ export const ProfileTag = ({ cvs }: { cvs: CV[] }) => {
 						);
 					})}
 					{fields.length === 0 && (
-						<p className="w-full font-light text-gray-400">
-							Aucun groupe de tags enregistré
-						</p>
+						<p className="w-full font-light text-gray-400">Aucun groupe de tags enregistré</p>
 					)}
 					{openDelete && (
 						<MiniFooterMultiFunc
@@ -215,10 +203,7 @@ function TagGroupTags({ groupIndex }: { groupIndex: number }) {
 		<>
 			{fields.map((tag, index) => {
 				return (
-					<div
-						key={tag.clientKey}
-						className="rounded-full bg-primary dark:bg-primary-dark"
-					>
+					<div key={tag.clientKey} className="rounded-full bg-primary dark:bg-primary-dark">
 						<div className="flex gap-0 items-center px-3 py-1 text-sm text-white dark:text-black">
 							<InputTextProfile
 								placeholder="Nom du tag"
@@ -238,10 +223,7 @@ function TagGroupTags({ groupIndex }: { groupIndex: number }) {
 					</div>
 				);
 			})}
-			<button
-				type="button"
-				onClick={() => append(createEmptyTag({ order: fields.length }))}
-			>
+			<button type="button" onClick={() => append(createEmptyTag({ order: fields.length }))}>
 				Ajouter un tag
 			</button>
 		</>

@@ -59,8 +59,7 @@ describe("Competence model", () => {
 						},
 					) =>
 						group.competences.map(
-							(pc: ProfileCompetence & { competence: Competence }) =>
-								pc.competence.name,
+							(pc: ProfileCompetence & { competence: Competence }) => pc.competence.name,
 						),
 				);
 			expect(competenceNames).toContain("TypeScript");
@@ -303,11 +302,9 @@ describe("Competence model", () => {
 			const profilecompetences = await prismaTest.profileCompetence.findMany({
 				where: { group: { profileId: user.profile.id } },
 			});
-			const competenceGroups = await prismaTest.profileCompetenceGroup.findMany(
-				{
-					where: { profileId: user.profile.id },
-				},
-			);
+			const competenceGroups = await prismaTest.profileCompetenceGroup.findMany({
+				where: { profileId: user.profile.id },
+			});
 			const competences = await prismaTest.competence.findMany();
 			expect(competenceGroups!.length).toBe(0);
 			expect(profilecompetences!.length).toBe(0);

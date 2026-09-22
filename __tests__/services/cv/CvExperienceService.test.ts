@@ -3,11 +3,7 @@ import { cvExperienceService } from "../../../src/services/cv/cvExperienceServic
 import { createTestUser } from "../../utils/create-test-user";
 import { createTestTemplate } from "../../utils/create-test-template";
 import { createCV } from "../../utils/create-test-cv-full-flow";
-import {
-	ConflictError,
-	NotFoundError,
-	ValidationError,
-} from "../../../src/services/errors";
+import { ConflictError, NotFoundError, ValidationError } from "../../../src/services/errors";
 import { expectMoveNoOp } from "../../utils/move-noop";
 
 describe("CvExperienceService.create", () => {
@@ -368,9 +364,7 @@ describe("CvExperienceService.move", () => {
 
 	// TEST 2 : experience inexistant
 	it("throws if experience does not exist", async () => {
-		await expect(cvExperienceService.move("unknown-id", 1)).rejects.toThrow(
-			NotFoundError,
-		);
+		await expect(cvExperienceService.move("unknown-id", 1)).rejects.toThrow(NotFoundError);
 	});
 
 	// TEST 3 : ordre invalide
@@ -429,9 +423,7 @@ describe("CvExperienceService.delete", () => {
 
 	// TEST 2 : experience inexistant
 	it("throws if experience does not exist", async () => {
-		await expect(cvExperienceService.delete("unknown-id")).rejects.toThrow(
-			NotFoundError,
-		);
+		await expect(cvExperienceService.delete("unknown-id")).rejects.toThrow(NotFoundError);
 	});
 
 	// TEST 3 : réorganisation des experiences après suppression

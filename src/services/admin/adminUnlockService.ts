@@ -2,10 +2,7 @@ import type { Prisma } from "../../../generated/prisma/client";
 import type { UnlockMethod } from "../../../generated/prisma/enums";
 import { prisma } from "../../../lib/prisma";
 import { unlockedTemplateService } from "../commons/unlockedTemplateService";
-import {
-	periodStart,
-	type AdminDashboardPeriod,
-} from "./adminDashboardService";
+import { periodStart, type AdminDashboardPeriod } from "./adminDashboardService";
 
 export type AdminUnlockListItem = {
 	id: string;

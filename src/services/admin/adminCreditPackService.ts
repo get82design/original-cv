@@ -67,9 +67,7 @@ function mapPack(p: {
 }
 
 export class AdminCreditPackService {
-	async listPacks(input?: {
-		activeOnly?: boolean | undefined;
-	}): Promise<CreditPackListItem[]> {
+	async listPacks(input?: { activeOnly?: boolean | undefined }): Promise<CreditPackListItem[]> {
 		const packs = await prisma.creditPack.findMany({
 			...(input?.activeOnly ? { where: { isActive: true } } : {}),
 			orderBy: [{ sortOrder: "asc" }, { name: "asc" }],
@@ -94,28 +92,20 @@ export class AdminCreditPackService {
 		return mapPack(pack);
 	}
 
-	async updatePack(
-		id: string,
-		patch: CreditPackUpdatePatch,
-	): Promise<CreditPackListItem> {
+	async updatePack(id: string, patch: CreditPackUpdatePatch): Promise<CreditPackListItem> {
 		const existing = await prisma.creditPack.findUnique({ where: { id } });
 		if (!existing) throw new NotFoundError("Pack de crédits introuvable");
 
 		const merged: CreditPackUpsertInput = {
 			name: patch.name ?? existing.name,
-			description:
-				patch.description !== undefined
-					? patch.description
-					: existing.description,
+			description: patch.description !== undefined ? patch.description : existing.description,
 			priceCents: patch.priceCents ?? existing.priceCents,
 			downloadCredits: patch.downloadCredits ?? existing.downloadCredits,
 			freeDownloads: patch.freeDownloads ?? existing.freeDownloads,
 			sortOrder: patch.sortOrder ?? existing.sortOrder,
 			isActive: patch.isActive ?? existing.isActive,
 			stripePriceId:
-				patch.stripePriceId !== undefined
-					? patch.stripePriceId
-					: existing.stripePriceId,
+				patch.stripePriceId !== undefined ? patch.stripePriceId : existing.stripePriceId,
 		};
 		this.validate(merged);
 

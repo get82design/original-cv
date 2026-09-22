@@ -27,10 +27,8 @@ export function MiniatureExperienceRenderer({
 	templateConfig: TemplateDefaultStyles;
 }) {
 	const miniatureKey =
-		templateConfig?.components?.sectionExperience?.miniature ??
-		"MiniExperienceOne";
-	const MiniatureComponent =
-		MiniatureRegister[miniatureKey] ?? DefaultMiniature;
+		templateConfig?.components?.sectionExperience?.miniature ?? "MiniExperienceOne";
+	const MiniatureComponent = MiniatureRegister[miniatureKey] ?? DefaultMiniature;
 	return <MiniatureComponent />;
 }
 
@@ -39,21 +37,14 @@ export function IconExperienceRenderer({
 }: {
 	templateConfig: TemplateDefaultStyles;
 }) {
-	const iconKey =
-		templateConfig?.components?.sectionExperience?.icon ?? "IconExperience";
+	const iconKey = templateConfig?.components?.sectionExperience?.icon ?? "IconExperience";
 	const IconComponent = IconRegister[iconKey] ?? DefaultIcon;
 	return <IconComponent />;
 }
 
-export function ExperienceRenderer({
-	templateConfig,
-}: {
-	templateConfig: TemplateDefaultStyles;
-}) {
+export function ExperienceRenderer({ templateConfig }: { templateConfig: TemplateDefaultStyles }) {
 	const experienceKey =
-		templateConfig?.components?.sectionExperience?.component ??
-		"SectionExperienceOne";
-	const ExperienceComponent =
-		ExperienceRegister[experienceKey] ?? DefaultExperience;
+		templateConfig?.components?.sectionExperience?.component ?? "SectionExperienceOne";
+	const ExperienceComponent = ExperienceRegister[experienceKey] ?? DefaultExperience;
 	return <ExperienceComponent />;
 }

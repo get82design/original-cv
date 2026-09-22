@@ -11,14 +11,14 @@ export const reykjavik = defineTemplate({
 		...sharedLayout,
 		listStyle: "none",
 		marge: "lg",
-        space: "lg",
+		space: "lg",
 		titleSection: {
 			...sharedLayout.titleSection,
-            textTransform: "uppercase",
+			textTransform: "uppercase",
 			textAlign: "left",
 		},
 	},
-    sectionHeader: "HeaderTwo",
+	sectionHeader: "HeaderTwo",
 	variant: 2,
 	modules: {
 		description: { title: "À propos", isActive: true, order: 1 },
@@ -29,6 +29,6 @@ export const reykjavik = defineTemplate({
 		strength: { title: "Atouts", isActive: true, order: 6, columns: 2 },
 		passion: { title: "Passions", isActive: true, order: 7, columns: 3 },
 		socialMedia: { title: "Réseaux", isActive: true, order: 8 },
-        skill: { title: "Skills", design: "stars", isActive: false },
+		skill: { title: "Skills", design: "stars", isActive: false },
 	},
 });

@@ -21,13 +21,7 @@ export const CommonPointList = ({
 		watchListStyle !== "none" && (
 			<div
 				className={`absolute point-list-apercu h-2 w-2 bg-gray-600 ${
-					withTopMarge
-						? "top-5"
-						: withIconMarge
-							? "top-3"
-							: withoutLigne
-								? "top-2"
-								: "top-1.5"
+					withTopMarge ? "top-5" : withIconMarge ? "top-3" : withoutLigne ? "top-2" : "top-1.5"
 				} ${watchIconStyle === "rounded" ? "rounded-lg" : ""}`}
 				style={{
 					left: withoutLigne ? "-11px" : "-23px",

@@ -29,11 +29,7 @@ export interface CardVolunteeringOneProps {
 			template: JSX.Element;
 		}[];
 	}[];
-	addElmList: (
-		e: ListItem<VolunteeringItemContentInput>,
-		elm: string,
-		index: number,
-	) => void;
+	addElmList: (e: ListItem<VolunteeringItemContentInput>, elm: string, index: number) => void;
 	deleteMission: (index: number, idx: number) => void;
 }
 
@@ -50,35 +46,19 @@ export const CardVolunteeringOne = ({
 	const { setSelectModifInput, setSelectInputForm } = useCreateCvContext();
 
 	const watchGeneral = watch(FieldNameLayoutGeneral.layout);
-	const pathContent = dataFieldContent(
-		"datas.volunteering.content",
-		index,
-		"content",
-	);
+	const pathContent = dataFieldContent("datas.volunteering.content", index, "content");
 	const watchWithIcon = watchGeneral?.titleSection.withIcon;
 	const watchListStyle = watchGeneral?.listStyle;
 	const menuLeft = useRef<Menu>(null);
 
 	const watchModelTitleOfVolunteering = watch(`${pathContent}.settings.title`);
-	const watchModelOrganisationOfVolunteering = watch(
-		`${pathContent}.settings.organisation`,
-	);
-	const watchModelPeriodeOfVolunteering = watch(
-		`${pathContent}.settings.periode`,
-	);
-	const watchModelLocationOfVolunteering = watch(
-		`${pathContent}.settings.location`,
-	);
-	const watchModelDescriptionOfVolunteering = watch(
-		`${pathContent}.settings.description`,
-	);
-	const watchModelMissionOfVolunteering = watch(
-		`${pathContent}.settings.missions`,
-	);
+	const watchModelOrganisationOfVolunteering = watch(`${pathContent}.settings.organisation`);
+	const watchModelPeriodeOfVolunteering = watch(`${pathContent}.settings.periode`);
+	const watchModelLocationOfVolunteering = watch(`${pathContent}.settings.location`);
+	const watchModelDescriptionOfVolunteering = watch(`${pathContent}.settings.description`);
+	const watchModelMissionOfVolunteering = watch(`${pathContent}.settings.missions`);
 
-	const deleteVolunteering = (
-		itemToDelete: ListItem<VolunteeringItemContentInput>,
-	) => {
+	const deleteVolunteering = (itemToDelete: ListItem<VolunteeringItemContentInput>) => {
 		const list = (getValues(FieldNameVolunteering.content) ??
 			[]) as ListItem<VolunteeringItemContentInput>[];
 
@@ -96,8 +76,7 @@ export const CardVolunteeringOne = ({
 			(itemToDelete.content?.missions ?? []).map((s) => s.clientKey),
 		);
 		const selectionWasInGroup =
-			itemSelected === itemToDelete.clientKey ||
-			deleteMissionKeys.has(itemSelected);
+			itemSelected === itemToDelete.clientKey || deleteMissionKeys.has(itemSelected);
 
 		if (selectionWasInGroup) {
 			setItemSelected(newList[0]?.clientKey ?? "");
@@ -149,12 +128,7 @@ export const CardVolunteeringOne = ({
 				itemsMenu ? (
 					<>
 						<ToolbarOptionsButton menuRef={menuLeft} />
-						<Menu
-							model={itemsMenu(index)}
-							popup
-							ref={menuLeft}
-							style={{ width: 300 }}
-						/>
+						<Menu model={itemsMenu(index)} popup ref={menuLeft} style={{ width: 300 }} />
 					</>
 				) : null
 			}

@@ -1,4 +1,10 @@
-import { DownloadVariant, PlanRole, AiFeature, UnlockMethod, AdminCreditKind } from "../../../generated/prisma/enums";
+import {
+	DownloadVariant,
+	PlanRole,
+	AiFeature,
+	UnlockMethod,
+	AdminCreditKind,
+} from "../../../generated/prisma/enums";
 import { ValidationError } from "../../../src/services/errors";
 import { adminProcedure, router } from "../trpc";
 import { adminAiService } from "../../../src/services/admin/adminAiService";
@@ -127,25 +133,14 @@ export const adminRouter = router({
 		.input(z.object({ id: z.string().min(1) }))
 		.query(({ input }) => adminUserService.getUserDetail(input.id)),
 
-	updateUser: adminProcedure
-		.input(updateUserInputSchema)
-		.mutation(async ({ ctx, input }) => {
-			if (
-				input.isActive === false &&
-				ctx.session?.user.id === input.id
-			) {
-				throw new ValidationError(
-					"Impossible de désactiver votre propre compte",
-				);
-			}
+	updateUser: adminProcedure.input(updateUserInputSchema).mutation(async ({ ctx, input }) => {
+		if (input.isActive === false && ctx.session?.user.id === input.id) {
+			throw new ValidationError("Impossible de désactiver votre propre compte");
+		}
 
-			const { id, ...patch } = input;
-			return adminUserService.updateUser(
-				id,
-				patch,
-				ctx.session?.user.id ?? "",
-			);
-		}),
+		const { id, ...patch } = input;
+		return adminUserService.updateUser(id, patch, ctx.session?.user.id ?? "");
+	}),
 
 	softResetUser: adminProcedure
 		.input(z.object({ id: z.string().min(1) }))
@@ -160,9 +155,7 @@ export const adminRouter = router({
 				templateId: z.string().min(1),
 			}),
 		)
-		.mutation(({ input }) =>
-			adminUnlockService.unlockForUser(input.userId, input.templateId),
-		),
+		.mutation(({ input }) => adminUnlockService.unlockForUser(input.userId, input.templateId)),
 
 	listDownloads: adminProcedure
 		.input(
@@ -247,12 +240,10 @@ export const adminRouter = router({
 		.input(z.object({ id: z.string().min(1) }))
 		.query(({ input }) => adminTemplateService.getTemplate(input.id)),
 
-	updateTemplateCatalog: adminProcedure
-		.input(updateTemplateCatalogSchema)
-		.mutation(({ input }) => {
-			const { id, ...patch } = input;
-			return adminTemplateService.updateCatalog(id, patch);
-		}),
+	updateTemplateCatalog: adminProcedure.input(updateTemplateCatalogSchema).mutation(({ input }) => {
+		const { id, ...patch } = input;
+		return adminTemplateService.updateCatalog(id, patch);
+	}),
 
 	listAiEvents: adminProcedure
 		.input(
@@ -266,18 +257,12 @@ export const adminRouter = router({
 		)
 		.query(({ input }) => adminAiService.listAiEvents(input)),
 
-	listAiFeaturePrices: adminProcedure.query(() =>
-		aiBillingService.listPrices(),
-	),
+	listAiFeaturePrices: adminProcedure.query(() => aiBillingService.listPrices()),
 
 	upsertAiFeaturePrice: adminProcedure
 		.input(
 			z.object({
-				feature: z.enum([
-					"REVIEW_CV",
-					"REWRITE_SECTION",
-					"COVER_LETTER",
-				]),
+				feature: z.enum(["REVIEW_CV", "REWRITE_SECTION", "COVER_LETTER"]),
 				costFree: z.number().int().min(1).max(100).nullable(),
 				costPaid: z.number().int().min(1).max(100).nullable(),
 			}),
@@ -292,9 +277,7 @@ export const adminRouter = router({
 				})
 				.optional(),
 		)
-		.query(({ input }) =>
-			adminCreditPackService.listPacks(input ?? undefined),
-		),
+		.query(({ input }) => adminCreditPackService.listPacks(input ?? undefined)),
 
 	createCreditPack: adminProcedure
 		.input(
@@ -317,18 +300,8 @@ export const adminRouter = router({
 				id: z.string().min(1),
 				name: z.string().trim().min(1).max(120).optional(),
 				description: z.string().trim().max(500).nullable().optional(),
-				priceCents: z
-					.number()
-					.int()
-					.min(0)
-					.max(100_000_000)
-					.optional(),
-				downloadCredits: z
-					.number()
-					.int()
-					.min(1)
-					.max(10_000)
-					.optional(),
+				priceCents: z.number().int().min(0).max(100_000_000).optional(),
+				downloadCredits: z.number().int().min(1).max(10_000).optional(),
 				freeDownloads: z.number().int().min(0).max(10_000).optional(),
 				sortOrder: z.number().int().min(0).max(10_000).optional(),
 				isActive: z.boolean().optional(),

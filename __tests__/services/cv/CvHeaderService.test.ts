@@ -103,9 +103,7 @@ describe("CvHeaderService.findByCvId", () => {
 		const template = await createTestTemplate();
 		const cv = await createCV(user.id, template.id);
 
-		await expect(cvHeaderService.findByCvId(cv.id)).rejects.toThrow(
-			NotFoundError,
-		);
+		await expect(cvHeaderService.findByCvId(cv.id)).rejects.toThrow(NotFoundError);
 	});
 });
 
@@ -154,9 +152,7 @@ describe("CvHeaderService.delete", () => {
 			nom: "Doe",
 		});
 		await cvHeaderService.delete(cv.id);
-		await expect(cvHeaderService.findByCvId(cv.id)).rejects.toThrow(
-			NotFoundError,
-		);
+		await expect(cvHeaderService.findByCvId(cv.id)).rejects.toThrow(NotFoundError);
 	});
 
 	// TEST 2 : header inexistant

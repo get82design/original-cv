@@ -2,10 +2,7 @@ import z from "zod";
 import { prisma } from "../../../lib/prisma";
 import { cvTagService } from "../../../src/services/cv/cvTagService";
 import { NotFoundError } from "../../../src/services/errors";
-import {
-	createTagSchema,
-	updateTagSchema,
-} from "../../../src/services/schemas/tag.schema";
+import { createTagSchema, updateTagSchema } from "../../../src/services/schemas/tag.schema";
 import { assertCvOwnership } from "../helpers/assertCvOwnership";
 import { protectedProcedure, router } from "../trpc";
 

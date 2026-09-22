@@ -55,10 +55,7 @@ export function AdminBillingPage() {
 	});
 
 	const [priceDrafts, setPriceDrafts] = useState<
-		Record<
-			BillableAiFeature,
-			{ costFree: number | null; costPaid: number | null }
-		>
+		Record<BillableAiFeature, { costFree: number | null; costPaid: number | null }>
 	>({
 		REVIEW_CV: { costFree: null, costPaid: null },
 		REWRITE_SECTION: { costFree: null, costPaid: null },
@@ -284,82 +281,74 @@ export function AdminBillingPage() {
 							</tr>
 						</thead>
 						<tbody>
-							{(
-								[
-									"REVIEW_CV",
-									"REWRITE_SECTION",
-									"COVER_LETTER",
-								] as BillableAiFeature[]
-							).map((feature) => {
-								const draft = priceDrafts[feature];
-								return (
-									<tr
-										key={feature}
-										className="border-b border-zinc-100 dark:border-zinc-800"
-									>
-										<td className="px-4 py-3 font-medium text-zinc-900 dark:text-zinc-100">
-											{FEATURE_LABELS[feature]}
-										</td>
-										<td className="px-4 py-3">
-											<InputNumber
-												value={draft.costFree}
-												onValueChange={(e) =>
-													setPriceDrafts((prev) => ({
-														...prev,
-														[feature]: {
-															...prev[feature],
-															costFree: e.value ?? null,
-														},
-													}))
-												}
-												min={1}
-												max={100}
-												showButtons={false}
-												placeholder="—"
-												className="w-24"
-											/>
-										</td>
-										<td className="px-4 py-3">
-											<InputNumber
-												value={draft.costPaid}
-												onValueChange={(e) =>
-													setPriceDrafts((prev) => ({
-														...prev,
-														[feature]: {
-															...prev[feature],
-															costPaid: e.value ?? null,
-														},
-													}))
-												}
-												min={1}
-												max={100}
-												showButtons={false}
-												placeholder="—"
-												className="w-24"
-											/>
-										</td>
-										<td className="px-4 py-3 text-right">
-											<Button
-												type="button"
-												label="Enregistrer"
-												size="small"
-												loading={
-													upsertPriceMutation.isPending &&
-													upsertPriceMutation.variables
-														?.feature === feature
-												}
-												onClick={() =>
-													upsertPriceMutation.mutate({
-														feature,
-														costFree: draft.costFree,
-														costPaid: draft.costPaid,
-													})
-												}
-											/>
-										</td>
-									</tr>
-								);
-							})}
+							{(["REVIEW_CV", "REWRITE_SECTION", "COVER_LETTER"] as BillableAiFeature[]).map(
+								(feature) => {
+									const draft = priceDrafts[feature];
+									return (
+										<tr key={feature} className="border-b border-zinc-100 dark:border-zinc-800">
+											<td className="px-4 py-3 font-medium text-zinc-900 dark:text-zinc-100">
+												{FEATURE_LABELS[feature]}
+											</td>
+											<td className="px-4 py-3">
+												<InputNumber
+													value={draft.costFree}
+													onValueChange={(e) =>
+														setPriceDrafts((prev) => ({
+															...prev,
+															[feature]: {
+																...prev[feature],
+																costFree: e.value ?? null,
+															},
+														}))
+													}
+													min={1}
+													max={100}
+													showButtons={false}
+													placeholder="—"
+													className="w-24"
+												/>
+											</td>
+											<td className="px-4 py-3">
+												<InputNumber
+													value={draft.costPaid}
+													onValueChange={(e) =>
+														setPriceDrafts((prev) => ({
+															...prev,
+															[feature]: {
+																...prev[feature],
+																costPaid: e.value ?? null,
+															},
+														}))
+													}
+													min={1}
+													max={100}
+													showButtons={false}
+													placeholder="—"
+													className="w-24"
+												/>
+											</td>
+											<td className="px-4 py-3 text-right">
+												<Button
+													type="button"
+													label="Enregistrer"
+													size="small"
+													loading={
+														upsertPriceMutation.isPending &&
+														upsertPriceMutation.variables?.feature === feature
+													}
+													onClick={() =>
+														upsertPriceMutation.mutate({
+															feature,
+															costFree: draft.costFree,
+															costPaid: draft.costPaid,
+														})
+													}
+												/>
+											</td>
+										</tr>
+									);
+								},
+							)}
 						</tbody>
 					</table>
 				</AppCard>
@@ -370,12 +359,7 @@ export function AdminBillingPage() {
 					<h3 className="m-0 text-sm font-semibold uppercase tracking-wide text-zinc-500">
 						Packs de crédits
 					</h3>
-					<Button
-						type="button"
-						label="Nouveau pack"
-						size="small"
-						onClick={openCreate}
-					/>
+					<Button type="button" label="Nouveau pack" size="small" onClick={openCreate} />
 				</div>
 				<p className="mb-3 m-0 text-xs text-zinc-500 dark:text-zinc-400">
 					Vitrine configurée — achat Stripe bientôt.
@@ -397,17 +381,12 @@ export function AdminBillingPage() {
 									<p className="m-0 text-sm font-semibold text-zinc-900 dark:text-zinc-100">
 										{pack.name}
 										{!pack.isActive ? (
-											<span className="ml-2 text-xs font-normal text-zinc-400">
-												(inactif)
-											</span>
+											<span className="ml-2 text-xs font-normal text-zinc-400">(inactif)</span>
 										) : null}
 									</p>
 									<p className="m-0 mt-0.5 text-xs text-zinc-500 dark:text-zinc-400">
-										{formatPrice(pack.priceCents)} ·{" "}
-										{pack.downloadCredits} cr. payants
-										{pack.freeDownloads > 0
-											? ` · ${pack.freeDownloads} free`
-											: ""}
+										{formatPrice(pack.priceCents)} · {pack.downloadCredits} cr. payants
+										{pack.freeDownloads > 0 ? ` · ${pack.freeDownloads} free` : ""}
 										{" · "}ord. {pack.sortOrder}
 									</p>
 									{pack.description ? (
@@ -498,9 +477,7 @@ export function AdminBillingPage() {
 						<Button
 							type="button"
 							label="Enregistrer"
-							loading={
-								createMutation.isPending || updateMutation.isPending
-							}
+							loading={createMutation.isPending || updateMutation.isPending}
 							onClick={savePack}
 							className="bg-primary hover:bg-primary-dark dark:bg-primary-dark dark:hover:bg-primary text-white dark:text-black font-semibold"
 						/>
@@ -510,15 +487,10 @@ export function AdminBillingPage() {
 				<div className="admin-filters flex flex-col gap-3">
 					<label className="flex flex-col gap-1 text-sm">
 						<span className="text-zinc-600 dark:text-zinc-400">Nom</span>
-						<InputText
-							value={draftName}
-							onChange={(e) => setDraftName(e.target.value)}
-						/>
+						<InputText value={draftName} onChange={(e) => setDraftName(e.target.value)} />
 					</label>
 					<label className="flex flex-col gap-1 text-sm">
-						<span className="text-zinc-600 dark:text-zinc-400">
-							Description
-						</span>
+						<span className="text-zinc-600 dark:text-zinc-400">Description</span>
 						<InputTextarea
 							value={draftDescription}
 							onChange={(e) => setDraftDescription(e.target.value)}
@@ -528,14 +500,10 @@ export function AdminBillingPage() {
 					</label>
 					<div className="grid grid-cols-2 gap-3">
 						<label className="flex flex-col gap-1 text-sm">
-							<span className="text-zinc-600 dark:text-zinc-400">
-								Prix (€)
-							</span>
+							<span className="text-zinc-600 dark:text-zinc-400">Prix (€)</span>
 							<InputNumber
 								value={draftPriceEuros}
-								onValueChange={(e) =>
-									setDraftPriceEuros(e.value ?? null)
-								}
+								onValueChange={(e) => setDraftPriceEuros(e.value ?? null)}
 								mode="currency"
 								currency="EUR"
 								locale="fr-FR"
@@ -543,47 +511,32 @@ export function AdminBillingPage() {
 							/>
 						</label>
 						<label className="flex flex-col gap-1 text-sm">
-							<span className="text-zinc-600 dark:text-zinc-400">
-								Ordre
-							</span>
+							<span className="text-zinc-600 dark:text-zinc-400">Ordre</span>
 							<InputNumber
 								value={draftSort}
-								onValueChange={(e) =>
-									setDraftSort(e.value ?? 0)
-								}
+								onValueChange={(e) => setDraftSort(e.value ?? 0)}
 								min={0}
 							/>
 						</label>
 						<label className="flex flex-col gap-1 text-sm">
-							<span className="text-zinc-600 dark:text-zinc-400">
-								Crédits payants
-							</span>
+							<span className="text-zinc-600 dark:text-zinc-400">Crédits payants</span>
 							<InputNumber
 								value={draftCredits}
-								onValueChange={(e) =>
-									setDraftCredits(e.value ?? null)
-								}
+								onValueChange={(e) => setDraftCredits(e.value ?? null)}
 								min={1}
 							/>
 						</label>
 						<label className="flex flex-col gap-1 text-sm">
-							<span className="text-zinc-600 dark:text-zinc-400">
-								Free DL (bonus)
-							</span>
+							<span className="text-zinc-600 dark:text-zinc-400">Free DL (bonus)</span>
 							<InputNumber
 								value={draftFree}
-								onValueChange={(e) =>
-									setDraftFree(e.value ?? 0)
-								}
+								onValueChange={(e) => setDraftFree(e.value ?? 0)}
 								min={0}
 							/>
 						</label>
 					</div>
 					<label className="flex items-center gap-2 text-sm">
-						<Checkbox
-							checked={draftActive}
-							onChange={(e) => setDraftActive(!!e.checked)}
-						/>
+						<Checkbox checked={draftActive} onChange={(e) => setDraftActive(!!e.checked)} />
 						<span>Actif (visible vitrine)</span>
 					</label>
 				</div>

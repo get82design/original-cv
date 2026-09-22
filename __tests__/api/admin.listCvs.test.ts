@@ -3,18 +3,15 @@ import { prismaTest } from "../../lib/prismaTest";
 import { createTestUser } from "../utils/create-test-user";
 import { createTestTemplate } from "../utils/create-test-template";
 import { createCV } from "../utils/create-test-cv-full-flow";
-import {
-	createTestCaller,
-	createTestSession,
-} from "./helpers/create-test-caller";
+import { createTestCaller, createTestSession } from "./helpers/create-test-caller";
 
 describe("admin.listCvs", () => {
 	it("rejects non-admin", async () => {
 		const user = await createTestUser();
 		const caller = await createTestCaller(createTestSession(user));
-		await expect(
-			caller.admin.listCvs({ period: "7d" }),
-		).rejects.toMatchObject({ code: "FORBIDDEN" });
+		await expect(caller.admin.listCvs({ period: "7d" })).rejects.toMatchObject({
+			code: "FORBIDDEN",
+		});
 	});
 
 	it("returns CV creations for ADMIN with template and color", async () => {
@@ -91,9 +88,7 @@ describe("admin.listCvs", () => {
 			period: "all",
 			templateId: templateA.id,
 		});
-		expect(byTemplate.items.every((i) => i.templateId === templateA.id)).toBe(
-			true,
-		);
+		expect(byTemplate.items.every((i) => i.templateId === templateA.id)).toBe(true);
 		expect(byTemplate.items.some((i) => i.id === cvA.id)).toBe(true);
 		expect(byTemplate.items.some((i) => i.id === cvB.id)).toBe(false);
 
@@ -101,9 +96,7 @@ describe("admin.listCvs", () => {
 			period: "all",
 			primaryColorName: "rose",
 		});
-		expect(
-			byColor.items.every((i) => i.primaryColorName === "rose"),
-		).toBe(true);
+		expect(byColor.items.every((i) => i.primaryColorName === "rose")).toBe(true);
 		expect(byColor.items.some((i) => i.id === cvB.id)).toBe(true);
 	});
 });
@@ -148,9 +141,9 @@ describe("admin.listTopTemplates", () => {
 	it("rejects non-admin", async () => {
 		const user = await createTestUser();
 		const caller = await createTestCaller(createTestSession(user));
-		await expect(
-			caller.admin.listTopTemplates({ period: "7d" }),
-		).rejects.toMatchObject({ code: "FORBIDDEN" });
+		await expect(caller.admin.listTopTemplates({ period: "7d" })).rejects.toMatchObject({
+			code: "FORBIDDEN",
+		});
 	});
 
 	it("ranks all templates with free/paid download splits", async () => {
@@ -219,10 +212,7 @@ describe("admin.listTopTemplates", () => {
 		expect(hot.downloadCount).toBe(3);
 		expect(hot.unlockCount).toBe(1);
 		// (1 unlock + cvCount + 3 DL) / 3
-		expect(hot.popularityScore).toBeCloseTo(
-			(1 + hot.cvCount + 3) / 3,
-			5,
-		);
+		expect(hot.popularityScore).toBeCloseTo((1 + hot.cvCount + 3) / 3, 5);
 
 		const byPop = await caller.admin.listTopTemplates({
 			period: "all",
@@ -234,12 +224,8 @@ describe("admin.listTopTemplates", () => {
 			period: "all",
 			sortBy: "paidDownloadCount",
 		});
-		const paidIdx = byPaid.findIndex(
-			(t) => t.templateId === templateCold.id,
-		);
-		const hotPaidIdx = byPaid.findIndex(
-			(t) => t.templateId === templateHot.id,
-		);
+		const paidIdx = byPaid.findIndex((t) => t.templateId === templateCold.id);
+		const hotPaidIdx = byPaid.findIndex((t) => t.templateId === templateHot.id);
 		expect(paidIdx).toBeGreaterThanOrEqual(0);
 		expect(hotPaidIdx).toBeGreaterThanOrEqual(0);
 		expect(byPaid[paidIdx]!.paidDownloadCount).toBe(1);
@@ -251,9 +237,9 @@ describe("admin.listTopColors", () => {
 	it("rejects non-admin", async () => {
 		const user = await createTestUser();
 		const caller = await createTestCaller(createTestSession(user));
-		await expect(
-			caller.admin.listTopColors({ period: "7d" }),
-		).rejects.toMatchObject({ code: "FORBIDDEN" });
+		await expect(caller.admin.listTopColors({ period: "7d" })).rejects.toMatchObject({
+			code: "FORBIDDEN",
+		});
 	});
 
 	it("ranks colors by popularity (cv + dl) / 2", async () => {
@@ -296,9 +282,7 @@ describe("admin.listTopColors", () => {
 		expect(teal).toBeTruthy();
 		expect(teal?.cvCount).toBeGreaterThanOrEqual(1);
 		expect(teal?.downloadCount).toBeGreaterThanOrEqual(1);
-		expect(teal?.popularityScore).toBe(
-			((teal?.cvCount ?? 0) + (teal?.downloadCount ?? 0)) / 2,
-		);
+		expect(teal?.popularityScore).toBe(((teal?.cvCount ?? 0) + (teal?.downloadCount ?? 0)) / 2);
 		expect(teal?.primary).toBe("-600");
 		expect(ranks[0]!.popularityScore).toBeGreaterThanOrEqual(
 			ranks[ranks.length - 1]!.popularityScore,

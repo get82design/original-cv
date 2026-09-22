@@ -67,7 +67,7 @@ import { adminRouter } from "./routers/admin.router";
 export const appRouter = router({
 	user: userRouter,
 	ai: aiRouter,
-	admin: adminRouter,	
+	admin: adminRouter,
 	profile: profileRouter,
 	cv: cvRouter,
 	color: colorRouter,

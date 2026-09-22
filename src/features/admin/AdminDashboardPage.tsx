@@ -27,20 +27,12 @@ function MetricValue({
 	suffix?: string | undefined;
 }) {
 	if (!ready) {
-		return (
-			<span className="text-2xl font-semibold text-zinc-400 dark:text-zinc-500">
-				—
-			</span>
-		);
+		return <span className="text-2xl font-semibold text-zinc-400 dark:text-zinc-500">—</span>;
 	}
 	return (
 		<span className="text-2xl font-semibold text-zinc-900 dark:text-white">
 			{value ?? 0}
-			{suffix ? (
-				<span className="ml-1 text-sm font-normal text-zinc-500">
-					{suffix}
-				</span>
-			) : null}
+			{suffix ? <span className="ml-1 text-sm font-normal text-zinc-500">{suffix}</span> : null}
 		</span>
 	);
 }
@@ -53,10 +45,7 @@ function formatDelta(delta: number): string {
 /** Comparaison de rang : précédent → actuel (index 0 = 1er). */
 type RankMove = "up" | "down" | "same";
 
-function rankMoveFromPrevious(
-	previousIndex: number,
-	currentIndex: number | undefined,
-): RankMove {
+function rankMoveFromPrevious(previousIndex: number, currentIndex: number | undefined): RankMove {
 	if (currentIndex === undefined) return "down";
 	if (currentIndex < previousIndex) return "up";
 	if (currentIndex > previousIndex) return "down";
@@ -109,13 +98,9 @@ function MetricCard({
 	return (
 		<AppCard className="flex min-h-[7.5rem] flex-col justify-between gap-2">
 			<div>
-				<p className="m-0 text-sm font-semibold text-zinc-800 dark:text-zinc-100">
-					{title}
-				</p>
+				<p className="m-0 text-sm font-semibold text-zinc-800 dark:text-zinc-100">{title}</p>
 				{hint ? (
-					<p className="m-0 mt-0.5 text-xs text-zinc-500 dark:text-zinc-400">
-						{hint}
-					</p>
+					<p className="m-0 mt-0.5 text-xs text-zinc-500 dark:text-zinc-400">{hint}</p>
 				) : null}
 			</div>
 			<div className="flex items-end justify-between gap-2">
@@ -127,9 +112,7 @@ function MetricCard({
 				) : periodTag || delta != null ? (
 					<span className="flex shrink-0 items-baseline gap-1.5 text-xs text-zinc-500 dark:text-zinc-400">
 						{delta != null ? (
-							<span className={`font-medium tabular-nums ${deltaClass}`}>
-								{formatDelta(delta)}
-							</span>
+							<span className={`font-medium tabular-nums ${deltaClass}`}>{formatDelta(delta)}</span>
 						) : null}
 						{periodTag ? <span>{periodTag}</span> : null}
 					</span>
@@ -191,9 +174,7 @@ export function AdminDashboardPage() {
 					classNameSize="text-3xl sm:text-4xl"
 				/>
 				<div className="flex flex-col items-start gap-1 sm:items-end">
-					<span className="text-xs text-zinc-500 dark:text-zinc-400">
-						Période
-					</span>
+					<span className="text-xs text-zinc-500 dark:text-zinc-400">Période</span>
 					<SelectButton
 						value={period}
 						onChange={(e) => {
@@ -273,9 +254,7 @@ export function AdminDashboardPage() {
 									</p>
 								</div>
 								{!(data?.downloads.ready ?? false) ? (
-									<span className="text-2xl font-semibold text-zinc-400 dark:text-zinc-500">
-										—
-									</span>
+									<span className="text-2xl font-semibold text-zinc-400 dark:text-zinc-500">—</span>
 								) : (
 									<>
 										<span className="text-2xl font-semibold text-zinc-900 dark:text-white">
@@ -284,13 +263,11 @@ export function AdminDashboardPage() {
 										</span>
 										<p className="m-0 text-xs leading-relaxed text-zinc-500 dark:text-zinc-400">
 											<span className="font-semibold text-sky-600 dark:text-sky-400">
-												{data?.downloads.withLogoAllTime ?? 0}{" "}
-												gratuits
+												{data?.downloads.withLogoAllTime ?? 0} gratuits
 											</span>
 											{" · "}
 											<span className="font-semibold text-emerald-600 dark:text-emerald-400">
-												{data?.downloads.withoutLogoAllTime ?? 0}{" "}
-												payants
+												{data?.downloads.withoutLogoAllTime ?? 0} payants
 											</span>
 										</p>
 									</>
@@ -403,86 +380,76 @@ export function AdminDashboardPage() {
 				{/* Colonne droite : tops + IA */}
 				<div className="flex flex-col gap-5">
 					<div className="flex flex-col gap-3">
-					<AppCard className="flex min-h-[7.5rem] flex-col gap-2">
-						<div className="flex items-start justify-between gap-2">
-							<div>
-								<p className="m-0 text-sm font-semibold text-zinc-800 dark:text-zinc-100">
-									Top modèles
-								</p>
-								<p className="m-0 text-xs text-zinc-500 dark:text-zinc-400">
-									Popularité = moyenne (achats + CV + DL)
-								</p>
-							</div>
-							<Link
-								href="/admin/cvs?view=templates"
-								className="shrink-0 text-xs font-medium text-primary hover:underline dark:text-primary-dark"
-							>
-								Tout →
-							</Link>
-						</div>
-						{!(data?.cvs.ready ?? false) ? (
-							<p className="m-0 text-sm text-zinc-400">—</p>
-						) : (data?.cvs.topTemplates.length ?? 0) === 0 &&
-						  (data?.cvs.previousTopTemplates?.length ?? 0) === 0 ? (
-							<p className="m-0 text-sm text-zinc-500 dark:text-zinc-400">
-								Aucune activité sur cette période.
-							</p>
-						) : (
-							<div className="grid gap-4 sm:grid-cols-2">
+						<AppCard className="flex min-h-[7.5rem] flex-col gap-2">
+							<div className="flex items-start justify-between gap-2">
 								<div>
-									<p className="mb-1.5 m-0 text-[10px] font-semibold uppercase tracking-wide text-zinc-400">
-										{periodLabel}
+									<p className="m-0 text-sm font-semibold text-zinc-800 dark:text-zinc-100">
+										Top modèles
 									</p>
-									{(data?.cvs.topTemplates.length ?? 0) === 0 ? (
-										<p className="m-0 text-sm text-zinc-500 dark:text-zinc-400">
-											Aucune activité.
-										</p>
-									) : (
-										<ol className="m-0 flex list-decimal flex-col gap-1.5 pl-4 text-sm text-zinc-700 dark:text-zinc-300">
-											{data?.cvs.topTemplates.map((t) => (
-												<li key={t.templateId}>
-													<span className="font-medium text-zinc-900 dark:text-zinc-100">
-														{t.name}
-													</span>
-													<span className="text-zinc-500 dark:text-zinc-400">
-														{" "}
-														· {t.popularityScore.toFixed(1)}{" "}
-														pop · {t.unlockCount} achat
-														{t.unlockCount > 1 ? "s" : ""} ·{" "}
-														{t.cvCount} CV ·{" "}
-														{t.downloadCount} DL
-													</span>
-												</li>
-											))}
-										</ol>
-									)}
+									<p className="m-0 text-xs text-zinc-500 dark:text-zinc-400">
+										Popularité = moyenne (achats + CV + DL)
+									</p>
 								</div>
-								{data?.cvs.previousTopTemplates != null ? (
+								<Link
+									href="/admin/cvs?view=templates"
+									className="shrink-0 text-xs font-medium text-primary hover:underline dark:text-primary-dark"
+								>
+									Tout →
+								</Link>
+							</div>
+							{!(data?.cvs.ready ?? false) ? (
+								<p className="m-0 text-sm text-zinc-400">—</p>
+							) : (data?.cvs.topTemplates.length ?? 0) === 0 &&
+								(data?.cvs.previousTopTemplates?.length ?? 0) === 0 ? (
+								<p className="m-0 text-sm text-zinc-500 dark:text-zinc-400">
+									Aucune activité sur cette période.
+								</p>
+							) : (
+								<div className="grid gap-4 sm:grid-cols-2">
 									<div>
 										<p className="mb-1.5 m-0 text-[10px] font-semibold uppercase tracking-wide text-zinc-400">
-											Période préc.
+											{periodLabel}
 										</p>
-										{data.cvs.previousTopTemplates.length === 0 ? (
-											<p className="m-0 text-xs text-zinc-500 dark:text-zinc-400">
+										{(data?.cvs.topTemplates.length ?? 0) === 0 ? (
+											<p className="m-0 text-sm text-zinc-500 dark:text-zinc-400">
 												Aucune activité.
 											</p>
 										) : (
-											<ol className="m-0 flex list-decimal flex-col gap-1 pl-4 text-xs">
-												{data.cvs.previousTopTemplates.map(
-													(t, prevIndex) => {
-														const currentIndex =
-															data.cvs.topTemplates.findIndex(
-																(c) =>
-																	c.templateId ===
-																	t.templateId,
-															);
-														const move =
-															rankMoveFromPrevious(
-																prevIndex,
-																currentIndex >= 0
-																	? currentIndex
-																	: undefined,
-															);
+											<ol className="m-0 flex list-decimal flex-col gap-1.5 pl-4 text-sm text-zinc-700 dark:text-zinc-300">
+												{data?.cvs.topTemplates.map((t) => (
+													<li key={t.templateId}>
+														<span className="font-medium text-zinc-900 dark:text-zinc-100">
+															{t.name}
+														</span>
+														<span className="text-zinc-500 dark:text-zinc-400">
+															{" "}
+															· {t.popularityScore.toFixed(1)} pop · {t.unlockCount} achat
+															{t.unlockCount > 1 ? "s" : ""} · {t.cvCount} CV · {t.downloadCount} DL
+														</span>
+													</li>
+												))}
+											</ol>
+										)}
+									</div>
+									{data?.cvs.previousTopTemplates != null ? (
+										<div>
+											<p className="mb-1.5 m-0 text-[10px] font-semibold uppercase tracking-wide text-zinc-400">
+												Période préc.
+											</p>
+											{data.cvs.previousTopTemplates.length === 0 ? (
+												<p className="m-0 text-xs text-zinc-500 dark:text-zinc-400">
+													Aucune activité.
+												</p>
+											) : (
+												<ol className="m-0 flex list-decimal flex-col gap-1 pl-4 text-xs">
+													{data.cvs.previousTopTemplates.map((t, prevIndex) => {
+														const currentIndex = data.cvs.topTemplates.findIndex(
+															(c) => c.templateId === t.templateId,
+														);
+														const move = rankMoveFromPrevious(
+															prevIndex,
+															currentIndex >= 0 ? currentIndex : undefined,
+														);
 														return (
 															<li
 																key={t.templateId}
@@ -491,101 +458,90 @@ export function AdminDashboardPage() {
 																{t.name}
 															</li>
 														);
-													},
-												)}
-											</ol>
-										)}
-									</div>
-								) : null}
-							</div>
-						)}
-					</AppCard>
-					<AppCard className="flex min-h-[7.5rem] flex-col gap-2">
-						<div className="flex items-start justify-between gap-2">
-							<div>
-								<p className="m-0 text-sm font-semibold text-zinc-800 dark:text-zinc-100">
-									Top couleurs
-								</p>
-								<p className="m-0 text-xs text-zinc-500 dark:text-zinc-400">
-									Popularité = moyenne (CV + DL)
-								</p>
-							</div>
-							<Link
-								href="/admin/cvs?view=colors"
-								className="shrink-0 text-xs font-medium text-primary hover:underline dark:text-primary-dark"
-							>
-								Tout →
-							</Link>
-						</div>
-						{!(data?.cvs.ready ?? false) ? (
-							<p className="m-0 text-sm text-zinc-400">—</p>
-						) : (data?.cvs.topColors.length ?? 0) === 0 &&
-						  (data?.cvs.previousTopColors?.length ?? 0) === 0 ? (
-							<p className="m-0 text-sm text-zinc-500 dark:text-zinc-400">
-								Aucune couleur renseignée sur cette période.
-							</p>
-						) : (
-							<div className="grid gap-4 sm:grid-cols-2">
-								<div>
-									<p className="mb-1.5 m-0 text-[10px] font-semibold uppercase tracking-wide text-zinc-400">
-										{periodLabel}
-									</p>
-									{(data?.cvs.topColors.length ?? 0) === 0 ? (
-										<p className="m-0 text-sm text-zinc-500 dark:text-zinc-400">
-											Aucune couleur.
-										</p>
-									) : (
-										<ol className="m-0 flex list-decimal flex-col gap-1.5 pl-4 text-sm text-zinc-700 dark:text-zinc-300">
-											{data?.cvs.topColors.map((c) => (
-												<li
-													key={c.name}
-													className="flex items-center gap-2"
-												>
-													<span
-														className="inline-block h-3 w-3 shrink-0 rounded-full border border-zinc-200 dark:border-zinc-600"
-														style={{
-															backgroundColor: `var(--${c.name}${c.primary ?? "-600"})`,
-														}}
-														title={`${c.name}${c.primary ?? ""}`}
-													/>
-													<span className="font-medium text-zinc-900 dark:text-zinc-100">
-														{c.name}
-													</span>
-													<span className="text-zinc-500 dark:text-zinc-400">
-														· {c.popularityScore.toFixed(1)} ·{" "}
-														{c.cvCount} CV ·{" "}
-														{c.downloadCount} DL
-													</span>
-												</li>
-											))}
-										</ol>
-									)}
+													})}
+												</ol>
+											)}
+										</div>
+									) : null}
 								</div>
-								{data?.cvs.previousTopColors != null ? (
+							)}
+						</AppCard>
+						<AppCard className="flex min-h-[7.5rem] flex-col gap-2">
+							<div className="flex items-start justify-between gap-2">
+								<div>
+									<p className="m-0 text-sm font-semibold text-zinc-800 dark:text-zinc-100">
+										Top couleurs
+									</p>
+									<p className="m-0 text-xs text-zinc-500 dark:text-zinc-400">
+										Popularité = moyenne (CV + DL)
+									</p>
+								</div>
+								<Link
+									href="/admin/cvs?view=colors"
+									className="shrink-0 text-xs font-medium text-primary hover:underline dark:text-primary-dark"
+								>
+									Tout →
+								</Link>
+							</div>
+							{!(data?.cvs.ready ?? false) ? (
+								<p className="m-0 text-sm text-zinc-400">—</p>
+							) : (data?.cvs.topColors.length ?? 0) === 0 &&
+								(data?.cvs.previousTopColors?.length ?? 0) === 0 ? (
+								<p className="m-0 text-sm text-zinc-500 dark:text-zinc-400">
+									Aucune couleur renseignée sur cette période.
+								</p>
+							) : (
+								<div className="grid gap-4 sm:grid-cols-2">
 									<div>
 										<p className="mb-1.5 m-0 text-[10px] font-semibold uppercase tracking-wide text-zinc-400">
-											Période préc.
+											{periodLabel}
 										</p>
-										{data.cvs.previousTopColors.length === 0 ? (
-											<p className="m-0 text-xs text-zinc-500 dark:text-zinc-400">
+										{(data?.cvs.topColors.length ?? 0) === 0 ? (
+											<p className="m-0 text-sm text-zinc-500 dark:text-zinc-400">
 												Aucune couleur.
 											</p>
 										) : (
-											<ol className="m-0 flex list-decimal flex-col gap-1 pl-4 text-xs">
-												{data.cvs.previousTopColors.map(
-													(c, prevIndex) => {
-														const currentIndex =
-															data.cvs.topColors.findIndex(
-																(cur) =>
-																	cur.name === c.name,
-															);
-														const move =
-															rankMoveFromPrevious(
-																prevIndex,
-																currentIndex >= 0
-																	? currentIndex
-																	: undefined,
-															);
+											<ol className="m-0 flex list-decimal flex-col gap-1.5 pl-4 text-sm text-zinc-700 dark:text-zinc-300">
+												{data?.cvs.topColors.map((c) => (
+													<li key={c.name} className="flex items-center gap-2">
+														<span
+															className="inline-block h-3 w-3 shrink-0 rounded-full border border-zinc-200 dark:border-zinc-600"
+															style={{
+																backgroundColor: `var(--${c.name}${c.primary ?? "-600"})`,
+															}}
+															title={`${c.name}${c.primary ?? ""}`}
+														/>
+														<span className="font-medium text-zinc-900 dark:text-zinc-100">
+															{c.name}
+														</span>
+														<span className="text-zinc-500 dark:text-zinc-400">
+															· {c.popularityScore.toFixed(1)} · {c.cvCount} CV · {c.downloadCount}{" "}
+															DL
+														</span>
+													</li>
+												))}
+											</ol>
+										)}
+									</div>
+									{data?.cvs.previousTopColors != null ? (
+										<div>
+											<p className="mb-1.5 m-0 text-[10px] font-semibold uppercase tracking-wide text-zinc-400">
+												Période préc.
+											</p>
+											{data.cvs.previousTopColors.length === 0 ? (
+												<p className="m-0 text-xs text-zinc-500 dark:text-zinc-400">
+													Aucune couleur.
+												</p>
+											) : (
+												<ol className="m-0 flex list-decimal flex-col gap-1 pl-4 text-xs">
+													{data.cvs.previousTopColors.map((c, prevIndex) => {
+														const currentIndex = data.cvs.topColors.findIndex(
+															(cur) => cur.name === c.name,
+														);
+														const move = rankMoveFromPrevious(
+															prevIndex,
+															currentIndex >= 0 ? currentIndex : undefined,
+														);
 														const stayColor =
 															move === "same"
 																? {
@@ -596,11 +552,7 @@ export function AdminDashboardPage() {
 															<li
 																key={c.name}
 																className={`flex items-center gap-1.5 font-medium ${
-																	move === "same"
-																		? ""
-																		: previousRankClass(
-																				move,
-																			)
+																	move === "same" ? "" : previousRankClass(move)
 																}`}
 																style={stayColor}
 															>
@@ -614,15 +566,14 @@ export function AdminDashboardPage() {
 																{c.name}
 															</li>
 														);
-													},
-												)}
-											</ol>
-										)}
-									</div>
-								) : null}
-							</div>
-						)}
-					</AppCard>
+													})}
+												</ol>
+											)}
+										</div>
+									) : null}
+								</div>
+							)}
+						</AppCard>
 					</div>
 
 					<section>
@@ -757,8 +708,7 @@ export function AdminDashboardPage() {
 				</div>
 				<AppCard>
 					<p className="m-0 text-sm text-zinc-600 dark:text-zinc-400">
-						Qui a réglé / remis à zéro les crédits ou free DL de
-						qui (fiche user).
+						Qui a réglé / remis à zéro les crédits ou free DL de qui (fiche user).
 					</p>
 				</AppCard>
 			</section>
@@ -771,9 +721,7 @@ export function AdminDashboardPage() {
 				<AppCard>
 					<p className="m-0 text-sm text-zinc-600 dark:text-zinc-400">
 						Visite → compte → CV → download → achat —{" "}
-						{data?.funnel.ready
-							? "données à venir"
-							: "placeholder (GA + events produit)."}
+						{data?.funnel.ready ? "données à venir" : "placeholder (GA + events produit)."}
 					</p>
 				</AppCard>
 			</section>

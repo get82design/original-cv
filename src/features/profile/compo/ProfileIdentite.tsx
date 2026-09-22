@@ -18,33 +18,15 @@ export const ProfileIdentite = ({ cvs }: { cvs: CV[] }) => {
 	const watchPrenom = watch("lastName");
 	const [visibleMaj, setVisibleMaj] = useState(false);
 	const [idCv, setIdCv] = useState<string | null>(null);
-	const { data: cvSelected } = trpc.cv.byId.useQuery(
-		{ id: idCv ?? "" },
-		{ enabled: !!idCv },
-	);
+	const { data: cvSelected } = trpc.cv.byId.useQuery({ id: idCv ?? "" }, { enabled: !!idCv });
 
 	useEffect(() => {
 		if (cvSelected) {
-			setValue(
-				"firstName",
-				cvSelected?.headerCv?.prenom ?? "",
-			);
-			setValue(
-				"lastName",
-				cvSelected?.headerCv?.nom ?? "",
-			);
-			setValue(
-				"email",
-				cvSelected?.headerCv?.email ?? "",
-			);
-			setValue(
-				"phone",
-				cvSelected?.headerCv?.phone ?? "",
-			);
-			setValue(
-				"location",
-				cvSelected?.headerCv?.location ?? "",
-			);
+			setValue("firstName", cvSelected?.headerCv?.prenom ?? "");
+			setValue("lastName", cvSelected?.headerCv?.nom ?? "");
+			setValue("email", cvSelected?.headerCv?.email ?? "");
+			setValue("phone", cvSelected?.headerCv?.phone ?? "");
+			setValue("location", cvSelected?.headerCv?.location ?? "");
 		}
 	}, [cvSelected, setValue]);
 
@@ -61,8 +43,8 @@ export const ProfileIdentite = ({ cvs }: { cvs: CV[] }) => {
 			icon: "pi pi-refresh",
 			disabled: cvs.length === 0 && true,
 			command: () => {
-				setVisibleMaj(true)
-			}
+				setVisibleMaj(true);
+			},
 		},
 		{
 			label: "Plus de données",
@@ -75,15 +57,17 @@ export const ProfileIdentite = ({ cvs }: { cvs: CV[] }) => {
 
 	return (
 		<div>
-			{visibleMaj && <DialogSelectCv visible={visibleMaj} onHide={() => setVisibleMaj(false)} setIdCv={setIdCv} cvs={cvs} />}
+			{visibleMaj && (
+				<DialogSelectCv
+					visible={visibleMaj}
+					onHide={() => setVisibleMaj(false)}
+					setIdCv={setIdCv}
+					cvs={cvs}
+				/>
+			)}
 			<AppCard className="flex justify-between gap-4 relative group">
 				<div className="opacity-30 absolute top-2 left-3">
-					<TitleAppTwo
-						firstPart={"Votre"}
-						secondPart={"Profil"}
-						size={"text-2xl"}
-						withSpace
-					/>
+					<TitleAppTwo firstPart={"Votre"} secondPart={"Profil"} size={"text-2xl"} withSpace />
 				</div>
 				<div className="w-2/5 px-8 pt-8 pb-4 flex justify-center rounded-md">
 					<div
@@ -91,9 +75,7 @@ export const ProfileIdentite = ({ cvs }: { cvs: CV[] }) => {
 							width: "130px",
 							height: "130px",
 							backgroundImage: `url(${
-								watchPhoto && watchPhoto !== ""
-									? watchPhoto
-									: "/assets/img/User-avatar.svg.png"
+								watchPhoto && watchPhoto !== "" ? watchPhoto : "/assets/img/User-avatar.svg.png"
 							})`,
 							backgroundPosition: "center",
 							backgroundSize: "cover",

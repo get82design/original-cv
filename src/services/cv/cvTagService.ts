@@ -108,10 +108,7 @@ export class CvTagService {
 			});
 
 			if (duplicate) {
-				throw new ConflictError(
-					"CV_TAG_ALREADY_EXISTS",
-					"This tag already exists in this group.",
-				);
+				throw new ConflictError("CV_TAG_ALREADY_EXISTS", "This tag already exists in this group.");
 			}
 		}
 
@@ -130,10 +127,7 @@ export class CvTagService {
 
 	async move(id: string, newOrder: number) {
 		if (newOrder < 1) {
-			throw new ValidationError(
-				"INVALID_ORDER",
-				"Order must be greater than 0.",
-			);
+			throw new ValidationError("INVALID_ORDER", "Order must be greater than 0.");
 		}
 
 		const tag = await prisma.cvTag.findUnique({

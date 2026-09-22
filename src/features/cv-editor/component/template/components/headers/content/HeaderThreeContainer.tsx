@@ -44,9 +44,7 @@ export const HeaderThreeContainer = ({
 					/>
 				</div>
 			)}
-			<div
-				className={`w-4/5 flex flex-col gap-3 px-4 ${chrome.textAlignClass}`}
-			>
+			<div className={`w-4/5 flex flex-col gap-3 px-4 ${chrome.textAlignClass}`}>
 				<div className={`w-full flex flex-col gap-1 ${chrome.textAlignClass}`}>
 					{nomCompo}
 					{prenomCompo}

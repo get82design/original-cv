@@ -1,7 +1,4 @@
-import type {
-	PassionInput,
-	ProfileSaveInput,
-} from "@/services/schemas/profileSave.schema";
+import type { PassionInput, ProfileSaveInput } from "@/services/schemas/profileSave.schema";
 import type { CvFull } from "@utils/trpc.types";
 import type { ListItem } from "@utils/type";
 import { Button } from "primereact/button";
@@ -50,16 +47,12 @@ export function DialogSelectPassion({
 		if (!visible) return;
 		setTarget(listPassionInProfile);
 		const already = new Set(
-			listPassionInProfile.map(
-				(e) => `${e.content.title}|${e.content.icon ?? ""}`,
-			),
+			listPassionInProfile.map((e) => `${e.content.title}|${e.content.icon ?? ""}`),
 		);
 		setSource(
 			listPassionFromCv
 				.map((exp) => cvPassionToProfile(exp))
-				.filter(
-					(e) => !already.has(`${e.content.title}|${e.content.icon ?? ""}`),
-				),
+				.filter((e) => !already.has(`${e.content.title}|${e.content.icon ?? ""}`)),
 		);
 	}, [visible, listPassionFromCv]);
 

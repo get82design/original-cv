@@ -2,10 +2,7 @@ import { prisma } from "../../../lib/prisma";
 import { reorderItems } from "../../utils/reorderCvItems";
 import { ConflictError, NotFoundError } from "../errors";
 import { compactOrder } from "../../utils/compactOrder";
-import type {
-	CreatePrizeInput,
-	UpdatePrizeInput,
-} from "../schemas/prize.schema";
+import type { CreatePrizeInput, UpdatePrizeInput } from "../schemas/prize.schema";
 
 export class ProfilePrizeService {
 	async create(profileId: string, data: CreatePrizeInput) {

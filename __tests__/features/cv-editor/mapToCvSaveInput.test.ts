@@ -1,18 +1,11 @@
 import { describe, expect, it } from "vitest";
-import {
-	CVModuleType,
-	CvTimelineStatus,
-	Level,
-} from "../../../generated/prisma/client";
+import { CVModuleType, CvTimelineStatus, Level } from "../../../generated/prisma/client";
 import {
 	mapCvToSaveInput,
 	mapFormToSaveInput,
 	type CvFull,
 } from "../../../src/features/cv-editor/mapCvToSaveInput";
-import {
-	cvSaveSchema,
-	type CvFormValues,
-} from "../../../src/services/schemas/cvSave.schema";
+import { cvSaveSchema, type CvFormValues } from "../../../src/services/schemas/cvSave.schema";
 
 const now = new Date("2024-01-01T00:00:00.000Z");
 const start = new Date("2020-01-01T00:00:00.000Z");
@@ -346,26 +339,15 @@ describe("mapCvToSaveInput", () => {
 			}),
 		);
 
-		expect(input.datas.experience?.content.map((x) => x.id)).toEqual([
-			"e1",
-			"e2",
+		expect(input.datas.experience?.content.map((x) => x.id)).toEqual(["e1", "e2"]);
+		expect(input.datas.experience?.content[1]?.content.missions.map((m) => m.id)).toEqual([
+			"em1",
+			"em2",
 		]);
-		expect(
-			input.datas.experience?.content[1]?.content.missions.map((m) => m.id),
-		).toEqual(["em1", "em2"]);
-		expect(input.datas.project?.content.map((x) => x.id)).toEqual([
-			"pr1",
-			"pr2",
-		]);
-		expect(input.datas.volunteering?.content[0]?.content.missions[0]?.id).toBe(
-			"vm1",
-		);
-		expect(input.datas.volunteering?.content[1]?.content.missions[0]?.id).toBe(
-			"vm1",
-		);
-		expect(input.datas.volunteering?.content[1]?.content.missions[1]?.id).toBe(
-			"vm2",
-		);
+		expect(input.datas.project?.content.map((x) => x.id)).toEqual(["pr1", "pr2"]);
+		expect(input.datas.volunteering?.content[0]?.content.missions[0]?.id).toBe("vm1");
+		expect(input.datas.volunteering?.content[1]?.content.missions[0]?.id).toBe("vm1");
+		expect(input.datas.volunteering?.content[1]?.content.missions[1]?.id).toBe("vm2");
 		expect(cvSaveSchema.safeParse(input).success).toBe(true);
 	});
 
@@ -741,25 +723,22 @@ describe("mapCvToSaveInput", () => {
 			}),
 		);
 
-		expect(
-			input.datas.certification?.content[0]?.content.organismeCertification,
-		).toBe("");
+		expect(input.datas.certification?.content[0]?.content.organismeCertification).toBe("");
 		expect(input.datas.prize?.content[0]?.content.domaine).toBe("");
 		expect(input.datas.education?.content[0]?.content.title).toBe("");
 		expect(input.datas.strength?.content[0]?.content.icon).toBeUndefined();
-		expect(
-			input.datas.skillGroup?.content[0]?.content.skills[0]?.content,
-		).toEqual({
+		expect(input.datas.skillGroup?.content[0]?.content.skills[0]?.content).toEqual({
 			name: "TS",
 			skillId: "skill-0",
 			level: Level.Senior,
 		});
-		expect(
-			input.datas.competenceGroup?.content[0]?.content.competences[0]?.content,
-		).toEqual({ competenceId: "comp-0", name: 'Com' });
+		expect(input.datas.competenceGroup?.content[0]?.content.competences[0]?.content).toEqual({
+			competenceId: "comp-0",
+			name: "Com",
+		});
 		expect(input.datas.tagGroup?.content[0]?.content.tags[0]?.content).toEqual({
 			tagId: "tag-0",
-			name: 'Com',
+			name: "Com",
 		});
 		expect(input.modules.map((m) => m.id)).toEqual(["m1", "m2"]);
 		expect(input.modules[0]).toMatchObject({
@@ -775,9 +754,7 @@ describe("mapCvToSaveInput", () => {
 
 describe("mapFormToSaveInput", () => {
 	it("maps a minimal form and drops guest cvId", () => {
-		const input = mapFormToSaveInput(
-			baseForm({ cvId: "0", title: "   " }),
-		);
+		const input = mapFormToSaveInput(baseForm({ cvId: "0", title: "   " }));
 
 		expect(input.cvId).toBeUndefined();
 		expect(input.title).toBe("Mon CV");
@@ -956,9 +933,7 @@ describe("mapFormToSaveInput", () => {
 									title: "App",
 									start: "2019-01-01T00:00:00.000Z",
 									end: null,
-									missions: [
-										{ clientKey: "pm", content: { content: "Code" } },
-									],
+									missions: [{ clientKey: "pm", content: { content: "Code" } }],
 								},
 							},
 						],
@@ -1074,37 +1049,19 @@ describe("mapFormToSaveInput", () => {
 		expect(input.datas.experience?.content[0]?.content.end).toEqual(
 			new Date("2021-06-01T00:00:00.000Z"),
 		);
-		expect(
-			input.datas.experience?.content[0]?.content.missions.map(
-				(m) => m.clientKey,
-			),
-		).toEqual(["m-ok"]);
-		expect(input.datas.experience?.content[1]?.content.company).toBe(
-			"Entreprise",
-		);
+		expect(input.datas.experience?.content[0]?.content.missions.map((m) => m.clientKey)).toEqual([
+			"m-ok",
+		]);
+		expect(input.datas.experience?.content[1]?.content.company).toBe("Entreprise");
 		expect(input.datas.experience?.content[1]?.content.start).toBe(startDate);
 		expect(input.datas.experience?.content[1]?.content.end).toBeNull();
 
-		expect(input.datas.project?.content.map((i) => i.clientKey)).toEqual([
-			"p-ok",
-		]);
-		expect(input.datas.volunteering?.content.map((i) => i.clientKey)).toEqual([
-			"v-org",
-			"v-title",
-		]);
-		expect(input.datas.volunteering?.content[0]?.content.title).toBe(
-			"Intitulé",
-		);
-		expect(input.datas.volunteering?.content[1]?.content.organisation).toBe(
-			"Organisation",
-		);
-		expect(input.datas.education?.content.map((i) => i.clientKey)).toEqual([
-			"ed-ok",
-		]);
-		expect(input.datas.formation?.content.map((i) => i.clientKey)).toEqual([
-			"f-ok",
-			"f-open",
-		]);
+		expect(input.datas.project?.content.map((i) => i.clientKey)).toEqual(["p-ok"]);
+		expect(input.datas.volunteering?.content.map((i) => i.clientKey)).toEqual(["v-org", "v-title"]);
+		expect(input.datas.volunteering?.content[0]?.content.title).toBe("Intitulé");
+		expect(input.datas.volunteering?.content[1]?.content.organisation).toBe("Organisation");
+		expect(input.datas.education?.content.map((i) => i.clientKey)).toEqual(["ed-ok"]);
+		expect(input.datas.formation?.content.map((i) => i.clientKey)).toEqual(["f-ok", "f-open"]);
 		expect(input.datas.formation?.content[0]?.content.end).toEqual(
 			new Date("2022-01-01T00:00:00.000Z"),
 		);
@@ -1221,29 +1178,17 @@ describe("mapFormToSaveInput", () => {
 			}),
 		);
 
-		expect(input.datas.certification?.content.map((i) => i.clientKey)).toEqual([
-			"c-ok",
-		]);
-		expect(input.datas.achievement?.content.map((i) => i.clientKey)).toEqual([
-			"a-ok",
-		]);
-		expect(input.datas.expertise?.content.map((i) => i.clientKey)).toEqual([
-			"x-ok",
-		]);
-		expect(input.datas.language?.content.map((i) => i.clientKey)).toEqual([
-			"l-ok",
-		]);
-		expect(input.datas.passion?.content[0]?.content.icon).toBe(
-			"BsBalloonHeartFill",
-		);
+		expect(input.datas.certification?.content.map((i) => i.clientKey)).toEqual(["c-ok"]);
+		expect(input.datas.achievement?.content.map((i) => i.clientKey)).toEqual(["a-ok"]);
+		expect(input.datas.expertise?.content.map((i) => i.clientKey)).toEqual(["x-ok"]);
+		expect(input.datas.language?.content.map((i) => i.clientKey)).toEqual(["l-ok"]);
+		expect(input.datas.passion?.content[0]?.content.icon).toBe("BsBalloonHeartFill");
 		expect(input.datas.prize?.content[0]?.content.domaine).toBe("");
 		expect(input.datas.socialMedia?.content[0]?.content).toMatchObject({
 			username: "Utilisateur",
 			icon: "",
 		});
-		expect(input.datas.strength?.content.map((i) => i.clientKey)).toEqual([
-			"st-ok",
-		]);
+		expect(input.datas.strength?.content.map((i) => i.clientKey)).toEqual(["st-ok"]);
 		expect(cvSaveSchema.safeParse(input).success).toBe(true);
 	});
 
@@ -1339,21 +1284,18 @@ describe("mapFormToSaveInput", () => {
 			}),
 		);
 
-		expect(input.datas.skillGroup?.content.map((g) => g.clientKey)).toEqual([
-			"sg-ok",
+		expect(input.datas.skillGroup?.content.map((g) => g.clientKey)).toEqual(["sg-ok"]);
+		expect(input.datas.skillGroup?.content[0]?.content.skills.map((s) => s.clientKey)).toEqual([
+			"s-name",
+			"s-id",
 		]);
 		expect(
-			input.datas.skillGroup?.content[0]?.content.skills.map((s) => s.clientKey),
-		).toEqual(["s-name", "s-id"]);
-		expect(
-			input.datas.competenceGroup?.content[0]?.content.competences.map(
-				(c) => c.clientKey,
-			),
+			input.datas.competenceGroup?.content[0]?.content.competences.map((c) => c.clientKey),
 		).toEqual(["c-name", "c-id"]);
-		expect(
-			input.datas.tagGroup?.content[0]?.content.tags.map((t) => t.clientKey),
-		).toEqual(["t-name", "t-id"]);
+		expect(input.datas.tagGroup?.content[0]?.content.tags.map((t) => t.clientKey)).toEqual([
+			"t-name",
+			"t-id",
+		]);
 		expect(cvSaveSchema.safeParse(input).success).toBe(true);
 	});
 });
-

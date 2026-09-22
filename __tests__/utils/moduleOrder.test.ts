@@ -7,12 +7,7 @@ import {
 } from "../../src/utils/moduleOrder";
 
 /** Minimal stubs — moduleOrder ne lit que type / order / isActive / column. */
-function stub(
-	type: string,
-	order: number,
-	isActive: boolean,
-	column = 0,
-): TemplateModule {
+function stub(type: string, order: number, isActive: boolean, column = 0): TemplateModule {
 	return { type, order, isActive, column } as unknown as TemplateModule;
 }
 
@@ -23,9 +18,7 @@ describe("moduleOrder", () => {
 			stub("experience", 3, false),
 			stub("skill", 1, true),
 		]);
-		const byType = Object.fromEntries(
-			result.map((m) => [m.type, m.order]),
-		);
+		const byType = Object.fromEntries(result.map((m) => [m.type, m.order]));
 		expect(byType.skill).toBe(1);
 		expect(byType.description).toBe(2);
 		expect(byType.experience).toBe(3);
@@ -36,23 +29,13 @@ describe("moduleOrder", () => {
 	});
 
 	it("nextActiveOrder returns max active + 1", () => {
-		expect(
-			nextActiveOrder([
-				stub("description", 2, true),
-				stub("skill", 5, true),
-			]),
-		).toBe(6);
+		expect(nextActiveOrder([stub("description", 2, true), stub("skill", 5, true)])).toBe(6);
 	});
 
 	it("nextActiveOrderInColumn scopes to column", () => {
 		expect(
-			nextActiveOrderInColumn(
-				[stub("description", 4, true, 0), stub("skill", 9, true, 1)],
-				0,
-			),
+			nextActiveOrderInColumn([stub("description", 4, true, 0), stub("skill", 9, true, 1)], 0),
 		).toBe(5);
-		expect(
-			nextActiveOrderInColumn([stub("description", 2, false, 0)], 0),
-		).toBe(1);
+		expect(nextActiveOrderInColumn([stub("description", 2, false, 0)], 0)).toBe(1);
 	});
 });

@@ -19,16 +19,10 @@ export const IconRegister: Record<string, React.ComponentType> = {
 	FaGlobe,
 };
 
-export function SocialMediaRenderer({
-	templateConfig,
-}: {
-	templateConfig: TemplateDefaultStyles;
-}) {
+export function SocialMediaRenderer({ templateConfig }: { templateConfig: TemplateDefaultStyles }) {
 	const socialMediaKey =
-		templateConfig?.components?.sectionSocialMedia?.component ??
-		"SectionSocialMediaOne";
-	const SocialMediaComponent =
-		SocialMediaRegister[socialMediaKey] ?? DefaultSocialMedia;
+		templateConfig?.components?.sectionSocialMedia?.component ?? "SectionSocialMediaOne";
+	const SocialMediaComponent = SocialMediaRegister[socialMediaKey] ?? DefaultSocialMedia;
 	return <SocialMediaComponent />;
 }
 export function MiniaturezSocialMediaRenderer({
@@ -37,10 +31,8 @@ export function MiniaturezSocialMediaRenderer({
 	templateConfig: TemplateDefaultStyles;
 }) {
 	const miniatureKey =
-		templateConfig?.components?.sectionSocialMedia?.miniature ??
-		"MiniSocialMediaOne";
-	const MiniatureComponent =
-		MiniatureRegister[miniatureKey] ?? DefaultMiniature;
+		templateConfig?.components?.sectionSocialMedia?.miniature ?? "MiniSocialMediaOne";
+	const MiniatureComponent = MiniatureRegister[miniatureKey] ?? DefaultMiniature;
 	return <MiniatureComponent />;
 }
 export function IconSocialMediaRenderer({
@@ -48,8 +40,7 @@ export function IconSocialMediaRenderer({
 }: {
 	templateConfig: TemplateDefaultStyles;
 }) {
-	const iconKey =
-		templateConfig?.components?.sectionSocialMedia?.icon ?? "FaGlobe";
+	const iconKey = templateConfig?.components?.sectionSocialMedia?.icon ?? "FaGlobe";
 	const IconComponent = IconRegister[iconKey] ?? DefaultIcon;
 	return <IconComponent />;
 }

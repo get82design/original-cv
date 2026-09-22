@@ -38,12 +38,7 @@ export const ElementList = ({
 					setSelectInputForm(`${pathContent}.settings.withListMissions`);
 				}}
 				value={watch(`${pathContent}.missions.${idx}.content.content`)}
-				onChange={(e) =>
-					setValue(
-						`${pathContent}.missions.${idx}.content.content`,
-						e.target.value,
-					)
-				}
+				onChange={(e) => setValue(`${pathContent}.missions.${idx}.content.content`, e.target.value)}
 				textColor={watchModel?.colorSelect}
 				textAlign={watchModel?.textAlign}
 				dataInput={{

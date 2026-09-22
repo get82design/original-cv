@@ -25,10 +25,8 @@ export function VolunteeringRenderer({
 	templateConfig: TemplateDefaultStyles;
 }) {
 	const VolunteeringKey =
-		templateConfig?.components?.sectionVolunteering?.component ??
-		"SectionVolunteeringOne";
-	const VolunteeringComponent =
-		VolunteeringRegister[VolunteeringKey] ?? DefaultVolunteering;
+		templateConfig?.components?.sectionVolunteering?.component ?? "SectionVolunteeringOne";
+	const VolunteeringComponent = VolunteeringRegister[VolunteeringKey] ?? DefaultVolunteering;
 	return <VolunteeringComponent />;
 }
 export function MiniatureVolunteeringRenderer({
@@ -37,8 +35,7 @@ export function MiniatureVolunteeringRenderer({
 	templateConfig: TemplateDefaultStyles;
 }) {
 	const MiniatureVolunteeringKey =
-		templateConfig?.components?.sectionVolunteering?.miniature ??
-		"MiniVolunteeringOne";
+		templateConfig?.components?.sectionVolunteering?.miniature ?? "MiniVolunteeringOne";
 	const MiniatureVolunteeringComponent =
 		MiniatureRegister[MiniatureVolunteeringKey] ?? DefaultMiniature;
 	return <MiniatureVolunteeringComponent />;
@@ -49,9 +46,7 @@ export function IconVolunteeringRenderer({
 	templateConfig: TemplateDefaultStyles;
 }) {
 	const IconVolunteeringKey =
-		templateConfig?.components?.sectionVolunteering?.icon ??
-		"MdOutlineVolunteerActivism";
-	const IconVolunteeringComponent =
-		IconVolunteeringRegister[IconVolunteeringKey] ?? DefaultIcon;
+		templateConfig?.components?.sectionVolunteering?.icon ?? "MdOutlineVolunteerActivism";
+	const IconVolunteeringComponent = IconVolunteeringRegister[IconVolunteeringKey] ?? DefaultIcon;
 	return <IconVolunteeringComponent />;
 }

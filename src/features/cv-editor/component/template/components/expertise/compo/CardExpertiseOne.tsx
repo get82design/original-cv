@@ -27,20 +27,13 @@ export const CardExpertiseOne = ({
 	const { watch, getValues, setValue } = useFormContext();
 	const { setSelectModifInput, setSelectInputForm } = useCreateCvContext();
 
-	const pathContentSettings = moduleField(
-		watch("modules"),
-		"expertise",
-		"settings",
-		"content",
-	);
+	const pathContentSettings = moduleField(watch("modules"), "expertise", "settings", "content");
 	const watchDesignExpertise = watch(`${pathContentSettings}.design`);
 	const watchGeneral = watch(FieldNameLayoutGeneral.layout);
 	const pathContent = `datas.expertise.content.${index}.content`;
 	const watchModelTitle = watch(`${pathContent}.settings.title`);
 
-	const deleteExpertise = (
-		itemToDelete: ListItem<ExpertiseItemContentInput>,
-	) => {
+	const deleteExpertise = (itemToDelete: ListItem<ExpertiseItemContentInput>) => {
 		const list = (getValues(FieldNameExpertise.content) ??
 			[]) as ListItem<ExpertiseItemContentInput>[];
 
@@ -88,12 +81,7 @@ export const CardExpertiseOne = ({
 						}}
 					/>
 				}
-				levelCompo={
-					<RatingCvInput
-						name={`${pathContent}.level`}
-						design={watchDesignExpertise}
-					/>
-				}
+				levelCompo={<RatingCvInput name={`${pathContent}.level`} design={watchDesignExpertise} />}
 			/>
 		</SectionItemShell>
 	);

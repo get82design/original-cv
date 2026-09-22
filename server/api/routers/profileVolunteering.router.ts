@@ -9,10 +9,7 @@ import { protectedProcedure, router } from "../trpc";
 import { prisma } from "../../../lib/prisma";
 import { ForbiddenError, NotFoundError } from "../../../src/services/errors";
 
-async function assertVolunteeringProfileOwnership(
-	volunteeringId: string,
-	userId: string,
-) {
+async function assertVolunteeringProfileOwnership(volunteeringId: string, userId: string) {
 	const volunteering = await prisma.volunteering.findUnique({
 		where: { id: volunteeringId },
 		select: {
@@ -31,12 +28,10 @@ async function assertVolunteeringProfileOwnership(
 }
 
 export const profileVolunteeringRouter = router({
-	create: protectedProcedure
-		.input(createVolunteeringSchema)
-		.mutation(async ({ input, ctx }) => {
-			const profile = await getOwnedProfile(ctx.session.user.id);
-			return profileVolunteeringService.create(profile.id, input);
-		}),
+	create: protectedProcedure.input(createVolunteeringSchema).mutation(async ({ input, ctx }) => {
+		const profile = await getOwnedProfile(ctx.session.user.id);
+		return profileVolunteeringService.create(profile.id, input);
+	}),
 
 	findAll: protectedProcedure.query(async ({ ctx }) => {
 		const profile = await getOwnedProfile(ctx.session.user.id);

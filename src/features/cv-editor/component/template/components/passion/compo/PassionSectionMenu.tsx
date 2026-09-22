@@ -12,7 +12,7 @@ export const PassionSectionMenu = () => {
 	const pathDesign = moduleField(modules, "passion", "settings", "content");
 
 	const passionMod = modules?.find((m: { type: string }) => m.type === "passion");
-    const inSidebar = (passionMod?.column ?? 0) === 0;
+	const inSidebar = (passionMod?.column ?? 0) === 0;
 
 	// → modules.{i}.settings.content
 	const columnsPath = `${pathDesign}.columns`;
@@ -26,24 +26,9 @@ export const PassionSectionMenu = () => {
 						<div className="flex flex-col py-1 px-4 gap-2">
 							<p>Nombre de colonnes</p>
 							<div className="grid grid-cols-3 gap-2">
-								<RadioRhf
-									name={columnsPath}
-									label="2"
-									value="2"
-									checked={watchColumns === "2"}
-								/>
-								<RadioRhf
-									name={columnsPath}
-									label="3"
-									value="3"
-									checked={watchColumns === "3"}
-								/>
-								<RadioRhf
-									name={columnsPath}
-									label="4"
-									value="4"
-									checked={watchColumns === "4"}
-								/>
+								<RadioRhf name={columnsPath} label="2" value="2" checked={watchColumns === "2"} />
+								<RadioRhf name={columnsPath} label="3" value="3" checked={watchColumns === "3"} />
+								<RadioRhf name={columnsPath} label="4" value="4" checked={watchColumns === "4"} />
 							</div>
 						</div>
 					),
@@ -53,7 +38,7 @@ export const PassionSectionMenu = () => {
 	];
 
 	if (inSidebar) return null;
-	
+
 	return (
 		<>
 			<ToolbarOptionsButton menuRef={menuRef} />

@@ -9,10 +9,7 @@ import { protectedProcedure, router } from "../trpc";
 import { prisma } from "../../../lib/prisma";
 import { ForbiddenError, NotFoundError } from "../../../src/services/errors";
 
-async function assertAchievementProfileOwnership(
-	achievementId: string,
-	userId: string,
-) {
+async function assertAchievementProfileOwnership(achievementId: string, userId: string) {
 	const achievement = await prisma.achievement.findUnique({
 		where: { id: achievementId },
 		select: {
@@ -31,12 +28,10 @@ async function assertAchievementProfileOwnership(
 }
 
 export const profileAchievementRouter = router({
-	create: protectedProcedure
-		.input(createAchievementSchema)
-		.mutation(async ({ input, ctx }) => {
-			const profile = await getOwnedProfile(ctx.session.user.id);
-			return profileAchievementService.create(profile.id, input);
-		}),
+	create: protectedProcedure.input(createAchievementSchema).mutation(async ({ input, ctx }) => {
+		const profile = await getOwnedProfile(ctx.session.user.id);
+		return profileAchievementService.create(profile.id, input);
+	}),
 
 	findAll: protectedProcedure.query(async ({ ctx }) => {
 		const profile = await getOwnedProfile(ctx.session.user.id);

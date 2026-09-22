@@ -31,9 +31,7 @@ const tintPair = (primary: LogoColorRef | null | undefined) => {
 };
 
 /** Signature CV / export : toujours version print (fond blanc). */
-export const logoTokensForCv = (
-	primary: LogoColorRef | null | undefined,
-): LogoTokens => {
+export const logoTokensForCv = (primary: LogoColorRef | null | undefined): LogoTokens => {
 	const { light, deep } = tintPair(primary);
 	return {
 		light,
@@ -62,21 +60,13 @@ export const logoTokensForSite = (
 		};
 	}
 
-	const shade = Number.parseInt(
-		(primary.primary || "-600").replace("-", ""),
-		10,
-	);
-	const deepDown = Number.isFinite(shade)
-		? `-${Math.min(950, shade + 100)}`
-		: "-700";
+	const shade = Number.parseInt((primary.primary || "-600").replace("-", ""), 10);
+	const deepDown = Number.isFinite(shade) ? `-${Math.min(950, shade + 100)}` : "-700";
 	const name = primary.name && primary.name !== "black" ? primary.name : "gray";
 
 	return {
 		light,
-		deep:
-			name === "gray"
-				? "var(--gray-800)"
-				: `var(--${name}${deepDown})`,
+		deep: name === "gray" ? "var(--gray-800)" : `var(--${name}${deepDown})`,
 		bg: "var(--black)",
 		ink: "var(--white)",
 	};

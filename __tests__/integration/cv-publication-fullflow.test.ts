@@ -32,12 +32,7 @@ describe("CV Fullflow Integration with publication", () => {
 		const { user, template } = await utils.createUserAndTemplate();
 		const cv = await utils.createCV(user.id, template.id);
 		const start = new Date();
-		const publication = await utils.createPublication(
-			cv.id,
-			"Publication 1",
-			start,
-			1,
-		);
+		const publication = await utils.createPublication(cv.id, "Publication 1", start, 1);
 		expect(publication.cvId).toBe(cv.id);
 		expect(publication.title).toBe("Publication 1");
 		expect(publication.description).toBeNull();

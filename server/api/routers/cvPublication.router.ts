@@ -9,10 +9,7 @@ import {
 	updatePublicationSchema,
 } from "../../../src/services/schemas/publication.schema";
 
-async function assertPublicationCvOwnership(
-	publicationId: string,
-	userId: string,
-) {
+async function assertPublicationCvOwnership(publicationId: string, userId: string) {
 	const publication = await prisma.cvPublication.findUnique({
 		where: { id: publicationId },
 		select: { id: true, cvId: true },

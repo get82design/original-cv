@@ -1,8 +1,4 @@
-import {
-	DeleteObjectCommand,
-	PutObjectCommand,
-	S3Client,
-} from "@aws-sdk/client-s3";
+import { DeleteObjectCommand, PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import type { PreviewPutInput, PreviewStorage } from "./previewStorage";
 
 const KEY_PREFIX = "cv-previews";
@@ -80,9 +76,7 @@ export class R2PreviewStorage implements PreviewStorage {
 		};
 	}
 
-	async deleteIfManaged(
-		publicUrl: string | null | undefined,
-	): Promise<void> {
+	async deleteIfManaged(publicUrl: string | null | undefined): Promise<void> {
 		const prefix = `${this.config.publicUrl}/`;
 		if (!publicUrl?.startsWith(prefix)) return;
 		const objectKey = publicUrl.slice(prefix.length);

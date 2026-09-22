@@ -36,10 +36,7 @@ export class CvService {
 			throw new NotFoundError("Template");
 		}
 
-		await templateAccessService.assertCanUseTemplate(
-			data.userId,
-			data.templateId,
-		);
+		await templateAccessService.assertCanUseTemplate(data.userId, data.templateId);
 
 		const existing = await prisma.cV.findFirst({
 			where: {
@@ -53,9 +50,7 @@ export class CvService {
 			throw new AppError("CV_ALREADY_EXISTS", "Le CV existe déjà");
 		}
 
-		const primaryColorName = extractPrimaryColorName(
-			template.defaultStyles,
-		);
+		const primaryColorName = extractPrimaryColorName(template.defaultStyles);
 
 		return prisma.cV.create({
 			data: {
@@ -142,10 +137,7 @@ export class CvService {
 		}
 
 		if (data.templateId !== undefined) {
-			await templateAccessService.assertCanUseTemplate(
-				userId,
-				data.templateId,
-			);
+			await templateAccessService.assertCanUseTemplate(userId, data.templateId);
 		}
 
 		return prisma.cV.update({
@@ -153,9 +145,7 @@ export class CvService {
 				id: cvId,
 			},
 			data: {
-				...(data.templateId !== undefined
-					? { templateId: data.templateId }
-					: {}),
+				...(data.templateId !== undefined ? { templateId: data.templateId } : {}),
 				...(data.title !== undefined ? { title: data.title } : {}),
 			},
 		});
@@ -215,12 +205,7 @@ export class CvService {
 		});
 	}
 
-	async setPreview(
-		cvId: string,
-		userId: string,
-		previewUrl: string,
-		previewUrlClean: string,
-	) {
+	async setPreview(cvId: string, userId: string, previewUrl: string, previewUrlClean: string) {
 		const cv = await prisma.cV.findUnique({
 			where: { id: cvId },
 			select: {
@@ -270,8 +255,7 @@ export class CvService {
 			cv.previewUrl && cv.previewUrl !== storedWith.publicUrl
 				? storage.deleteIfManaged(cv.previewUrl)
 				: Promise.resolve(),
-			cv.previewUrlClean &&
-			cv.previewUrlClean !== storedClean.publicUrl
+			cv.previewUrlClean && cv.previewUrlClean !== storedClean.publicUrl
 				? storage.deleteIfManaged(cv.previewUrlClean)
 				: Promise.resolve(),
 		]);

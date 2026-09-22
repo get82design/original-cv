@@ -1,7 +1,4 @@
-import type {
-	CompetenceGroupInput,
-	ProfileSaveInput,
-} from "@/services/schemas/profileSave.schema";
+import type { CompetenceGroupInput, ProfileSaveInput } from "@/services/schemas/profileSave.schema";
 import type { CvFull } from "@utils/trpc.types";
 import type { ListItem } from "@utils/type";
 import { Button } from "primereact/button";
@@ -11,13 +8,9 @@ import { useEffect, useState } from "react";
 import { v4 as uuid } from "uuid";
 
 type CvCompetenceGroup = NonNullable<CvFull>["competences"][number];
-type ProfileCompetenceGroupItem = NonNullable<
-	ProfileSaveInput["competenceGroups"]
->[number];
+type ProfileCompetenceGroupItem = NonNullable<ProfileSaveInput["competenceGroups"]>[number];
 
-function cvCompetenceGroupToProfile(
-	exp: CvCompetenceGroup,
-): ProfileCompetenceGroupItem {
+function cvCompetenceGroupToProfile(exp: CvCompetenceGroup): ProfileCompetenceGroupItem {
 	return {
 		clientKey: `competenceGroup-${uuid()}`,
 		order: exp.order,
@@ -58,9 +51,7 @@ export const DialogSelectCompetenceGroup = ({
 	useEffect(() => {
 		if (!visible) return;
 		setTarget(listCompetenceGroupInProfile);
-		const already = new Set(
-			listCompetenceGroupInProfile.map((e) => `${e.content.title}`),
-		);
+		const already = new Set(listCompetenceGroupInProfile.map((e) => `${e.content.title}`));
 		setSource(
 			listCompetenceGroupFromCv
 				.map((exp) => cvCompetenceGroupToProfile(exp))

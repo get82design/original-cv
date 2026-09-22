@@ -25,7 +25,7 @@ import type {
 	CreateCvTemplateInput,
 	createCvTemplateSchema,
 	TemplateLayout,
-  } from "@/services/schemas/cvTemplate.schema";
+} from "@/services/schemas/cvTemplate.schema";
 import type z from "zod";
 
 type SeedTemplate = z.input<typeof createCvTemplateSchema>;
@@ -56,7 +56,7 @@ export const sharedLayout = {
 			sectionTitle: "inter",
 		},
 	},
-	listStyle: "none"
+	listStyle: "none",
 } satisfies TemplateLayout;
 
 export const seedTemplates = [

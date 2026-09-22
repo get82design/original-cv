@@ -1,10 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { createTestUser } from "../../utils/create-test-user";
-import {
-	ConflictError,
-	NotFoundError,
-	ValidationError,
-} from "../../../src/services/errors";
+import { ConflictError, NotFoundError, ValidationError } from "../../../src/services/errors";
 import { createTestProfile } from "../../utils/create-test-profile";
 import { profileExperienceService } from "../../../src/services/profile/profileExperienceService";
 import { expectMoveNoOp } from "../../utils/move-noop";
@@ -170,9 +166,7 @@ describe("ProfileExperienceService.findAllByProfileId", () => {
 			order: 2,
 		});
 
-		const result = await profileExperienceService.findAllByProfileId(
-			profile.id,
-		);
+		const result = await profileExperienceService.findAllByProfileId(profile.id);
 
 		expect(result).toHaveLength(2);
 		expect(result[0]!.title).toBe("Experience 1");
@@ -183,9 +177,7 @@ describe("ProfileExperienceService.findAllByProfileId", () => {
 	it("returns empty array if no experience exists", async () => {
 		const user = await createTestUser();
 		const profile = await createTestProfile(user.id, "John", "Doe");
-		const result = await profileExperienceService.findAllByProfileId(
-			profile.id,
-		);
+		const result = await profileExperienceService.findAllByProfileId(profile.id);
 
 		expect(result).toEqual([]);
 	});
@@ -210,9 +202,7 @@ describe("ProfileExperienceService.findAllByProfileId", () => {
 			start: new Date("2020-01-01"),
 			order: 1,
 		});
-		const result = await profileExperienceService.findAllByProfileId(
-			profileA.id,
-		);
+		const result = await profileExperienceService.findAllByProfileId(profileA.id);
 
 		expect(result).toHaveLength(1);
 		expect(result[0]!.title).toBe("Experience 1");
@@ -351,9 +341,7 @@ describe("ProfileExperienceService.move", () => {
 			order: 2,
 		});
 		await profileExperienceService.move(experience2.id, 1);
-		const result = await profileExperienceService.findAllByProfileId(
-			profile.id,
-		);
+		const result = await profileExperienceService.findAllByProfileId(profile.id);
 
 		expect(result[0]!.id).toBe(experience2.id);
 		expect(result[1]!.id).toBe(experience1.id);
@@ -361,9 +349,7 @@ describe("ProfileExperienceService.move", () => {
 
 	// TEST 2 : experience inexistant
 	it("throws if experience does not exist", async () => {
-		await expect(
-			profileExperienceService.move("unknown-id", 1),
-		).rejects.toThrow(NotFoundError);
+		await expect(profileExperienceService.move("unknown-id", 1)).rejects.toThrow(NotFoundError);
 	});
 
 	// TEST 3 : ordre invalide
@@ -377,9 +363,7 @@ describe("ProfileExperienceService.move", () => {
 			start: new Date("2020-01-01"),
 			order: 1,
 		});
-		await expect(
-			profileExperienceService.move(experience1.id, 0),
-		).rejects.toThrow();
+		await expect(profileExperienceService.move(experience1.id, 0)).rejects.toThrow();
 	});
 
 	it("move no-op if order is the same", async () => {
@@ -414,18 +398,14 @@ describe("ProfileExperienceService.delete", () => {
 			order: 1,
 		});
 		await profileExperienceService.delete(experience1.id);
-		const result = await profileExperienceService.findAllByProfileId(
-			profile.id,
-		);
+		const result = await profileExperienceService.findAllByProfileId(profile.id);
 
 		expect(result).toHaveLength(0);
 	});
 
 	// TEST 2 : experience inexistant
 	it("throws if experience does not exist", async () => {
-		await expect(profileExperienceService.delete("unknown-id")).rejects.toThrow(
-			NotFoundError,
-		);
+		await expect(profileExperienceService.delete("unknown-id")).rejects.toThrow(NotFoundError);
 	});
 
 	// TEST 3 : réorganisation des experiences après suppression
@@ -454,9 +434,7 @@ describe("ProfileExperienceService.delete", () => {
 			order: 3,
 		});
 		await profileExperienceService.delete(experience2.id);
-		const result = await profileExperienceService.findAllByProfileId(
-			profile.id,
-		);
+		const result = await profileExperienceService.findAllByProfileId(profile.id);
 
 		expect(result).toHaveLength(2);
 		expect(result[0]!.order).toBe(1);

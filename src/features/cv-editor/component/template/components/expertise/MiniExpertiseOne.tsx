@@ -10,11 +10,7 @@ export const MiniExpertiseOne = () => {
 			<div className="w-full grid grid-cols-3 gap-1">
 				{[0, 1, 2].map((i) => (
 					<div key={i} className="w-full flex gap-1">
-						<Skeleton
-							className="dark:bg-gray-700"
-							width="50%"
-							height="8px"
-						></Skeleton>
+						<Skeleton className="dark:bg-gray-700" width="50%" height="8px"></Skeleton>
 						{[0, 1, 2].map((j) => (
 							<MdStar
 								key={j}

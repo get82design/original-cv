@@ -1,10 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { createTestUser } from "../utils/create-test-user";
 import { createTestTemplate } from "../utils/create-test-template";
-import {
-	createTestCaller,
-	createTestSession,
-} from "./helpers/create-test-caller";
+import { createTestCaller, createTestSession } from "./helpers/create-test-caller";
 import { prismaTest } from "../../lib/prismaTest";
 
 describe("admin.unlockTemplateForUser", () => {
@@ -56,9 +53,7 @@ describe("admin.unlockTemplateForUser", () => {
 			where: { id: target.id },
 		});
 		expect(after.downloadCredits).toBe(before.downloadCredits + 2);
-		expect(after.freeDownloadsRemaining).toBe(
-			before.freeDownloadsRemaining + 1,
-		);
+		expect(after.freeDownloadsRemaining).toBe(before.freeDownloadsRemaining + 1);
 
 		const detail = await caller.admin.getUser({ id: target.id });
 		const hit = detail.purchaseHistory.find(

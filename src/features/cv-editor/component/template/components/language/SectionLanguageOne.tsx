@@ -17,9 +17,7 @@ import { moduleField } from "@/features/cv-editor/utils/fields/moduleField";
 
 export const SectionLanguageOne = () => {
 	const { watch } = useFormContext();
-	const watchModelLanguageTitle: BaseTextSettings = watch(
-		FieldNameLanguage.settingsSectionTitle,
-	);
+	const watchModelLanguageTitle: BaseTextSettings = watch(FieldNameLanguage.settingsSectionTitle);
 	const modules = watch("modules");
 	const path = moduleField(modules, "language", "settings", "content");
 	const cols = watch(`${path}.columns`) ?? 3;
@@ -36,8 +34,7 @@ export const SectionLanguageOne = () => {
 	});
 
 	const itemKey =
-		watch("layoutGeneral.defaultStyles")?.components?.sectionLanguage?.item ??
-		"CardLanguageOne";
+		watch("layoutGeneral.defaultStyles")?.components?.sectionLanguage?.item ?? "CardLanguageOne";
 	const Card = LanguageCardRegister[itemKey] ?? CardLanguageOne;
 
 	return (

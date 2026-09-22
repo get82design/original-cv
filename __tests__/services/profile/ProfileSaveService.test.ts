@@ -1,8 +1,5 @@
 import { describe, expect, it } from "vitest";
-import {
-	CvTimelineStatus,
-	Level,
-} from "../../../generated/prisma/client";
+import { CvTimelineStatus, Level } from "../../../generated/prisma/client";
 import { prismaTest } from "../../../lib/prismaTest";
 import { profileSaveService } from "../../../src/services/profile/profileSaveService";
 import {
@@ -38,9 +35,7 @@ function mission(clientKey: string, content: string, order = 1) {
 	return { clientKey, order, content: { content } };
 }
 
-function identity(
-	overrides: Partial<ProfileSaveInput> = {},
-): ProfileSaveInput {
+function identity(overrides: Partial<ProfileSaveInput> = {}): ProfileSaveInput {
 	return {
 		firstName: "John",
 		lastName: "Doe",
@@ -206,9 +201,7 @@ function buildSaveInput(
 				competences: [
 					item("competence-1", 1, {
 						name: competenceName,
-						...(opts.competenceId
-							? { competenceId: opts.competenceId }
-							: {}),
+						...(opts.competenceId ? { competenceId: opts.competenceId } : {}),
 					}),
 				],
 			}),
@@ -230,17 +223,15 @@ function buildSaveInput(
 
 describe("ProfileSaveService.save", () => {
 	it("throws NotFoundError for unknown user", async () => {
-		await expect(
-			profileSaveService.save("unknown-user", identity()),
-		).rejects.toThrow(NotFoundError);
+		await expect(profileSaveService.save("unknown-user", identity())).rejects.toThrow(
+			NotFoundError,
+		);
 	});
 
 	it("creates a full profile when none exists", async () => {
 		const user = await createTestUser();
 		const catalogSkill = await createCatalogSkill(`skill-${Date.now()}`);
-		const catalogCompetence = await createCatalogCompetence(
-			`competence-${Date.now()}`,
-		);
+		const catalogCompetence = await createCatalogCompetence(`competence-${Date.now()}`);
 		const catalogTag = await createCatalogTag(`tag-${Date.now()}`);
 
 		const result = await profileSaveService.save(
@@ -279,18 +270,14 @@ describe("ProfileSaveService.save", () => {
 		expect(result!.experiences[0]?.start).toStrictEqual(start);
 		expect(result!.experiences[0]?.end).toStrictEqual(end);
 		expect(result!.experiences[0]?.missions).toHaveLength(1);
-		expect(result!.experiences[0]?.missions[0]?.content).toBe(
-			"Développer des features",
-		);
+		expect(result!.experiences[0]?.missions[0]?.content).toBe("Développer des features");
 
 		expect(result!.projects).toHaveLength(1);
 		expect(result!.projects[0]?.title).toBe("Projet 1");
 		expect(result!.projects[0]?.technology).toBe("React");
 		expect(result!.projects[0]?.status).toBe(CvTimelineStatus.INTERRUPTED);
 		expect(result!.projects[0]?.missions).toHaveLength(1);
-		expect(result!.projects[0]?.missions[0]?.content).toBe(
-			"Développer des features",
-		);
+		expect(result!.projects[0]?.missions[0]?.content).toBe("Développer des features");
 
 		expect(result!.volunteerings).toHaveLength(1);
 		expect(result!.volunteerings[0]?.title).toBe("Volontariat 1");
@@ -304,9 +291,7 @@ describe("ProfileSaveService.save", () => {
 
 		expect(result!.certifications).toHaveLength(1);
 		expect(result!.certifications[0]?.title).toBe("Certification 1");
-		expect(result!.certifications[0]?.organismeCertification).toBe(
-			"Organisation 1",
-		);
+		expect(result!.certifications[0]?.organismeCertification).toBe("Organisation 1");
 
 		expect(result!.prizes).toHaveLength(1);
 		expect(result!.prizes[0]?.title).toBe("Prix 1");
@@ -354,9 +339,7 @@ describe("ProfileSaveService.save", () => {
 		expect(result!.competences).toHaveLength(1);
 		expect(result!.competences[0]?.title).toBe("Competence Group 1");
 		expect(result!.competences[0]?.competences).toHaveLength(1);
-		expect(result!.competences[0]?.competences[0]?.competence?.name).toBe(
-			catalogCompetence.name,
-		);
+		expect(result!.competences[0]?.competences[0]?.competence?.name).toBe(catalogCompetence.name);
 
 		expect(result!.tags).toHaveLength(1);
 		expect(result!.tags[0]?.title).toBe("Tag Group 1");
@@ -472,9 +455,7 @@ describe("ProfileSaveService.save", () => {
 		expect(updated!.experiences[0]?.id).toBe(keepId);
 		expect(updated!.experiences[0]?.title).toBe("First updated");
 		expect(updated!.experiences[0]?.missions).toHaveLength(1);
-		expect(updated!.experiences[0]?.missions[0]?.content).toBe(
-			"Nouvelle mission",
-		);
+		expect(updated!.experiences[0]?.missions[0]?.content).toBe("Nouvelle mission");
 	});
 
 	it("updates existing experience missions and deletes unlisted ones", async () => {
@@ -487,10 +468,7 @@ describe("ProfileSaveService.save", () => {
 						title: "Dev",
 						company: "Acme",
 						start,
-						missions: [
-							mission("m1", "Mission A", 1),
-							mission("m2", "Mission B", 2),
-						],
+						missions: [mission("m1", "Mission A", 1), mission("m2", "Mission B", 2)],
 					}),
 				],
 			}),
@@ -526,9 +504,7 @@ describe("ProfileSaveService.save", () => {
 
 		expect(updated!.experiences[0]?.missions).toHaveLength(1);
 		expect(updated!.experiences[0]?.missions[0]?.id).toBe(keepMissionId);
-		expect(updated!.experiences[0]?.missions[0]?.content).toBe(
-			"Mission A updated",
-		);
+		expect(updated!.experiences[0]?.missions[0]?.content).toBe("Mission A updated");
 	});
 
 	it("replaces projects: keeps listed ids and deletes others", async () => {
@@ -597,18 +573,13 @@ describe("ProfileSaveService.save", () => {
 						end,
 						status: CvTimelineStatus.COMPLETED,
 						technology: "React",
-						missions: [
-							mission("m1", "Mission A", 1),
-							mission("m2", "Mission B", 2),
-						],
+						missions: [mission("m1", "Mission A", 1), mission("m2", "Mission B", 2)],
 					}),
 				],
 			}),
 		);
 		const projectId = created!.projects[0]?.id;
-		const keepMissionId = created!.projects[0]?.missions.find(
-			(m) => m.content === "Mission A",
-		)?.id;
+		const keepMissionId = created!.projects[0]?.missions.find((m) => m.content === "Mission A")?.id;
 
 		const updated = await profileSaveService.save(
 			user.id,
@@ -636,9 +607,7 @@ describe("ProfileSaveService.save", () => {
 
 		expect(updated!.projects[0]?.missions).toHaveLength(1);
 		expect(updated!.projects[0]?.missions[0]?.id).toBe(keepMissionId);
-		expect(updated!.projects[0]?.missions[0]?.content).toBe(
-			"Mission A updated",
-		);
+		expect(updated!.projects[0]?.missions[0]?.content).toBe("Mission A updated");
 	});
 
 	it("replaces volunteerings: keeps listed ids and deletes others", async () => {
@@ -697,10 +666,7 @@ describe("ProfileSaveService.save", () => {
 						title: "Asso",
 						organisation: "Org",
 						start,
-						missions: [
-							mission("m1", "Mission A", 1),
-							mission("m2", "Mission B", 2),
-						],
+						missions: [mission("m1", "Mission A", 1), mission("m2", "Mission B", 2)],
 					}),
 				],
 			}),
@@ -734,9 +700,7 @@ describe("ProfileSaveService.save", () => {
 
 		expect(updated!.volunteerings[0]?.missions).toHaveLength(1);
 		expect(updated!.volunteerings[0]?.missions[0]?.id).toBe(keepMissionId);
-		expect(updated!.volunteerings[0]?.missions[0]?.content).toBe(
-			"Mission A updated",
-		);
+		expect(updated!.volunteerings[0]?.missions[0]?.content).toBe("Mission A updated");
 	});
 
 	it("replaces formations: keeps listed ids and deletes others", async () => {
@@ -900,9 +864,7 @@ describe("ProfileSaveService.save", () => {
 				],
 			}),
 		);
-		const keepId = created!.socialMedias.find(
-			(s) => s.socialNetwork === "LinkedIn",
-		)?.id;
+		const keepId = created!.socialMedias.find((s) => s.socialNetwork === "LinkedIn")?.id;
 
 		const updated = await profileSaveService.save(
 			user.id,
@@ -1062,10 +1024,7 @@ describe("ProfileSaveService.save", () => {
 		const created = await profileSaveService.save(
 			user.id,
 			identity({
-				achievements: [
-					item("a-1", 1, { title: "First" }),
-					item("a-2", 2, { title: "Second" }),
-				],
+				achievements: [item("a-1", 1, { title: "First" }), item("a-2", 2, { title: "Second" })],
 			}),
 		);
 		const keepId = created!.achievements.find((a) => a.title === "First")?.id;
@@ -1242,9 +1201,7 @@ describe("ProfileSaveService.save", () => {
 
 		const group = result!.skills[0]!;
 		expect(group.skills).toHaveLength(2);
-		const linkedExisting = group.skills.find(
-			(s) => s.skill?.name === existingName,
-		);
+		const linkedExisting = group.skills.find((s) => s.skill?.name === existingName);
 		expect(linkedExisting?.skillId).toBe(existing.id);
 		const linkedNew = group.skills.find((s) => s.skill?.name === brandNewName);
 		expect(linkedNew).toBeDefined();
@@ -1351,9 +1308,7 @@ describe("ProfileSaveService.save", () => {
 			}),
 		);
 		const keepGroup = created!.competences.find((g) => g.title === "First");
-		const keepCompetence = keepGroup!.competences.find(
-			(c) => c.competenceId === competenceA.id,
-		);
+		const keepCompetence = keepGroup!.competences.find((c) => c.competenceId === competenceA.id);
 
 		const updated = await profileSaveService.save(
 			user.id,
@@ -1387,14 +1342,10 @@ describe("ProfileSaveService.save", () => {
 		expect(updated!.competences[0]?.title).toBe("First updated");
 		expect(updated!.competences[0]?.competences).toHaveLength(2);
 		expect(
-			updated!.competences[0]?.competences.some(
-				(c) => c.competenceId === competenceB.id,
-			),
+			updated!.competences[0]?.competences.some((c) => c.competenceId === competenceB.id),
 		).toBe(false);
 		expect(
-			updated!.competences[0]?.competences.some(
-				(c) => c.competenceId === competenceC.id,
-			),
+			updated!.competences[0]?.competences.some((c) => c.competenceId === competenceC.id),
 		).toBe(true);
 	});
 
@@ -1421,18 +1372,16 @@ describe("ProfileSaveService.save", () => {
 
 		const group = result!.competences[0]!;
 		expect(group.competences).toHaveLength(2);
-		expect(
-			group.competences.find((c) => c.competence?.name === existingName)
-				?.competenceId,
-		).toBe(existing.id);
+		expect(group.competences.find((c) => c.competence?.name === existingName)?.competenceId).toBe(
+			existing.id,
+		);
 		const catalogNew = await prismaTest.competence.findFirst({
 			where: { name: brandNewName },
 		});
 		expect(catalogNew).toBeTruthy();
-		expect(
-			group.competences.find((c) => c.competence?.name === brandNewName)
-				?.competenceId,
-		).toBe(catalogNew!.id);
+		expect(group.competences.find((c) => c.competence?.name === brandNewName)?.competenceId).toBe(
+			catalogNew!.id,
+		);
 	});
 
 	it("replaces tagGroups: keeps listed ids and deletes others", async () => {
@@ -1513,15 +1462,11 @@ describe("ProfileSaveService.save", () => {
 
 		const group = result!.tags[0]!;
 		expect(group.tags).toHaveLength(2);
-		expect(group.tags.find((t) => t.tag?.name === existingName)?.tagId).toBe(
-			existing.id,
-		);
+		expect(group.tags.find((t) => t.tag?.name === existingName)?.tagId).toBe(existing.id);
 		const catalogNew = await prismaTest.tag.findFirst({
 			where: { name: brandNewName },
 		});
-		expect(group.tags.find((t) => t.tag?.name === brandNewName)?.tagId).toBe(
-			catalogNew!.id,
-		);
+		expect(group.tags.find((t) => t.tag?.name === brandNewName)?.tagId).toBe(catalogNew!.id);
 	});
 
 	it("deletes all list sections when they are empty arrays", async () => {
@@ -1578,10 +1523,7 @@ describe("ProfileSaveService.save", () => {
 		const created = await profileSaveService.save(user.id, buildSaveInput());
 		expect(created!.experiences).toHaveLength(1);
 
-		const updated = await profileSaveService.save(
-			user.id,
-			identity({ firstName: "Jane" }),
-		);
+		const updated = await profileSaveService.save(user.id, identity({ firstName: "Jane" }));
 
 		expect(updated!.firstName).toBe("Jane");
 		expect(updated!.experiences).toHaveLength(1);
@@ -1630,9 +1572,7 @@ describe("ProfileSaveService.save", () => {
 		const result = await profileSaveService.save(
 			user.id,
 			identity({
-				experiences: [
-					item("exp-1", 1, { title: "Dev", start, missions: [] }),
-				],
+				experiences: [item("exp-1", 1, { title: "Dev", start, missions: [] })],
 				languages: [item("l-1", 1, {})],
 				expertises: [item("e-1", 1, { title: "Exp" })],
 				educations: [item("ed-1", 1, { start })],
@@ -1652,9 +1592,7 @@ describe("ProfileSaveService.save", () => {
 	it("roundtrips findCompleteByUserId → mapProfileToSaveInput → save", async () => {
 		const user = await createTestUser();
 		const catalogSkill = await createCatalogSkill(`rt-skill-${Date.now()}`);
-		const catalogCompetence = await createCatalogCompetence(
-			`rt-competence-${Date.now()}`,
-		);
+		const catalogCompetence = await createCatalogCompetence(`rt-competence-${Date.now()}`);
 		const catalogTag = await createCatalogTag(`rt-tag-${Date.now()}`);
 		const created = await profileSaveService.save(
 			user.id,
@@ -1682,8 +1620,6 @@ describe("ProfileSaveService.save", () => {
 		expect(saved!.id).toBe(created!.id);
 		expect(saved!.experiences[0]?.id).toBe(created!.experiences[0]?.id);
 		expect(saved!.skills[0]?.id).toBe(created!.skills[0]?.id);
-		expect(saved!.experiences[0]?.missions[0]?.id).toBe(
-			created!.experiences[0]?.missions[0]?.id,
-		);
+		expect(saved!.experiences[0]?.missions[0]?.id).toBe(created!.experiences[0]?.missions[0]?.id);
 	});
 });

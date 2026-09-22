@@ -6,10 +6,7 @@ import { Tooltip } from "primereact/tooltip";
 import { useRef, useState } from "react";
 import { MiniFooterMultiFunc } from "../footer/MiniFooterMultiFunc";
 import { useFieldArray, useFormContext } from "react-hook-form";
-import type {
-	ProfileSaveInput,
-	PublicationInput,
-} from "@/services/schemas/profileSave.schema";
+import type { ProfileSaveInput, PublicationInput } from "@/services/schemas/profileSave.schema";
 import { Checkbox } from "primereact/checkbox";
 import { TextareaProfile } from "../../input/TextareaProfile";
 import { InputTextProfile } from "../../input/InputTextProfile";
@@ -21,9 +18,7 @@ import { trpc } from "@utils/trpc";
 import { DialogSelectCv } from "../common/DialogSelectCv";
 import { DialogSelectPublication } from "./DialogSelectPublication";
 
-function createEmptyPublication(opts?: {
-	order?: number;
-}): ListItem<PublicationInput> {
+function createEmptyPublication(opts?: { order?: number }): ListItem<PublicationInput> {
 	return {
 		clientKey: "publication-" + uuid(),
 		order: opts?.order ?? 1,
@@ -44,10 +39,7 @@ export const ProfilePublication = ({ cvs }: { cvs: CV[] }) => {
 	const [toDelete, setToDelete] = useState<Set<string>>(new Set());
 	const [visibleMaj, setVisibleMaj] = useState(false);
 	const [idCv, setIdCv] = useState<string | undefined>(undefined);
-	const { data: cvSelected } = trpc.cv.byId.useQuery(
-		{ id: idCv ?? "" },
-		{ enabled: !!idCv },
-	);
+	const { data: cvSelected } = trpc.cv.byId.useQuery({ id: idCv ?? "" }, { enabled: !!idCv });
 	const [visibleSelect, setVisibleSelect] = useState(false);
 
 	const { control, watch, setValue } = useFormContext<ProfileSaveInput>();
@@ -134,12 +126,7 @@ export const ProfilePublication = ({ cvs }: { cvs: CV[] }) => {
 			)}
 			<AppCard className="relative group">
 				<div className="opacity-30 absolute top-2 left-3">
-					<TitleAppTwo
-						firstPart={"Vos"}
-						secondPart={"Publications"}
-						size={"text-2xl"}
-						withSpace
-					/>
+					<TitleAppTwo firstPart={"Vos"} secondPart={"Publications"} size={"text-2xl"} withSpace />
 				</div>
 				<div className="mt-10 flex flex-col gap-4">
 					{fields.map((field, idx: number) => {
@@ -202,9 +189,7 @@ export const ProfilePublication = ({ cvs }: { cvs: CV[] }) => {
 						);
 					})}
 					{fields.length === 0 && (
-						<p className="w-full font-light text-gray-400">
-							Aucune publication enregistrée
-						</p>
+						<p className="w-full font-light text-gray-400">Aucune publication enregistrée</p>
 					)}
 					{openDelete && (
 						<MiniFooterMultiFunc

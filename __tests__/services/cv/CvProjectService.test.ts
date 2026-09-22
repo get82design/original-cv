@@ -3,11 +3,7 @@ import { cvProjectService } from "../../../src/services/cv/cvProjectService";
 import { createTestUser } from "../../utils/create-test-user";
 import { createTestTemplate } from "../../utils/create-test-template";
 import { createCV } from "../../utils/create-test-cv-full-flow";
-import {
-	ConflictError,
-	NotFoundError,
-	ValidationError,
-} from "../../../src/services/errors";
+import { ConflictError, NotFoundError, ValidationError } from "../../../src/services/errors";
 import { CvTimelineStatus } from "../../../generated/prisma/enums";
 import { expectMoveNoOp } from "../../utils/move-noop";
 
@@ -519,9 +515,7 @@ describe("CvProjectService.move", () => {
 
 	// TEST 2 : project inexistant
 	it("throws if project does not exist", async () => {
-		await expect(cvProjectService.move("unknown-id", 1)).rejects.toThrow(
-			NotFoundError,
-		);
+		await expect(cvProjectService.move("unknown-id", 1)).rejects.toThrow(NotFoundError);
 	});
 
 	// TEST 3 : ordre invalide
@@ -580,9 +574,7 @@ describe("CvProjectService.delete", () => {
 
 	// TEST 2 : project inexistant
 	it("throws if project does not exist", async () => {
-		await expect(cvProjectService.delete("unknown-id")).rejects.toThrow(
-			NotFoundError,
-		);
+		await expect(cvProjectService.delete("unknown-id")).rejects.toThrow(NotFoundError);
 	});
 
 	// TEST 3 : réorganisation des projects après suppression

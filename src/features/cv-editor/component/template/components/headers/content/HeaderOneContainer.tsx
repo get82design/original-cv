@@ -30,9 +30,7 @@ export const HeaderOneContainer = ({
 		>
 			<div className={`w-full flex gap-4 ${chrome.rowClass}`}>
 				{modelGeneral?.withPhoto && photo}
-				<div
-					className={`header-content w-full flex flex-col gap-0 ${chrome.textAlignClass}`}
-				>
+				<div className={`header-content w-full flex flex-col gap-0 ${chrome.textAlignClass}`}>
 					{titleCompo}
 					<div className="-mt-2 w-full">{subTitleCompo}</div>
 					<div className="w-full grid grid-cols-3 mt-3">

@@ -21,11 +21,7 @@ describe("CV Fullflow Integration with certification", () => {
 	it("should create a CV with certification without optional fields", async () => {
 		const { user, template } = await utils.createUserAndTemplate();
 		const cv = await utils.createCV(user.id, template.id);
-		const certification = await utils.createCertification(
-			cv.id,
-			"Certification 1",
-			1,
-		);
+		const certification = await utils.createCertification(cv.id, "Certification 1", 1);
 		expect(certification.cvId).toBe(cv.id);
 		expect(certification.title).toBe("Certification 1");
 		expect(certification.organismeCertification).toBeNull();
@@ -42,10 +38,9 @@ describe("CV Fullflow Integration with certification", () => {
 			"Organisme 1",
 		);
 		await prismaTest.cV.delete({ where: { id: cv.id } });
-		const certificationAfterDelete =
-			await prismaTest.cvCertification.findUnique({
-				where: { id: certification.id },
-			});
+		const certificationAfterDelete = await prismaTest.cvCertification.findUnique({
+			where: { id: certification.id },
+		});
 		expect(certificationAfterDelete).toBeNull();
 	});
 });

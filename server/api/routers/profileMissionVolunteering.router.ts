@@ -8,10 +8,7 @@ import {
 } from "../../../src/services/schemas/mission.schema";
 import { protectedProcedure, router } from "../trpc";
 
-async function assertVolunteeringProfileOwnership(
-	volunteeringId: string,
-	userId: string,
-) {
+async function assertVolunteeringProfileOwnership(volunteeringId: string, userId: string) {
 	const volunteering = await prisma.volunteering.findUnique({
 		where: { id: volunteeringId },
 		select: {
@@ -28,10 +25,7 @@ async function assertVolunteeringProfileOwnership(
 	return volunteering;
 }
 
-async function assertMissionProfileOwnership(
-	missionId: string,
-	userId: string,
-) {
+async function assertMissionProfileOwnership(missionId: string, userId: string) {
 	const mission = await prisma.missionVolunteering.findUnique({
 		where: { id: missionId },
 		select: {
@@ -56,26 +50,15 @@ export const profileMissionVolunteeringRouter = router({
 	create: protectedProcedure
 		.input(z.object({ volunteeringId: z.string(), data: createMissionSchema }))
 		.mutation(async ({ input, ctx }) => {
-			await assertVolunteeringProfileOwnership(
-				input.volunteeringId,
-				ctx.session.user.id,
-			);
-			return profileMissionVolunteeringService.create(
-				input.volunteeringId,
-				input.data,
-			);
+			await assertVolunteeringProfileOwnership(input.volunteeringId, ctx.session.user.id);
+			return profileMissionVolunteeringService.create(input.volunteeringId, input.data);
 		}),
 
 	findAllByVolunteeringId: protectedProcedure
 		.input(z.object({ volunteeringId: z.string() }))
 		.query(async ({ input, ctx }) => {
-			await assertVolunteeringProfileOwnership(
-				input.volunteeringId,
-				ctx.session.user.id,
-			);
-			return profileMissionVolunteeringService.findAllByProfileVolunteeringId(
-				input.volunteeringId,
-			);
+			await assertVolunteeringProfileOwnership(input.volunteeringId, ctx.session.user.id);
+			return profileMissionVolunteeringService.findAllByProfileVolunteeringId(input.volunteeringId);
 		}),
 
 	update: protectedProcedure

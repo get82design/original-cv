@@ -45,8 +45,8 @@ export const CompoPage = ({ cvs }: { cvs: CV[] }) => {
 					</>
 				) : (
 					<p className="text-center text-gray-500">
-						Vous devez créer un profile pour remplir votre carrière
-						professionnelle. Entrez votre nom et prénom et sauvegarder
+						Vous devez créer un profile pour remplir votre carrière professionnelle. Entrez votre
+						nom et prénom et sauvegarder
 					</p>
 				)}
 			</div>

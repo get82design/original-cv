@@ -208,9 +208,7 @@ describe("CvStrengthService.move", () => {
 
 	// TEST 2 : force inexistante
 	it("throws if strength does not exist", async () => {
-		await expect(cvStrengthService.move("unknown-id", 1)).rejects.toThrow(
-			NotFoundError,
-		);
+		await expect(cvStrengthService.move("unknown-id", 1)).rejects.toThrow(NotFoundError);
 	});
 
 	// TEST 3 : ordre invalide
@@ -260,9 +258,7 @@ describe("CvStrengthService.delete", () => {
 
 	// TEST 2 : force inexistante
 	it("throws if strength does not exist", async () => {
-		await expect(cvStrengthService.delete("unknown-id")).rejects.toThrow(
-			NotFoundError,
-		);
+		await expect(cvStrengthService.delete("unknown-id")).rejects.toThrow(NotFoundError);
 	});
 
 	// TEST 3 : reordonnement des forces restantes après suppression

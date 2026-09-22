@@ -169,9 +169,7 @@ describe("mapImportDraftToCvDatas", () => {
 		expect(datas.experience?.content?.[0]?.content.title).toBe("Analyste");
 		expect(datas.experience?.content?.[0]?.content.missions).toHaveLength(1);
 		expect(datas.skillGroup?.content?.[0]?.content.skills).toHaveLength(2);
-		expect(datas.description?.content.description).toBe(
-			"Pionnière du calcul.",
-		);
+		expect(datas.description?.content.description).toBe("Pionnière du calcul.");
 	});
 });
 

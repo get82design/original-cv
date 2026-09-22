@@ -74,9 +74,7 @@ export class ProfileSaveService {
 			// ——— 3. Experiences (many:1, upsert via profileId) ———
 			if (input.experiences) {
 				const items = input.experiences;
-				const keepIds = items
-					.map((i) => i.id)
-					.filter((id): id is string => !!id);
+				const keepIds = items.map((i) => i.id).filter((id): id is string => !!id);
 				await tx.experience.deleteMany({
 					where: keepIds.length
 						? { profileId: profile.id, id: { notIn: keepIds } }
@@ -105,9 +103,7 @@ export class ProfileSaveService {
 						experienceId = created.id;
 					}
 					const missions = _missions ?? [];
-					const keepMissionIds = missions
-						.map((m) => m.id)
-						.filter((id): id is string => !!id);
+					const keepMissionIds = missions.map((m) => m.id).filter((id): id is string => !!id);
 					await tx.missionExperience.deleteMany({
 						where: keepMissionIds.length
 							? { experienceId, id: { notIn: keepMissionIds } }
@@ -133,9 +129,7 @@ export class ProfileSaveService {
 			// ——— 4. Strengths (many:1, upsert via profileId) ———
 			if (input.strengths) {
 				const items = input.strengths;
-				const keepIds = items
-					.map((i) => i.id)
-					.filter((id): id is string => !!id);
+				const keepIds = items.map((i) => i.id).filter((id): id is string => !!id);
 				await tx.strength.deleteMany({
 					where: keepIds.length
 						? { profileId: profile.id, id: { notIn: keepIds } }
@@ -163,9 +157,7 @@ export class ProfileSaveService {
 			// ——— 5. Projects (many:1, upsert via profileId) ———
 			if (input.projects) {
 				const items = input.projects;
-				const keepIds = items
-					.map((i) => i.id)
-					.filter((id): id is string => !!id);
+				const keepIds = items.map((i) => i.id).filter((id): id is string => !!id);
 				await tx.project.deleteMany({
 					where: keepIds.length
 						? { profileId: profile.id, id: { notIn: keepIds } }
@@ -195,9 +187,7 @@ export class ProfileSaveService {
 						projectId = created.id;
 					}
 					const missions = _missions ?? [];
-					const keepMissionIds = missions
-						.map((m) => m.id)
-						.filter((id): id is string => !!id);
+					const keepMissionIds = missions.map((m) => m.id).filter((id): id is string => !!id);
 					await tx.missionProject.deleteMany({
 						where: keepMissionIds.length
 							? { projectId, id: { notIn: keepMissionIds } }
@@ -223,9 +213,7 @@ export class ProfileSaveService {
 			// ——— 6. Achievements (many:1, upsert via profileId) ———
 			if (input.achievements) {
 				const items = input.achievements;
-				const keepIds = items
-					.map((i) => i.id)
-					.filter((id): id is string => !!id);
+				const keepIds = items.map((i) => i.id).filter((id): id is string => !!id);
 				await tx.achievement.deleteMany({
 					where: keepIds.length
 						? { profileId: profile.id, id: { notIn: keepIds } }
@@ -254,9 +242,7 @@ export class ProfileSaveService {
 			// ——— 7. Publications (many:1, upsert via profileId) ———
 			if (input.publications) {
 				const items = input.publications;
-				const keepIds = items
-					.map((i) => i.id)
-					.filter((id): id is string => !!id);
+				const keepIds = items.map((i) => i.id).filter((id): id is string => !!id);
 				await tx.publication.deleteMany({
 					where: keepIds.length
 						? { profileId: profile.id, id: { notIn: keepIds } }
@@ -287,9 +273,7 @@ export class ProfileSaveService {
 			// ——— 8. Volunteering (many:1, upsert via profileId) ———
 			if (input.volunteerings) {
 				const items = input.volunteerings;
-				const keepIds = items
-					.map((i) => i.id)
-					.filter((id): id is string => !!id);
+				const keepIds = items.map((i) => i.id).filter((id): id is string => !!id);
 				await tx.volunteering.deleteMany({
 					where: keepIds.length
 						? { profileId: profile.id, id: { notIn: keepIds } }
@@ -320,9 +304,7 @@ export class ProfileSaveService {
 						volunteeringId = created.id;
 					}
 					const missions = rest.missions ?? [];
-					const keepMissionIds = missions
-						.map((m) => m.id)
-						.filter((id): id is string => !!id);
+					const keepMissionIds = missions.map((m) => m.id).filter((id): id is string => !!id);
 					await tx.missionVolunteering.deleteMany({
 						where: keepMissionIds.length
 							? { volunteeringId, id: { notIn: keepMissionIds } }
@@ -348,9 +330,7 @@ export class ProfileSaveService {
 			// ——— 9. Educations (many:1, upsert via profileId) ———
 			if (input.educations) {
 				const items = input.educations;
-				const keepIds = items
-					.map((i) => i.id)
-					.filter((id): id is string => !!id);
+				const keepIds = items.map((i) => i.id).filter((id): id is string => !!id);
 				await tx.education.deleteMany({
 					where: keepIds.length
 						? { profileId: profile.id, id: { notIn: keepIds } }
@@ -382,9 +362,7 @@ export class ProfileSaveService {
 			// ——— 10. Languages (many:1, upsert via profileId) ———
 			if (input.languages) {
 				const items = input.languages;
-				const keepIds = items
-					.map((i) => i.id)
-					.filter((id): id is string => !!id);
+				const keepIds = items.map((i) => i.id).filter((id): id is string => !!id);
 				await tx.language.deleteMany({
 					where: keepIds.length
 						? { profileId: profile.id, id: { notIn: keepIds } }
@@ -411,9 +389,7 @@ export class ProfileSaveService {
 			// ——— 11. Expertises (many:1, upsert via profileId) ———
 			if (input.expertises) {
 				const items = input.expertises;
-				const keepIds = items
-					.map((i) => i.id)
-					.filter((id): id is string => !!id);
+				const keepIds = items.map((i) => i.id).filter((id): id is string => !!id);
 				await tx.expertise.deleteMany({
 					where: keepIds.length
 						? { profileId: profile.id, id: { notIn: keepIds } }
@@ -440,9 +416,7 @@ export class ProfileSaveService {
 			// ——— 12. Certifications (many:1, upsert via profileId) ———
 			if (input.certifications) {
 				const items = input.certifications;
-				const keepIds = items
-					.map((i) => i.id)
-					.filter((id): id is string => !!id);
+				const keepIds = items.map((i) => i.id).filter((id): id is string => !!id);
 				await tx.certification.deleteMany({
 					where: keepIds.length
 						? { profileId: profile.id, id: { notIn: keepIds } }
@@ -469,9 +443,7 @@ export class ProfileSaveService {
 			// ——— 13. Formations (many:1, upsert via profileId) ———
 			if (input.formations) {
 				const items = input.formations;
-				const keepIds = items
-					.map((i) => i.id)
-					.filter((id): id is string => !!id);
+				const keepIds = items.map((i) => i.id).filter((id): id is string => !!id);
 				await tx.formation.deleteMany({
 					where: keepIds.length
 						? { profileId: profile.id, id: { notIn: keepIds } }
@@ -501,9 +473,7 @@ export class ProfileSaveService {
 			// ——— 14. Passions (many:1, upsert via profileId) ———
 			if (input.passions) {
 				const items = input.passions;
-				const keepIds = items
-					.map((i) => i.id)
-					.filter((id): id is string => !!id);
+				const keepIds = items.map((i) => i.id).filter((id): id is string => !!id);
 				await tx.passion.deleteMany({
 					where: keepIds.length
 						? { profileId: profile.id, id: { notIn: keepIds } }
@@ -531,9 +501,7 @@ export class ProfileSaveService {
 
 			if (input.prizes) {
 				const items = input.prizes;
-				const keepIds = items
-					.map((i) => i.id)
-					.filter((id): id is string => !!id);
+				const keepIds = items.map((i) => i.id).filter((id): id is string => !!id);
 				await tx.prize.deleteMany({
 					where: keepIds.length
 						? { profileId: profile.id, id: { notIn: keepIds } }
@@ -561,9 +529,7 @@ export class ProfileSaveService {
 			// ——— 16. Skills (many:1, upsert via profileId) ———
 			if (input.skillGroups) {
 				const items = input.skillGroups;
-				const keepIds = items
-					.map((i) => i.id)
-					.filter((id): id is string => !!id);
+				const keepIds = items.map((i) => i.id).filter((id): id is string => !!id);
 				await tx.profileSkillGroup.deleteMany({
 					where: keepIds.length
 						? { profileId: profile.id, id: { notIn: keepIds } }
@@ -585,16 +551,10 @@ export class ProfileSaveService {
 						});
 						groupId = created.id;
 					}
-					const skillsToSave = (_skills ?? []).filter(
-						(s) => s.content.name.trim().length > 0,
-					);
-					const keepSkillIds = skillsToSave
-						.map((s) => s.id)
-						.filter((id): id is string => !!id);
+					const skillsToSave = (_skills ?? []).filter((s) => s.content.name.trim().length > 0);
+					const keepSkillIds = skillsToSave.map((s) => s.id).filter((id): id is string => !!id);
 					await tx.profileSkill.deleteMany({
-						where: keepSkillIds.length
-							? { groupId, id: { notIn: keepSkillIds } }
-							: { groupId },
+						where: keepSkillIds.length ? { groupId, id: { notIn: keepSkillIds } } : { groupId },
 					});
 					for (const [sIndex, s] of skillsToSave.entries()) {
 						const sOrder = s.order ?? sIndex;
@@ -627,9 +587,7 @@ export class ProfileSaveService {
 			// ——— 17. SocialMedias (many:1, upsert via profileId) ———
 			if (input.socialMedias) {
 				const items = input.socialMedias;
-				const keepIds = items
-					.map((i) => i.id)
-					.filter((id): id is string => !!id);
+				const keepIds = items.map((i) => i.id).filter((id): id is string => !!id);
 				await tx.socialMedia.deleteMany({
 					where: keepIds.length
 						? { profileId: profile.id, id: { notIn: keepIds } }
@@ -657,9 +615,7 @@ export class ProfileSaveService {
 			// ——— 18. Competences (many:1, upsert via profileId) ———
 			if (input.competenceGroups) {
 				const items = input.competenceGroups;
-				const keepIds = items
-					.map((i) => i.id)
-					.filter((id): id is string => !!id);
+				const keepIds = items.map((i) => i.id).filter((id): id is string => !!id);
 				await tx.profileCompetenceGroup.deleteMany({
 					where: keepIds.length
 						? { profileId: profile.id, id: { notIn: keepIds } }
@@ -725,9 +681,7 @@ export class ProfileSaveService {
 			// ——— 19. Tags (many:1, upsert via profileId) ———
 			if (input.tagGroups) {
 				const items = input.tagGroups;
-				const keepIds = items
-					.map((i) => i.id)
-					.filter((id): id is string => !!id);
+				const keepIds = items.map((i) => i.id).filter((id): id is string => !!id);
 				await tx.profileTagGroup.deleteMany({
 					where: keepIds.length
 						? { profileId: profile.id, id: { notIn: keepIds } }
@@ -749,16 +703,10 @@ export class ProfileSaveService {
 						});
 						groupId = created.id;
 					}
-					const tagsToSave = (_tags ?? []).filter(
-						(s) => s.content.name.trim().length > 0,
-					);
-					const keepTagIds = tagsToSave
-						.map((s) => s.id)
-						.filter((id): id is string => !!id);
+					const tagsToSave = (_tags ?? []).filter((s) => s.content.name.trim().length > 0);
+					const keepTagIds = tagsToSave.map((s) => s.id).filter((id): id is string => !!id);
 					await tx.profileTag.deleteMany({
-						where: keepTagIds.length
-							? { groupId, id: { notIn: keepTagIds } }
-							: { groupId },
+						where: keepTagIds.length ? { groupId, id: { notIn: keepTagIds } } : { groupId },
 					});
 					for (const [sIndex, s] of tagsToSave.entries()) {
 						const sOrder = s.order ?? sIndex;

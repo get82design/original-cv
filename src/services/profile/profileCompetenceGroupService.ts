@@ -228,5 +228,4 @@ export class ProfileCompetenceGroupService {
 	}
 }
 
-export const profileCompetenceGroupService =
-	new ProfileCompetenceGroupService();
+export const profileCompetenceGroupService = new ProfileCompetenceGroupService();

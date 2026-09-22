@@ -1,8 +1,5 @@
 import { useModelAndColorContext } from "@/features/cv-editor/component/context/ModelAndColorContext";
-import {
-	GetPrimaryColor,
-	GetPrimaryColorApercu,
-} from "@/features/cv-editor/utils/utilsCv/color";
+import { GetPrimaryColor, GetPrimaryColorApercu } from "@/features/cv-editor/utils/utilsCv/color";
 import type { TemplateLayout } from "@/services/schemas/cvTemplate.schema";
 import type { Color } from "@utils/trpc.types";
 import { cloneElement, type JSX } from "react";
@@ -22,9 +19,7 @@ export const TitleSectionContainer = ({
 	modelName,
 	primaryColor,
 }: TitleSectionContainerProps) => {
-	const primaryColorValue = primaryColor
-		? GetPrimaryColorApercu(primaryColor)
-		: GetPrimaryColor();
+	const primaryColorValue = primaryColor ? GetPrimaryColorApercu(primaryColor) : GetPrimaryColor();
 	const { colors } = useModelAndColorContext();
 	const watchLigneDessus = general.titleSection.withLigneDessus;
 	const watchLigneDessous = general.titleSection.withLigneDessous;
@@ -76,11 +71,7 @@ export const TitleSectionContainer = ({
 				: "transparent";
 
 	const iconBorderRadius =
-		watchIconStyle === "flat"
-			? "15%"
-			: watchIconStyle === "rounded"
-				? "50%"
-				: "0";
+		watchIconStyle === "flat" ? "15%" : watchIconStyle === "rounded" ? "50%" : "0";
 
 	const iconColorCss = iconFgToken ? `var(--${iconFgToken})` : undefined;
 
@@ -100,16 +91,9 @@ export const TitleSectionContainer = ({
 			{watchLigneDessus && (
 				<div
 					style={{
-						backgroundColor: primaryColorValue
-							? `var(--${primaryColorValue})`
-							: undefined,
+						backgroundColor: primaryColorValue ? `var(--${primaryColorValue})` : undefined,
 						opacity: "1",
-						height:
-							watchLineWeight === "sm"
-								? "1px"
-								: watchLineWeight === "md"
-									? "3px"
-									: "5px",
+						height: watchLineWeight === "sm" ? "1px" : watchLineWeight === "md" ? "3px" : "5px",
 					}}
 					className="w-full"
 				></div>
@@ -142,20 +126,11 @@ export const TitleSectionContainer = ({
 			{watchLigneDessous && (
 				<div
 					style={{
-						backgroundColor: primaryColorValue
-							? `var(--${primaryColorValue})`
-							: undefined,
+						backgroundColor: primaryColorValue ? `var(--${primaryColorValue})` : undefined,
 						opacity: "1",
-						height:
-							watchLineWeight === "sm"
-								? "1px"
-								: watchLineWeight === "md"
-									? "3px"
-									: "5px",
+						height: watchLineWeight === "sm" ? "1px" : watchLineWeight === "md" ? "3px" : "5px",
 					}}
-					className={`w-full ${
-						watchLigneDessus || info1 === "line" ? "" : "-mt-1"
-					} mb-0.5`}
+					className={`w-full ${watchLigneDessus || info1 === "line" ? "" : "-mt-1"} mb-0.5`}
 				></div>
 			)}
 		</>

@@ -26,21 +26,17 @@ import {
 type ElmSize = "sm" | "md" | "lg";
 type ColumnFilter = "all" | 1 | 2;
 const MAX_SELECTION = 10;
-const SELECTION_LIMIT_MESSAGE =
-	"Pour bien comparer, limitez-vous à 10 modèles";
+const SELECTION_LIMIT_MESSAGE = "Pour bien comparer, limitez-vous à 10 modèles";
 const MODIFICATIONS_LIMIT_MESSAGE =
 	"Pour modifier confortablement, utilisez une sélection (max 10) ou réduisez les modèles affichés.";
 
 function getTemplateColumns(template: TemplateCv): number {
-	const layout = template.structure as
-		| { layout?: { columns?: number } }
-		| null;
+	const layout = template.structure as { layout?: { columns?: number } } | null;
 	return layout?.layout?.columns ?? 1;
 }
 
 function templateImageAlt(template: TemplateCv): string {
-	const name =
-		template.name.charAt(0).toUpperCase() + template.name.slice(1);
+	const name = template.name.charAt(0).toUpperCase() + template.name.slice(1);
 	const columns = getTemplateColumns(template);
 	return `Modèle de CV ${name} — ${columns} colonne${columns > 1 ? "s" : ""}`;
 }
@@ -71,75 +67,46 @@ function GalleryMiniCv({
 	});
 
 	const key =
-		methods.watch("layoutGeneral.defaultStyles.components.pageLayout") ??
-		"OneColumnModel";
+		methods.watch("layoutGeneral.defaultStyles.components.pageLayout") ?? "OneColumnModel";
 	const PageLayout = PageLayoutRegister[key] ?? OneColumnModel;
 
 	useEffect(() => {
-		const original = (template.defaultStyles as { primaryColor?: Color })
-			?.primaryColor;
-		methods.setValue(
-			"layoutGeneral.defaultStyles.primaryColor",
-			color ?? original,
-		);
+		const original = (template.defaultStyles as { primaryColor?: Color })?.primaryColor;
+		methods.setValue("layoutGeneral.defaultStyles.primaryColor", color ?? original);
 	}, [color, methods, template]);
 
 	useEffect(() => {
-		const layout = template.structure as
-			| { layout?: { withPhoto?: boolean } }
-			| null;
+		const layout = template.structure as { layout?: { withPhoto?: boolean } } | null;
 		const original = layout?.layout?.withPhoto ?? false;
-		methods.setValue(
-			"layoutGeneral.layout.withPhoto",
-			withPhoto ?? original,
-		);
+		methods.setValue("layoutGeneral.layout.withPhoto", withPhoto ?? original);
 	}, [withPhoto, methods, template]);
 
 	useEffect(() => {
-		const layout = template.structure as
-			| { layout?: { photoSide?: "left" | "right" } }
-			| null;
+		const layout = template.structure as { layout?: { photoSide?: "left" | "right" } } | null;
 		const original = layout?.layout?.photoSide ?? "left";
-		methods.setValue(
-			"layoutGeneral.layout.photoSide",
-			photoSide ?? original,
-		);
+		methods.setValue("layoutGeneral.layout.photoSide", photoSide ?? original);
 	}, [photoSide, methods, template]);
 
 	useEffect(() => {
-		const layout = template.structure as
-			| { layout?: { stylePhoto?: "circle" | "flat" } }
-			| null;
+		const layout = template.structure as { layout?: { stylePhoto?: "circle" | "flat" } } | null;
 		const original = layout?.layout?.stylePhoto ?? "circle";
-		methods.setValue(
-			"layoutGeneral.layout.stylePhoto",
-			stylePhoto ?? original,
-		);
+		methods.setValue("layoutGeneral.layout.stylePhoto", stylePhoto ?? original);
 	}, [stylePhoto, methods, template]);
 
 	useEffect(() => {
-		const layout = template.structure as
-			| { layout?: { sidebarSide?: "left" | "right" } }
-			| null;
+		const layout = template.structure as { layout?: { sidebarSide?: "left" | "right" } } | null;
 		const original = layout?.layout?.sidebarSide ?? "left";
-		methods.setValue(
-			"layoutGeneral.layout.sidebarSide",
-			sidebarSide ?? original,
-		);
+		methods.setValue("layoutGeneral.layout.sidebarSide", sidebarSide ?? original);
 	}, [sidebarSide, methods, template]);
 
 	useEffect(() => {
-		const layout = template.structure as
-			| { layout?: { marge?: ElmSize } }
-			| null;
+		const layout = template.structure as { layout?: { marge?: ElmSize } } | null;
 		const original = layout?.layout?.marge ?? "md";
 		methods.setValue("layoutGeneral.layout.marge", marge ?? original);
 	}, [marge, methods, template]);
 
 	useEffect(() => {
-		const layout = template.structure as
-			| { layout?: { space?: ElmSize } }
-			| null;
+		const layout = template.structure as { layout?: { space?: ElmSize } } | null;
 		const original = layout?.layout?.space ?? "md";
 		methods.setValue("layoutGeneral.layout.space", space ?? original);
 	}, [space, methods, template]);
@@ -325,8 +292,7 @@ function GalleryCard({
 }
 
 export default function ModelList() {
-	const { data: templates, isLoading: isLoadingTemplates } =
-		trpc.cvTemplate.findAll.useQuery();
+	const { data: templates, isLoading: isLoadingTemplates } = trpc.cvTemplate.findAll.useQuery();
 	const { colors } = useModelAndColorContext();
 	const toast = useRef<Toast>(null);
 	const PAGE = 9;
@@ -386,10 +352,7 @@ export default function ModelList() {
 	const galleryReady = shownCount > 0 && activeLiveCount >= shownCount;
 	const modificationsLocked = activeLiveCount > MAX_SELECTION;
 	const showGalleryLoader =
-		filterLoading ||
-		(!isLoadingTemplates &&
-			filteredTemplates.length > 0 &&
-			!galleryReady);
+		filterLoading || (!isLoadingTemplates && filteredTemplates.length > 0 && !galleryReady);
 
 	useEffect(() => {
 		if (!modificationsLocked) return;
@@ -424,13 +387,7 @@ export default function ModelList() {
 			requestAnimationFrame(() => setFilterLoading(false));
 		});
 		return () => cancelAnimationFrame(id);
-	}, [
-		filterLoading,
-		galleryReady,
-		filteredTemplates.length,
-		columnFilter,
-		selectionMode,
-	]);
+	}, [filterLoading, galleryReady, filteredTemplates.length, columnFilter, selectionMode]);
 
 	const runWithLoader = (action: () => void) => {
 		setFilterLoading(true);
@@ -499,12 +456,8 @@ export default function ModelList() {
 	const [colorLoading, setColorLoading] = useState(false);
 	const [withPhoto, setWithPhoto] = useState<boolean | null>(null);
 	const [photoSide, setPhotoSide] = useState<"left" | "right" | null>(null);
-	const [stylePhoto, setStylePhoto] = useState<"circle" | "flat" | null>(
-		null,
-	);
-	const [sidebarSide, setSidebarSide] = useState<"left" | "right" | null>(
-		null,
-	);
+	const [stylePhoto, setStylePhoto] = useState<"circle" | "flat" | null>(null);
+	const [sidebarSide, setSidebarSide] = useState<"left" | "right" | null>(null);
 	const [marge, setMarge] = useState<ElmSize | null>(null);
 	const [space, setSpace] = useState<ElmSize | null>(null);
 
@@ -524,9 +477,7 @@ export default function ModelList() {
 			<Button
 				outlined
 				aria-disabled={modificationsLocked}
-				title={
-					modificationsLocked ? MODIFICATIONS_LIMIT_MESSAGE : undefined
-				}
+				title={modificationsLocked ? MODIFICATIONS_LIMIT_MESSAGE : undefined}
 				className={`fixed z-40 bg-white dark:bg-gray-800 text-primary-color dark:text-primary-color-dark top-28 -right-11 rotate-270 ${
 					modificationsLocked ? "opacity-50" : ""
 				}`}
@@ -542,7 +493,7 @@ export default function ModelList() {
 				className="sidebar-model-list"
 				pt={{ content: { className: "flex flex-col h-full" } }}
 			>
-                <div className="flex flex-col gap-2 h-full text-zinc-900 dark:text-zinc-100">
+				<div className="flex flex-col gap-2 h-full text-zinc-900 dark:text-zinc-100">
 					<div className="flex flex-col gap-1">
 						<p className="my-0 font-semibold text-sm">Couleur</p>
 						{galleryReady ? (
@@ -559,9 +510,7 @@ export default function ModelList() {
 												className="w-8 h-8 rounded-full cursor-pointer"
 												style={{
 													backgroundColor: `var(--${color.name}${color.primary ?? ""})`,
-													outline: selected
-														? "2px solid var(--teal-500)"
-														: "2px solid transparent",
+													outline: selected ? "2px solid var(--teal-500)" : "2px solid transparent",
 													outlineOffset: 2,
 												}}
 												onClick={() => {
@@ -723,18 +672,10 @@ export default function ModelList() {
 					</div>
 					<GalleryModTips />
 				</div>
-            </Sidebar>
+			</Sidebar>
 			<AppCard className="min-h-full flex flex-col gap-4 items-center py-8 px-16">
-				<TitleAppTwo
-					firstPart="Choisissez un modèle"
-					secondPart="CV"
-					size="text-4xl"
-					withSpace
-				/>
-				<p>
-					Commencez par choisir un CV parmi notre sélection. Vous pourrez en
-					changer plus tard.
-				</p>
+				<TitleAppTwo firstPart="Choisissez un modèle" secondPart="CV" size="text-4xl" withSpace />
+				<p>Commencez par choisir un CV parmi notre sélection. Vous pourrez en changer plus tard.</p>
 				<div className="flex flex-wrap gap-2 justify-center items-center">
 					<Button
 						size="small"
@@ -763,12 +704,7 @@ export default function ModelList() {
 								outlined={false}
 								disabled
 							/>
-							<Button
-								size="small"
-								label="Tous les modèles"
-								outlined
-								onClick={exitSelectionMode}
-							/>
+							<Button size="small" label="Tous les modèles" outlined onClick={exitSelectionMode} />
 						</>
 					) : (
 						<>
@@ -784,12 +720,7 @@ export default function ModelList() {
 								onClick={applySelection}
 							/>
 							{selectedCount > 0 && (
-								<Button
-									size="small"
-									text
-									label="Tout décocher"
-									onClick={clearSelection}
-								/>
+								<Button size="small" text label="Tout décocher" onClick={clearSelection} />
 							)}
 						</>
 					)}
@@ -831,9 +762,7 @@ export default function ModelList() {
 									space={space}
 									live={i < liveCount}
 									selected={selectedIds.has(t.id)}
-									selectionDisabled={
-										selectionFull && !selectedIds.has(t.id)
-									}
+									selectionDisabled={selectionFull && !selectedIds.has(t.id)}
 									onToggleSelected={() => toggleSelected(t.id)}
 									onSelectionLimit={showSelectionLimitMessage}
 								/>
@@ -843,11 +772,7 @@ export default function ModelList() {
 							<Button
 								type="button"
 								label="Voir plus"
-								onClick={() =>
-									setShownCount((n) =>
-										Math.min(n + PAGE, filteredTemplates.length),
-									)
-								}
+								onClick={() => setShownCount((n) => Math.min(n + PAGE, filteredTemplates.length))}
 							/>
 						)}
 					</>

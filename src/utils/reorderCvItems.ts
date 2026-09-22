@@ -1,8 +1,4 @@
-export function reorderItems<T extends { id: string }>(
-	items: T[],
-	id: string,
-	newOrder: number,
-) {
+export function reorderItems<T extends { id: string }>(items: T[], id: string, newOrder: number) {
 	if (newOrder < 1 || newOrder > items.length) {
 		throw new Error("Invalid order");
 	}

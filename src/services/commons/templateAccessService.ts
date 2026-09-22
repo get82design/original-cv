@@ -28,10 +28,7 @@ export class TemplateAccessService {
 	/**
 	 * Création / bascule de template : modèle actif requis (premium OK).
 	 */
-	async assertCanUseTemplate(
-		userId: string,
-		templateId: string,
-	): Promise<void> {
+	async assertCanUseTemplate(userId: string, templateId: string): Promise<void> {
 		void userId;
 		const template = await this.getTemplateAccessFields(templateId);
 		const reason = reasonCannotUseTemplate(template);
@@ -43,20 +40,14 @@ export class TemplateAccessService {
 	/**
 	 * Téléchargement : premium sans unlock → Forbidden.
 	 */
-	async assertCanDownloadTemplate(
-		userId: string,
-		templateId: string,
-	): Promise<void> {
+	async assertCanDownloadTemplate(userId: string, templateId: string): Promise<void> {
 		const template = await this.getTemplateAccessFields(templateId);
 		const hasUnlock = template.isPremium
 			? await unlockedTemplateService.hasUnlocked(userId, templateId)
 			: false;
 		const reason = reasonCannotDownloadTemplate(template, { hasUnlock });
 		if (reason === "PREMIUM_LOCKED") {
-			throw new ForbiddenError(
-				"TEMPLATE_PREMIUM_LOCKED",
-				denialMessage(reason),
-			);
+			throw new ForbiddenError("TEMPLATE_PREMIUM_LOCKED", denialMessage(reason));
 		}
 	}
 
@@ -73,10 +64,7 @@ export class TemplateAccessService {
 		return canUseTemplate(template);
 	}
 
-	async userCanDownload(
-		userId: string,
-		templateId: string,
-	): Promise<boolean> {
+	async userCanDownload(userId: string, templateId: string): Promise<boolean> {
 		const template = await this.getTemplateAccessFields(templateId);
 		const hasUnlock = template.isPremium
 			? await unlockedTemplateService.hasUnlocked(userId, templateId)

@@ -9,10 +9,7 @@ import { protectedProcedure, router } from "../trpc";
 import { prisma } from "../../../lib/prisma";
 import { NotFoundError } from "../../../src/services/errors";
 
-async function assertAchievementCvOwnership(
-	achievementId: string,
-	userId: string,
-) {
+async function assertAchievementCvOwnership(achievementId: string, userId: string) {
 	const achievement = await prisma.cvAchievement.findUnique({
 		where: { id: achievementId },
 		select: { id: true, cvId: true },

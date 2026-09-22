@@ -33,13 +33,9 @@ describe("cvImportQuota", () => {
 			],
 		});
 
-		await expect(assertCvImportQuota(user.id, now)).rejects.toBeInstanceOf(
-			ValidationError,
-		);
+		await expect(assertCvImportQuota(user.id, now)).rejects.toBeInstanceOf(ValidationError);
 		await expect(assertCvImportQuota(user.id, now)).rejects.toMatchObject({
-			message: expect.stringContaining(
-				`max ${CV_IMPORT_QUOTA.maxPerDay} / 24 h`,
-			),
+			message: expect.stringContaining(`max ${CV_IMPORT_QUOTA.maxPerDay} / 24 h`),
 		});
 	});
 
@@ -61,9 +57,7 @@ describe("cvImportQuota", () => {
 		expect(usage.last7d).toBe(5);
 
 		await expect(assertCvImportQuota(user.id, now)).rejects.toMatchObject({
-			message: expect.stringContaining(
-				`max ${CV_IMPORT_QUOTA.maxPerWeek} / 7 j`,
-			),
+			message: expect.stringContaining(`max ${CV_IMPORT_QUOTA.maxPerWeek} / 7 j`),
 		});
 	});
 
@@ -86,9 +80,7 @@ describe("cvImportQuota", () => {
 		expect(usage.last30d).toBe(10);
 
 		await expect(assertCvImportQuota(user.id, now)).rejects.toMatchObject({
-			message: expect.stringContaining(
-				`max ${CV_IMPORT_QUOTA.maxPerMonth} / 30 j`,
-			),
+			message: expect.stringContaining(`max ${CV_IMPORT_QUOTA.maxPerMonth} / 30 j`),
 		});
 	});
 

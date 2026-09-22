@@ -1,16 +1,10 @@
 import { describe, expect, it } from "vitest";
 import { prismaTest } from "../../lib/prismaTest";
-import {
-	adminDashboardService,
-	periodStart,
-} from "../../src/services/admin/adminDashboardService";
+import { adminDashboardService, periodStart } from "../../src/services/admin/adminDashboardService";
 import { createTestUser } from "../utils/create-test-user";
 import { createTestTemplate } from "../utils/create-test-template";
 import { createCV } from "../utils/create-test-cv-full-flow";
-import {
-	createTestCaller,
-	createTestSession,
-} from "./helpers/create-test-caller";
+import { createTestCaller, createTestSession } from "./helpers/create-test-caller";
 
 describe("adminDashboardService.getUserStats", () => {
 	it("counts new / active / connected for a period", async () => {
@@ -72,16 +66,14 @@ describe("adminDashboardService.getUserStats", () => {
 		expect(stats.newCount).toBeGreaterThanOrEqual(1);
 		expect(stats.newCountDelta!).toBe(
 			stats.newCount -
-				(
-					await prismaTest.user.count({
-						where: {
-							createdAt: {
-								gte: new Date(now.getTime() - 14 * day),
-								lt: new Date(now.getTime() - 7 * day),
-							},
+				(await prismaTest.user.count({
+					where: {
+						createdAt: {
+							gte: new Date(now.getTime() - 14 * day),
+							lt: new Date(now.getTime() - 7 * day),
 						},
-					})
-				),
+					},
+				})),
 		);
 	});
 
@@ -93,21 +85,11 @@ describe("adminDashboardService.getUserStats", () => {
 
 	it("periodStart returns rolling windows and null for all", () => {
 		const now = new Date("2026-09-20T12:00:00.000Z");
-		expect(periodStart("1d", now).toISOString()).toBe(
-			"2026-09-19T12:00:00.000Z",
-		);
-		expect(periodStart("7d", now).toISOString()).toBe(
-			"2026-09-13T12:00:00.000Z",
-		);
-		expect(periodStart("30d", now).toISOString()).toBe(
-			"2026-08-21T12:00:00.000Z",
-		);
-		expect(periodStart("90d", now).toISOString()).toBe(
-			"2026-06-22T12:00:00.000Z",
-		);
-		expect(periodStart("365d", now).toISOString()).toBe(
-			"2025-09-20T12:00:00.000Z",
-		);
+		expect(periodStart("1d", now).toISOString()).toBe("2026-09-19T12:00:00.000Z");
+		expect(periodStart("7d", now).toISOString()).toBe("2026-09-13T12:00:00.000Z");
+		expect(periodStart("30d", now).toISOString()).toBe("2026-08-21T12:00:00.000Z");
+		expect(periodStart("90d", now).toISOString()).toBe("2026-06-22T12:00:00.000Z");
+		expect(periodStart("365d", now).toISOString()).toBe("2025-09-20T12:00:00.000Z");
 		expect(periodStart("all", now)).toBeNull();
 	});
 });
@@ -143,17 +125,15 @@ describe("adminDashboardService.getDownloadStats", () => {
 		expect(stats.withoutLogoDelta).not.toBeNull();
 		expect(stats.withLogoDelta!).toBe(
 			stats.withLogo -
-				(
-					await prismaTest.downloadEvent.count({
-						where: {
-							variant: "WITH_LOGO",
-							createdAt: {
-								gte: new Date(now.getTime() - 14 * day),
-								lt: new Date(now.getTime() - 7 * day),
-							},
+				(await prismaTest.downloadEvent.count({
+					where: {
+						variant: "WITH_LOGO",
+						createdAt: {
+							gte: new Date(now.getTime() - 14 * day),
+							lt: new Date(now.getTime() - 7 * day),
 						},
-					})
-				),
+					},
+				})),
 		);
 
 		const allStats = await adminDashboardService.getDownloadStats("all", now);
@@ -242,9 +222,7 @@ describe("adminDashboardService.getCvStats top templates downloads", () => {
 		expect(hit).toBeTruthy();
 		expect(hit!.cvCount).toBeGreaterThanOrEqual(1);
 		expect(hit!.downloadCount).toBeGreaterThanOrEqual(1);
-		expect(hit!.popularityScore).toBe(
-			(hit!.cvCount + hit!.downloadCount) / 2,
-		);
+		expect(hit!.popularityScore).toBe((hit!.cvCount + hit!.downloadCount) / 2);
 		expect(hit!.primary).toBe("-600");
 	});
 });
@@ -254,9 +232,9 @@ describe("admin.router users metrics", () => {
 		const user = await createTestUser();
 		const caller = await createTestCaller(createTestSession(user));
 
-		await expect(
-			caller.admin.dashboardOverview({ period: "7d" }),
-		).rejects.toMatchObject({ code: "FORBIDDEN" });
+		await expect(caller.admin.dashboardOverview({ period: "7d" })).rejects.toMatchObject({
+			code: "FORBIDDEN",
+		});
 	});
 
 	it("returns ready user + cv stats for ADMIN", async () => {

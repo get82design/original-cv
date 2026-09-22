@@ -1,9 +1,6 @@
 import { prisma } from "../../../lib/prisma";
 import { ConflictError, NotFoundError } from "../errors";
-import type {
-	CreateSkillBaseInput,
-	UpdateSkillBaseInput,
-} from "../schemas/skillBase.schema";
+import type { CreateSkillBaseInput, UpdateSkillBaseInput } from "../schemas/skillBase.schema";
 
 export class SkillService {
 	async create(data: CreateSkillBaseInput) {

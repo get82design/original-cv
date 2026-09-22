@@ -3,11 +3,7 @@ import { cvPublicationService } from "../../../src/services/cv/cvPublicationServ
 import { createTestUser } from "../../utils/create-test-user";
 import { createTestTemplate } from "../../utils/create-test-template";
 import { createCV } from "../../utils/create-test-cv-full-flow";
-import {
-	ConflictError,
-	NotFoundError,
-	ValidationError,
-} from "../../../src/services/errors";
+import { ConflictError, NotFoundError, ValidationError } from "../../../src/services/errors";
 import { expectMoveNoOp } from "../../utils/move-noop";
 
 describe("CvPublicationService.create", () => {
@@ -284,9 +280,7 @@ describe("CvPublicationService.move", () => {
 
 	// TEST 2 : publication inexistant
 	it("throws if publication does not exist", async () => {
-		await expect(cvPublicationService.move("unknown-id", 1)).rejects.toThrow(
-			NotFoundError,
-		);
+		await expect(cvPublicationService.move("unknown-id", 1)).rejects.toThrow(NotFoundError);
 	});
 
 	// TEST 3 : ordre invalide
@@ -300,9 +294,7 @@ describe("CvPublicationService.move", () => {
 			start: new Date("2020-01-01"),
 			order: 1,
 		});
-		await expect(
-			cvPublicationService.move(publication1.id, 0),
-		).rejects.toThrow();
+		await expect(cvPublicationService.move(publication1.id, 0)).rejects.toThrow();
 	});
 
 	it("move no-op if order is the same", async () => {
@@ -343,9 +335,7 @@ describe("CvPublicationService.delete", () => {
 
 	// TEST 2 : publication inexistant
 	it("throws if publication does not exist", async () => {
-		await expect(cvPublicationService.delete("unknown-id")).rejects.toThrow(
-			NotFoundError,
-		);
+		await expect(cvPublicationService.delete("unknown-id")).rejects.toThrow(NotFoundError);
 	});
 
 	// TEST 3 : réorganisation des publications après suppression

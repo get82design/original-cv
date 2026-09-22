@@ -4,10 +4,7 @@ import { TRPCError } from "@trpc/server";
 import { createSkill } from "../utils/create-test-cv-full-flow";
 import { createProfileSkillGroup } from "../utils/create-test-user-with-profile";
 import { createTestUser } from "../utils/create-test-user";
-import {
-	createTestCaller,
-	createTestSession,
-} from "./helpers/create-test-caller";
+import { createTestCaller, createTestSession } from "./helpers/create-test-caller";
 import { Level } from "../../generated/prisma/enums";
 
 describe("profileSkillRouter", () => {
@@ -221,8 +218,8 @@ describe("profileSkillRouter", () => {
 	it("delete returns NOT_FOUND for unknown id", async () => {
 		const { caller } = await setup();
 
-		await expect(
-			caller.profileSkill.delete({ id: "unknown-id" }),
-		).rejects.toMatchObject({ code: "NOT_FOUND" });
+		await expect(caller.profileSkill.delete({ id: "unknown-id" })).rejects.toMatchObject({
+			code: "NOT_FOUND",
+		});
 	});
 });

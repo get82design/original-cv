@@ -19,7 +19,7 @@ export function HeaderFive() {
 	const watchDataHeaderTitleSettings = watch(FieldNameHeader.title);
 	const watchDataHeaderSubTitleSettings = watch(FieldNameHeader.subTitle);
 
-    const onSelect = (event: React.MouseEvent<HTMLInputElement>) => {
+	const onSelect = (event: React.MouseEvent<HTMLInputElement>) => {
 		//   if (((event.target as HTMLInputElement).files as FileList)[0]) {
 		//     const blob = new Blob([((event.target as HTMLInputElement).files as FileList)[0]], { type: 'image/*' })
 		//     const blobUrl = URL.createObjectURL(blob)
@@ -33,29 +33,37 @@ export function HeaderFive() {
 		//   }
 	};
 
-    const onUpload = () => {
+	const onUpload = () => {
 		// console.log('TESTTEST', refPhoto.current)
 		refPhoto.current && refPhoto.current.click();
 	};
-    return (
-        <HeaderFiveContainer
-            modelGeneral={watchGeneral}
-            titleCompo={<NomPrenomInput forceWidthFull textAlign={watchDataHeaderTitleSettings?.textAlign ?? "center"} />}
-            subTitleCompo={<IntituleCvInput forceWidthFull textAlign={watchDataHeaderSubTitleSettings?.textAlign ?? "center"} />}
-            emailCompo={<EmailInput withIcon />}
-            phoneCompo={<PhoneInput withIcon />}
-            locationCompo={<LocationInput withIcon />}
-            photo={
+	return (
+		<HeaderFiveContainer
+			modelGeneral={watchGeneral}
+			titleCompo={
+				<NomPrenomInput
+					forceWidthFull
+					textAlign={watchDataHeaderTitleSettings?.textAlign ?? "center"}
+				/>
+			}
+			subTitleCompo={
+				<IntituleCvInput
+					forceWidthFull
+					textAlign={watchDataHeaderSubTitleSettings?.textAlign ?? "center"}
+				/>
+			}
+			emailCompo={<EmailInput withIcon />}
+			phoneCompo={<PhoneInput withIcon />}
+			locationCompo={<LocationInput withIcon />}
+			photo={
 				<>
 					<button
 						type="button"
 						style={{
 							width: "150px",
-                            height: "150px",
+							height: "150px",
 							/* height: "130px",*/ backgroundImage: `url(${
-								photo && photo !== ""
-									? photo
-									: "/assets/img/User-avatar.svg.png"
+								photo && photo !== "" ? photo : "/assets/img/User-avatar.svg.png"
 							})`,
 							backgroundPosition: "center",
 							backgroundSize: "cover",
@@ -77,6 +85,6 @@ export function HeaderFive() {
 					/>
 				</>
 			}
-        />
-    );
+		/>
+	);
 }

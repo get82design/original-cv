@@ -4,11 +4,7 @@ import { createTestUser } from "../../utils/create-test-user";
 import { createTestTemplate } from "../../utils/create-test-template";
 import { cvModuleService } from "../../../src/services/cv/cvModuleService";
 import { CVModuleType } from "../../../generated/prisma/enums";
-import {
-	ConflictError,
-	NotFoundError,
-	ValidationError,
-} from "../../../src/services/errors";
+import { ConflictError, NotFoundError, ValidationError } from "../../../src/services/errors";
 import { expectMoveNoOp } from "../../utils/move-noop";
 
 describe("CvModuleService.create", () => {
@@ -309,9 +305,7 @@ describe("CvModuleService.move", () => {
 	});
 
 	it("throws if module does not exist", async () => {
-		await expect(cvModuleService.move("unknown-module", 1)).rejects.toThrow(
-			NotFoundError,
-		);
+		await expect(cvModuleService.move("unknown-module", 1)).rejects.toThrow(NotFoundError);
 	});
 
 	it("throws if order is invalid", async () => {
@@ -326,9 +320,7 @@ describe("CvModuleService.move", () => {
 			settings: {},
 			isActive: true,
 		});
-		await expect(cvModuleService.move(module.id, -1)).rejects.toThrow(
-			ValidationError,
-		);
+		await expect(cvModuleService.move(module.id, -1)).rejects.toThrow(ValidationError);
 	});
 
 	it("move no-op if order is the same", async () => {
@@ -371,9 +363,7 @@ describe("CvModuleService.delete", () => {
 		expect(result).toEqual([]);
 	});
 	it("throws if module does not exist", async () => {
-		await expect(cvModuleService.delete("unknown-module")).rejects.toThrow(
-			NotFoundError,
-		);
+		await expect(cvModuleService.delete("unknown-module")).rejects.toThrow(NotFoundError);
 	});
 
 	it("reorders remaining modules after deletion", async () => {

@@ -23,9 +23,7 @@ describe("CV Fullflow Integration with tags", () => {
 	});
 
 	it("should cascade delete CV modules and items", async () => {
-		const { user, template } = await utils.createUserAndTemplate(
-			"delete@fullflow.com",
-		);
+		const { user, template } = await utils.createUserAndTemplate("delete@fullflow.com");
 		const cv = await utils.createCV(user.id, template.id);
 		const tagGroup = await utils.createTagGroup(cv.id, "tags", 1);
 		const tag = await utils.createTag("TypeScript");

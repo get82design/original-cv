@@ -21,9 +21,7 @@ import { trpc } from "@utils/trpc";
 import { DialogSelectCv } from "../common/DialogSelectCv";
 import { DialogSelectCompetenceGroup } from "./DialogSelectCompetenceGroup";
 
-function createEmptyCompetenceGroup(opts?: {
-	order?: number;
-}): ListItem<CompetenceGroupInput> {
+function createEmptyCompetenceGroup(opts?: { order?: number }): ListItem<CompetenceGroupInput> {
 	return {
 		clientKey: `competenceGroup-${uuid()}`,
 		order: opts?.order ?? 0,
@@ -31,9 +29,7 @@ function createEmptyCompetenceGroup(opts?: {
 	};
 }
 
-function createEmptyCompetence(opts?: {
-	order?: number;
-}): ListItem<CompetenceInput> {
+function createEmptyCompetence(opts?: { order?: number }): ListItem<CompetenceInput> {
 	return {
 		clientKey: `competence-${uuid()}`,
 		order: opts?.order ?? 0,
@@ -47,10 +43,7 @@ export const ProfileCompetence = ({ cvs }: { cvs: CV[] }) => {
 	const [toDelete, setToDelete] = useState<Set<string>>(new Set());
 	const [visibleMaj, setVisibleMaj] = useState(false);
 	const [idCv, setIdCv] = useState<string | undefined>(undefined);
-	const { data: cvSelected } = trpc.cv.byId.useQuery(
-		{ id: idCv ?? "" },
-		{ enabled: !!idCv },
-	);
+	const { data: cvSelected } = trpc.cv.byId.useQuery({ id: idCv ?? "" }, { enabled: !!idCv });
 	const [visibleSelect, setVisibleSelect] = useState(false);
 
 	const { control, watch, setValue } = useFormContext<ProfileSaveInput>();
@@ -137,11 +130,7 @@ export const ProfileCompetence = ({ cvs }: { cvs: CV[] }) => {
 			)}
 			<AppCard className="relative group">
 				<div className="opacity-30 absolute top-2 left-3">
-					<TitleAppTwo
-						firstPart={""}
-						secondPart={"Compétences"}
-						size={"text-2xl"}
-					/>
+					<TitleAppTwo firstPart={""} secondPart={"Compétences"} size={"text-2xl"} />
 				</div>
 				<div className="mt-10 flex flex-col gap-2">
 					{fields.map((field, idx: number) => {
@@ -169,9 +158,7 @@ export const ProfileCompetence = ({ cvs }: { cvs: CV[] }) => {
 						);
 					})}
 					{fields.length === 0 && (
-						<p className="w-full font-light text-gray-400">
-							Aucune compétence enregistrée.
-						</p>
+						<p className="w-full font-light text-gray-400">Aucune compétence enregistrée.</p>
 					)}
 					{openDelete && (
 						<MiniFooterMultiFunc
@@ -218,10 +205,7 @@ function CompetenceGroupCompetences({ groupIndex }: { groupIndex: number }) {
 		<>
 			{fields.map((competence, index) => {
 				return (
-					<div
-						className="w-full flex justify-between items-start gap-1"
-						key={competence.clientKey}
-					>
+					<div className="w-full flex justify-between items-start gap-1" key={competence.clientKey}>
 						<TextareaProfile
 							placeholder="Nom de la compétence"
 							name={`competenceGroups.${groupIndex}.content.competences.${index}.content.name`}
@@ -239,10 +223,7 @@ function CompetenceGroupCompetences({ groupIndex }: { groupIndex: number }) {
 					</div>
 				);
 			})}
-			<button
-				type="button"
-				onClick={() => append(createEmptyCompetence({ order: fields.length }))}
-			>
+			<button type="button" onClick={() => append(createEmptyCompetence({ order: fields.length }))}>
 				Ajouter une compétence
 			</button>
 		</>

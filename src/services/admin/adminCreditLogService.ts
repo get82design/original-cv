@@ -1,13 +1,7 @@
 import type { Prisma } from "../../../generated/prisma/client";
-import type {
-	AdminCreditKind,
-	AdminCreditReason,
-} from "../../../generated/prisma/enums";
+import type { AdminCreditKind, AdminCreditReason } from "../../../generated/prisma/enums";
 import { prisma } from "../../../lib/prisma";
-import {
-	periodStart,
-	type AdminDashboardPeriod,
-} from "./adminDashboardService";
+import { periodStart, type AdminDashboardPeriod } from "./adminDashboardService";
 
 export type AdminCreditLogListItem = {
 	id: string;

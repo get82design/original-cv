@@ -15,12 +15,10 @@ export const cvPhilosophyRouter = router({
 			return cvPhilosophyService.create(input.cvId, input.data);
 		}),
 
-	byCvId: protectedProcedure
-		.input(z.object({ cvId: z.string() }))
-		.query(async ({ input, ctx }) => {
-			await assertCvOwnership(input.cvId, ctx.session.user.id);
-			return cvPhilosophyService.findByCvId(input.cvId);
-		}),
+	byCvId: protectedProcedure.input(z.object({ cvId: z.string() })).query(async ({ input, ctx }) => {
+		await assertCvOwnership(input.cvId, ctx.session.user.id);
+		return cvPhilosophyService.findByCvId(input.cvId);
+	}),
 
 	update: protectedProcedure
 		.input(z.object({ cvId: z.string(), data: updatePhilosophySchema }))

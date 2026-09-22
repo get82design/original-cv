@@ -1,7 +1,4 @@
-import type {
-	CertificationInput,
-	ProfileSaveInput,
-} from "@/services/schemas/profileSave.schema";
+import type { CertificationInput, ProfileSaveInput } from "@/services/schemas/profileSave.schema";
 import type { CvFull } from "@utils/trpc.types";
 import type { ListItem } from "@utils/type";
 import { Button } from "primereact/button";
@@ -11,13 +8,9 @@ import { useEffect, useState } from "react";
 import { v4 as uuid } from "uuid";
 
 type CvCertification = NonNullable<CvFull>["certifications"][number];
-type ProfileCertificationItem = NonNullable<
-	ProfileSaveInput["certifications"]
->[number];
+type ProfileCertificationItem = NonNullable<ProfileSaveInput["certifications"]>[number];
 
-function cvCertificationToProfile(
-	exp: CvCertification,
-): ProfileCertificationItem {
+function cvCertificationToProfile(exp: CvCertification): ProfileCertificationItem {
 	return {
 		clientKey: `certification-${uuid()}`,
 		order: exp.order,
@@ -62,10 +55,7 @@ export const DialogSelectCertification = ({
 			listCertificationFromCv
 				.map((exp) => cvCertificationToProfile(exp))
 				.filter(
-					(e) =>
-						!already.has(
-							`${e.content.title}|${e.content.organismeCertification ?? ""}`,
-						),
+					(e) => !already.has(`${e.content.title}|${e.content.organismeCertification ?? ""}`),
 				),
 		);
 	}, [visible, listCertificationFromCv]);

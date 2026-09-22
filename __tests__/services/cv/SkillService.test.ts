@@ -105,9 +105,7 @@ describe("SkillService.delete", () => {
 	});
 
 	it("throws if skill does not exist", async () => {
-		await expect(skillService.delete("unknown-id")).rejects.toThrow(
-			NotFoundError,
-		);
+		await expect(skillService.delete("unknown-id")).rejects.toThrow(NotFoundError);
 	});
 
 	it("throws if skill is used", async () => {

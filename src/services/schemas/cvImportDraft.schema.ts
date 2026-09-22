@@ -8,10 +8,7 @@ import { LevelSchema } from "./enums";
 export const cvImportDateSchema = z
 	.string()
 	.trim()
-	.regex(
-		/^(\d{4}(-\d{2}(-\d{2})?)?)$/,
-		"Expected YYYY, YYYY-MM or YYYY-MM-DD",
-	)
+	.regex(/^(\d{4}(-\d{2}(-\d{2})?)?)$/, "Expected YYYY, YYYY-MM or YYYY-MM-DD")
 	.or(z.literal(""))
 	.nullish();
 
@@ -105,9 +102,7 @@ const PROMPT_RULES = `Règles :
 - Réponds UNIQUEMENT avec un JSON valide (pas de markdown, pas de commentaire).`;
 
 /** Prompt système généré à partir du JSON Schema dérivé de cvImportDraftSchema. */
-export function buildCvImportSystemPrompt(options?: {
-	validationErrors?: string;
-}): string {
+export function buildCvImportSystemPrompt(options?: { validationErrors?: string }): string {
 	const schemaBlock = JSON.stringify(cvImportDraftJsonSchema, null, 2);
 	const correction = options?.validationErrors
 		? `\n\nLa réponse précédente était invalide. Corrige uniquement selon ces erreurs de validation :\n${options.validationErrors}\nRenvoie le JSON complet corrigé.`

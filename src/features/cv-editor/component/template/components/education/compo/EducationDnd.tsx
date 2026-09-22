@@ -1,10 +1,7 @@
 import type { EducationItemContentInput } from "@/services/schemas/cvSave.schema";
 import { ToggleAfficherCacher } from "@/components/input/toggle-button/AfficherCacher";
 import { FieldNameEducation } from "@/features/cv-editor/utils/fields/fieldNameEducation";
-import {
-	verticalListSortingStrategy,
-	SortableContext,
-} from "@dnd-kit/sortable";
+import { verticalListSortingStrategy, SortableContext } from "@dnd-kit/sortable";
 import { dataFieldContent } from "@/features/cv-editor/utils/fields/moduleField";
 import { useCreateCvContext } from "@/features/cv-editor/component/context/CreateCvContext";
 import { Button } from "primereact/button";
@@ -34,11 +31,7 @@ export const EducationDnd = ({
 	const { setSectionSelected, sectionSelected } = useCreateCvContext();
 	const { setValue } = useFormContext();
 	const itemsMenu = (idx: number) => {
-		const pathContent = dataFieldContent(
-			"datas.education.content",
-			idx,
-			"content.settings",
-		);
+		const pathContent = dataFieldContent("datas.education.content", idx, "content.settings");
 		return [
 			{
 				label: "Options",
@@ -55,9 +48,7 @@ export const EducationDnd = ({
 						template: (
 							<div className="flex justify-between py-1 px-4 items-center">
 								<p>Etablissement</p>
-								<ToggleAfficherCacher
-									name={`${pathContent}.withEtablissement`}
-								/>
+								<ToggleAfficherCacher name={`${pathContent}.withEtablissement`} />
 							</div>
 						),
 					},
@@ -81,7 +72,9 @@ export const EducationDnd = ({
 			items={watchEducations.map((s) => s.clientKey)}
 			strategy={verticalListSortingStrategy}
 		>
-			<div className={`educations-grid grid items-start ${COL_CLASS[colOfEducation as keyof typeof COL_CLASS] ?? "grid-cols-1"} gap-x-6 gap-y-2`}>
+			<div
+				className={`educations-grid grid items-start ${COL_CLASS[colOfEducation as keyof typeof COL_CLASS] ?? "grid-cols-1"} gap-x-6 gap-y-2`}
+			>
 				{watchEducations.map((education, index) => (
 					<button
 						type="button"
@@ -113,10 +106,7 @@ export const EducationDnd = ({
 							const fresh = createNewItem();
 							setValue(
 								FieldNameEducation.content,
-								[
-									...watchEducations,
-									{ ...fresh, order: watchEducations.length + 1 },
-								],
+								[...watchEducations, { ...fresh, order: watchEducations.length + 1 }],
 								{ shouldDirty: true },
 							);
 						}}

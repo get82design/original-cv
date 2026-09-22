@@ -26,10 +26,8 @@ export function MiniatureEducationRenderer({
 	templateConfig: TemplateDefaultStyles;
 }) {
 	const miniatureKey =
-		templateConfig?.components?.sectionEducation?.miniature ??
-		"MiniEducationOne";
-	const MiniatureComponent =
-		MiniatureRegister[miniatureKey] ?? DefaultMiniature;
+		templateConfig?.components?.sectionEducation?.miniature ?? "MiniEducationOne";
+	const MiniatureComponent = MiniatureRegister[miniatureKey] ?? DefaultMiniature;
 	return <MiniatureComponent />;
 }
 export function IconEducationRenderer({
@@ -37,20 +35,13 @@ export function IconEducationRenderer({
 }: {
 	templateConfig: TemplateDefaultStyles;
 }) {
-	const iconKey =
-		templateConfig?.components?.sectionEducation?.icon ?? "IconEducation";
+	const iconKey = templateConfig?.components?.sectionEducation?.icon ?? "IconEducation";
 	const IconComponent = IconRegister[iconKey] ?? DefaultIcon;
 	return <IconComponent />;
 }
-export function EducationRenderer({
-	templateConfig,
-}: {
-	templateConfig: TemplateDefaultStyles;
-}) {
+export function EducationRenderer({ templateConfig }: { templateConfig: TemplateDefaultStyles }) {
 	const EducationKey =
-		templateConfig?.components?.sectionEducation?.component ??
-		"SectionEducationOne";
-	const EducationComponent =
-		EducationRegister[EducationKey] ?? DefaultEducation;
+		templateConfig?.components?.sectionEducation?.component ?? "SectionEducationOne";
+	const EducationComponent = EducationRegister[EducationKey] ?? DefaultEducation;
 	return <EducationComponent />;
 }

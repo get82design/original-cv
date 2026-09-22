@@ -32,10 +32,7 @@ function Section({
 	);
 }
 
-function formatDateRange(
-	start?: string | null,
-	end?: string | null,
-): string | null {
+function formatDateRange(start?: string | null, end?: string | null): string | null {
 	if (!start && !end) return null;
 	return [start || "?", end || "présent"].join(" → ");
 }
@@ -53,9 +50,7 @@ export const DialogImportReview = ({
 	if (!draft) return null;
 
 	const identityName =
-		[draft.identity?.firstName, draft.identity?.lastName]
-			.filter(Boolean)
-			.join(" ") || "—";
+		[draft.identity?.firstName, draft.identity?.lastName].filter(Boolean).join(" ") || "—";
 
 	const footer = (
 		<div className="flex flex-wrap justify-end gap-2">
@@ -88,35 +83,24 @@ export const DialogImportReview = ({
 		>
 			<div className="flex max-h-[min(70vh,32rem)] flex-col gap-3 overflow-y-auto p-1 text-zinc-900 dark:text-zinc-100">
 				<p className="m-0 text-sm text-zinc-600 dark:text-zinc-400">
-					Vérifiez ce que l’IA a extrait avant de l’injecter dans votre
-					CV.
+					Vérifiez ce que l’IA a extrait avant de l’injecter dans votre CV.
 				</p>
 
 				<Section title="Identité">
 					<p className="m-0 text-sm font-semibold">{identityName}</p>
 					{draft.identity?.title ? (
-						<p className="m-0 text-sm text-zinc-600 dark:text-zinc-400">
-							{draft.identity.title}
-						</p>
+						<p className="m-0 text-sm text-zinc-600 dark:text-zinc-400">{draft.identity.title}</p>
 					) : null}
 					<ul className="m-0 mt-1 list-none space-y-0.5 p-0 text-xs text-zinc-600 dark:text-zinc-400">
-						{draft.identity?.email ? (
-							<li>{draft.identity.email}</li>
-						) : null}
-						{draft.identity?.phone ? (
-							<li>{draft.identity.phone}</li>
-						) : null}
-						{draft.identity?.location ? (
-							<li>{draft.identity.location}</li>
-						) : null}
+						{draft.identity?.email ? <li>{draft.identity.email}</li> : null}
+						{draft.identity?.phone ? <li>{draft.identity.phone}</li> : null}
+						{draft.identity?.location ? <li>{draft.identity.location}</li> : null}
 					</ul>
 				</Section>
 
 				{draft.description ? (
 					<Section title="Résumé">
-						<p className="m-0 whitespace-pre-wrap text-sm">
-							{draft.description}
-						</p>
+						<p className="m-0 whitespace-pre-wrap text-sm">{draft.description}</p>
 					</Section>
 				) : null}
 
@@ -139,9 +123,7 @@ export const DialogImportReview = ({
 											{exp.missions.slice(0, 4).map((m, j) => (
 												<li key={j}>{m.content}</li>
 											))}
-											{exp.missions.length > 4 ? (
-												<li>… +{exp.missions.length - 4}</li>
-											) : null}
+											{exp.missions.length > 4 ? <li>… +{exp.missions.length - 4}</li> : null}
 										</ul>
 									) : null}
 								</li>
@@ -173,26 +155,19 @@ export const DialogImportReview = ({
 					<Section title="Langues" count={draft.languages.length}>
 						<p className="m-0 text-sm">
 							{draft.languages
-								.map((l) =>
-									l.level ? `${l.name} (${l.level})` : l.name,
-								)
+								.map((l) => (l.level ? `${l.name} (${l.level})` : l.name))
 								.join(" · ")}
 						</p>
 					</Section>
 				) : null}
 
 				{draft.certifications.length > 0 ? (
-					<Section
-						title="Certifications"
-						count={draft.certifications.length}
-					>
+					<Section title="Certifications" count={draft.certifications.length}>
 						<ul className="m-0 list-none space-y-1 p-0 text-sm">
 							{draft.certifications.map((c, i) => (
 								<li key={`${c.title}-${i}`}>
 									{c.title}
-									{c.organismeCertification
-										? ` · ${c.organismeCertification}`
-										: ""}
+									{c.organismeCertification ? ` · ${c.organismeCertification}` : ""}
 								</li>
 							))}
 						</ul>

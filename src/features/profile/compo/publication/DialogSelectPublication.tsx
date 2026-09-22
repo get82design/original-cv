@@ -1,7 +1,4 @@
-import type {
-	ProfileSaveInput,
-	PublicationInput,
-} from "@/services/schemas/profileSave.schema";
+import type { ProfileSaveInput, PublicationInput } from "@/services/schemas/profileSave.schema";
 import type { CvFull } from "@utils/trpc.types";
 import { Button } from "primereact/button";
 import { useEffect, useState } from "react";
@@ -11,9 +8,7 @@ import { PickList, type PickListChangeEvent } from "primereact/picklist";
 import type { ListItem } from "@utils/type";
 
 type CvPublication = NonNullable<CvFull>["publications"][number];
-type ProfilePublicationItem = NonNullable<
-	ProfileSaveInput["publications"]
->[number];
+type ProfilePublicationItem = NonNullable<ProfileSaveInput["publications"]>[number];
 
 function cvPublicationToProfile(exp: CvPublication): ProfilePublicationItem {
 	return {
@@ -56,17 +51,12 @@ export const DialogSelectPublication = ({
 		if (!visible) return;
 		setTarget(listPublicationInProfile);
 		const already = new Set(
-			listPublicationInProfile.map(
-				(e) => `${e.content.title}|${e.content.journalName ?? ""}`,
-			),
+			listPublicationInProfile.map((e) => `${e.content.title}|${e.content.journalName ?? ""}`),
 		);
 		setSource(
 			listPublicationFromCv
 				.map((exp) => cvPublicationToProfile(exp))
-				.filter(
-					(e) =>
-						!already.has(`${e.content.title}|${e.content.journalName ?? ""}`),
-				),
+				.filter((e) => !already.has(`${e.content.title}|${e.content.journalName ?? ""}`)),
 		);
 	}, [visible, listPublicationFromCv]);
 

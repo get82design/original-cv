@@ -60,14 +60,14 @@ describe("SocialMedia model", () => {
 		it("should create an socialMedia without a socialNetwork", async () => {
 			const user = await createTestUserWithProfile();
 			const socialMedia = await prismaTest.socialMedia.create({
-					data: {
-						username: "username",
-						icon: "faGlobe",
-						order: 1,
-						profile: { connect: { id: user.profile.id } },
-					},
-				})
-			
+				data: {
+					username: "username",
+					icon: "faGlobe",
+					order: 1,
+					profile: { connect: { id: user.profile.id } },
+				},
+			});
+
 			expect(socialMedia.username).toBe("username");
 			expect(socialMedia.icon).toBe("faGlobe");
 			expect(socialMedia.order).toBe(1);
@@ -314,9 +314,7 @@ describe("SocialMedia model", () => {
 		// 5-3: supprime les socialMedias quand l'utilisateur est supprimé
 		it("should delete socialMedias when user is deleted", async () => {
 			const user = await createTestUserWithProfile({
-				socialMedias: [
-					{ socialNetwork: "linkedin", username: "user", icon: "faGlobe", order: 1 },
-				],
+				socialMedias: [{ socialNetwork: "linkedin", username: "user", icon: "faGlobe", order: 1 }],
 			});
 
 			await prismaTest.user.delete({ where: { id: user.id } });

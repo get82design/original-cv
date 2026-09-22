@@ -5,9 +5,6 @@ import {
 
 export type StrengthCardProps = CardStrengthOneProps;
 
-export const StrengthCardRegister: Record<
-	string,
-	React.ComponentType<StrengthCardProps>
-> = {
+export const StrengthCardRegister: Record<string, React.ComponentType<StrengthCardProps>> = {
 	CardStrengthOne,
 };

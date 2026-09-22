@@ -9,11 +9,7 @@ export const MiniFormationOne = () => {
 				{[0, 1].map((i) => (
 					<div key={i} className="w-full flex flex-col gap-1">
 						<MiniBar widthClass="w-3/4" />
-						<Skeleton
-							className="dark:bg-gray-700"
-							width="100%"
-							height="1rem"
-						></Skeleton>
+						<Skeleton className="dark:bg-gray-700" width="100%" height="1rem"></Skeleton>
 					</div>
 				))}
 			</div>

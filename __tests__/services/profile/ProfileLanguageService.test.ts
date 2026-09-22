@@ -220,9 +220,7 @@ describe("ProfileLanguageService.move", () => {
 
 	// TEST 2 : déplacement d'un language inexistant
 	it("throws if language does not exist", async () => {
-		await expect(profileLanguageService.move("unknown-id", 1)).rejects.toThrow(
-			NotFoundError,
-		);
+		await expect(profileLanguageService.move("unknown-id", 1)).rejects.toThrow(NotFoundError);
 	});
 
 	// TEST 3 : déplacement d'un language à une position invalide
@@ -272,9 +270,7 @@ describe("ProfileLanguageService.delete", () => {
 
 	// TEST 2 : suppression d'un language inexistant
 	it("throws if language does not exist", async () => {
-		await expect(profileLanguageService.delete("unknown-id")).rejects.toThrow(
-			NotFoundError,
-		);
+		await expect(profileLanguageService.delete("unknown-id")).rejects.toThrow(NotFoundError);
 	});
 
 	// TEST 3 : reordonnancement des languages restants après suppression

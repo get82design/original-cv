@@ -16,14 +16,12 @@ import { moduleField } from "@/features/cv-editor/utils/fields/moduleField";
 
 export const SectionFormationTwo = () => {
 	const { watch } = useFormContext();
-	const watchModelFormationTitle: BaseTextSettings = watch(
-		FieldNameFormation.settingsSectionTitle,
-	);
+	const watchModelFormationTitle: BaseTextSettings = watch(FieldNameFormation.settingsSectionTitle);
 	const watchGeneral = watch(FieldNameLayoutGeneral.layout);
 	const modules = watch("modules");
 	const path = moduleField(modules, "formation", "settings", "content");
 	const cols = watch(`${path}.columns`) ?? 2;
-	
+
 	const {
 		items: watchFormations,
 		itemSelected,
@@ -36,8 +34,7 @@ export const SectionFormationTwo = () => {
 	});
 
 	const itemKey =
-		watch("layoutGeneral.defaultStyles")?.components?.sectionFormation?.item ??
-		"CardFormationOne";
+		watch("layoutGeneral.defaultStyles")?.components?.sectionFormation?.item ?? "CardFormationOne";
 	const Card = FormationCardRegister[itemKey] ?? CardFormationOne;
 
 	return (

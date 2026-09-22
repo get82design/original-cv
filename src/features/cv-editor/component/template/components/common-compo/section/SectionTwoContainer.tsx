@@ -30,19 +30,13 @@ export const SectionTwoContainer = ({
 			{watchLigneDessus && (
 				<div
 					className={`w-full absolute ${
-						watchSpace === "sm"
-							? "top-0"
-							: watchSpace === "lg"
-								? "top-2"
-								: "top-1"
+						watchSpace === "sm" ? "top-0" : watchSpace === "lg" ? "top-2" : "top-1"
 					}`}
 					style={{ backgroundColor: `var(--${primaryColor})`, height: "1px" }}
 				></div>
 			)}
 			<div className="w-1/5">{titleSectionCompo}</div>
-			<div
-				className={`w-4/5 grid mt-5 ${gridCols} ${accent?.type === "leftBand" ? "pl-4" : ""}`}
-			>
+			<div className={`w-4/5 grid mt-5 ${gridCols} ${accent?.type === "leftBand" ? "pl-4" : ""}`}>
 				{sectionCompo}
 			</div>
 		</div>

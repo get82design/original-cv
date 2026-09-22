@@ -5,9 +5,6 @@ import {
 
 export type ExpertiseCardProps = CardExpertiseOneProps;
 
-export const ExpertiseCardRegister: Record<
-	string,
-	React.ComponentType<ExpertiseCardProps>
-> = {
+export const ExpertiseCardRegister: Record<string, React.ComponentType<ExpertiseCardProps>> = {
 	CardExpertiseOne,
 };

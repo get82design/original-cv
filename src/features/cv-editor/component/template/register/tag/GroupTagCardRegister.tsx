@@ -5,9 +5,6 @@ import {
 
 export type GroupTagCardProps = CardGroupTagOneProps;
 
-export const GroupTagCardRegister: Record<
-	string,
-	React.ComponentType<GroupTagCardProps>
-> = {
+export const GroupTagCardRegister: Record<string, React.ComponentType<GroupTagCardProps>> = {
 	CardGroupTagOne,
 };

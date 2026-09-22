@@ -40,9 +40,7 @@ export const HeaderFourContainer = ({
 		<div className="flex flex-col gap-2">
 			<div
 				style={{
-					backgroundColor: headerPrimaryColor
-						? `var(--${primaryColor})`
-						: "var(--gray-700)",
+					backgroundColor: headerPrimaryColor ? `var(--${primaryColor})` : "var(--gray-700)",
 				}}
 				className={`w-full h-6`}
 			/>
@@ -52,9 +50,7 @@ export const HeaderFourContainer = ({
 					chrome.photoSide === "right" ? "flex-row" : "flex-row-reverse"
 				}`}
 			>
-				<div
-					className={`w-full flex flex-col gap-0 ${chrome.textAlignClass}`}
-				>
+				<div className={`w-full flex flex-col gap-0 ${chrome.textAlignClass}`}>
 					<div className={nameRowClass}>
 						{nomCompo}
 						{prenomCompo}

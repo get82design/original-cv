@@ -1,9 +1,6 @@
 import z from "zod";
 import { cvPrizeService } from "../../../src/services/cv/cvPrizeService";
-import {
-	createPrizeSchema,
-	updatePrizeSchema,
-} from "../../../src/services/schemas/prize.schema";
+import { createPrizeSchema, updatePrizeSchema } from "../../../src/services/schemas/prize.schema";
 import { assertCvOwnership } from "../helpers/assertCvOwnership";
 import { protectedProcedure, router } from "../trpc";
 import { prisma } from "../../../lib/prisma";

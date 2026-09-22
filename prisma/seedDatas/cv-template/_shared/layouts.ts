@@ -26,5 +26,5 @@ export const sharedLayout = {
 			sectionTitle: "inter",
 		},
 	},
-	listStyle: "none"
+	listStyle: "none",
 } satisfies TemplateLayout;

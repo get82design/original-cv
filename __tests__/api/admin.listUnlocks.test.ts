@@ -1,10 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { createTestUser } from "../utils/create-test-user";
 import { createTestTemplate } from "../utils/create-test-template";
-import {
-	createTestCaller,
-	createTestSession,
-} from "./helpers/create-test-caller";
+import { createTestCaller, createTestSession } from "./helpers/create-test-caller";
 import { prismaTest } from "../../lib/prismaTest";
 import { unlockedTemplateService } from "../../src/services/commons/unlockedTemplateService";
 
@@ -47,10 +44,7 @@ describe("admin.listUnlocks", () => {
 			page: 1,
 			pageSize: 50,
 		});
-		const hit = result.items.find(
-			(i) =>
-				i.userId === buyer.id && i.templateId === template.id,
-		);
+		const hit = result.items.find((i) => i.userId === buyer.id && i.templateId === template.id);
 		expect(hit).toBeTruthy();
 		expect(hit?.method).toBe("CREDITS");
 		expect(hit?.templateName).toBe(template.name);

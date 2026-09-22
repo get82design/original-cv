@@ -31,9 +31,7 @@ export const SelectTemplate = () => {
 					<div
 						className="group w-full h-56 rounded-lg shadow-md relative overflow-hidden cursor-pointer"
 						style={{
-							border: selected
-								? "solid 2px var(--primary-color)"
-								: "",
+							border: selected ? "solid 2px var(--primary-color)" : "",
 							backgroundImage: `url(/assets/img/${model.name}.png)`,
 							backgroundSize: "cover",
 							backgroundPosition: "top center",
@@ -41,11 +39,9 @@ export const SelectTemplate = () => {
 						}}
 						key={idx}
 						onClick={() => {
-							const next = switchTemplate(
-								getValues() as CvFormValues,
-								model,
-								{ updateModules: true },
-							);
+							const next = switchTemplate(getValues() as CvFormValues, model, {
+								updateModules: true,
+							});
 							reset(next);
 						}}
 					>

@@ -7,17 +7,11 @@ import { useFormContext } from "react-hook-form";
 /** Signature bas de page CV — toujours version print (indépendante du dark mode site). */
 export const CvSignature = () => {
 	const { watch } = useFormContext();
-	const primary = watch(FieldNameLayoutGeneral.primaryColor) as
-		| Color
-		| null
-		| undefined;
+	const primary = watch(FieldNameLayoutGeneral.primaryColor) as Color | null | undefined;
 	const tokens = logoTokensForCv(primary);
 
 	return (
-		<div
-			data-cv-signature
-			className="absolute bottom-3 right-7 z-10 pointer-events-none"
-		>
+		<div data-cv-signature className="absolute bottom-3 right-7 z-10 pointer-events-none">
 			<OriginalCvLogo className="h-7 w-auto" tokens={tokens} />
 		</div>
 	);

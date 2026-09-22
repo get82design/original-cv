@@ -3,10 +3,7 @@ import { compactOrder } from "../../utils/compactOrder";
 import { reorderItems } from "../../utils/reorderCvItems";
 import { validateTimeline } from "../../utils/validateTimeline";
 import { ConflictError, NotFoundError } from "../errors";
-import type {
-	CreateEducationInput,
-	UpdateEducationInput,
-} from "../schemas/education.schema";
+import type { CreateEducationInput, UpdateEducationInput } from "../schemas/education.schema";
 
 export class ProfileEducationService {
 	async create(profileId: string, data: CreateEducationInput) {

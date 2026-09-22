@@ -39,25 +39,19 @@ export const cvRewriteSectionSchema = z.object({
 export type CvRewriteSection = z.infer<typeof cvRewriteSectionSchema>;
 export type CvRewriteItem = z.infer<typeof cvRewriteItemSchema>;
 
-export const cvRewriteSectionJsonSchema = z.toJSONSchema(
-	cvRewriteSectionSchema,
-	{
-		unrepresentable: "any",
-		io: "input",
-	},
-);
+export const cvRewriteSectionJsonSchema = z.toJSONSchema(cvRewriteSectionSchema, {
+	unrepresentable: "any",
+	io: "input",
+});
 
 const SECTION_HINTS: Record<CvRewriteSectionType, string> = {
 	description:
 		"Section profil / accroche : un paragraphe plus percutant et fluide, ton pro, sans inventer de faits. Remplis rewrittenText (items vide).",
 	experience:
 		"Expériences : reformule titres/descriptions/missions pour plus d’impact. Conserve le sens. Remplis items[] (id = id fourni). Missions → bullets.",
-	project:
-		"Projets : title + body (+ bullets si points clés). Ne change pas les techno inventées.",
-	volunteering:
-		"Bénévolat : title + body + bullets éventuels. Garde le sens associatif.",
-	achievement:
-		"Réalisations : title + body, formulations impactantes mais factuelles.",
+	project: "Projets : title + body (+ bullets si points clés). Ne change pas les techno inventées.",
+	volunteering: "Bénévolat : title + body + bullets éventuels. Garde le sens associatif.",
+	achievement: "Réalisations : title + body, formulations impactantes mais factuelles.",
 };
 
 const PROMPT_RULES = `Règles :

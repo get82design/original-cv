@@ -3,10 +3,7 @@ import { useCreateCvContext } from "@/features/cv-editor/component/context/Creat
 import { FieldNameVolunteering } from "@/features/cv-editor/utils/fields/fieldNameVolunteering";
 import { dataFieldContent } from "@/features/cv-editor/utils/fields/moduleField";
 import type { VolunteeringItemContentInput } from "@/services/schemas/cvSave.schema";
-import {
-	SortableContext,
-	verticalListSortingStrategy,
-} from "@dnd-kit/sortable";
+import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import type { ListItem } from "@utils/type";
 import { Button } from "primereact/button";
 import { useFormContext } from "react-hook-form";
@@ -32,16 +29,8 @@ export const VolunteeringsDnd = ({
 	const { setValue } = useFormContext();
 	const { setSectionSelected, sectionSelected } = useCreateCvContext();
 
-	const addElmList = (
-		item: ListItem<VolunteeringItemContentInput>,
-		elm: string,
-		index: number,
-	) => {
-		const pathContent = dataFieldContent(
-			"datas.volunteering.content",
-			index,
-			"content.missions",
-		);
+	const addElmList = (item: ListItem<VolunteeringItemContentInput>, elm: string, index: number) => {
+		const pathContent = dataFieldContent("datas.volunteering.content", index, "content.missions");
 
 		const newMission = {
 			clientKey: "mission-" + uuid(),
@@ -56,11 +45,7 @@ export const VolunteeringsDnd = ({
 	};
 
 	const deleteMission = (index: number, idx: number) => {
-		const pathContent = dataFieldContent(
-			"datas.volunteering.content",
-			index,
-			"content.missions",
-		);
+		const pathContent = dataFieldContent("datas.volunteering.content", index, "content.missions");
 		const currentMissions = watchVolunteerings[index]?.content?.missions ?? [];
 		const nextMissions = currentMissions
 			.filter((_, i) => i !== idx)
@@ -72,11 +57,7 @@ export const VolunteeringsDnd = ({
 	};
 
 	const itemsMenu = (idx: number) => {
-		const pathContent = dataFieldContent(
-			"datas.volunteering.content",
-			idx,
-			"content.settings",
-		);
+		const pathContent = dataFieldContent("datas.volunteering.content", idx, "content.settings");
 		return [
 			{
 				label: "Options",
@@ -125,9 +106,7 @@ export const VolunteeringsDnd = ({
 						template: (
 							<div className="flex justify-between py-1 px-4 items-center">
 								<p>Liste</p>
-								<ToggleAfficherCacher
-									name={`${pathContent}.withListMissions`}
-								/>
+								<ToggleAfficherCacher name={`${pathContent}.withListMissions`} />
 							</div>
 						),
 					},
@@ -177,10 +156,7 @@ export const VolunteeringsDnd = ({
 							const fresh = createNewItem();
 							setValue(
 								FieldNameVolunteering.content,
-								[
-									...watchVolunteerings,
-									{ ...fresh, order: watchVolunteerings.length + 1 },
-								],
+								[...watchVolunteerings, { ...fresh, order: watchVolunteerings.length + 1 }],
 								{ shouldDirty: true },
 							);
 						}}

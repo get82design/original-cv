@@ -198,9 +198,7 @@ describe("ProfileExpertiseService.move", () => {
 
 	// TEST 2 : déplacement d'un expertise inexistant
 	it("throws if expertise does not exist", async () => {
-		await expect(profileExpertiseService.move("unknown-id", 1)).rejects.toThrow(
-			NotFoundError,
-		);
+		await expect(profileExpertiseService.move("unknown-id", 1)).rejects.toThrow(NotFoundError);
 	});
 
 	// TEST 3 : déplacement d'un expertise à une position invalide
@@ -212,9 +210,7 @@ describe("ProfileExpertiseService.move", () => {
 			level: Level.Senior,
 			order: 1,
 		});
-		await expect(
-			profileExpertiseService.move(expertise.id, 0),
-		).rejects.toThrow();
+		await expect(profileExpertiseService.move(expertise.id, 0)).rejects.toThrow();
 	});
 
 	it("move no-op if order is the same", async () => {
@@ -252,9 +248,7 @@ describe("ProfileExpertiseService.delete", () => {
 
 	// TEST 2 : suppression d'un expertise inexistant
 	it("throws if expertise does not exist", async () => {
-		await expect(profileExpertiseService.delete("unknown-id")).rejects.toThrow(
-			NotFoundError,
-		);
+		await expect(profileExpertiseService.delete("unknown-id")).rejects.toThrow(NotFoundError);
 	});
 
 	// TEST 3 : reordonnancement des expertises restants après suppression

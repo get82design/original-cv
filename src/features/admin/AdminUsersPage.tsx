@@ -119,9 +119,7 @@ export function AdminUsersPage() {
 			<AppCard className="admin-filters mb-4">
 				<div className="flex flex-col gap-3 lg:flex-row lg:items-end">
 					<div className="flex-1">
-						<label className="mb-1 block text-xs text-zinc-500">
-							Recherche
-						</label>
+						<label className="mb-1 block text-xs text-zinc-500">Recherche</label>
 						<div className="relative w-full">
 							<i className="pi pi-search pointer-events-none absolute top-1/2 left-3 z-10 -translate-y-1/2 text-sm text-zinc-500 dark:text-zinc-400" />
 							<InputText
@@ -133,9 +131,7 @@ export function AdminUsersPage() {
 						</div>
 					</div>
 					<div className="w-full lg:w-44">
-						<label className="mb-1 block text-xs text-zinc-500">
-							Plan
-						</label>
+						<label className="mb-1 block text-xs text-zinc-500">Plan</label>
 						<Dropdown
 							value={plan}
 							options={PLAN_OPTIONS}
@@ -149,9 +145,7 @@ export function AdminUsersPage() {
 						/>
 					</div>
 					<div className="w-full lg:w-40">
-						<label className="mb-1 block text-xs text-zinc-500">
-							Statut
-						</label>
+						<label className="mb-1 block text-xs text-zinc-500">Statut</label>
 						<Dropdown
 							value={isActive}
 							options={ACTIVE_OPTIONS}
@@ -168,11 +162,7 @@ export function AdminUsersPage() {
 			</AppCard>
 
 			<AppCard className="overflow-x-auto !p-0">
-				<Tooltip
-					target=".admin-users-status-tip"
-					position="top"
-					className="text-xs"
-				/>
+				<Tooltip target=".admin-users-status-tip" position="top" className="text-xs" />
 				<table className="w-full min-w-[52rem] border-collapse text-left text-sm">
 					<thead>
 						<tr className="border-b border-zinc-200 bg-zinc-50 text-xs uppercase tracking-wide text-zinc-500 dark:border-zinc-700 dark:bg-zinc-900/60 dark:text-zinc-400">
@@ -200,19 +190,13 @@ export function AdminUsersPage() {
 					<tbody>
 						{listQuery.isLoading ? (
 							<tr>
-								<td
-									colSpan={11}
-									className="px-4 py-8 text-center text-zinc-500"
-								>
+								<td colSpan={11} className="px-4 py-8 text-center text-zinc-500">
 									Chargement…
 								</td>
 							</tr>
 						) : (listQuery.data?.items.length ?? 0) === 0 ? (
 							<tr>
-								<td
-									colSpan={11}
-									className="px-4 py-8 text-center text-zinc-500"
-								>
+								<td colSpan={11} className="px-4 py-8 text-center text-zinc-500">
 									Aucun utilisateur.
 								</td>
 							</tr>
@@ -228,19 +212,13 @@ export function AdminUsersPage() {
 											className="block hover:text-primary dark:hover:text-primary-dark"
 										>
 											<p className="m-0 font-medium">{u.email}</p>
-											{u.name ? (
-												<p className="m-0 text-xs text-zinc-500">
-													{u.name}
-												</p>
-											) : null}
+											{u.name ? <p className="m-0 text-xs text-zinc-500">{u.name}</p> : null}
 										</Link>
 									</td>
 									<td className="px-3 py-3 text-xs">{u.plan}</td>
 									<td className="px-3 py-3 text-xs">{u.role}</td>
 									<td className="px-3 py-3">{u.downloadCredits}</td>
-									<td className="px-3 py-3">
-										{u.freeDownloadsRemaining}
-									</td>
+									<td className="px-3 py-3">{u.freeDownloadsRemaining}</td>
 									<td className="px-3 py-3">{u.cvCount}</td>
 									<td className="px-3 py-3">{u.downloadCount}</td>
 									<td className="px-3 py-3 text-xs">
@@ -255,9 +233,7 @@ export function AdminUsersPage() {
 									<td className="px-3 py-3 text-xs whitespace-nowrap">
 										{formatDate(u.lastLoginAt)}
 									</td>
-									<td className="px-3 py-3 text-xs whitespace-nowrap">
-										{formatDate(u.createdAt)}
-									</td>
+									<td className="px-3 py-3 text-xs whitespace-nowrap">{formatDate(u.createdAt)}</td>
 									<td className="px-3 py-3">
 										<span
 											className={`rounded px-2 py-0.5 text-[10px] font-semibold uppercase ${
@@ -293,9 +269,7 @@ export function AdminUsersPage() {
 						label="Suivant"
 						outlined
 						disabled={page >= totalPages || listQuery.isFetching}
-						onClick={() =>
-							setPage((p) => Math.min(totalPages, p + 1))
-						}
+						onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
 					/>
 				</div>
 			) : null}

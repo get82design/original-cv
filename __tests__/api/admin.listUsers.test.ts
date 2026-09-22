@@ -1,9 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { createTestUser } from "../utils/create-test-user";
-import {
-	createTestCaller,
-	createTestSession,
-} from "./helpers/create-test-caller";
+import { createTestCaller, createTestSession } from "./helpers/create-test-caller";
 import { prismaTest } from "../../lib/prismaTest";
 
 describe("admin.listUsers", () => {

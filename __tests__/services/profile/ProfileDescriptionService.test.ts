@@ -62,9 +62,9 @@ describe("ProfileDescriptionService.findByProfileId", () => {
 		const user = await createTestUser();
 		const profile = await createTestProfile(user.id, "John", "Doe");
 
-		await expect(
-			profileDescriptionService.findByProfileId(profile.id),
-		).rejects.toThrow(NotFoundError);
+		await expect(profileDescriptionService.findByProfileId(profile.id)).rejects.toThrow(
+			NotFoundError,
+		);
 	});
 });
 
@@ -110,9 +110,9 @@ describe("ProfileDescriptionService.delete", () => {
 
 		await profileDescriptionService.delete(profile.id);
 
-		await expect(
-			profileDescriptionService.findByProfileId(profile.id),
-		).rejects.toThrow(NotFoundError);
+		await expect(profileDescriptionService.findByProfileId(profile.id)).rejects.toThrow(
+			NotFoundError,
+		);
 	});
 
 	// TEST 2 : description inexistante
@@ -120,8 +120,6 @@ describe("ProfileDescriptionService.delete", () => {
 		const user = await createTestUser();
 		const profile = await createTestProfile(user.id, "John", "Doe");
 
-		await expect(profileDescriptionService.delete(profile.id)).rejects.toThrow(
-			NotFoundError,
-		);
+		await expect(profileDescriptionService.delete(profile.id)).rejects.toThrow(NotFoundError);
 	});
 });

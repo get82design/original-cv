@@ -1,9 +1,6 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import { prismaTest } from "../../../lib/prismaTest";
-import {
-	aiBillingService,
-	isBillableAiFeature,
-} from "../../../src/services/ai/aiBillingService";
+import { aiBillingService, isBillableAiFeature } from "../../../src/services/ai/aiBillingService";
 import { createTestUser } from "../../utils/create-test-user";
 
 async function ensurePrices() {
@@ -36,11 +33,7 @@ describe("aiBillingService", () => {
 
 	it("listPrices returns all billable features", async () => {
 		const prices = await aiBillingService.listPrices();
-		expect(prices.map((p) => p.feature)).toEqual([
-			"REVIEW_CV",
-			"REWRITE_SECTION",
-			"COVER_LETTER",
-		]);
+		expect(prices.map((p) => p.feature)).toEqual(["REVIEW_CV", "REWRITE_SECTION", "COVER_LETTER"]);
 		expect(prices.find((p) => p.feature === "REVIEW_CV")).toMatchObject({
 			costFree: null,
 			costPaid: 2,
@@ -54,10 +47,7 @@ describe("aiBillingService", () => {
 			data: { downloadCredits: 5, freeDownloadsRemaining: 3 },
 		});
 
-		const options = await aiBillingService.getBillingOptions(
-			user.id,
-			"REWRITE_SECTION",
-		);
+		const options = await aiBillingService.getBillingOptions(user.id, "REWRITE_SECTION");
 		expect(options).toMatchObject({
 			feature: "REWRITE_SECTION",
 			costFree: 2,
@@ -71,9 +61,7 @@ describe("aiBillingService", () => {
 
 	it("getBillingOptions rejects non-billable features", async () => {
 		const user = await createTestUser();
-		await expect(
-			aiBillingService.getBillingOptions(user.id, "IMPORT_CV"),
-		).rejects.toMatchObject({
+		await expect(aiBillingService.getBillingOptions(user.id, "IMPORT_CV")).rejects.toMatchObject({
 			message: expect.stringContaining("n’est pas facturée"),
 		});
 	});
@@ -85,11 +73,7 @@ describe("aiBillingService", () => {
 			data: { downloadCredits: 5, freeDownloadsRemaining: 0 },
 		});
 
-		const result = await aiBillingService.assertCanPay(
-			user.id,
-			"REVIEW_CV",
-			"paid",
-		);
+		const result = await aiBillingService.assertCanPay(user.id, "REVIEW_CV", "paid");
 		expect(result).toEqual({ creditsSpent: 2, paymentMethod: "PAID" });
 	});
 
@@ -100,11 +84,11 @@ describe("aiBillingService", () => {
 			data: { downloadCredits: 1, freeDownloadsRemaining: 10 },
 		});
 
-		await expect(
-			aiBillingService.assertCanPay(user.id, "REVIEW_CV", "paid"),
-		).rejects.toMatchObject({
-			message: expect.stringContaining("Crédits payants insuffisants"),
-		});
+		await expect(aiBillingService.assertCanPay(user.id, "REVIEW_CV", "paid")).rejects.toMatchObject(
+			{
+				message: expect.stringContaining("Crédits payants insuffisants"),
+			},
+		);
 	});
 
 	it("assertCanPay rejects free when feature has no free tariff", async () => {
@@ -114,11 +98,11 @@ describe("aiBillingService", () => {
 			data: { freeDownloadsRemaining: 10 },
 		});
 
-		await expect(
-			aiBillingService.assertCanPay(user.id, "REVIEW_CV", "free"),
-		).rejects.toMatchObject({
-			message: expect.stringContaining("n’accepte pas les crédits gratuits"),
-		});
+		await expect(aiBillingService.assertCanPay(user.id, "REVIEW_CV", "free")).rejects.toMatchObject(
+			{
+				message: expect.stringContaining("n’accepte pas les crédits gratuits"),
+			},
+		);
 	});
 
 	it("assertCanPay rejects free when free balance is too low", async () => {

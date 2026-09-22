@@ -10,11 +10,7 @@ export const MiniLanguageOne = () => {
 			<div className="w-full grid grid-cols-3 gap-1">
 				{[0, 1, 2].map((i) => (
 					<div key={i} className="w-full flex gap-1 items-center">
-						<Skeleton
-							className="dark:bg-gray-700"
-							width="60%"
-							height="8px"
-						></Skeleton>
+						<Skeleton className="dark:bg-gray-700" width="60%" height="8px"></Skeleton>
 						<div className="w-full flex gap-0 items-center">
 							<MdStar
 								style={{

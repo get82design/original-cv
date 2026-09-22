@@ -93,10 +93,7 @@ export const CompetenceGroupDnd = ({
 							const fresh = createNewItem();
 							setValue(
 								FieldNameCompetence.content,
-								[
-									...watchCompetences,
-									{ ...fresh, order: watchCompetences.length + 1 },
-								],
+								[...watchCompetences, { ...fresh, order: watchCompetences.length + 1 }],
 								{ shouldDirty: true },
 							);
 						}}

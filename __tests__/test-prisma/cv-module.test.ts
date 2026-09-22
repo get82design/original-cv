@@ -103,7 +103,9 @@ describe("CvModule model", () => {
 			await prismaTest.cVModule.create({
 				data: { type: "skill", order: 1, cvId: cv.id },
 			});
-			await expect(prismaTest.cVModule.create({ data: { type: "skill", order: 2, cvId: cv.id } })).rejects.toThrow();
+			await expect(
+				prismaTest.cVModule.create({ data: { type: "skill", order: 2, cvId: cv.id } }),
+			).rejects.toThrow();
 		});
 	});
 
@@ -167,10 +169,12 @@ describe("CvModule model", () => {
 		// 3-2: ne pas pouvoir mettre à jour un module avec un type différent
 		it("should not update module with different type", async () => {
 			const { module1 } = await createCVWithModules();
-			await expect(prismaTest.cVModule.update({
-				where: { id: module1.id },
-				data: { type: "experience" },
-			})).rejects.toThrow();
+			await expect(
+				prismaTest.cVModule.update({
+					where: { id: module1.id },
+					data: { type: "experience" },
+				}),
+			).rejects.toThrow();
 		});
 	});
 

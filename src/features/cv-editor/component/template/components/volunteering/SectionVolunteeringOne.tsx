@@ -25,17 +25,15 @@ export const SectionVolunteeringOne = () => {
 		itemSelected,
 		setItemSelected,
 		createNewItem,
-	} = useSectionList<VolunteeringItemContentInput, VolunteeringContentSettings>(
-		{
-			contentField: FieldNameVolunteering.content,
-			moduleType: "volunteering",
-			createInit: createInitVolunteering,
-		},
-	);
+	} = useSectionList<VolunteeringItemContentInput, VolunteeringContentSettings>({
+		contentField: FieldNameVolunteering.content,
+		moduleType: "volunteering",
+		createInit: createInitVolunteering,
+	});
 
 	const itemKey =
-		watch("layoutGeneral.defaultStyles")?.components?.sectionVolunteering
-			?.item ?? "CardVolunteeringOne";
+		watch("layoutGeneral.defaultStyles")?.components?.sectionVolunteering?.item ??
+		"CardVolunteeringOne";
 	const Card = VolunteeringCardRegister[itemKey] ?? CardVolunteeringOne;
 
 	return (
@@ -46,11 +44,7 @@ export const SectionVolunteeringOne = () => {
 					name={FieldNameVolunteering.titleSection}
 					placeholder={"Bénévolat"}
 					watchInput={watchModelVolunteeringTitle}
-					icon={
-						<MdOutlineVolunteerActivism
-							style={{ width: "16px", height: "16px" }}
-						/>
-					}
+					icon={<MdOutlineVolunteerActivism style={{ width: "16px", height: "16px" }} />}
 					setSectionSelected={setItemSelected}
 				/>
 			}

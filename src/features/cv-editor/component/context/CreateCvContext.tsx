@@ -1,9 +1,4 @@
-import {
-	createContext,
-	type PropsWithChildren,
-	useContext,
-	useState,
-} from "react";
+import { createContext, type PropsWithChildren, useContext, useState } from "react";
 // import { useFormContext } from "react-hook-form"
 
 // interface ItemMemory {
@@ -39,9 +34,7 @@ const CreateCvContext = createContext<CreateCvContextProps>({
 export const useCreateCvContext = () => {
 	const context = useContext(CreateCvContext);
 	if (context === undefined) {
-		throw new Error(
-			"useCreateCvContext must be used within a CreateCvContextProvider",
-		);
+		throw new Error("useCreateCvContext must be used within a CreateCvContextProvider");
 	}
 	return context;
 };
@@ -112,11 +105,7 @@ export const CreateCvProvider = ({ children }: PropsWithChildren) => {
 		sectionSelected,
 		setSectionSelected,
 	};
-	return (
-		<CreateCvContext.Provider value={value}>
-			{children}
-		</CreateCvContext.Provider>
-	);
+	return <CreateCvContext.Provider value={value}>{children}</CreateCvContext.Provider>;
 };
 
 export function clearEditorSelection(ctx: {

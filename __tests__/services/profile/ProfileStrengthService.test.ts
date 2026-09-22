@@ -198,9 +198,7 @@ describe("ProfileStrengthService.move", () => {
 
 	// TEST 2 : force inexistante
 	it("throws if strength does not exist", async () => {
-		await expect(profileStrengthService.move("unknown-id", 1)).rejects.toThrow(
-			NotFoundError,
-		);
+		await expect(profileStrengthService.move("unknown-id", 1)).rejects.toThrow(NotFoundError);
 	});
 
 	// TEST 3 : ordre invalide
@@ -247,9 +245,7 @@ describe("ProfileStrengthService.delete", () => {
 
 	// TEST 2 : force inexistante
 	it("throws if strength does not exist", async () => {
-		await expect(profileStrengthService.delete("unknown-id")).rejects.toThrow(
-			NotFoundError,
-		);
+		await expect(profileStrengthService.delete("unknown-id")).rejects.toThrow(NotFoundError);
 	});
 
 	// TEST 3 : reordonnement des forces restantes après suppression

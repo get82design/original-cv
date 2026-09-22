@@ -41,20 +41,14 @@ export const CardGroupCompetenceOne = ({
 	const { setSelectModifInput, setSelectInputForm } = useCreateCvContext();
 	const { watch, getValues, setValue } = useFormContext();
 	const watchGeneral = watch(FieldNameLayoutGeneral.layout);
-	const pathContent = dataFieldContent(
-		"datas.competenceGroup.content",
-		index,
-		"content",
-	);
+	const pathContent = dataFieldContent("datas.competenceGroup.content", index, "content");
 	const watchWithIcon = watchGeneral?.titleSection.withIcon;
 	const watchListStyle = watchGeneral?.listStyle;
 	const menuLeft = useRef<Menu>(null);
 
 	const watchModelTitleOfGroup = watch(`${pathContent}.settings.groupTitle`);
 
-	const deleteGroup = (
-		itemToDelete: ListItem<CompetenceGroupItemContentInput>,
-	) => {
+	const deleteGroup = (itemToDelete: ListItem<CompetenceGroupItemContentInput>) => {
 		const list = (getValues(FieldNameCompetence.content) ??
 			[]) as ListItem<CompetenceGroupItemContentInput>[];
 
@@ -72,8 +66,7 @@ export const CardGroupCompetenceOne = ({
 			(itemToDelete.content?.competences ?? []).map((s) => s.clientKey),
 		);
 		const selectionWasInGroup =
-			itemSelected === itemToDelete.clientKey ||
-			deletedCompetenceKeys.has(itemSelected);
+			itemSelected === itemToDelete.clientKey || deletedCompetenceKeys.has(itemSelected);
 
 		if (selectionWasInGroup) {
 			setItemSelected(newList[0]?.clientKey ?? "");
@@ -111,12 +104,7 @@ export const CardGroupCompetenceOne = ({
 				itemsMenu ? (
 					<>
 						<ToolbarOptionsButton menuRef={menuLeft} />
-						<Menu
-							model={itemsMenu(index)}
-							popup
-							ref={menuLeft}
-							style={{ width: 300 }}
-						/>
+						<Menu model={itemsMenu(index)} popup ref={menuLeft} style={{ width: 300 }} />
 					</>
 				) : null
 			}
@@ -172,9 +160,7 @@ export const ContentCompetenceGroupContainer = ({
 		<div className="w-full flex flex-col gap-1 pb-1 mt-1">
 			<div className="w-full flex justify-between items-center relative -mb-2">
 				<CommonPointList general={general} />
-				<div className="w-4/5">
-					{item?.content?.settings?.withGroupTitle && titleGroupCompo}
-				</div>
+				<div className="w-4/5">{item?.content?.settings?.withGroupTitle && titleGroupCompo}</div>
 			</div>
 			<div className="w-full flex flex-col gap-0">{competencesCompo}</div>
 		</div>

@@ -4,10 +4,7 @@ import { FieldNameSkill } from "@/features/cv-editor/utils/fields/fieldNameSkill
 import { ToggleAfficherCacher } from "@/components/input/toggle-button/AfficherCacher";
 import { RadioRhf } from "@/components/input/radio/RadioRhf";
 import { useCreateCvContext } from "@/features/cv-editor/component/context/CreateCvContext";
-import {
-	SortableContext,
-	verticalListSortingStrategy,
-} from "@dnd-kit/sortable";
+import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { MdAdd } from "react-icons/md";
 import { Button } from "primereact/button";
 import type { ListItem } from "@utils/type";
@@ -44,9 +41,7 @@ export const SkillGroupDnd = ({
 	const itemOptions = ITEM_OPTIONS[groupCols];
 
 	const itemsMenu = (idx: number) => {
-		const watchDesignTag = watch(
-			`datas.skillGroup.content.${idx}.content.settings.design`,
-		);
+		const watchDesignTag = watch(`datas.skillGroup.content.${idx}.content.settings.design`);
 		// dans itemsMenu(idx) :
 		const itemColumnsPath = `datas.skillGroup.content.${idx}.content.settings.itemColumns`;
 		const watchItemCols = watch(itemColumnsPath);
@@ -125,7 +120,9 @@ export const SkillGroupDnd = ({
 			items={watchSkills.map((s) => s.clientKey)}
 			strategy={verticalListSortingStrategy}
 		>
-			<div className={`skills-grid grid items-start grid ${COL_CLASS[groupCols as keyof typeof COL_CLASS] ?? "grid-cols-1"} ${groupCols === 1 ? "gap-1" : "gap-x-4 gap-y-1"}`}>
+			<div
+				className={`skills-grid grid items-start grid ${COL_CLASS[groupCols as keyof typeof COL_CLASS] ?? "grid-cols-1"} ${groupCols === 1 ? "gap-1" : "gap-x-4 gap-y-1"}`}
+			>
 				{watchSkills.map((skill, index) => (
 					<button
 						type="button"

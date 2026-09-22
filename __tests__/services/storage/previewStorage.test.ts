@@ -28,32 +28,28 @@ describe("parseDataImageUrl", () => {
 
 	it("décode png et webp", () => {
 		const payload = Buffer.from("img").toString("base64");
-		expect(
-			parseDataImageUrl(`data:image/png;base64,${payload}`),
-		).toMatchObject({ mimeType: "image/png", ext: "png" });
-		expect(
-			parseDataImageUrl(`data:image/webp;base64,${payload}`),
-		).toMatchObject({ mimeType: "image/webp", ext: "webp" });
+		expect(parseDataImageUrl(`data:image/png;base64,${payload}`)).toMatchObject({
+			mimeType: "image/png",
+			ext: "png",
+		});
+		expect(parseDataImageUrl(`data:image/webp;base64,${payload}`)).toMatchObject({
+			mimeType: "image/webp",
+			ext: "webp",
+		});
 	});
 
 	it("refuse un format invalide", () => {
-		expect(() => parseDataImageUrl("https://x.com/a.jpg")).toThrow(
-			ValidationError,
-		);
+		expect(() => parseDataImageUrl("https://x.com/a.jpg")).toThrow(ValidationError);
 	});
 
 	it("refuse une image vide", () => {
 		// padding seul → buffer vide après decode (trim n’enlève pas le `=`)
-		expect(() =>
-			parseDataImageUrl("data:image/png;base64,="),
-		).toThrow(/empty/);
+		expect(() => parseDataImageUrl("data:image/png;base64,=")).toThrow(/empty/);
 	});
 
 	it("refuse une image trop volumineuse", () => {
 		const big = Buffer.alloc(600_001, 1).toString("base64");
-		expect(() =>
-			parseDataImageUrl(`data:image/jpeg;base64,${big}`),
-		).toThrow(/too large/);
+		expect(() => parseDataImageUrl(`data:image/jpeg;base64,${big}`)).toThrow(/too large/);
 	});
 });
 
@@ -113,17 +109,13 @@ describe("LocalPreviewStorage", () => {
 			contentType: "image/jpeg",
 		});
 		await storage.deleteIfManaged(publicUrl);
-		await expect(
-			readFile(path.join(dir, "u1", "del.jpg")),
-		).rejects.toThrow();
+		await expect(readFile(path.join(dir, "u1", "del.jpg"))).rejects.toThrow();
 	});
 
 	it("deleteIfManaged ignore URL étrangère, null et path traversal", async () => {
 		const storage = new LocalPreviewStorage(dir, "/uploads/cv-previews");
 		await expect(storage.deleteIfManaged(null)).resolves.toBeUndefined();
-		await expect(
-			storage.deleteIfManaged("https://cdn.example.com/x.jpg"),
-		).resolves.toBeUndefined();
+		await expect(storage.deleteIfManaged("https://cdn.example.com/x.jpg")).resolves.toBeUndefined();
 		await expect(
 			storage.deleteIfManaged("/uploads/cv-previews/../secret"),
 		).resolves.toBeUndefined();

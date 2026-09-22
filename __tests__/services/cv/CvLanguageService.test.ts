@@ -235,7 +235,6 @@ describe("CvLanguageService.update", () => {
 		const updated = await cvLanguageService.update(language.id, { settings });
 		expect(updated.settings).toEqual(settings);
 	});
-	
 });
 
 describe("CvLanguageService.move", () => {
@@ -269,9 +268,7 @@ describe("CvLanguageService.move", () => {
 
 	// TEST 2 : déplacement d'un language inexistant
 	it("throws if language does not exist", async () => {
-		await expect(cvLanguageService.move("unknown-id", 1)).rejects.toThrow(
-			NotFoundError,
-		);
+		await expect(cvLanguageService.move("unknown-id", 1)).rejects.toThrow(NotFoundError);
 	});
 
 	// TEST 3 : déplacement d'un language à une position invalide
@@ -324,9 +321,7 @@ describe("CvLanguageService.delete", () => {
 
 	// TEST 2 : suppression d'un language inexistant
 	it("throws if language does not exist", async () => {
-		await expect(cvLanguageService.delete("unknown-id")).rejects.toThrow(
-			NotFoundError,
-		);
+		await expect(cvLanguageService.delete("unknown-id")).rejects.toThrow(NotFoundError);
 	});
 
 	// TEST 3 : reordonnancement des languages restants après suppression

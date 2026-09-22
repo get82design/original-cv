@@ -2,11 +2,7 @@ import { describe, expect, it } from "vitest";
 import { createTestUser } from "../../utils/create-test-user";
 import { createTestTemplate } from "../../utils/create-test-template";
 import { createCV } from "../../utils/create-test-cv-full-flow";
-import {
-	ConflictError,
-	NotFoundError,
-	ValidationError,
-} from "../../../src/services/errors";
+import { ConflictError, NotFoundError, ValidationError } from "../../../src/services/errors";
 import { cvEducationService } from "../../../src/services/cv/cvEducationService";
 import { CvTimelineStatus } from "../../../generated/prisma/enums";
 import { expectMoveNoOp } from "../../utils/move-noop";
@@ -494,9 +490,7 @@ describe("CvEducationService.move", () => {
 
 	// TEST 2 : education inexistant
 	it("throws if education does not exist", async () => {
-		await expect(cvEducationService.move("unknown-id", 1)).rejects.toThrow(
-			NotFoundError,
-		);
+		await expect(cvEducationService.move("unknown-id", 1)).rejects.toThrow(NotFoundError);
 	});
 
 	// TEST 3 : ordre invalide
@@ -555,9 +549,7 @@ describe("CvEducationService.delete", () => {
 
 	// TEST 2 : education inexistant
 	it("throws if education does not exist", async () => {
-		await expect(cvEducationService.delete("unknown-id")).rejects.toThrow(
-			NotFoundError,
-		);
+		await expect(cvEducationService.delete("unknown-id")).rejects.toThrow(NotFoundError);
 	});
 
 	// TEST 3 : réorganisation des educations après suppression

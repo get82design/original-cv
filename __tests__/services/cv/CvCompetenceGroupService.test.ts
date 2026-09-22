@@ -85,9 +85,7 @@ describe("CvCompetenceGroupService.findAllByCvId", () => {
 			order: 2,
 			competences: [],
 		});
-		const competenceGroups = await cvCompetenceGroupService.findAllByCvId(
-			cv.id,
-		);
+		const competenceGroups = await cvCompetenceGroupService.findAllByCvId(cv.id);
 		expect(competenceGroups.length).toBe(2);
 		expect(competenceGroups[0]?.title).toBe("Competence Group 1");
 		expect(competenceGroups[0]?.order).toBe(1);
@@ -99,9 +97,7 @@ describe("CvCompetenceGroupService.findAllByCvId", () => {
 		const user = await createTestUser();
 		const template = await createTestTemplate();
 		const cv = await createCV(user.id, template.id);
-		const competenceGroups = await cvCompetenceGroupService.findAllByCvId(
-			cv.id,
-		);
+		const competenceGroups = await cvCompetenceGroupService.findAllByCvId(cv.id);
 		expect(competenceGroups).toEqual([]);
 	});
 
@@ -120,9 +116,7 @@ describe("CvCompetenceGroupService.findAllByCvId", () => {
 			order: 2,
 			competences: [],
 		});
-		const competenceGroups = await cvCompetenceGroupService.findAllByCvId(
-			cv.id,
-		);
+		const competenceGroups = await cvCompetenceGroupService.findAllByCvId(cv.id);
 		expect(competenceGroups.length).toBe(1);
 		expect(competenceGroups[0]?.title).toBe("Competence Group 1");
 		expect(competenceGroups[0]?.order).toBe(1);
@@ -139,13 +133,10 @@ describe("CvCompetenceGroupService.update", () => {
 			order: 1,
 			competences: [],
 		});
-		const updatedCompetenceGroup = await cvCompetenceGroupService.update(
-			competenceGroup.id,
-			{
-				title: "Competence Group 2",
-				competences: [],
-			},
-		);
+		const updatedCompetenceGroup = await cvCompetenceGroupService.update(competenceGroup.id, {
+			title: "Competence Group 2",
+			competences: [],
+		});
 		expect(updatedCompetenceGroup.title).toBe("Competence Group 2");
 		expect(updatedCompetenceGroup.order).toBe(1);
 	});
@@ -207,9 +198,7 @@ describe("CvCompetenceGroupService.move", () => {
 
 	// TEST 2 : competence group inexistant
 	it("throws if competence group does not exist", async () => {
-		await expect(
-			cvCompetenceGroupService.move("unknown-id", 1),
-		).rejects.toThrow(NotFoundError);
+		await expect(cvCompetenceGroupService.move("unknown-id", 1)).rejects.toThrow(NotFoundError);
 	});
 
 	// TEST 3 : ordre invalide
@@ -222,9 +211,7 @@ describe("CvCompetenceGroupService.move", () => {
 			order: 1,
 			competences: [],
 		});
-		await expect(
-			cvCompetenceGroupService.move(competenceGroup.id, 0),
-		).rejects.toThrow();
+		await expect(cvCompetenceGroupService.move(competenceGroup.id, 0)).rejects.toThrow();
 	});
 
 	it("move no-op if order is the same", async () => {
@@ -264,9 +251,7 @@ describe("CvCompetenceGroupService.delete", () => {
 
 	// TEST 2 : competence group inexistant
 	it("throws if competence group does not exist", async () => {
-		await expect(cvCompetenceGroupService.delete("unknown-id")).rejects.toThrow(
-			NotFoundError,
-		);
+		await expect(cvCompetenceGroupService.delete("unknown-id")).rejects.toThrow(NotFoundError);
 	});
 
 	// TEST 3 : réorganisation des competence groups après suppression

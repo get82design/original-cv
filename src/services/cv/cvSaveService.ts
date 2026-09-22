@@ -55,8 +55,7 @@ export class CvSaveService {
 						...(input.layoutGeneral !== undefined
 							? {
 									layoutGeneral: input.layoutGeneral,
-									primaryColorName:
-										primaryColorName ?? null,
+									primaryColorName: primaryColorName ?? null,
 								}
 							: {}),
 					},
@@ -70,64 +69,32 @@ export class CvSaveService {
 			if (datas.header) {
 				const { id: _headerId, ...headerData } = datas.header;
 				const headerUpdate = {
-					...(headerData.title !== undefined
-						? { title: headerData.title }
-						: {}),
-					...(headerData.subtitle !== undefined
-						? { subtitle: headerData.subtitle }
-						: {}),
-					...(headerData.phone !== undefined
-						? { phone: headerData.phone }
-						: {}),
-					...(headerData.email !== undefined
-						? { email: headerData.email }
-						: {}),
-					...(headerData.location !== undefined
-						? { location: headerData.location }
-						: {}),
-					...(headerData.portfolio !== undefined
-						? { portfolio: headerData.portfolio }
-						: {}),
+					...(headerData.title !== undefined ? { title: headerData.title } : {}),
+					...(headerData.subtitle !== undefined ? { subtitle: headerData.subtitle } : {}),
+					...(headerData.phone !== undefined ? { phone: headerData.phone } : {}),
+					...(headerData.email !== undefined ? { email: headerData.email } : {}),
+					...(headerData.location !== undefined ? { location: headerData.location } : {}),
+					...(headerData.portfolio !== undefined ? { portfolio: headerData.portfolio } : {}),
 					...(headerData.nom !== undefined ? { nom: headerData.nom } : {}),
-					...(headerData.prenom !== undefined
-						? { prenom: headerData.prenom }
-						: {}),
-					...(headerData.settings != null
-						? { settings: headerData.settings }
-						: {}),
+					...(headerData.prenom !== undefined ? { prenom: headerData.prenom } : {}),
+					...(headerData.settings != null ? { settings: headerData.settings } : {}),
 				};
 				if (headerData.title === undefined) {
-					throw new ValidationError(
-						"Header title is required to create or upsert a CV header.",
-					);
+					throw new ValidationError("Header title is required to create or upsert a CV header.");
 				}
 				await tx.cvHeader.upsert({
 					where: { cvId: id },
 					create: {
 						cvId: id,
 						title: headerData.title,
-						...(headerData.subtitle !== undefined
-							? { subtitle: headerData.subtitle }
-							: {}),
-						...(headerData.phone !== undefined
-							? { phone: headerData.phone }
-							: {}),
-						...(headerData.email !== undefined
-							? { email: headerData.email }
-							: {}),
-						...(headerData.location !== undefined
-							? { location: headerData.location }
-							: {}),
-						...(headerData.portfolio !== undefined
-							? { portfolio: headerData.portfolio }
-							: {}),
+						...(headerData.subtitle !== undefined ? { subtitle: headerData.subtitle } : {}),
+						...(headerData.phone !== undefined ? { phone: headerData.phone } : {}),
+						...(headerData.email !== undefined ? { email: headerData.email } : {}),
+						...(headerData.location !== undefined ? { location: headerData.location } : {}),
+						...(headerData.portfolio !== undefined ? { portfolio: headerData.portfolio } : {}),
 						...(headerData.nom !== undefined ? { nom: headerData.nom } : {}),
-						...(headerData.prenom !== undefined
-							? { prenom: headerData.prenom }
-							: {}),
-						...(headerData.settings != null
-							? { settings: headerData.settings }
-							: {}),
+						...(headerData.prenom !== undefined ? { prenom: headerData.prenom } : {}),
+						...(headerData.settings != null ? { settings: headerData.settings } : {}),
 					},
 					update: headerUpdate,
 				});
@@ -240,9 +207,7 @@ export class CvSaveService {
 			// ——— 5. Projects (replace) ———
 			if (datas.project) {
 				const items = datas.project.content;
-				const itemsToSave = items.filter(
-					(i) => (i.content.title ?? "").trim().length > 0,
-				);
+				const itemsToSave = items.filter((i) => (i.content.title ?? "").trim().length > 0);
 				const keepIds = itemsToSave
 					.map((item) => item.id)
 					.filter((projectId): projectId is string => !!projectId);
@@ -340,9 +305,7 @@ export class CvSaveService {
 				);
 				const keepIds = itemsToSave
 					.map((item) => item.id)
-					.filter(
-						(volunteeringId): volunteeringId is string => !!volunteeringId,
-					);
+					.filter((volunteeringId): volunteeringId is string => !!volunteeringId);
 
 				if (keepIds.length === 0) {
 					await tx.cvVolunteering.deleteMany({ where: { cvId: id } });
@@ -429,9 +392,7 @@ export class CvSaveService {
 			// ——— 7. Formations (replace) ———
 			if (datas.formation) {
 				const items = datas.formation.content;
-				const itemsToSave = items.filter(
-					(i) => (i.content.title ?? "").trim().length > 0,
-				);
+				const itemsToSave = items.filter((i) => (i.content.title ?? "").trim().length > 0);
 				const keepIds = itemsToSave
 					.map((item) => item.id)
 					.filter((formationId): formationId is string => !!formationId);
@@ -482,14 +443,10 @@ export class CvSaveService {
 			// ——— 8. Certifications (replace) ———
 			if (datas.certification) {
 				const items = datas.certification.content;
-				const itemsToSave = items.filter(
-					(i) => (i.content.title ?? "").trim().length > 0,
-				  );
+				const itemsToSave = items.filter((i) => (i.content.title ?? "").trim().length > 0);
 				const keepIds = itemsToSave
 					.map((item) => item.id)
-					.filter(
-						(certificationId): certificationId is string => !!certificationId,
-					);
+					.filter((certificationId): certificationId is string => !!certificationId);
 
 				if (keepIds.length === 0) {
 					await tx.cvCertification.deleteMany({ where: { cvId: id } });
@@ -532,9 +489,7 @@ export class CvSaveService {
 			// ——— 9. Prizes (replace) ———
 			if (datas.prize) {
 				const items = datas.prize.content;
-				const itemsToSave = items.filter(
-					(i) => (i.content.title ?? "").trim().length > 0,
-				);
+				const itemsToSave = items.filter((i) => (i.content.title ?? "").trim().length > 0);
 				const keepIds = itemsToSave
 					.map((item) => item.id)
 					.filter((prizeId): prizeId is string => !!prizeId);
@@ -580,9 +535,7 @@ export class CvSaveService {
 			// ——— 10. Expertises (replace) ———
 			if (datas.expertise) {
 				const items = datas.expertise.content;
-				const itemsToSave = items.filter(
-					(i) => (i.content.title ?? "").trim().length > 0,
-				);
+				const itemsToSave = items.filter((i) => (i.content.title ?? "").trim().length > 0);
 				const keepIds = itemsToSave
 					.map((item) => item.id)
 					.filter((expertiseId): expertiseId is string => !!expertiseId);
@@ -698,9 +651,7 @@ export class CvSaveService {
 			// ——— 13. Passion (replace) ———
 			if (datas.passion) {
 				const items = datas.passion.content;
-				const itemsToSave = items.filter(
-					(i) => (i.content.title ?? "").trim().length > 0,
-				);
+				const itemsToSave = items.filter((i) => (i.content.title ?? "").trim().length > 0);
 				const keepIds = itemsToSave
 					.map((item) => item.id)
 					.filter((passionId): passionId is string => !!passionId);
@@ -743,9 +694,7 @@ export class CvSaveService {
 			// ——— 14. Language (replace) ———
 			if (datas.language) {
 				const items = datas.language.content;
-				const itemsToSave = items.filter(
-					(i) => (i.content.name ?? "").trim().length > 0,
-				);
+				const itemsToSave = items.filter((i) => (i.content.name ?? "").trim().length > 0);
 				const keepIds = itemsToSave
 					.map((item) => item.id)
 					.filter((languageId): languageId is string => !!languageId);
@@ -788,9 +737,7 @@ export class CvSaveService {
 			// ——— 15. Publication (replace) ———
 			if (datas.publication) {
 				const items = datas.publication.content;
-				const itemsToSave = items.filter(
-					(i) => (i.content.title ?? "").trim().length > 0,
-				);
+				const itemsToSave = items.filter((i) => (i.content.title ?? "").trim().length > 0);
 				const keepIds = itemsToSave
 					.map((item) => item.id)
 					.filter((publicationId): publicationId is string => !!publicationId);
@@ -842,9 +789,7 @@ export class CvSaveService {
 			// ——— 16. Strength (replace) ———
 			if (datas.strength) {
 				const items = datas.strength.content;
-				const itemsToSave = items.filter(
-					(i) => (i.content.title ?? "").trim().length > 0,
-				);
+				const itemsToSave = items.filter((i) => (i.content.title ?? "").trim().length > 0);
 				const keepIds = itemsToSave
 					.map((item) => item.id)
 					.filter((strengthId): strengthId is string => !!strengthId);
@@ -888,9 +833,7 @@ export class CvSaveService {
 			// ——— 17. Achievement (replace) ———
 			if (datas.achievement) {
 				const items = datas.achievement.content;
-				const itemsToSave = items.filter(
-					(i) => (i.content.title ?? "").trim().length > 0,
-				  );
+				const itemsToSave = items.filter((i) => (i.content.title ?? "").trim().length > 0);
 				const keepIds = itemsToSave
 					.map((item) => item.id)
 					.filter((achievementId): achievementId is string => !!achievementId);
@@ -935,9 +878,7 @@ export class CvSaveService {
 			// ——— 18. Education (replace) ———
 			if (datas.education) {
 				const items = datas.education.content;
-				const itemsToSave = items.filter(
-					(i) => (i.content.school ?? "").trim().length > 0,
-				  );
+				const itemsToSave = items.filter((i) => (i.content.school ?? "").trim().length > 0);
 				const keepIds = itemsToSave
 					.map((item) => item.id)
 					.filter((educationId): educationId is string => !!educationId);
@@ -1024,13 +965,9 @@ export class CvSaveService {
 					}
 					// skills nested — ton bloc tx.cvSkill est déjà bon
 					const skillsToSave = skills.filter(
-						(s) =>
-							(s.content.name ?? "").trim().length > 0 ||
-							!!s.content.skillId,
+						(s) => (s.content.name ?? "").trim().length > 0 || !!s.content.skillId,
 					);
-					const skillKeepIds = skillsToSave
-						.map((s) => s.id)
-						.filter((id): id is string => !!id);
+					const skillKeepIds = skillsToSave.map((s) => s.id).filter((id): id is string => !!id);
 					await tx.cvSkill.deleteMany({
 						where:
 							skillKeepIds.length === 0
@@ -1077,10 +1014,7 @@ export class CvSaveService {
 				const items = datas.competenceGroup.content;
 				const keepIds = items
 					.map((item) => item.id)
-					.filter(
-						(competenceGroupId): competenceGroupId is string =>
-							!!competenceGroupId,
-					);
+					.filter((competenceGroupId): competenceGroupId is string => !!competenceGroupId);
 
 				if (keepIds.length === 0) {
 					await tx.cvCompetenceGroup.deleteMany({ where: { cvId: id } });
@@ -1111,10 +1045,8 @@ export class CvSaveService {
 						competenceGroupId = created.id;
 					}
 					const competencesToSave = competences.filter(
-						(c) =>
-						  (c.content.name ?? "").trim().length > 0 ||
-						  !!c.content.competenceId,
-					  );
+						(c) => (c.content.name ?? "").trim().length > 0 || !!c.content.competenceId,
+					);
 					const competenceKeepIds = competencesToSave
 						.map((c) => c.id)
 						.filter((competenceId): competenceId is string => !!competenceId);
@@ -1190,10 +1122,8 @@ export class CvSaveService {
 						tagGroupId = created.id;
 					}
 					const tagsToSave = tags.filter(
-						(t) =>
-						  (t.content.name ?? "").trim().length > 0 ||
-						  !!t.content.tagId,
-					  );
+						(t) => (t.content.name ?? "").trim().length > 0 || !!t.content.tagId,
+					);
 					const tagKeepIds = tagsToSave
 						.map((t) => t.id)
 						.filter((tagId): tagId is string => !!tagId);
@@ -1237,9 +1167,7 @@ export class CvSaveService {
 			await tx.cVModule.deleteMany({ where: { cvId: id } });
 
 			if (modules.length > 0) {
-				const normalized = compactActiveOrders(
-					modules as TemplateModule[],
-				);
+				const normalized = compactActiveOrders(modules as TemplateModule[]);
 				await tx.cVModule.createMany({
 					data: normalized.map((mod) => ({
 						cvId: id,

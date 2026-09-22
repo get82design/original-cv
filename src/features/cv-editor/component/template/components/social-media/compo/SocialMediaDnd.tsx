@@ -1,10 +1,7 @@
 import { useCreateCvContext } from "@/features/cv-editor/component/context/CreateCvContext";
 import { FieldNameSocialMedia } from "@/features/cv-editor/utils/fields/fieldNameSocialMedia";
 import type { SocialMediaItemContentInput } from "@/services/schemas/cvSave.schema";
-import {
-	horizontalListSortingStrategy,
-	SortableContext,
-} from "@dnd-kit/sortable";
+import { horizontalListSortingStrategy, SortableContext } from "@dnd-kit/sortable";
 import type { ListItem } from "@utils/type";
 import { Button } from "primereact/button";
 import { useFormContext } from "react-hook-form";
@@ -76,11 +73,7 @@ export const CompoSocialMediaDnd = ({
 }: CompoSocialMediaDndProps) => {
 	const { setValue } = useFormContext();
 	const itemsMenu = (idx: number) => {
-		const pathContent = dataFieldContent(
-			"datas.socialMedia.content",
-			idx,
-			"content.settings",
-		);
+		const pathContent = dataFieldContent("datas.socialMedia.content", idx, "content.settings");
 		return [
 			{
 				label: "Options",
@@ -89,9 +82,7 @@ export const CompoSocialMediaDnd = ({
 						template: (
 							<div className="flex justify-between py-1 px-4 items-center">
 								<p>Réseau social</p>
-								<ToggleAfficherCacher
-									name={`${pathContent}.withSocialNetwork`}
-								/>
+								<ToggleAfficherCacher name={`${pathContent}.withSocialNetwork`} />
 							</div>
 						),
 					},

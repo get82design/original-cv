@@ -9,10 +9,7 @@ import { protectedProcedure, router } from "../trpc";
 import { prisma } from "../../../lib/prisma";
 import { NotFoundError } from "../../../src/services/errors";
 
-async function assertSocialMediaCvOwnership(
-	socialMediaId: string,
-	userId: string,
-) {
+async function assertSocialMediaCvOwnership(socialMediaId: string, userId: string) {
 	const socialMedia = await prisma.cvSocialMedia.findUnique({
 		where: { id: socialMediaId },
 		select: { id: true, cvId: true },

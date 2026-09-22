@@ -1,10 +1,7 @@
 import { prisma } from "../../../lib/prisma";
 import { compactOrder } from "../../utils/compactOrder";
 import { reorderItems } from "../../utils/reorderCvItems";
-import type {
-	CreateCompetenceInput,
-	UpdateCompetenceInput,
-} from "../schemas/competence.schema";
+import type { CreateCompetenceInput, UpdateCompetenceInput } from "../schemas/competence.schema";
 import { ConflictError, NotFoundError, ValidationError } from "../errors";
 
 export class ProfileCompetenceService {
@@ -133,10 +130,7 @@ export class ProfileCompetenceService {
 
 	async move(id: string, newOrder: number) {
 		if (newOrder < 1) {
-			throw new ValidationError(
-				"INVALID_ORDER",
-				"Order must be greater than 0.",
-			);
+			throw new ValidationError("INVALID_ORDER", "Order must be greater than 0.");
 		}
 
 		const competence = await prisma.profileCompetence.findUnique({

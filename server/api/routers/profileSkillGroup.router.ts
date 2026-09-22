@@ -9,10 +9,7 @@ import {
 import { getOwnedProfile } from "../helpers/getOwnedProfile";
 import { protectedProcedure, router } from "../trpc";
 
-async function assertSkillGroupProfileOwnership(
-	groupId: string,
-	userId: string,
-) {
+async function assertSkillGroupProfileOwnership(groupId: string, userId: string) {
 	const group = await prisma.profileSkillGroup.findUnique({
 		where: { id: groupId },
 		select: {
@@ -31,12 +28,10 @@ async function assertSkillGroupProfileOwnership(
 }
 
 export const profileSkillGroupRouter = router({
-	create: protectedProcedure
-		.input(createSkillGroupSchema)
-		.mutation(async ({ input, ctx }) => {
-			const profile = await getOwnedProfile(ctx.session.user.id);
-			return profileSkillGroupService.create(profile.id, input);
-		}),
+	create: protectedProcedure.input(createSkillGroupSchema).mutation(async ({ input, ctx }) => {
+		const profile = await getOwnedProfile(ctx.session.user.id);
+		return profileSkillGroupService.create(profile.id, input);
+	}),
 
 	findAll: protectedProcedure.query(async ({ ctx }) => {
 		const profile = await getOwnedProfile(ctx.session.user.id);

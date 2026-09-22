@@ -75,9 +75,7 @@ export const HeaderFour = () => {
 					}}
 				/>
 			}
-			subTitleCompo={
-				<IntituleCvInput forceWidthFull textAlign={chrome.textAlign} />
-			}
+			subTitleCompo={<IntituleCvInput forceWidthFull textAlign={chrome.textAlign} />}
 			emailCompo={<EmailInput textAlign={chrome.textAlign} />}
 			phoneCompo={<PhoneInput textAlign={chrome.textAlign} />}
 			locationCompo={<LocationInput textAlign={chrome.textAlign} />}
@@ -88,9 +86,7 @@ export const HeaderFour = () => {
 						style={{
 							width: "150px",
 							/* height: "130px",*/ backgroundImage: `url(${
-								photo && photo !== ""
-									? photo
-									: "/assets/img/User-avatar.svg.png"
+								photo && photo !== "" ? photo : "/assets/img/User-avatar.svg.png"
 							})`,
 							backgroundPosition: "center",
 							backgroundSize: "cover",

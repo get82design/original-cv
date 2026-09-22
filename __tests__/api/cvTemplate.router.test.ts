@@ -2,10 +2,7 @@ import { describe, expect, it } from "vitest";
 import { TRPCError } from "@trpc/server";
 
 import { createTestUser } from "../utils/create-test-user";
-import {
-	createTestCaller,
-	createTestSession,
-} from "./helpers/create-test-caller";
+import { createTestCaller, createTestSession } from "./helpers/create-test-caller";
 import {
 	createCvTemplateSchema,
 	type CreateCvTemplateInput,
@@ -99,9 +96,9 @@ describe("cvTemplateRouter", () => {
 	it("create returns UNAUTHORIZED without session", async () => {
 		const caller = await createTestCaller();
 
-		await expect(
-			caller.cvTemplate.create(modernePayload),
-		).rejects.toMatchObject({ code: "UNAUTHORIZED" });
+		await expect(caller.cvTemplate.create(modernePayload)).rejects.toMatchObject({
+			code: "UNAUTHORIZED",
+		});
 	});
 
 	it("create creates a template via tRPC", async () => {
@@ -173,9 +170,9 @@ describe("cvTemplateRouter", () => {
 
 		await caller.cvTemplate.create(modernePayload);
 
-		await expect(
-			caller.cvTemplate.create(modernePayload),
-		).rejects.toMatchObject({ code: "CONFLICT" });
+		await expect(caller.cvTemplate.create(modernePayload)).rejects.toMatchObject({
+			code: "CONFLICT",
+		});
 	});
 
 	it("findById returns a template", async () => {
@@ -193,9 +190,9 @@ describe("cvTemplateRouter", () => {
 		const user = await createTestUser();
 		const caller = await createTestCaller(createTestSession(user));
 
-		await expect(
-			caller.cvTemplate.findById({ id: "unknown-id" }),
-		).rejects.toMatchObject({ code: "NOT_FOUND" });
+		await expect(caller.cvTemplate.findById({ id: "unknown-id" })).rejects.toMatchObject({
+			code: "NOT_FOUND",
+		});
 	});
 
 	// it("findById returns UNAUTHORIZED without session", async () => {
@@ -225,10 +222,7 @@ describe("cvTemplateRouter", () => {
 		const list = await caller.cvTemplate.findAll();
 
 		expect(list).toHaveLength(2);
-		expect(list.map((t) => t.name)).toEqual([
-			"Template Classique",
-			"Template Moderne",
-		]);
+		expect(list.map((t) => t.name)).toEqual(["Template Classique", "Template Moderne"]);
 	});
 
 	it("findAll returns empty array when no templates", async () => {

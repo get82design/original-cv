@@ -1,15 +1,10 @@
 import { describe, expect, it } from "vitest";
 import { TRPCClientError } from "@trpc/client";
-import {
-	getClientErrorMessage,
-	isTooManyRequestsError,
-} from "../../src/utils/clientError";
+import { getClientErrorMessage, isTooManyRequestsError } from "../../src/utils/clientError";
 
 describe("getClientErrorMessage", () => {
 	it("lit le message d’un TRPCClientError", () => {
-		const err = TRPCClientError.from(
-			new Error("L’assistant est temporairement saturé."),
-		);
+		const err = TRPCClientError.from(new Error("L’assistant est temporairement saturé."));
 		Object.assign(err, {
 			data: { code: "TOO_MANY_REQUESTS" },
 		});

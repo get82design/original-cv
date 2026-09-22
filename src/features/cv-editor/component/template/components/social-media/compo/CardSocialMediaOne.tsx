@@ -41,9 +41,7 @@ export const CardSocialMediaOne = ({
 	const watchModelSocialMedia = watch(`${pathContent}.settings.socialNetwork`);
 	const watchModelUsername = watch(`${pathContent}.settings.username`);
 
-	const deleteSocialMedia = (
-		itemToDelete: ListItem<SocialMediaItemContentInput>,
-	) => {
+	const deleteSocialMedia = (itemToDelete: ListItem<SocialMediaItemContentInput>) => {
 		const list = (getValues(FieldNameSocialMedia.content) ??
 			[]) as ListItem<SocialMediaItemContentInput>[];
 
@@ -77,12 +75,7 @@ export const CardSocialMediaOne = ({
 				itemsMenu ? (
 					<>
 						<ToolbarOptionsButton menuRef={menuLeft} />
-						<Menu
-							model={itemsMenu(index)}
-							popup
-							ref={menuLeft}
-							style={{ width: 300 }}
-						/>
+						<Menu model={itemsMenu(index)} popup ref={menuLeft} style={{ width: 300 }} />
 					</>
 				) : null
 			}
@@ -158,9 +151,7 @@ export const ContentSocialMediaContainer = ({
 			{item.content?.settings?.withIcon && iconCompo}
 			<div className="flex flex-col gap-0">
 				{item.content?.settings?.withSocialNetwork && socialNetworkCompo}
-				<div className="-mt-1">
-					{item.content?.settings?.withUsername && userNameCompo}
-				</div>
+				<div className="-mt-1">{item.content?.settings?.withUsername && userNameCompo}</div>
 			</div>
 		</div>
 	);

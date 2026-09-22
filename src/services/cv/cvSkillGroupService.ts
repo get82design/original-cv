@@ -2,10 +2,7 @@ import { prisma } from "../../../lib/prisma";
 import { compactOrder } from "../../utils/compactOrder";
 import { reorderItems } from "../../utils/reorderCvItems";
 import { ConflictError, NotFoundError, ValidationError } from "../errors";
-import type {
-	CreateSkillGroupInput,
-	UpdateSkillGroupInput,
-} from "../schemas/skillGroup.schema";
+import type { CreateSkillGroupInput, UpdateSkillGroupInput } from "../schemas/skillGroup.schema";
 
 export class CvSkillGroupService {
 	async create(cvId: string, data: CreateSkillGroupInput) {

@@ -7,42 +7,18 @@ export const MiniProjectOne = () => {
 			<MiniTitle>Projet</MiniTitle>
 			<div className="w-full flex justify-between">
 				<div className="w-2/3 flex flex-col gap-1">
-					<Skeleton
-						className="dark:bg-gray-700"
-						width="60%"
-						height="8px"
-					></Skeleton>
-					<Skeleton
-						className="dark:bg-gray-700"
-						width="60%"
-						height="8px"
-					></Skeleton>
+					<Skeleton className="dark:bg-gray-700" width="60%" height="8px"></Skeleton>
+					<Skeleton className="dark:bg-gray-700" width="60%" height="8px"></Skeleton>
 				</div>
 				<div className="w-1/4 flex flex-col gap-1">
 					<MiniBar widthClass="w-full" />
 				</div>
 			</div>
-			<Skeleton
-				className="dark:bg-gray-700"
-				width="100%"
-				height="2rem"
-			></Skeleton>
+			<Skeleton className="dark:bg-gray-700" width="100%" height="2rem"></Skeleton>
 			<div className="pl-4 flex flex-col gap-1">
-				<Skeleton
-					className="dark:bg-gray-700"
-					width="100%"
-					height="8px"
-				></Skeleton>
-				<Skeleton
-					className="dark:bg-gray-700"
-					width="100%"
-					height="8px"
-				></Skeleton>
-				<Skeleton
-					className="dark:bg-gray-700"
-					width="100%"
-					height="8px"
-				></Skeleton>
+				<Skeleton className="dark:bg-gray-700" width="100%" height="8px"></Skeleton>
+				<Skeleton className="dark:bg-gray-700" width="100%" height="8px"></Skeleton>
+				<Skeleton className="dark:bg-gray-700" width="100%" height="8px"></Skeleton>
 			</div>
 		</div>
 	);

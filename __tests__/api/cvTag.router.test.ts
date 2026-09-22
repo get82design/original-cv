@@ -1,17 +1,10 @@
 import { describe, expect, it } from "vitest";
 import { TRPCError } from "@trpc/server";
 
-import {
-	createTag,
-	createTagGroup,
-	createCV,
-} from "../utils/create-test-cv-full-flow";
+import { createTag, createTagGroup, createCV } from "../utils/create-test-cv-full-flow";
 import { createTestTemplate } from "../utils/create-test-template";
 import { createTestUser } from "../utils/create-test-user";
-import {
-	createTestCaller,
-	createTestSession,
-} from "./helpers/create-test-caller";
+import { createTestCaller, createTestSession } from "./helpers/create-test-caller";
 
 describe("cvTagRouter", () => {
 	async function setup() {
@@ -219,8 +212,8 @@ describe("cvTagRouter", () => {
 	it("delete returns NOT_FOUND for unknown id", async () => {
 		const { caller } = await setup();
 
-		await expect(
-			caller.cvTag.delete({ id: "unknown-id" }),
-		).rejects.toMatchObject({ code: "NOT_FOUND" });
+		await expect(caller.cvTag.delete({ id: "unknown-id" })).rejects.toMatchObject({
+			code: "NOT_FOUND",
+		});
 	});
 });

@@ -18,9 +18,7 @@ export const TitleAppOne = ({
 			>
 				{firstPart}
 				{withSpace && " "}
-				<span className="font-extralight text-zinc-900 dark:text-white">
-					{secondPart}
-				</span>
+				<span className="font-extralight text-zinc-900 dark:text-white">{secondPart}</span>
 			</h2>
 			<div className="h-1 w-100 bg-primary dark:bg-primary-dark" />
 		</div>

@@ -2,10 +2,7 @@ import { prisma } from "../../../lib/prisma";
 import { reorderItems } from "../../utils/reorderCvItems";
 import { ConflictError, NotFoundError } from "../errors";
 import { compactOrder } from "../../utils/compactOrder";
-import type {
-	CreatePassionInput,
-	UpdatePassionInput,
-} from "../schemas/passion.schema";
+import type { CreatePassionInput, UpdatePassionInput } from "../schemas/passion.schema";
 
 export class ProfilePassionService {
 	async create(profileId: string, data: CreatePassionInput) {

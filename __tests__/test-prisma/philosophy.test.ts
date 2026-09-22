@@ -24,9 +24,7 @@ describe("Philosophy model", () => {
 				},
 			});
 			const philosophy = user.profile!.philosophy!;
-			expect(philosophy.citation).toBe(
-				"Ce que je sais c'est que je ne sais rien",
-			);
+			expect(philosophy.citation).toBe("Ce que je sais c'est que je ne sais rien");
 			expect(philosophy.author).toBe("Platon");
 		});
 
@@ -96,9 +94,7 @@ describe("Philosophy model", () => {
 				where: { id: user.profile.philosophy!.id },
 				data: { citation: "Je ne sais qu'une chose c'est que je ne sais rien" },
 			});
-			expect(philosophy.citation).toBe(
-				"Je ne sais qu'une chose c'est que je ne sais rien",
-			);
+			expect(philosophy.citation).toBe("Je ne sais qu'une chose c'est que je ne sais rien");
 		});
 
 		// 3-2: peut mettre à jour uniquement l'auteur sans affecter la citation

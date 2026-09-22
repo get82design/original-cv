@@ -1,7 +1,6 @@
 import { ValidationError } from "../errors";
 
-const DATA_IMAGE_RE =
-	/^data:(image\/(?:jpeg|jpg|png|webp));base64,([A-Za-z0-9+/=\s]+)$/i;
+const DATA_IMAGE_RE = /^data:(image\/(?:jpeg|jpg|png|webp));base64,([A-Za-z0-9+/=\s]+)$/i;
 
 export type ParsedDataImage = {
 	mimeType: "image/jpeg" | "image/png" | "image/webp";
@@ -9,9 +8,7 @@ export type ParsedDataImage = {
 	buffer: Buffer;
 };
 
-function normalizeMime(
-	mime: string,
-): ParsedDataImage["mimeType"] {
+function normalizeMime(mime: string): ParsedDataImage["mimeType"] {
 	const m = mime.toLowerCase();
 	if (m === "image/jpg" || m === "image/jpeg") return "image/jpeg";
 	if (m === "image/png") return "image/png";
@@ -30,9 +27,7 @@ export function parseDataImageUrl(dataUrl: string): ParsedDataImage {
 	const trimmed = dataUrl.trim();
 	const match = trimmed.match(DATA_IMAGE_RE);
 	if (!match?.[1] || !match[2]) {
-		throw new ValidationError(
-			"Preview must be a data:image/(jpeg|png|webp);base64,… URL",
-		);
+		throw new ValidationError("Preview must be a data:image/(jpeg|png|webp);base64,… URL");
 	}
 
 	const mimeType = normalizeMime(match[1]);

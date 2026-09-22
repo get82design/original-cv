@@ -2,10 +2,7 @@ import { prisma } from "../../../lib/prisma";
 import { reorderItems } from "../../utils/reorderCvItems";
 import { ConflictError, NotFoundError } from "../errors";
 import { compactOrder } from "../../utils/compactOrder";
-import type {
-	CreateLanguageInput,
-	UpdateLanguageInput,
-} from "../schemas/language.schema";
+import type { CreateLanguageInput, UpdateLanguageInput } from "../schemas/language.schema";
 
 export class CvLanguageService {
 	async create(cvId: string, data: CreateLanguageInput) {

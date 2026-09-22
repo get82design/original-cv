@@ -1,7 +1,4 @@
-import type {
-	LanguageInput,
-	ProfileSaveInput,
-} from "@/services/schemas/profileSave.schema";
+import type { LanguageInput, ProfileSaveInput } from "@/services/schemas/profileSave.schema";
 import type { CvFull } from "@utils/trpc.types";
 import type { ListItem } from "@utils/type";
 import { Button } from "primereact/button";
@@ -50,16 +47,12 @@ export function DialogSelectLanguage({
 		if (!visible) return;
 		setTarget(listLanguageInProfile);
 		const already = new Set(
-			listLanguageInProfile.map(
-				(e) => `${e.content.name}|${e.content.level ?? ""}`,
-			),
+			listLanguageInProfile.map((e) => `${e.content.name}|${e.content.level ?? ""}`),
 		);
 		setSource(
 			listLanguageFromCv
 				.map((exp) => cvLanguageToProfile(exp))
-				.filter(
-					(e) => !already.has(`${e.content.name}|${e.content.level ?? ""}`),
-				),
+				.filter((e) => !already.has(`${e.content.name}|${e.content.level ?? ""}`)),
 		);
 	}, [visible, listLanguageFromCv]);
 

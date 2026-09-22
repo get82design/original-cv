@@ -1,9 +1,6 @@
 import { useCreateCvContext } from "@/features/cv-editor/component/context/CreateCvContext";
 import { FieldNameLanguage } from "@/features/cv-editor/utils/fields/fieldNameLanguage";
-import {
-	horizontalListSortingStrategy,
-	SortableContext,
-} from "@dnd-kit/sortable";
+import { horizontalListSortingStrategy, SortableContext } from "@dnd-kit/sortable";
 import { Button } from "primereact/button";
 import { useFormContext } from "react-hook-form";
 import type { ListItem } from "@utils/type";
@@ -35,19 +32,19 @@ export const LanguageDnd = ({
 			items={watchLanguages.map((s) => s.clientKey)}
 			strategy={horizontalListSortingStrategy}
 		>
-				<div
-					className={`language-grid grid ${COL_CLASS[colOfLanguage as keyof typeof COL_CLASS] ?? "grid-cols-4"} gap-x-2 gap-y-0 min-h-[30px]`}
-				>
-					<CompoLanguageDnd
-						languages={watchLanguages}
-						itemSelected={itemSelected}
-						setItemSelected={setItemSelected}
-						setSectionSelected={setSectionSelected}
-						showAddLanguage={showAddLanguage}
-						createNewItem={createNewItem}
-						CardComponent={CardComponent}
-					/>
-				</div>
+			<div
+				className={`language-grid grid ${COL_CLASS[colOfLanguage as keyof typeof COL_CLASS] ?? "grid-cols-4"} gap-x-2 gap-y-0 min-h-[30px]`}
+			>
+				<CompoLanguageDnd
+					languages={watchLanguages}
+					itemSelected={itemSelected}
+					setItemSelected={setItemSelected}
+					setSectionSelected={setSectionSelected}
+					showAddLanguage={showAddLanguage}
+					createNewItem={createNewItem}
+					CardComponent={CardComponent}
+				/>
+			</div>
 		</SortableContext>
 	);
 };

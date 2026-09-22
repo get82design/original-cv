@@ -30,8 +30,7 @@ function isAppError(error: unknown): error is AppError {
 }
 
 export function toTrpcError(error: unknown): TRPCError {
-	const original =
-		error instanceof TRPCError && error.cause != null ? error.cause : error;
+	const original = error instanceof TRPCError && error.cause != null ? error.cause : error;
 
 	if (isAppError(original)) {
 		return new TRPCError({

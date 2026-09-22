@@ -25,20 +25,16 @@ export const SectionCompetenceOne = () => {
 		itemSelected,
 		setItemSelected,
 		createNewItem,
-	} = useSectionList<
-		CompetenceGroupItemContentInput,
-		CompetenceContentSettings
-	>({
+	} = useSectionList<CompetenceGroupItemContentInput, CompetenceContentSettings>({
 		contentField: FieldNameCompetence.content,
 		moduleType: "competence",
 		createInit: createInitCompetence,
 	});
 
 	const groupKey =
-		watch("layoutGeneral.defaultStyles")?.components?.sectionCompetence
-			?.group ?? "CardGroupCompetenceOne";
-	const GroupCard =
-		GroupCompetenceCardRegister[groupKey] ?? CardGroupCompetenceOne;
+		watch("layoutGeneral.defaultStyles")?.components?.sectionCompetence?.group ??
+		"CardGroupCompetenceOne";
+	const GroupCard = GroupCompetenceCardRegister[groupKey] ?? CardGroupCompetenceOne;
 
 	return (
 		<SectionOneContainer

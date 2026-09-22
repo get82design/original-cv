@@ -6,8 +6,7 @@ export default withAuth(
 		const { pathname } = req.nextUrl;
 		const token = req.nextauth.token;
 		const isAuth = !!token;
-		const isAuthPage =
-			pathname.startsWith("/login") || pathname.startsWith("/register");
+		const isAuthPage = pathname.startsWith("/login") || pathname.startsWith("/register");
 
 		if (isAuthPage && isAuth) {
 			return NextResponse.redirect(new URL("/", req.url));

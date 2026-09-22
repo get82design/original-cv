@@ -39,9 +39,7 @@ export const LoginCompo = () => {
 			<AppCard className="auth-form w-1/2 flex flex-col gap-3 p-8">
 				<h1 className="font-light text-4xl text-center mt-4">
 					Original
-					<span className="text-primary dark:text-primary-dark font-bold">
-						CV
-					</span>
+					<span className="text-primary dark:text-primary-dark font-bold">CV</span>
 				</h1>
 				<p className="text-center text-xl font-semibold text-gray-400 dark:text-gray-600">
 					Welcome back!
@@ -51,7 +49,7 @@ export const LoginCompo = () => {
 					<Button
 						onClick={() =>
 							signIn("google", {
-							    callbackUrl: hasGuestCvDraft() ? "/cv/0" : "/",
+								callbackUrl: hasGuestCvDraft() ? "/cv/0" : "/",
 							})
 						}
 						outlined
@@ -62,9 +60,9 @@ export const LoginCompo = () => {
 						Google
 					</Button>
 					<Button
-					    onClick={() =>
+						onClick={() =>
 							signIn("github", {
-							  callbackUrl: hasGuestCvDraft() ? "/cv/0" : "/",
+								callbackUrl: hasGuestCvDraft() ? "/cv/0" : "/",
 							})
 						}
 						outlined

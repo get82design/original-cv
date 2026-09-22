@@ -1,10 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { createTestUser } from "../../utils/create-test-user";
-import {
-	ConflictError,
-	NotFoundError,
-	ValidationError,
-} from "../../../src/services/errors";
+import { ConflictError, NotFoundError, ValidationError } from "../../../src/services/errors";
 import { createTestProfile } from "../../utils/create-test-profile";
 import { profilePublicationService } from "../../../src/services/profile/profilePublicationService";
 import { expectMoveNoOp } from "../../utils/move-noop";
@@ -118,9 +114,7 @@ describe("ProfilePublicationService.findAllByProfileId", () => {
 			order: 2,
 		});
 
-		const result = await profilePublicationService.findAllByProfileId(
-			profile.id,
-		);
+		const result = await profilePublicationService.findAllByProfileId(profile.id);
 
 		expect(result).toHaveLength(2);
 		expect(result[0]!.title).toBe("Publication 1");
@@ -131,9 +125,7 @@ describe("ProfilePublicationService.findAllByProfileId", () => {
 	it("returns empty array if no publication exists", async () => {
 		const user = await createTestUser();
 		const profile = await createTestProfile(user.id, "John", "Doe");
-		const result = await profilePublicationService.findAllByProfileId(
-			profile.id,
-		);
+		const result = await profilePublicationService.findAllByProfileId(profile.id);
 
 		expect(result).toEqual([]);
 	});
@@ -156,9 +148,7 @@ describe("ProfilePublicationService.findAllByProfileId", () => {
 			journalName: "Journal 2",
 			order: 1,
 		});
-		const result = await profilePublicationService.findAllByProfileId(
-			profileA.id,
-		);
+		const result = await profilePublicationService.findAllByProfileId(profileA.id);
 
 		expect(result).toHaveLength(1);
 		expect(result[0]!.title).toBe("Publication 1");
@@ -270,9 +260,7 @@ describe("ProfilePublicationService.move", () => {
 			order: 2,
 		});
 		await profilePublicationService.move(publication2.id, 1);
-		const result = await profilePublicationService.findAllByProfileId(
-			profile.id,
-		);
+		const result = await profilePublicationService.findAllByProfileId(profile.id);
 
 		expect(result[0]!.id).toBe(publication2.id);
 		expect(result[1]!.id).toBe(publication1.id);
@@ -280,9 +268,7 @@ describe("ProfilePublicationService.move", () => {
 
 	// TEST 2 : publication inexistant
 	it("throws if publication does not exist", async () => {
-		await expect(
-			profilePublicationService.move("unknown-id", 1),
-		).rejects.toThrow(NotFoundError);
+		await expect(profilePublicationService.move("unknown-id", 1)).rejects.toThrow(NotFoundError);
 	});
 
 	// TEST 3 : ordre invalide
@@ -295,9 +281,7 @@ describe("ProfilePublicationService.move", () => {
 			start: new Date("2020-01-01"),
 			order: 1,
 		});
-		await expect(
-			profilePublicationService.move(publication1.id, 0),
-		).rejects.toThrow();
+		await expect(profilePublicationService.move(publication1.id, 0)).rejects.toThrow();
 	});
 
 	it("move no-op if order is the same", async () => {
@@ -330,18 +314,14 @@ describe("ProfilePublicationService.delete", () => {
 			order: 1,
 		});
 		await profilePublicationService.delete(publication1.id);
-		const result = await profilePublicationService.findAllByProfileId(
-			profile.id,
-		);
+		const result = await profilePublicationService.findAllByProfileId(profile.id);
 
 		expect(result).toHaveLength(0);
 	});
 
 	// TEST 2 : publication inexistant
 	it("throws if publication does not exist", async () => {
-		await expect(
-			profilePublicationService.delete("unknown-id"),
-		).rejects.toThrow(NotFoundError);
+		await expect(profilePublicationService.delete("unknown-id")).rejects.toThrow(NotFoundError);
 	});
 
 	// TEST 3 : réorganisation des publications après suppression
@@ -367,9 +347,7 @@ describe("ProfilePublicationService.delete", () => {
 			order: 3,
 		});
 		await profilePublicationService.delete(publication2.id);
-		const result = await profilePublicationService.findAllByProfileId(
-			profile.id,
-		);
+		const result = await profilePublicationService.findAllByProfileId(profile.id);
 
 		expect(result).toHaveLength(2);
 		expect(result[0]!.order).toBe(1);

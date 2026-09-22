@@ -1,7 +1,4 @@
-import type {
-	ProfileSaveInput,
-	VolunteeringInput,
-} from "@/services/schemas/profileSave.schema";
+import type { ProfileSaveInput, VolunteeringInput } from "@/services/schemas/profileSave.schema";
 import type { CvFull } from "@utils/trpc.types";
 import type { ListItem } from "@utils/type";
 import { Button } from "primereact/button";
@@ -11,9 +8,7 @@ import { useEffect, useState } from "react";
 import { v4 as uuid } from "uuid";
 
 type CvVolunteering = NonNullable<CvFull>["volunteerings"][number];
-type ProfileVolunteeringItem = NonNullable<
-	ProfileSaveInput["volunteerings"]
->[number];
+type ProfileVolunteeringItem = NonNullable<ProfileSaveInput["volunteerings"]>[number];
 
 function cvVolunteeringToProfile(exp: CvVolunteering): ProfileVolunteeringItem {
 	return {
@@ -62,17 +57,12 @@ export const DialogSelectVolunteering = ({
 		if (!visible) return;
 		setTarget(listVolunteeringInProfile);
 		const already = new Set(
-			listVolunteeringInProfile.map(
-				(e) => `${e.content.title}|${e.content.organisation ?? ""}`,
-			),
+			listVolunteeringInProfile.map((e) => `${e.content.title}|${e.content.organisation ?? ""}`),
 		);
 		setSource(
 			listVolunteeringFromCv
 				.map((exp) => cvVolunteeringToProfile(exp))
-				.filter(
-					(e) =>
-						!already.has(`${e.content.title}|${e.content.organisation ?? ""}`),
-				),
+				.filter((e) => !already.has(`${e.content.title}|${e.content.organisation ?? ""}`)),
 		);
 	}, [visible, listVolunteeringFromCv]);
 

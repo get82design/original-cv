@@ -19,9 +19,7 @@ export const ModifMiseEnPage = () => {
 	const watchIconStyle = watch(FieldNameLayoutGeneral.iconStyle);
 	const watchLigneDessous = watch(FieldNameLayoutGeneral.withLigneDessous);
 	const watchLigneDessus = watch(FieldNameLayoutGeneral.withLigneDessus);
-	const watchTitleSectionTextTransform = watch(
-		FieldNameLayoutGeneral.textTransform,
-	);
+	const watchTitleSectionTextTransform = watch(FieldNameLayoutGeneral.textTransform);
 	const watchWithPhoto = watch(FieldNameLayoutGeneral.withPhoto);
 	const watchStylePhoto = watch(FieldNameLayoutGeneral.stylePhoto);
 	const watchPhotoSide = watch(FieldNameLayoutGeneral.photoSide);
@@ -42,9 +40,7 @@ export const ModifMiseEnPage = () => {
 				<GeneralSpace watchSpace={watchSpace} />
 			</div>
 			<div className="grid grid-cols-[minmax(0,3fr)_minmax(0,2fr)] gap-1 items-start">
-				<TitleSectionTextTranform
-					watchTitleSectionTextTransform={watchTitleSectionTextTransform}
-				/>
+				<TitleSectionTextTranform watchTitleSectionTextTransform={watchTitleSectionTextTransform} />
 				<TitleSectionDecorSwitch watchWithIcon={watchWithIcon} />
 			</div>
 			{watchWithIcon ? (

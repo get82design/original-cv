@@ -1,7 +1,4 @@
-import type {
-	ProfileSaveInput,
-	StrengthInput,
-} from "@/services/schemas/profileSave.schema";
+import type { ProfileSaveInput, StrengthInput } from "@/services/schemas/profileSave.schema";
 import type { CvFull } from "@utils/trpc.types";
 import type { ListItem } from "@utils/type";
 import { Button } from "primereact/button";
@@ -51,16 +48,12 @@ export function DialogSelectStrength({
 		if (!visible) return;
 		setTarget(listStrengthInProfile);
 		const already = new Set(
-			listStrengthInProfile.map(
-				(e) => `${e.content.title}|${e.content.icon ?? ""}`,
-			),
+			listStrengthInProfile.map((e) => `${e.content.title}|${e.content.icon ?? ""}`),
 		);
 		setSource(
 			listStrengthFromCv
 				.map((exp) => cvStrengthToProfile(exp))
-				.filter(
-					(e) => !already.has(`${e.content.title}|${e.content.icon ?? ""}`),
-				),
+				.filter((e) => !already.has(`${e.content.title}|${e.content.icon ?? ""}`)),
 		);
 	}, [visible, listStrengthFromCv]);
 

@@ -5,9 +5,6 @@ import {
 
 export type EducationCardProps = CardEducationOneProps;
 
-export const EducationCardRegister: Record<
-	string,
-	React.ComponentType<EducationCardProps>
-> = {
+export const EducationCardRegister: Record<string, React.ComponentType<EducationCardProps>> = {
 	CardEducationOne,
 };

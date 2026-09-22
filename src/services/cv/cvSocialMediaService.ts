@@ -2,10 +2,7 @@ import { prisma } from "../../../lib/prisma";
 import { reorderItems } from "../../utils/reorderCvItems";
 import { ConflictError, NotFoundError } from "../errors";
 import { compactOrder } from "../../utils/compactOrder";
-import type {
-	CreateSocialMediaInput,
-	UpdateSocialMediaInput,
-} from "../schemas/socialMedia.schema";
+import type { CreateSocialMediaInput, UpdateSocialMediaInput } from "../schemas/socialMedia.schema";
 
 export class CvSocialMediaService {
 	async create(cvId: string, data: CreateSocialMediaInput) {
@@ -112,9 +109,7 @@ export class CvSocialMediaService {
 				id,
 			},
 			data: {
-				...(data.socialNetwork !== undefined
-					? { socialNetwork: data.socialNetwork }
-					: {}),
+				...(data.socialNetwork !== undefined ? { socialNetwork: data.socialNetwork } : {}),
 				...(data.username !== undefined ? { username: data.username } : {}),
 				...(data.icon !== undefined ? { icon: data.icon } : {}),
 				...(data.settings !== undefined ? { settings: data.settings } : {}),

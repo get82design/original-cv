@@ -3,10 +3,7 @@ import { buildComponents } from "./components";
 import { buildModules, type ModuleOverrides } from "./modules";
 import { buildHeader } from "../../buildTemplateModules";
 import type { ThemeTokens } from "../../themeTokens";
-import type {
-	createCvTemplateSchema,
-	TemplateLayout,
-} from "@/services/schemas/cvTemplate.schema";
+import type { createCvTemplateSchema, TemplateLayout } from "@/services/schemas/cvTemplate.schema";
 import type z from "zod";
 
 type SeedTemplate = z.input<typeof createCvTemplateSchema>;

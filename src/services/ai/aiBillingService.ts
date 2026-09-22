@@ -18,9 +18,7 @@ const choiceToMethod: Record<AiCreditPaymentChoice, AiPaymentMethod> = {
 	paid: "PAID",
 };
 
-export function isBillableAiFeature(
-	feature: AiFeature,
-): feature is BillableAiFeature {
+export function isBillableAiFeature(feature: AiFeature): feature is BillableAiFeature {
 	return (BILLABLE_AI_FEATURES as readonly string[]).includes(feature);
 }
 
@@ -42,9 +40,7 @@ export type AiBillingOptions = {
 
 function requireBillable(feature: AiFeature): BillableAiFeature {
 	if (!isBillableAiFeature(feature)) {
-		throw new ValidationError(
-			`La feature ${feature} n’est pas facturée en crédits`,
-		);
+		throw new ValidationError(`La feature ${feature} n’est pas facturée en crédits`);
 	}
 	return feature;
 }
@@ -77,9 +73,7 @@ export class AiBillingService {
 			throw new ValidationError("costPaid doit être ≥ 1 ou null");
 		}
 		if (input.costFree == null && input.costPaid == null) {
-			throw new ValidationError(
-				"Au moins un tarif (free ou paid) doit être défini",
-			);
+			throw new ValidationError("Au moins un tarif (free ou paid) doit être défini");
 		}
 
 		const row = await prisma.aiFeaturePrice.upsert({
@@ -101,10 +95,7 @@ export class AiBillingService {
 		};
 	}
 
-	async getBillingOptions(
-		userId: string,
-		feature: AiFeature,
-	): Promise<AiBillingOptions> {
+	async getBillingOptions(userId: string, feature: AiFeature): Promise<AiBillingOptions> {
 		const billable = requireBillable(feature);
 		const [price, user] = await Promise.all([
 			prisma.aiFeaturePrice.findUnique({ where: { feature: billable } }),
@@ -126,8 +117,7 @@ export class AiBillingService {
 			costPaid,
 			downloadCredits: user.downloadCredits,
 			freeDownloadsRemaining: user.freeDownloadsRemaining,
-			canPayFree:
-				costFree != null && user.freeDownloadsRemaining >= costFree,
+			canPayFree: costFree != null && user.freeDownloadsRemaining >= costFree,
 			canPayPaid: costPaid != null && user.downloadCredits >= costPaid,
 		};
 	}
@@ -152,14 +142,8 @@ export class AiBillingService {
 		choice: AiCreditPaymentChoice;
 		detail?: string | undefined;
 	}): Promise<{ creditsSpent: number; paymentMethod: AiPaymentMethod }> {
-		const options = await this.getBillingOptions(
-			input.userId,
-			input.feature,
-		);
-		const { creditsSpent, paymentMethod } = this.resolvePayment(
-			options,
-			input.choice,
-		);
+		const options = await this.getBillingOptions(input.userId, input.feature);
+		const { creditsSpent, paymentMethod } = this.resolvePayment(options, input.choice);
 		const trimmed = input.detail?.trim();
 
 		await prisma.$transaction(async (tx) => {
@@ -219,9 +203,7 @@ export class AiBillingService {
 	): { creditsSpent: number; paymentMethod: AiPaymentMethod } {
 		if (choice === "free") {
 			if (options.costFree == null) {
-				throw new ValidationError(
-					"Ce service n’accepte pas les crédits gratuits",
-				);
+				throw new ValidationError("Ce service n’accepte pas les crédits gratuits");
 			}
 			if (!options.canPayFree) {
 				throw new ValidationError(
@@ -235,9 +217,7 @@ export class AiBillingService {
 		}
 
 		if (options.costPaid == null) {
-			throw new ValidationError(
-				"Ce service n’accepte pas les crédits payants",
-			);
+			throw new ValidationError("Ce service n’accepte pas les crédits payants");
 		}
 		if (!options.canPayPaid) {
 			throw new ValidationError(

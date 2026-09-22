@@ -17,12 +17,10 @@ import { moduleField } from "@/features/cv-editor/utils/fields/moduleField";
 
 export const SectionPassionOne = () => {
 	const { watch } = useFormContext();
-	const watchModelPassionTitle: BaseTextSettings = watch(
-		FieldNamePassion.settingsSectionTitle,
-	);
+	const watchModelPassionTitle: BaseTextSettings = watch(FieldNamePassion.settingsSectionTitle);
 	const modules = watch("modules");
 	const path = moduleField(modules, "passion", "settings", "content");
-	const cols = watch(`${path}.columns`) ?? 3
+	const cols = watch(`${path}.columns`) ?? 3;
 
 	const {
 		items: watchPassions,
@@ -36,8 +34,7 @@ export const SectionPassionOne = () => {
 	});
 
 	const itemKey =
-		watch("layoutGeneral.defaultStyles")?.components?.sectionPassion?.item ??
-		"CardPassionOne";
+		watch("layoutGeneral.defaultStyles")?.components?.sectionPassion?.item ?? "CardPassionOne";
 	const Card = PassionCardRegister[itemKey] ?? CardPassionOne;
 
 	return (
@@ -48,9 +45,7 @@ export const SectionPassionOne = () => {
 					name={FieldNamePassion.titleSection}
 					placeholder={"Passion"}
 					watchInput={watchModelPassionTitle}
-					icon={
-						<BsBalloonHeartFill style={{ width: "16px", height: "16px" }} />
-					}
+					icon={<BsBalloonHeartFill style={{ width: "16px", height: "16px" }} />}
 					setSectionSelected={setItemSelected}
 				/>
 			}

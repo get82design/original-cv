@@ -9,10 +9,7 @@ import {
 import { assertCvOwnership } from "../helpers/assertCvOwnership";
 import { protectedProcedure, router } from "../trpc";
 
-async function assertExperienceCvOwnership(
-	experienceId: string,
-	userId: string,
-) {
+async function assertExperienceCvOwnership(experienceId: string, userId: string) {
 	const experience = await prisma.cvExperience.findUnique({
 		where: { id: experienceId },
 		select: { id: true, cvId: true },
@@ -43,23 +40,15 @@ export const cvMissionExperienceRouter = router({
 	create: protectedProcedure
 		.input(z.object({ experienceId: z.string(), data: createMissionSchema }))
 		.mutation(async ({ input, ctx }) => {
-			await assertExperienceCvOwnership(
-				input.experienceId,
-				ctx.session.user.id,
-			);
+			await assertExperienceCvOwnership(input.experienceId, ctx.session.user.id);
 			return cvMissionExperienceService.create(input.experienceId, input.data);
 		}),
 
 	findAllByExperienceId: protectedProcedure
 		.input(z.object({ experienceId: z.string() }))
 		.query(async ({ input, ctx }) => {
-			await assertExperienceCvOwnership(
-				input.experienceId,
-				ctx.session.user.id,
-			);
-			return cvMissionExperienceService.findAllByCvExperienceId(
-				input.experienceId,
-			);
+			await assertExperienceCvOwnership(input.experienceId, ctx.session.user.id);
+			return cvMissionExperienceService.findAllByCvExperienceId(input.experienceId);
 		}),
 
 	update: protectedProcedure

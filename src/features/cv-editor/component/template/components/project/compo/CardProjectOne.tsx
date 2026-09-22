@@ -29,11 +29,7 @@ export interface CardProjectOneProps {
 			template: JSX.Element;
 		}[];
 	}[];
-	addElmList: (
-		item: ListItem<ProjectItemContentInput>,
-		elm: string,
-		index: number,
-	) => void;
+	addElmList: (item: ListItem<ProjectItemContentInput>, elm: string, index: number) => void;
 	deleteMission: (index: number, idx: number) => void;
 }
 
@@ -50,29 +46,20 @@ export const CardProjectOne = ({
 	const { setSelectModifInput, setSelectInputForm } = useCreateCvContext();
 
 	const watchGeneral = watch(FieldNameLayoutGeneral.layout);
-	const pathContent = dataFieldContent(
-		"datas.project.content",
-		index,
-		"content",
-	);
+	const pathContent = dataFieldContent("datas.project.content", index, "content");
 	const watchWithIcon = watchGeneral?.titleSection.withIcon;
 	const watchListStyle = watchGeneral?.listStyle;
 	const menuLeft = useRef<Menu>(null);
 
 	const watchModelTitleOfProject = watch(`${pathContent}.settings.title`);
-	const watchModelTechnologyOfProject = watch(
-		`${pathContent}.settings.technology`,
-	);
+	const watchModelTechnologyOfProject = watch(`${pathContent}.settings.technology`);
 	const watchModelPeriodeOfProject = watch(`${pathContent}.settings.periode`);
 	const watchModelLocationOfProject = watch(`${pathContent}.settings.location`);
-	const watchModelDescriptionOfProject = watch(
-		`${pathContent}.settings.description`,
-	);
+	const watchModelDescriptionOfProject = watch(`${pathContent}.settings.description`);
 	const watchModelMissionOfProject = watch(`${pathContent}.settings.missions`);
 
 	const deleteProject = (itemToDelete: ListItem<ProjectItemContentInput>) => {
-		const list = (getValues(FieldNameProject.content) ??
-			[]) as ListItem<ProjectItemContentInput>[];
+		const list = (getValues(FieldNameProject.content) ?? []) as ListItem<ProjectItemContentInput>[];
 
 		const newList = list
 			.filter((entry) => entry.clientKey !== itemToDelete.clientKey)
@@ -88,8 +75,7 @@ export const CardProjectOne = ({
 			(itemToDelete.content?.missions ?? []).map((s) => s.clientKey),
 		);
 		const selectionWasInGroup =
-			itemSelected === itemToDelete.clientKey ||
-			deleteMissionKeys.has(itemSelected);
+			itemSelected === itemToDelete.clientKey || deleteMissionKeys.has(itemSelected);
 
 		if (selectionWasInGroup) {
 			setItemSelected(newList[0]?.clientKey ?? "");
@@ -110,14 +96,7 @@ export const CardProjectOne = ({
 				pathContent={pathContent}
 			/>
 		),
-		[
-			deleteMission,
-			index,
-			item.clientKey,
-			itemSelected,
-			watchModelMissionOfProject,
-			pathContent,
-		],
+		[deleteMission, index, item.clientKey, itemSelected, watchModelMissionOfProject, pathContent],
 	);
 
 	return (
@@ -142,12 +121,7 @@ export const CardProjectOne = ({
 				itemsMenu ? (
 					<>
 						<ToolbarOptionsButton menuRef={menuLeft} />
-						<Menu
-							model={itemsMenu(index)}
-							popup
-							ref={menuLeft}
-							style={{ width: 300 }}
-						/>
+						<Menu model={itemsMenu(index)} popup ref={menuLeft} style={{ width: 300 }} />
 					</>
 				) : null
 			}
@@ -294,9 +268,7 @@ export const ContentProjectContainer = ({
 			<div className="w-full -mt-1">
 				{item?.content?.settings?.withDescription && descriptionCompo}
 			</div>
-			<div className="w-full -mt-1">
-				{item?.content?.settings?.withMissions && missionsCompo}
-			</div>
+			<div className="w-full -mt-1">{item?.content?.settings?.withMissions && missionsCompo}</div>
 		</div>
 	);
 };

@@ -66,12 +66,9 @@ export function AdminCvsPage() {
 
 	const [view, setView] = useState<CvView>("feed");
 	const [period, setPeriod] = useState<AdminDashboardPeriod>("7d");
-	const [templateSort, setTemplateSort] =
-		useState<AdminTopTemplateSort>("popularityScore");
+	const [templateSort, setTemplateSort] = useState<AdminTopTemplateSort>("popularityScore");
 	const [templateId, setTemplateId] = useState<string | null>(null);
-	const [primaryColorName, setPrimaryColorName] = useState<string | null>(
-		null,
-	);
+	const [primaryColorName, setPrimaryColorName] = useState<string | null>(null);
 	const [searchInput, setSearchInput] = useState("");
 	const [search, setSearch] = useState("");
 	const [page, setPage] = useState(1);
@@ -146,11 +143,9 @@ export function AdminCvsPage() {
 
 	const setViewAndUrl = (next: CvView) => {
 		setView(next);
-		void router.replace(
-			{ pathname: "/admin/cvs", query: { view: next } },
-			undefined,
-			{ shallow: true },
-		);
+		void router.replace({ pathname: "/admin/cvs", query: { view: next } }, undefined, {
+			shallow: true,
+		});
 	};
 
 	if (status === "loading") {
@@ -193,9 +188,7 @@ export function AdminCvsPage() {
 						classNameSize="text-3xl sm:text-4xl"
 					/>
 				</div>
-				<p className="m-0 text-sm text-zinc-500 dark:text-zinc-400">
-					{summary}
-				</p>
+				<p className="m-0 text-sm text-zinc-500 dark:text-zinc-400">{summary}</p>
 			</div>
 
 			<div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -229,16 +222,12 @@ export function AdminCvsPage() {
 					<AppCard className="admin-filters mb-4">
 						<div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
 							<div className="min-w-0 flex-1 sm:max-w-md">
-								<label className="mb-1 block text-xs text-zinc-500">
-									Recherche
-								</label>
+								<label className="mb-1 block text-xs text-zinc-500">Recherche</label>
 								<div className="relative w-full">
 									<i className="pi pi-search pointer-events-none absolute top-1/2 left-3 z-10 -translate-y-1/2 text-sm text-zinc-500 dark:text-zinc-400" />
 									<InputText
 										value={searchInput}
-										onChange={(e) =>
-											setSearchInput(e.target.value)
-										}
+										onChange={(e) => setSearchInput(e.target.value)}
 										placeholder="Email utilisateur…"
 										className="w-full !pl-10"
 									/>
@@ -246,16 +235,12 @@ export function AdminCvsPage() {
 							</div>
 							<div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:items-end">
 								<div className="w-full sm:w-52">
-									<label className="mb-1 block text-xs text-zinc-500">
-										Template
-									</label>
+									<label className="mb-1 block text-xs text-zinc-500">Template</label>
 									<Dropdown
 										value={templateId}
 										options={templateOptions}
 										onChange={(e) => {
-											setTemplateId(
-												e.value as string | null,
-											);
+											setTemplateId(e.value as string | null);
 											setPage(1);
 										}}
 										optionLabel="label"
@@ -264,16 +249,12 @@ export function AdminCvsPage() {
 									/>
 								</div>
 								<div className="w-full sm:w-44">
-									<label className="mb-1 block text-xs text-zinc-500">
-										Couleur
-									</label>
+									<label className="mb-1 block text-xs text-zinc-500">Couleur</label>
 									<Dropdown
 										value={primaryColorName}
 										options={colorOptions}
 										onChange={(e) => {
-											setPrimaryColorName(
-												e.value as string | null,
-											);
+											setPrimaryColorName(e.value as string | null);
 											setPage(1);
 										}}
 										optionLabel="label"
@@ -289,49 +270,29 @@ export function AdminCvsPage() {
 						<table className="w-full min-w-[48rem] border-collapse text-left text-sm">
 							<thead>
 								<tr className="border-b border-zinc-200 bg-zinc-50 text-xs uppercase tracking-wide text-zinc-500 dark:border-zinc-700 dark:bg-zinc-900/60 dark:text-zinc-400">
-									<th className="px-4 py-3 font-semibold">
-										Date
-									</th>
-									<th className="px-3 py-3 font-semibold">
-										User
-									</th>
-									<th className="px-3 py-3 font-semibold">
-										CV
-									</th>
-									<th className="px-3 py-3 font-semibold">
-										Template
-									</th>
-									<th className="px-3 py-3 font-semibold">
-										Couleur
-									</th>
+									<th className="px-4 py-3 font-semibold">Date</th>
+									<th className="px-3 py-3 font-semibold">User</th>
+									<th className="px-3 py-3 font-semibold">CV</th>
+									<th className="px-3 py-3 font-semibold">Template</th>
+									<th className="px-3 py-3 font-semibold">Couleur</th>
 								</tr>
 							</thead>
 							<tbody>
 								{listQuery.isLoading ? (
 									<tr>
-										<td
-											colSpan={5}
-											className="px-4 py-8 text-center text-zinc-500"
-										>
+										<td colSpan={5} className="px-4 py-8 text-center text-zinc-500">
 											Chargement…
 										</td>
 									</tr>
-								) : (listQuery.data?.items.length ?? 0) ===
-								  0 ? (
+								) : (listQuery.data?.items.length ?? 0) === 0 ? (
 									<tr>
-										<td
-											colSpan={5}
-											className="px-4 py-8 text-center text-zinc-500"
-										>
+										<td colSpan={5} className="px-4 py-8 text-center text-zinc-500">
 											Aucun CV.
 										</td>
 									</tr>
 								) : (
 									listQuery.data!.items.map((cv) => (
-										<tr
-											key={cv.id}
-											className="border-b border-zinc-100 dark:border-zinc-800"
-										>
+										<tr key={cv.id} className="border-b border-zinc-100 dark:border-zinc-800">
 											<td className="px-4 py-3 text-xs whitespace-nowrap text-zinc-500">
 												{formatDate(cv.createdAt)}
 											</td>
@@ -344,14 +305,10 @@ export function AdminCvsPage() {
 														{cv.userEmail}
 													</Link>
 												) : (
-													<span className="text-zinc-500">
-														—
-													</span>
+													<span className="text-zinc-500">—</span>
 												)}
 											</td>
-											<td className="px-3 py-3 text-zinc-800 dark:text-zinc-200">
-												{cv.title}
-											</td>
+											<td className="px-3 py-3 text-zinc-800 dark:text-zinc-200">{cv.title}</td>
 											<td className="px-3 py-3 text-xs text-zinc-600 dark:text-zinc-400">
 												{cv.templateName}
 											</td>
@@ -368,9 +325,7 @@ export function AdminCvsPage() {
 														{cv.primaryColorName}
 													</span>
 												) : (
-													<span className="text-xs text-zinc-500">
-														—
-													</span>
+													<span className="text-xs text-zinc-500">—</span>
 												)}
 											</td>
 										</tr>
@@ -391,27 +346,16 @@ export function AdminCvsPage() {
 									size="small"
 									outlined
 									label="Précédent"
-									disabled={
-										page <= 1 || listQuery.isFetching
-									}
-									onClick={() =>
-										setPage((p) => Math.max(1, p - 1))
-									}
+									disabled={page <= 1 || listQuery.isFetching}
+									onClick={() => setPage((p) => Math.max(1, p - 1))}
 								/>
 								<Button
 									type="button"
 									size="small"
 									outlined
 									label="Suivant"
-									disabled={
-										page >= totalPages ||
-										listQuery.isFetching
-									}
-									onClick={() =>
-										setPage((p) =>
-											Math.min(totalPages, p + 1),
-										)
-									}
+									disabled={page >= totalPages || listQuery.isFetching}
+									onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
 								/>
 							</div>
 						</div>
@@ -423,17 +367,11 @@ export function AdminCvsPage() {
 				<>
 					<AppCard className="admin-filters mb-4">
 						<div className="w-full sm:w-56">
-							<label className="mb-1 block text-xs text-zinc-500">
-								Trier par
-							</label>
+							<label className="mb-1 block text-xs text-zinc-500">Trier par</label>
 							<Dropdown
 								value={templateSort}
 								options={TEMPLATE_SORT_OPTIONS}
-								onChange={(e) =>
-									setTemplateSort(
-										e.value as AdminTopTemplateSort,
-									)
-								}
+								onChange={(e) => setTemplateSort(e.value as AdminTopTemplateSort)}
 								optionLabel="label"
 								optionValue="value"
 								className="w-full"
@@ -445,49 +383,26 @@ export function AdminCvsPage() {
 						<table className="w-full min-w-[48rem] border-collapse text-left text-sm">
 							<thead>
 								<tr className="border-b border-zinc-200 bg-zinc-50 text-xs uppercase tracking-wide text-zinc-500 dark:border-zinc-700 dark:bg-zinc-900/60 dark:text-zinc-400">
-									<th className="px-4 py-3 font-semibold">
-										#
-									</th>
-									<th className="px-3 py-3 font-semibold">
-										Modèle
-									</th>
-									<th className="px-3 py-3 font-semibold">
-										Pop.
-									</th>
-									<th className="px-3 py-3 font-semibold">
-										Achats
-									</th>
-									<th className="px-3 py-3 font-semibold">
-										CV
-									</th>
-									<th className="px-3 py-3 font-semibold">
-										DL total
-									</th>
-									<th className="px-3 py-3 font-semibold">
-										Gratuit
-									</th>
-									<th className="px-3 py-3 font-semibold">
-										Payant
-									</th>
+									<th className="px-4 py-3 font-semibold">#</th>
+									<th className="px-3 py-3 font-semibold">Modèle</th>
+									<th className="px-3 py-3 font-semibold">Pop.</th>
+									<th className="px-3 py-3 font-semibold">Achats</th>
+									<th className="px-3 py-3 font-semibold">CV</th>
+									<th className="px-3 py-3 font-semibold">DL total</th>
+									<th className="px-3 py-3 font-semibold">Gratuit</th>
+									<th className="px-3 py-3 font-semibold">Payant</th>
 								</tr>
 							</thead>
 							<tbody>
 								{topTemplatesQuery.isLoading ? (
 									<tr>
-										<td
-											colSpan={8}
-											className="px-4 py-8 text-center text-zinc-500"
-										>
+										<td colSpan={8} className="px-4 py-8 text-center text-zinc-500">
 											Chargement…
 										</td>
 									</tr>
-								) : (topTemplatesQuery.data?.length ?? 0) ===
-								  0 ? (
+								) : (topTemplatesQuery.data?.length ?? 0) === 0 ? (
 									<tr>
-										<td
-											colSpan={8}
-											className="px-4 py-8 text-center text-zinc-500"
-										>
+										<td colSpan={8} className="px-4 py-8 text-center text-zinc-500">
 											Aucun modèle.
 										</td>
 									</tr>
@@ -497,9 +412,7 @@ export function AdminCvsPage() {
 											key={t.templateId}
 											className="border-b border-zinc-100 dark:border-zinc-800"
 										>
-											<td className="px-4 py-3 text-xs text-zinc-500">
-												{i + 1}
-											</td>
+											<td className="px-4 py-3 text-xs text-zinc-500">{i + 1}</td>
 											<td className="px-3 py-3 font-medium text-zinc-900 dark:text-zinc-100">
 												{t.name}
 											</td>
@@ -509,9 +422,7 @@ export function AdminCvsPage() {
 											<td className="px-3 py-3 text-zinc-700 dark:text-zinc-300">
 												{t.unlockCount}
 											</td>
-											<td className="px-3 py-3 text-zinc-700 dark:text-zinc-300">
-												{t.cvCount}
-											</td>
+											<td className="px-3 py-3 text-zinc-700 dark:text-zinc-300">{t.cvCount}</td>
 											<td className="px-3 py-3 text-zinc-700 dark:text-zinc-300">
 												{t.downloadCount}
 											</td>
@@ -536,12 +447,8 @@ export function AdminCvsPage() {
 						<thead>
 							<tr className="border-b border-zinc-200 bg-zinc-50 text-xs uppercase tracking-wide text-zinc-500 dark:border-zinc-700 dark:bg-zinc-900/60 dark:text-zinc-400">
 								<th className="px-4 py-3 font-semibold">#</th>
-								<th className="px-3 py-3 font-semibold">
-									Couleur
-								</th>
-								<th className="px-3 py-3 font-semibold">
-									Popularité
-								</th>
+								<th className="px-3 py-3 font-semibold">Couleur</th>
+								<th className="px-3 py-3 font-semibold">Popularité</th>
 								<th className="px-3 py-3 font-semibold">CV</th>
 								<th className="px-3 py-3 font-semibold">DL</th>
 							</tr>
@@ -549,31 +456,20 @@ export function AdminCvsPage() {
 						<tbody>
 							{topColorsQuery.isLoading ? (
 								<tr>
-									<td
-										colSpan={5}
-										className="px-4 py-8 text-center text-zinc-500"
-									>
+									<td colSpan={5} className="px-4 py-8 text-center text-zinc-500">
 										Chargement…
 									</td>
 								</tr>
 							) : (topColorsQuery.data?.length ?? 0) === 0 ? (
 								<tr>
-									<td
-										colSpan={5}
-										className="px-4 py-8 text-center text-zinc-500"
-									>
+									<td colSpan={5} className="px-4 py-8 text-center text-zinc-500">
 										Aucune couleur.
 									</td>
 								</tr>
 							) : (
 								topColorsQuery.data!.map((c, i) => (
-									<tr
-										key={c.name}
-										className="border-b border-zinc-100 dark:border-zinc-800"
-									>
-										<td className="px-4 py-3 text-xs text-zinc-500">
-											{i + 1}
-										</td>
+									<tr key={c.name} className="border-b border-zinc-100 dark:border-zinc-800">
+										<td className="px-4 py-3 text-xs text-zinc-500">{i + 1}</td>
 										<td className="px-3 py-3">
 											<span className="inline-flex items-center gap-2 font-medium text-zinc-900 dark:text-zinc-100">
 												<span
@@ -589,9 +485,7 @@ export function AdminCvsPage() {
 										<td className="px-3 py-3 font-medium text-zinc-800 dark:text-zinc-200">
 											{c.popularityScore.toFixed(1)}
 										</td>
-										<td className="px-3 py-3 text-zinc-700 dark:text-zinc-300">
-											{c.cvCount}
-										</td>
+										<td className="px-3 py-3 text-zinc-700 dark:text-zinc-300">{c.cvCount}</td>
 										<td className="px-3 py-3 text-zinc-700 dark:text-zinc-300">
 											{c.downloadCount}
 										</td>

@@ -91,10 +91,7 @@ describe("CvMissionVolunteeringService.findAllByCvVolunteeringId", () => {
 			order: 1,
 		});
 
-		const missions =
-			await cvMissionVolunteeringService.findAllByCvVolunteeringId(
-				volunteering.id,
-			);
+		const missions = await cvMissionVolunteeringService.findAllByCvVolunteeringId(volunteering.id);
 		expect(missions).toHaveLength(1);
 		expect(missions[0]?.content).toBe("Mission 1");
 		expect(missions[0]?.order).toBe(1);
@@ -111,10 +108,7 @@ describe("CvMissionVolunteeringService.findAllByCvVolunteeringId", () => {
 			start: new Date("2020-01-01"),
 			order: 1,
 		});
-		const missions =
-			await cvMissionVolunteeringService.findAllByCvVolunteeringId(
-				volunteering.id,
-			);
+		const missions = await cvMissionVolunteeringService.findAllByCvVolunteeringId(volunteering.id);
 		expect(missions).toHaveLength(0);
 	});
 
@@ -144,10 +138,7 @@ describe("CvMissionVolunteeringService.findAllByCvVolunteeringId", () => {
 			content: "Mission 2",
 			order: 1,
 		});
-		const missions =
-			await cvMissionVolunteeringService.findAllByCvVolunteeringId(
-				volunteeringB.id,
-			);
+		const missions = await cvMissionVolunteeringService.findAllByCvVolunteeringId(volunteeringB.id);
 		expect(missions).toHaveLength(1);
 		expect(missions[0]?.content).toBe("Mission 2");
 		expect(missions[0]?.order).toBe(1);
@@ -171,12 +162,9 @@ describe("CvMissionVolunteeringService.update", () => {
 			content: "Mission 1",
 			order: 1,
 		});
-		const updatedMission = await cvMissionVolunteeringService.update(
-			mission.id,
-			{
-				content: "Mission 2",
-			},
-		);
+		const updatedMission = await cvMissionVolunteeringService.update(mission.id, {
+			content: "Mission 2",
+		});
 		expect(updatedMission.content).toBe("Mission 2");
 	});
 
@@ -217,12 +205,9 @@ describe("CvMissionVolunteeringService.update", () => {
 			content: "Mission 1",
 			order: 1,
 		});
-		const updatedMission = await cvMissionVolunteeringService.update(
-			mission.id,
-			{
-				content: "Mission 2",
-			},
-		);
+		const updatedMission = await cvMissionVolunteeringService.update(mission.id, {
+			content: "Mission 2",
+		});
 		expect(updatedMission.order).toBe(1);
 	});
 });
@@ -242,36 +227,28 @@ describe("CvMissionVolunteeringService.move", () => {
 			order: 1,
 		});
 
-		const mission1 = await cvMissionVolunteeringService.create(
-			volunteering.id,
-			{
-				content: "Mission 1",
-				order: 1,
-			},
-		);
+		const mission1 = await cvMissionVolunteeringService.create(volunteering.id, {
+			content: "Mission 1",
+			order: 1,
+		});
 
-		const mission2 = await cvMissionVolunteeringService.create(
-			volunteering.id,
-			{
-				content: "Mission 2",
-				order: 2,
-			},
-		);
+		const mission2 = await cvMissionVolunteeringService.create(volunteering.id, {
+			content: "Mission 2",
+			order: 2,
+		});
 
 		await cvMissionVolunteeringService.move(mission1.id, 2);
 
-		const result = await cvMissionVolunteeringService.findAllByCvVolunteeringId(
-			volunteering.id,
-		);
+		const result = await cvMissionVolunteeringService.findAllByCvVolunteeringId(volunteering.id);
 
 		expect(result[0]!.content).toBe("Mission 2");
 		expect(result[1]!.content).toBe("Mission 1");
 	});
 
 	it("throws if missions volunteering does not exist", async () => {
-		await expect(
-			cvMissionVolunteeringService.move("invalid-mission-id", 2),
-		).rejects.toThrow(NotFoundError);
+		await expect(cvMissionVolunteeringService.move("invalid-mission-id", 2)).rejects.toThrow(
+			NotFoundError,
+		);
 	});
 
 	it("throws if order is invalid", async () => {
@@ -289,9 +266,7 @@ describe("CvMissionVolunteeringService.move", () => {
 			content: "Mission 1",
 			order: 1,
 		});
-		await expect(
-			cvMissionVolunteeringService.move(mission.id, 0),
-		).rejects.toThrow();
+		await expect(cvMissionVolunteeringService.move(mission.id, 0)).rejects.toThrow();
 	});
 
 	it("move no-op if order is the same", async () => {
@@ -307,13 +282,10 @@ describe("CvMissionVolunteeringService.move", () => {
 		});
 		await expectMoveNoOp({
 			createEntity: async () => {
-				const mission = await cvMissionVolunteeringService.create(
-					volunteering.id,
-					{
-						content: "Mission 1",
-						order: 1,
-					},
-				);
+				const mission = await cvMissionVolunteeringService.create(volunteering.id, {
+					content: "Mission 1",
+					order: 1,
+				});
 				return { id: mission.id, order: mission.order };
 			},
 			moveEntity: (id, order) => cvMissionVolunteeringService.move(id, order),
@@ -335,9 +307,7 @@ describe("CvMissionVolunteeringService.move", () => {
 			content: "Mission 1",
 			order: 1,
 		});
-		await expect(
-			cvMissionVolunteeringService.move(mission.id, 99),
-		).rejects.toThrow();
+		await expect(cvMissionVolunteeringService.move(mission.id, 99)).rejects.toThrow();
 	});
 });
 
@@ -359,17 +329,14 @@ describe("CvMissionVolunteeringService.delete", () => {
 			order: 1,
 		});
 		await cvMissionVolunteeringService.delete(mission.id);
-		const missions =
-			await cvMissionVolunteeringService.findAllByCvVolunteeringId(
-				volunteering.id,
-			);
+		const missions = await cvMissionVolunteeringService.findAllByCvVolunteeringId(volunteering.id);
 		expect(missions).toHaveLength(0);
 	});
 
 	it("throws if mission does not exist", async () => {
-		await expect(
-			cvMissionVolunteeringService.delete("invalid-mission-id"),
-		).rejects.toThrow(NotFoundError);
+		await expect(cvMissionVolunteeringService.delete("invalid-mission-id")).rejects.toThrow(
+			NotFoundError,
+		);
 	});
 
 	it("reorders remaining missions after deletion", async () => {
@@ -383,25 +350,16 @@ describe("CvMissionVolunteeringService.delete", () => {
 			start: new Date("2020-01-01"),
 			order: 1,
 		});
-		const mission1 = await cvMissionVolunteeringService.create(
-			volunteering.id,
-			{
-				content: "Mission 1",
-				order: 1,
-			},
-		);
-		const mission2 = await cvMissionVolunteeringService.create(
-			volunteering.id,
-			{
-				content: "Mission 2",
-				order: 2,
-			},
-		);
+		const mission1 = await cvMissionVolunteeringService.create(volunteering.id, {
+			content: "Mission 1",
+			order: 1,
+		});
+		const mission2 = await cvMissionVolunteeringService.create(volunteering.id, {
+			content: "Mission 2",
+			order: 2,
+		});
 		await cvMissionVolunteeringService.delete(mission1.id);
-		const missions =
-			await cvMissionVolunteeringService.findAllByCvVolunteeringId(
-				volunteering.id,
-			);
+		const missions = await cvMissionVolunteeringService.findAllByCvVolunteeringId(volunteering.id);
 		expect(missions).toHaveLength(1);
 		expect(missions[0]?.content).toBe("Mission 2");
 		expect(missions[0]?.order).toBe(1);

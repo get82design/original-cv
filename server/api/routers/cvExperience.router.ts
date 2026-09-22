@@ -9,10 +9,7 @@ import {
 	updateExperienceSchema,
 } from "../../../src/services/schemas/experience.schema";
 
-async function assertExperienceCvOwnership(
-	experienceId: string,
-	userId: string,
-) {
+async function assertExperienceCvOwnership(experienceId: string, userId: string) {
 	const experience = await prisma.cvExperience.findUnique({
 		where: { id: experienceId },
 		select: { id: true, cvId: true },

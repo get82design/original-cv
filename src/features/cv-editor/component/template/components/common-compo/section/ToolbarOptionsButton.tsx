@@ -9,11 +9,7 @@ export const cvToolbarIconBtnClass =
 	"p-1.5 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 inline-flex items-center justify-center rounded-sm text-gray-700 dark:text-gray-200";
 
 /** Bouton Options (icône) pour les toolbars section / item. */
-export function ToolbarOptionsButton({
-	menuRef,
-}: {
-	menuRef: RefObject<MenuLike | null>;
-}) {
+export function ToolbarOptionsButton({ menuRef }: { menuRef: RefObject<MenuLike | null> }) {
 	return (
 		<button
 			type="button"

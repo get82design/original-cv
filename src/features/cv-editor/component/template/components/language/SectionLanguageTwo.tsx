@@ -1,8 +1,5 @@
 import { FieldNameLanguage } from "@/features/cv-editor/utils/fields/fieldNameLanguage";
-import type {
-	BaseTextSettings,
-	TemplateLayout,
-} from "@/services/schemas/cvTemplate.schema";
+import type { BaseTextSettings, TemplateLayout } from "@/services/schemas/cvTemplate.schema";
 import { useFormContext } from "react-hook-form";
 import type { LanguageItemContentInput } from "@/services/schemas/cvSave.schema";
 import type { LanguageContentSettings } from "@/services/schemas/cvTemplate.schema";
@@ -21,9 +18,7 @@ import { moduleField } from "@/features/cv-editor/utils/fields/moduleField";
 
 export const SectionLanguageTwo = () => {
 	const { watch } = useFormContext();
-	const watchModelLanguageTitle: BaseTextSettings = watch(
-		FieldNameLanguage.settingsSectionTitle,
-	);
+	const watchModelLanguageTitle: BaseTextSettings = watch(FieldNameLanguage.settingsSectionTitle);
 	const watchGeneral: TemplateLayout = watch(FieldNameLayoutGeneral.layout);
 	const modules = watch("modules");
 	const path = moduleField(modules, "language", "settings", "content");
@@ -41,8 +36,7 @@ export const SectionLanguageTwo = () => {
 	});
 
 	const itemKey =
-		watch("layoutGeneral.defaultStyles")?.components?.sectionLanguage?.item ??
-		"CardLanguageOne";
+		watch("layoutGeneral.defaultStyles")?.components?.sectionLanguage?.item ?? "CardLanguageOne";
 	const Card = LanguageCardRegister[itemKey] ?? CardLanguageOne;
 
 	return (

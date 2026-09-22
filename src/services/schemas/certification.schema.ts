@@ -10,9 +10,5 @@ export const createCertificationSchema = z.object({
 
 export const updateCertificationSchema = createCertificationSchema.partial();
 
-export type CreateCertificationInput = z.infer<
-	typeof createCertificationSchema
->;
-export type UpdateCertificationInput = z.infer<
-	typeof updateCertificationSchema
->;
+export type CreateCertificationInput = z.infer<typeof createCertificationSchema>;
+export type UpdateCertificationInput = z.infer<typeof updateCertificationSchema>;

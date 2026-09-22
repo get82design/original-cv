@@ -8,12 +8,7 @@ interface DialogSelectCvProps extends DialogProps {
 	setIdCv: (e: string) => void;
 }
 
-export const DialogSelectCv = ({
-	visible,
-	onHide,
-	cvs,
-	setIdCv,
-}: DialogSelectCvProps) => {
+export const DialogSelectCv = ({ visible, onHide, cvs, setIdCv }: DialogSelectCvProps) => {
 	return (
 		<Dialog
 			visible={visible}
@@ -21,18 +16,12 @@ export const DialogSelectCv = ({
 			className="dialog-profile-from-cv"
 			style={{ minWidth: "800px" }}
 			header={
-				<TitleAppTwo
-					firstPart={"Sélectionnez un"}
-					secondPart={"CV"}
-					size={"text-2xl"}
-					withSpace
-				/>
+				<TitleAppTwo firstPart={"Sélectionnez un"} secondPart={"CV"} size={"text-2xl"} withSpace />
 			}
 		>
 			<div className="flex flex-col gap-4 mb-6">
 				<p className="text-center">
-					Sélectionnez le CV à partir duquel vous souhaitez récupérer les
-					données pour cet espace.
+					Sélectionnez le CV à partir duquel vous souhaitez récupérer les données pour cet espace.
 				</p>
 				<div className="w-full flex gap-4 justify-around">
 					{cvs &&

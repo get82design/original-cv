@@ -25,24 +25,27 @@ import { useEffect, useRef, type PropsWithChildren } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { mapProfileToSaveInput } from "../mapProfileToSaveInput";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { validationSchema } from "./validation-schema";
 import {
-	validationSchema,
-} from "./validation-schema";
-import { 
-	isBlankExperience, 
-	isBlankStrength, 
-	isBlankFormation, 
-	isBlankProject, 
-	isBlankPublication, 
-	isBlankAchievement, 
-	isBlankVolunteering, 
-	isBlankEducation, 
-	isBlankLanguage, 
-	isBlankPassion, 
-	isBlankPrize, 
-	isBlankCertification, 
-	isBlankSocialMedia, 
-	isBlankExpertise, isBlankSkillGroup, isBlankCompetenceGroup, isBlankTagGroup, isBlankSkill } from "@/utils/isBankSection";
+	isBlankExperience,
+	isBlankStrength,
+	isBlankFormation,
+	isBlankProject,
+	isBlankPublication,
+	isBlankAchievement,
+	isBlankVolunteering,
+	isBlankEducation,
+	isBlankLanguage,
+	isBlankPassion,
+	isBlankPrize,
+	isBlankCertification,
+	isBlankSocialMedia,
+	isBlankExpertise,
+	isBlankSkillGroup,
+	isBlankCompetenceGroup,
+	isBlankTagGroup,
+	isBlankSkill,
+} from "@/utils/isBankSection";
 import type { ListItem } from "@utils/type";
 
 export const FormProfile = ({ children }: PropsWithChildren) => {
@@ -72,9 +75,7 @@ export const FormProfile = ({ children }: PropsWithChildren) => {
 		setValue,
 	} = methods;
 
-	const onSubmit = (
-		data: ProfileSaveInput & { id?: string; userId?: string },
-	) => {
+	const onSubmit = (data: ProfileSaveInput & { id?: string; userId?: string }) => {
 		const { id: _id, userId: _userId, ...rest } = data;
 		// description vide → ne pas envoyer (sinon .min(1) casse)
 
@@ -108,9 +109,7 @@ export const FormProfile = ({ children }: PropsWithChildren) => {
 					...e,
 					content: {
 						...e.content,
-						missions: (e.content.missions ?? []).filter((m) =>
-							m.content.content.trim(),
-						),
+						missions: (e.content.missions ?? []).filter((m) => m.content.content.trim()),
 					},
 				})),
 			achievements: (rest.achievements ?? [])
@@ -157,9 +156,7 @@ export const FormProfile = ({ children }: PropsWithChildren) => {
 					},
 				})),
 			competenceGroups: (rest.competenceGroups ?? [])
-				.filter(
-					(g) => !isBlankCompetenceGroup(g as ListItem<CompetenceGroupInput>),
-				)
+				.filter((g) => !isBlankCompetenceGroup(g as ListItem<CompetenceGroupInput>))
 				.map((g) => ({
 					...g,
 					content: {

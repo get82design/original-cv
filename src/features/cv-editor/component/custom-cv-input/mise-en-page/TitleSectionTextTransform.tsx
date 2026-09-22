@@ -26,10 +26,7 @@ export const TitleSectionTextTranform = ({
 			<div className="flex gap-1 items-center">
 				<p className="my-0 font-semibold text-xs">Titres des sections</p>
 				<MdInfo className="infoTitleSection text-sm text-muted-color" />
-				<Tooltip
-					target=".infoTitleSection"
-					content={"Modifier l'ensemble des titres"}
-				/>
+				<Tooltip target=".infoTitleSection" content={"Modifier l'ensemble des titres"} />
 			</div>
 			<SelectButtonRhf
 				className="shadow-none panel-modification"

@@ -19,15 +19,12 @@ export const HeaderOne = () => {
 	const chrome = getHeaderChrome(watchGeneral); // watchGeneral = layout
 	const refPhoto = useRef<HTMLInputElement | null>(null);
 	const [photo, setPhoto] = useState(watchPhoto);
-	const watchDataHeaderTitleSettings: BaseTextSettings = watch(
-		FieldNameHeader.settingsTitle
-	  )
+	const watchDataHeaderTitleSettings: BaseTextSettings = watch(FieldNameHeader.settingsTitle);
 
 	const titleAlign =
 		chrome.photoSide === "right"
 			? "right" // flip photo → texte côté photo
 			: (watchDataHeaderTitleSettings?.textAlign ?? "left"); // tokens : left | center | right
-
 
 	const onSelect = (event: React.MouseEvent<HTMLInputElement>) => {
 		//   if (((event.target as HTMLInputElement).files as FileList)[0]) {
@@ -52,12 +49,8 @@ export const HeaderOne = () => {
 		<HeaderOneContainer
 			modelGeneral={watchGeneral}
 			chrome={chrome}
-			titleCompo={
-				<NomPrenomInput forceWidthFull textAlign={titleAlign} />
-			}
-			subTitleCompo={
-				<IntituleCvInput forceWidthFull textAlign={titleAlign} />
-			}
+			titleCompo={<NomPrenomInput forceWidthFull textAlign={titleAlign} />}
+			subTitleCompo={<IntituleCvInput forceWidthFull textAlign={titleAlign} />}
 			emailCompo={<EmailInput textAlign={chrome.contacts.email} />}
 			phoneCompo={<PhoneInput textAlign={chrome.contacts.phone} />}
 			locationCompo={<LocationInput textAlign={chrome.contacts.location} />}
@@ -80,9 +73,7 @@ export const HeaderOne = () => {
 						style={{
 							width: "110px",
 							/* height: "130px",*/ backgroundImage: `url(${
-								photo && photo !== ""
-									? photo
-									: "/assets/img/User-avatar.svg.png"
+								photo && photo !== "" ? photo : "/assets/img/User-avatar.svg.png"
 							})`,
 							backgroundPosition: "center",
 							backgroundSize: "cover",

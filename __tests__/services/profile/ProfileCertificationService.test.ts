@@ -85,9 +85,7 @@ describe("ProfileCertificationService.findAllByProfileId", () => {
 			order: 2,
 		});
 
-		const result = await profileCertificationService.findAllByProfileId(
-			profile.id,
-		);
+		const result = await profileCertificationService.findAllByProfileId(profile.id);
 
 		expect(result).toHaveLength(2);
 		expect(result[0]!.title).toBe("Certification 1");
@@ -98,9 +96,7 @@ describe("ProfileCertificationService.findAllByProfileId", () => {
 	it("returns empty array if no certification exists", async () => {
 		const user = await createTestUser();
 		const profile = await createTestProfile(user.id, "John", "Doe");
-		const result = await profileCertificationService.findAllByProfileId(
-			profile.id,
-		);
+		const result = await profileCertificationService.findAllByProfileId(profile.id);
 
 		expect(result).toEqual([]);
 	});
@@ -119,9 +115,7 @@ describe("ProfileCertificationService.findAllByProfileId", () => {
 			title: "Certification 2",
 			organismeCertification: "Organisme 2",
 		});
-		const result = await profileCertificationService.findAllByProfileId(
-			profileA.id,
-		);
+		const result = await profileCertificationService.findAllByProfileId(profileA.id);
 
 		expect(result).toHaveLength(1);
 		expect(result[0]!.title).toBe("Certification 1");
@@ -164,14 +158,11 @@ describe("ProfileCertificationService.update", () => {
 			organismeCertification: "Organisme 1",
 			order: 1,
 		});
-		const certification2 = await profileCertificationService.create(
-			profile.id,
-			{
-				title: "Certification 2",
-				organismeCertification: "Organisme 2",
-				order: 2,
-			},
-		);
+		const certification2 = await profileCertificationService.create(profile.id, {
+			title: "Certification 2",
+			organismeCertification: "Organisme 2",
+			order: 2,
+		});
 		await expect(
 			profileCertificationService.update(certification2.id, {
 				title: "Certification 1",
@@ -201,26 +192,18 @@ describe("ProfileCertificationService.move", () => {
 	it("moves a certification to another position", async () => {
 		const user = await createTestUser();
 		const profile = await createTestProfile(user.id, "John", "Doe");
-		const certification1 = await profileCertificationService.create(
-			profile.id,
-			{
-				title: "Certification 1",
-				organismeCertification: "Organisme 1",
-				order: 1,
-			},
-		);
-		const certification2 = await profileCertificationService.create(
-			profile.id,
-			{
-				title: "Certification 2",
-				organismeCertification: "Organisme 2",
-				order: 2,
-			},
-		);
+		const certification1 = await profileCertificationService.create(profile.id, {
+			title: "Certification 1",
+			organismeCertification: "Organisme 1",
+			order: 1,
+		});
+		const certification2 = await profileCertificationService.create(profile.id, {
+			title: "Certification 2",
+			organismeCertification: "Organisme 2",
+			order: 2,
+		});
 		await profileCertificationService.move(certification2.id, 1);
-		const result = await profileCertificationService.findAllByProfileId(
-			profile.id,
-		);
+		const result = await profileCertificationService.findAllByProfileId(profile.id);
 
 		expect(result[0]!.id).toBe(certification2.id);
 		expect(result[1]!.id).toBe(certification1.id);
@@ -228,26 +211,19 @@ describe("ProfileCertificationService.move", () => {
 
 	// TEST 2 : certification inexistant
 	it("throws if certification does not exist", async () => {
-		await expect(
-			profileCertificationService.move("unknown-id", 1),
-		).rejects.toThrow(NotFoundError);
+		await expect(profileCertificationService.move("unknown-id", 1)).rejects.toThrow(NotFoundError);
 	});
 
 	// TEST 3 : ordre invalide
 	it("throws if order is invalid", async () => {
 		const user = await createTestUser();
 		const profile = await createTestProfile(user.id, "John", "Doe");
-		const certification1 = await profileCertificationService.create(
-			profile.id,
-			{
-				title: "Certification 1",
-				organismeCertification: "Organisme 1",
-				order: 1,
-			},
-		);
-		await expect(
-			profileCertificationService.move(certification1.id, 0),
-		).rejects.toThrow();
+		const certification1 = await profileCertificationService.create(profile.id, {
+			title: "Certification 1",
+			organismeCertification: "Organisme 1",
+			order: 1,
+		});
+		await expect(profileCertificationService.move(certification1.id, 0)).rejects.toThrow();
 	});
 
 	it("move no-op if order is the same", async () => {
@@ -255,14 +231,11 @@ describe("ProfileCertificationService.move", () => {
 		const profile = await createTestProfile(user.id, "John", "Doe");
 		return await expectMoveNoOp({
 			createEntity: async () => {
-				const certification = await profileCertificationService.create(
-					profile.id,
-					{
-						title: "Certification 1",
-						organismeCertification: "Organisme 1",
-						order: 1,
-					},
-				);
+				const certification = await profileCertificationService.create(profile.id, {
+					title: "Certification 1",
+					organismeCertification: "Organisme 1",
+					order: 1,
+				});
 				return { id: certification.id, order: certification.order };
 			},
 			moveEntity: (id, order) => profileCertificationService.move(id, order),
@@ -275,27 +248,20 @@ describe("ProfileCertificationService.delete", () => {
 	it("deletes a certification", async () => {
 		const user = await createTestUser();
 		const profile = await createTestProfile(user.id, "John", "Doe");
-		const certification1 = await profileCertificationService.create(
-			profile.id,
-			{
-				title: "Certification 1",
-				organismeCertification: "Organisme 1",
-				order: 1,
-			},
-		);
+		const certification1 = await profileCertificationService.create(profile.id, {
+			title: "Certification 1",
+			organismeCertification: "Organisme 1",
+			order: 1,
+		});
 		await profileCertificationService.delete(certification1.id);
-		const result = await profileCertificationService.findAllByProfileId(
-			profile.id,
-		);
+		const result = await profileCertificationService.findAllByProfileId(profile.id);
 
 		expect(result).toHaveLength(0);
 	});
 
 	// TEST 2 : certification inexistant
 	it("throws if certification does not exist", async () => {
-		await expect(
-			profileCertificationService.delete("unknown-id"),
-		).rejects.toThrow(NotFoundError);
+		await expect(profileCertificationService.delete("unknown-id")).rejects.toThrow(NotFoundError);
 	});
 
 	// TEST 3 : réorganisation des certifications après suppression
@@ -307,23 +273,18 @@ describe("ProfileCertificationService.delete", () => {
 			organismeCertification: "Organisme 1",
 			order: 1,
 		});
-		const certification2 = await profileCertificationService.create(
-			profile.id,
-			{
-				title: "Certification 2",
-				organismeCertification: "Organisme 2",
-				order: 2,
-			},
-		);
+		const certification2 = await profileCertificationService.create(profile.id, {
+			title: "Certification 2",
+			organismeCertification: "Organisme 2",
+			order: 2,
+		});
 		await profileCertificationService.create(profile.id, {
 			title: "Certification 3",
 			organismeCertification: "Organisme 3",
 			order: 3,
 		});
 		await profileCertificationService.delete(certification2.id);
-		const result = await profileCertificationService.findAllByProfileId(
-			profile.id,
-		);
+		const result = await profileCertificationService.findAllByProfileId(profile.id);
 
 		expect(result).toHaveLength(2);
 		expect(result[0]!.order).toBe(1);

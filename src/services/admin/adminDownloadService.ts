@@ -1,10 +1,7 @@
 import type { Prisma } from "../../../generated/prisma/client";
 import type { DownloadVariant } from "../../../generated/prisma/enums";
 import { prisma } from "../../../lib/prisma";
-import {
-	periodStart,
-	type AdminDashboardPeriod,
-} from "./adminDashboardService";
+import { periodStart, type AdminDashboardPeriod } from "./adminDashboardService";
 
 export type AdminDownloadListItem = {
 	id: string;
@@ -76,11 +73,7 @@ export class AdminDownloadService {
 		]);
 
 		const templateIds = [
-			...new Set(
-				rows
-					.map((r) => r.templateId)
-					.filter((id): id is string => id != null),
-			),
+			...new Set(rows.map((r) => r.templateId).filter((id): id is string => id != null)),
 		];
 		const templates =
 			templateIds.length === 0
@@ -105,9 +98,7 @@ export class AdminDownloadService {
 				cvId: r.cvId,
 				cvTitle: r.cv?.title ?? null,
 				templateId: r.templateId,
-				templateName: r.templateId
-					? (nameById.get(r.templateId) ?? r.templateId)
-					: null,
+				templateName: r.templateId ? (nameById.get(r.templateId) ?? r.templateId) : null,
 			})),
 		};
 	}

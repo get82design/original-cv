@@ -41,37 +41,37 @@ export const SectionPhilosophyOne = () => {
 						color={"gray-500"}
 					/>
 					<div className="w-full flex flex-col gap-2">
-					<TextareaCv
-						name={FieldNamePhilosophy.citation}
-						onClick={() => {
-							setSelectModifInput(FieldNamePhilosophy.settingsContentCitation);
-							setSelectInputForm("");
-						}}
-						placeholder="Laissez une petite description de vous ici"
-						textColor={watchCitation?.colorSelect}
-						textAlign={watchCitation?.textAlign}
-						dataInput={{
-							changeSize: "1px",
-							model: watchCitation,
-						}}
-					/>
-					{watch(FieldNamePhilosophy.withAuthor) && (
-						<InputTextCv
-							name={FieldNamePhilosophy.author}
+						<TextareaCv
+							name={FieldNamePhilosophy.citation}
 							onClick={() => {
-								setSelectModifInput(FieldNamePhilosophy.settingsContentAuthor);
-								setSelectInputForm(FieldNamePhilosophy.withAuthor);
-							} }
-							placeholder="Auteur"
-							textColor={watchAuthor?.colorSelect}
-							textAlign={"right"} 
+								setSelectModifInput(FieldNamePhilosophy.settingsContentCitation);
+								setSelectInputForm("");
+							}}
+							placeholder="Laissez une petite description de vous ici"
+							textColor={watchCitation?.colorSelect}
+							textAlign={watchCitation?.textAlign}
 							dataInput={{
 								changeSize: "1px",
-								model: watchAuthor,
+								model: watchCitation,
 							}}
-							forceWidthFull={true}
 						/>
-					)}
+						{watch(FieldNamePhilosophy.withAuthor) && (
+							<InputTextCv
+								name={FieldNamePhilosophy.author}
+								onClick={() => {
+									setSelectModifInput(FieldNamePhilosophy.settingsContentAuthor);
+									setSelectInputForm(FieldNamePhilosophy.withAuthor);
+								}}
+								placeholder="Auteur"
+								textColor={watchAuthor?.colorSelect}
+								textAlign={"right"}
+								dataInput={{
+									changeSize: "1px",
+									model: watchAuthor,
+								}}
+								forceWidthFull={true}
+							/>
+						)}
 					</div>
 				</div>
 			}

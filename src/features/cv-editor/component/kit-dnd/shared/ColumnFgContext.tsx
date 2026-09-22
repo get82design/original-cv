@@ -4,16 +4,8 @@ export type ColumnFg = "white" | "black";
 
 const ColumnFgContext = createContext<ColumnFg | null>(null);
 
-export function ColumnFgProvider({
-	fg,
-	children,
-}: {
-	fg: ColumnFg | null;
-	children: ReactNode;
-}) {
-	return (
-		<ColumnFgContext.Provider value={fg}>{children}</ColumnFgContext.Provider>
-	);
+export function ColumnFgProvider({ fg, children }: { fg: ColumnFg | null; children: ReactNode }) {
+	return <ColumnFgContext.Provider value={fg}>{children}</ColumnFgContext.Provider>;
 }
 
 /** Fg forcé par la colonne (sidebar), ou null hors thème colonne. */

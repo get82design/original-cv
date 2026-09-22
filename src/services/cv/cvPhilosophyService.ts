@@ -1,9 +1,6 @@
 import { prisma } from "../../../lib/prisma";
 import { ConflictError, NotFoundError } from "../errors";
-import type {
-	CreatePhilosophyInput,
-	UpdatePhilosophyInput,
-} from "../schemas/philosophy.schema";
+import type { CreatePhilosophyInput, UpdatePhilosophyInput } from "../schemas/philosophy.schema";
 
 export class CvPhilosophyService {
 	// CRÉATION
@@ -28,10 +25,7 @@ export class CvPhilosophyService {
 		});
 
 		if (existing) {
-			throw new ConflictError(
-				"CV_PHILOSOPHY_ALREADY_EXISTS",
-				"This CV already has a philosophy.",
-			);
+			throw new ConflictError("CV_PHILOSOPHY_ALREADY_EXISTS", "This CV already has a philosophy.");
 		}
 
 		return prisma.cvPhilosophy.create({

@@ -34,9 +34,7 @@ describe("geminiService.rewriteSection", () => {
 			response: { text: () => validRewriteJson },
 		});
 
-		const { geminiService } = await import(
-			"../../../src/services/ai/geminiService"
-		);
+		const { geminiService } = await import("../../../src/services/ai/geminiService");
 
 		const result = await geminiService.rewriteSection({
 			sectionType: "experience",
@@ -63,9 +61,7 @@ describe("geminiService.rewriteSection", () => {
 				response: { text: () => validRewriteJson },
 			});
 
-		const { geminiService } = await import(
-			"../../../src/services/ai/geminiService"
-		);
+		const { geminiService } = await import("../../../src/services/ai/geminiService");
 
 		const result = await geminiService.rewriteSection({
 			sectionType: "description",
@@ -80,12 +76,8 @@ describe("geminiService.rewriteSection", () => {
 	});
 
 	it("rejects empty source text", async () => {
-		const { geminiService } = await import(
-			"../../../src/services/ai/geminiService"
-		);
-		const { ValidationError } = await import(
-			"../../../src/services/errors"
-		);
+		const { geminiService } = await import("../../../src/services/ai/geminiService");
+		const { ValidationError } = await import("../../../src/services/errors");
 
 		await expect(
 			geminiService.rewriteSection({
@@ -101,12 +93,8 @@ describe("geminiService.rewriteSection", () => {
 			response: { text: () => "not-json" },
 		});
 
-		const { geminiService } = await import(
-			"../../../src/services/ai/geminiService"
-		);
-		const { ValidationError } = await import(
-			"../../../src/services/errors"
-		);
+		const { geminiService } = await import("../../../src/services/ai/geminiService");
+		const { ValidationError } = await import("../../../src/services/errors");
 
 		await expect(
 			geminiService.rewriteSection({

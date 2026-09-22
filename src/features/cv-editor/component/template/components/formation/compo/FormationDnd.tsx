@@ -35,11 +35,7 @@ export const FormationDnd = ({
 	const { setSectionSelected, sectionSelected } = useCreateCvContext();
 	const { setValue } = useFormContext();
 	const itemsMenu = (idx: number) => {
-		const pathContent = dataFieldContent(
-			"datas.formation.content",
-			idx,
-			"content.settings",
-		);
+		const pathContent = dataFieldContent("datas.formation.content", idx, "content.settings");
 		return [
 			{
 				label: "Options",
@@ -56,9 +52,7 @@ export const FormationDnd = ({
 						template: (
 							<div className="flex justify-between py-1 px-4 items-center">
 								<p>Organisme Formation</p>
-								<ToggleAfficherCacher
-									name={`${pathContent}.withOrganismeFormation`}
-								/>
+								<ToggleAfficherCacher name={`${pathContent}.withOrganismeFormation`} />
 							</div>
 						),
 					},
@@ -92,7 +86,9 @@ export const FormationDnd = ({
 			items={watchFormations.map((s) => s.clientKey)}
 			strategy={colOfFormation === 1 ? verticalListSortingStrategy : horizontalListSortingStrategy}
 		>
-			<div className={`formations-grid grid ${COL_CLASS[colOfFormation as keyof typeof COL_CLASS] ?? "grid-cols-2"} ${colOfFormation === 1 ? "gap-1" : "gap-x-4 gap-y-1"}`}>
+			<div
+				className={`formations-grid grid ${COL_CLASS[colOfFormation as keyof typeof COL_CLASS] ?? "grid-cols-2"} ${colOfFormation === 1 ? "gap-1" : "gap-x-4 gap-y-1"}`}
+			>
 				{watchFormations.map((formation, index) => (
 					<button
 						type="button"
@@ -124,10 +120,7 @@ export const FormationDnd = ({
 							const fresh = createNewItem();
 							setValue(
 								FieldNameFormation.content,
-								[
-									...watchFormations,
-									{ ...fresh, order: watchFormations.length + 1 },
-								],
+								[...watchFormations, { ...fresh, order: watchFormations.length + 1 }],
 								{ shouldDirty: true },
 							);
 						}}

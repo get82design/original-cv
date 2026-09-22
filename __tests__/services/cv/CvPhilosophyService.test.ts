@@ -17,9 +17,7 @@ describe("CvPhilosophyService.create", () => {
 		});
 
 		expect(philosophy.cvId).toBe(cv.id);
-		expect(philosophy.citation).toBe(
-			"La simplicité est la sophistication suprême",
-		);
+		expect(philosophy.citation).toBe("La simplicité est la sophistication suprême");
 		expect(philosophy.author).toBe("Léonard de Vinci");
 	});
 
@@ -86,9 +84,7 @@ describe("CvPhilosophyService.findByCvId", () => {
 		const template = await createTestTemplate();
 		const cv = await createCV(user.id, template.id);
 
-		await expect(cvPhilosophyService.findByCvId(cv.id)).rejects.toThrow(
-			NotFoundError,
-		);
+		await expect(cvPhilosophyService.findByCvId(cv.id)).rejects.toThrow(NotFoundError);
 	});
 });
 
@@ -134,9 +130,7 @@ describe("CvPhilosophyService.delete", () => {
 			citation: "Ma philosophie",
 		});
 		await cvPhilosophyService.delete(cv.id);
-		await expect(cvPhilosophyService.findByCvId(cv.id)).rejects.toThrow(
-			NotFoundError,
-		);
+		await expect(cvPhilosophyService.findByCvId(cv.id)).rejects.toThrow(NotFoundError);
 	});
 
 	// TEST 2 : philosophy inexistante
@@ -144,8 +138,6 @@ describe("CvPhilosophyService.delete", () => {
 		const user = await createTestUser();
 		const template = await createTestTemplate();
 		const cv = await createCV(user.id, template.id);
-		await expect(cvPhilosophyService.delete(cv.id)).rejects.toThrow(
-			NotFoundError,
-		);
+		await expect(cvPhilosophyService.delete(cv.id)).rejects.toThrow(NotFoundError);
 	});
 });

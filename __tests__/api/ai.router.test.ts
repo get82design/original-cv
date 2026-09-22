@@ -3,10 +3,7 @@ import { prismaTest } from "../../lib/prismaTest";
 import { cvImportService } from "../../src/services/ai/cvImportService";
 import { geminiService } from "../../src/services/ai/geminiService";
 import { createTestUser } from "../utils/create-test-user";
-import {
-	createTestCaller,
-	createTestSession,
-} from "./helpers/create-test-caller";
+import { createTestCaller, createTestSession } from "./helpers/create-test-caller";
 
 describe("ai.router", () => {
 	afterEach(() => {
@@ -66,22 +63,20 @@ describe("ai.router", () => {
 
 		it("rejects when daily import quota is reached", async () => {
 			const user = await createTestUser();
-			const importSpy = vi
-				.spyOn(cvImportService, "importCvFromPdf")
-				.mockResolvedValue({
-					draft: {
-						identity: {},
-						experiences: [],
-						educations: [],
-						formations: [],
-						languages: [],
-						skills: [],
-						certifications: [],
-						socialMedias: [],
-						warnings: [],
-					},
-					pageCount: 1,
-				});
+			const importSpy = vi.spyOn(cvImportService, "importCvFromPdf").mockResolvedValue({
+				draft: {
+					identity: {},
+					experiences: [],
+					educations: [],
+					formations: [],
+					languages: [],
+					skills: [],
+					certifications: [],
+					socialMedias: [],
+					warnings: [],
+				},
+				pageCount: 1,
+			});
 
 			await prismaTest.aiEvent.createMany({
 				data: [
@@ -167,9 +162,9 @@ describe("ai.router", () => {
 
 		it("rejects unauthenticated callers", async () => {
 			const caller = await createTestCaller(null);
-			await expect(
-				caller.ai.getBillingOptions({ feature: "REVIEW_CV" }),
-			).rejects.toMatchObject({ code: "UNAUTHORIZED" });
+			await expect(caller.ai.getBillingOptions({ feature: "REVIEW_CV" })).rejects.toMatchObject({
+				code: "UNAUTHORIZED",
+			});
 		});
 	});
 
@@ -212,12 +207,10 @@ describe("ai.router", () => {
 				"REWRITE_SECTION",
 				"COVER_LETTER",
 			]);
-			expect(prices.find((p) => p.feature === "REVIEW_CV")).toMatchObject(
-				{
-					costFree: null,
-					costPaid: 2,
-				},
-			);
+			expect(prices.find((p) => p.feature === "REVIEW_CV")).toMatchObject({
+				costFree: null,
+				costPaid: 2,
+			});
 		});
 
 		it("rejects unauthenticated callers", async () => {
@@ -266,9 +259,7 @@ describe("ai.router", () => {
 			});
 
 			expect(result.review.score).toBe(8);
-			expect(geminiService.reviewCv).toHaveBeenCalledWith(
-				"Ada Lovelace — Analyste",
-			);
+			expect(geminiService.reviewCv).toHaveBeenCalledWith("Ada Lovelace — Analyste");
 
 			const events = await prismaTest.aiEvent.findMany({
 				where: { userId: user.id },

@@ -197,9 +197,7 @@ describe("ProfilePassionService.move", () => {
 
 	// TEST 2 : passion inexistante
 	it("throws if passion does not exist", async () => {
-		await expect(profilePassionService.move("unknown-id", 1)).rejects.toThrow(
-			NotFoundError,
-		);
+		await expect(profilePassionService.move("unknown-id", 1)).rejects.toThrow(NotFoundError);
 	});
 
 	// TEST 3 : ordre invalide
@@ -249,9 +247,7 @@ describe("ProfilePassionService.delete", () => {
 
 	// TEST 2 : passion inexistante
 	it("throws if passion does not exist", async () => {
-		await expect(profilePassionService.delete("unknown-id")).rejects.toThrow(
-			NotFoundError,
-		);
+		await expect(profilePassionService.delete("unknown-id")).rejects.toThrow(NotFoundError);
 	});
 
 	// TEST 3 : reordonnancement des passions après suppression

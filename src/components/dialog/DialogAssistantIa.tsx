@@ -4,11 +4,7 @@ import { useState } from "react";
 import { trpc } from "@utils/trpc";
 import type { BillableAiFeature } from "@/services/ai/aiBillingService";
 
-export type AiActionId =
-	| "rewrite-section"
-	| "review-cv"
-	| "cover-letter"
-	| "match-job";
+export type AiActionId = "rewrite-section" | "review-cv" | "cover-letter" | "match-job";
 
 interface AiAction {
 	id: AiActionId;
@@ -23,29 +19,25 @@ const AI_ACTIONS: AiAction[] = [
 	{
 		id: "rewrite-section",
 		title: "Reformuler une partie",
-		description:
-			"Améliore le ton et la clarté d’une section (expérience, description, mission…).",
+		description: "Améliore le ton et la clarté d’une section (expérience, description, mission…).",
 		feature: "REWRITE_SECTION",
 	},
 	{
 		id: "review-cv",
 		title: "Relecture générale",
-		description:
-			"Analyse ton CV et propose des suggestions globales pour le renforcer.",
+		description: "Analyse ton CV et propose des suggestions globales pour le renforcer.",
 		feature: "REVIEW_CV",
 	},
 	{
 		id: "cover-letter",
 		title: "Lettre de motivation",
-		description:
-			"Génère une lettre alignée sur le contenu de ton CV.",
+		description: "Génère une lettre alignée sur le contenu de ton CV.",
 		feature: "COVER_LETTER",
 	},
 	{
 		id: "match-job",
 		title: "Comparer à une annonce",
-		description:
-			"Évalue l’adéquation de ton CV avec une offre d’emploi.",
+		description: "Évalue l’adéquation de ton CV avec une offre d’emploi.",
 		hint: "Bientôt disponible",
 		comingSoon: true,
 	},
@@ -54,14 +46,10 @@ const AI_ACTIONS: AiAction[] = [
 function formatCreditPrice(costFree: number | null, costPaid: number | null) {
 	const parts: string[] = [];
 	if (costFree != null) {
-		parts.push(
-			`${costFree} crédit${costFree > 1 ? "s" : ""} gratuit${costFree > 1 ? "s" : ""}`,
-		);
+		parts.push(`${costFree} crédit${costFree > 1 ? "s" : ""} gratuit${costFree > 1 ? "s" : ""}`);
 	}
 	if (costPaid != null) {
-		parts.push(
-			`${costPaid} crédit${costPaid > 1 ? "s" : ""} payant${costPaid > 1 ? "s" : ""}`,
-		);
+		parts.push(`${costPaid} crédit${costPaid > 1 ? "s" : ""} payant${costPaid > 1 ? "s" : ""}`);
 	}
 	if (parts.length === 0) return null;
 	return parts.join(" · ");
@@ -74,19 +62,13 @@ interface DialogAssistantIaProps {
 	onSelectAction?: (action: AiActionId) => void;
 }
 
-export const DialogAssistantIa = ({
-	visible,
-	onHide,
-	onSelectAction,
-}: DialogAssistantIaProps) => {
+export const DialogAssistantIa = ({ visible, onHide, onSelectAction }: DialogAssistantIaProps) => {
 	const [selectedId, setSelectedId] = useState<AiActionId | null>(null);
 	const pricesQuery = trpc.ai.listFeaturePrices.useQuery(undefined, {
 		enabled: visible,
 	});
 
-	const priceByFeature = new Map(
-		(pricesQuery.data ?? []).map((row) => [row.feature, row]),
-	);
+	const priceByFeature = new Map((pricesQuery.data ?? []).map((row) => [row.feature, row]));
 
 	const handleHide = () => {
 		setSelectedId(null);
@@ -130,19 +112,15 @@ export const DialogAssistantIa = ({
 		>
 			<div className="flex flex-col gap-4 p-2 text-zinc-900 dark:text-zinc-100">
 				<p className="m-0 text-sm leading-relaxed text-zinc-700 dark:text-zinc-300">
-					Choisis une action pour améliorer ton CV. Tu pourras choisir
-					crédits gratuits ou payants à l’étape suivante.
+					Choisis une action pour améliorer ton CV. Tu pourras choisir crédits gratuits ou payants à
+					l’étape suivante.
 				</p>
 
 				<ul className="m-0 p-0 list-none flex flex-col gap-2">
 					{AI_ACTIONS.map((action) => {
 						const isSelected = selectedId === action.id;
-						const price = action.feature
-							? priceByFeature.get(action.feature)
-							: undefined;
-						const priceLabel = price
-							? formatCreditPrice(price.costFree, price.costPaid)
-							: null;
+						const price = action.feature ? priceByFeature.get(action.feature) : undefined;
+						const priceLabel = price ? formatCreditPrice(price.costFree, price.costPaid) : null;
 						return (
 							<li key={action.id}>
 								<button
@@ -174,11 +152,8 @@ export const DialogAssistantIa = ({
 												<p className="m-0 mt-1.5 text-xs font-medium text-zinc-700 dark:text-zinc-300">
 													{priceLabel}
 												</p>
-											) : action.feature &&
-											  pricesQuery.isLoading ? (
-												<p className="m-0 mt-1.5 text-xs text-zinc-400">
-													Tarif…
-												</p>
+											) : action.feature && pricesQuery.isLoading ? (
+												<p className="m-0 mt-1.5 text-xs text-zinc-400">Tarif…</p>
 											) : null}
 										</div>
 										{!action.comingSoon && (

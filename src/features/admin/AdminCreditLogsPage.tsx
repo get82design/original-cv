@@ -10,10 +10,7 @@ import { TitleAppOne } from "@/components/title/TitleAppOne";
 import { AppCard } from "@/components/card/AppCard";
 import { trpc } from "@utils/trpc";
 import type { AdminDashboardPeriod } from "@/services/admin/adminDashboardService";
-import {
-	AdminCreditKind,
-	AdminCreditReason,
-} from "../../../generated/prisma/enums";
+import { AdminCreditKind, AdminCreditReason } from "../../../generated/prisma/enums";
 
 const PERIOD_OPTIONS: { label: string; value: AdminDashboardPeriod }[] = [
 	{ label: "24 h", value: "1d" },
@@ -152,9 +149,7 @@ export function AdminCreditLogsPage() {
 			<AppCard className="admin-filters mb-4">
 				<div className="flex flex-col gap-3 lg:flex-row lg:items-end">
 					<div className="flex-1">
-						<label className="mb-1 block text-xs text-zinc-500">
-							Recherche
-						</label>
+						<label className="mb-1 block text-xs text-zinc-500">Recherche</label>
 						<div className="relative w-full">
 							<i className="pi pi-search pointer-events-none absolute top-1/2 left-3 z-10 -translate-y-1/2 text-sm text-zinc-500 dark:text-zinc-400" />
 							<InputText
@@ -166,9 +161,7 @@ export function AdminCreditLogsPage() {
 						</div>
 					</div>
 					<div className="w-full lg:w-56">
-						<label className="mb-1 block text-xs text-zinc-500">
-							Type
-						</label>
+						<label className="mb-1 block text-xs text-zinc-500">Type</label>
 						<Dropdown
 							value={kind}
 							options={KIND_OPTIONS}
@@ -200,28 +193,19 @@ export function AdminCreditLogsPage() {
 					<tbody>
 						{listQuery.isLoading ? (
 							<tr>
-								<td
-									colSpan={7}
-									className="px-4 py-8 text-center text-zinc-500"
-								>
+								<td colSpan={7} className="px-4 py-8 text-center text-zinc-500">
 									Chargement…
 								</td>
 							</tr>
 						) : (listQuery.data?.items.length ?? 0) === 0 ? (
 							<tr>
-								<td
-									colSpan={7}
-									className="px-4 py-8 text-center text-zinc-500"
-								>
+								<td colSpan={7} className="px-4 py-8 text-center text-zinc-500">
 									Aucun mouvement de crédits.
 								</td>
 							</tr>
 						) : (
 							listQuery.data!.items.map((e) => (
-								<tr
-									key={e.id}
-									className="border-b border-zinc-100 dark:border-zinc-800"
-								>
+								<tr key={e.id} className="border-b border-zinc-100 dark:border-zinc-800">
 									<td className="px-4 py-3 text-xs whitespace-nowrap text-zinc-500">
 										{formatDate(e.createdAt)}
 									</td>
@@ -291,12 +275,8 @@ export function AdminCreditLogsPage() {
 							size="small"
 							outlined
 							label="Suivant"
-							disabled={
-								page >= totalPages || listQuery.isFetching
-							}
-							onClick={() =>
-								setPage((p) => Math.min(totalPages, p + 1))
-							}
+							disabled={page >= totalPages || listQuery.isFetching}
+							onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
 						/>
 					</div>
 				</div>

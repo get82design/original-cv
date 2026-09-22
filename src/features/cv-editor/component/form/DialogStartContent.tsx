@@ -48,8 +48,7 @@ export const DialogStartContent = ({
 		>
 			<div className="flex flex-col gap-3 py-2 text-zinc-900 dark:text-zinc-100">
 				<p className="m-0 text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">
-					Le modèle est déjà sélectionné. Choisissez la source des
-					données.
+					Le modèle est déjà sélectionné. Choisissez la source des données.
 				</p>
 				<input
 					ref={fileInputRef}

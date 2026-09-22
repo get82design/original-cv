@@ -12,9 +12,7 @@ describe("UnlockedTemplateService.unlockTemplate", () => {
 		await unlockedTemplateService.unlockTemplate(user.id, template.id, {
 			method: "gift",
 		});
-		const unlockedTemplates = await unlockedTemplateService.findAllByUser(
-			user.id,
-		);
+		const unlockedTemplates = await unlockedTemplateService.findAllByUser(user.id);
 		expect(unlockedTemplates.length).toBe(1);
 		expect(unlockedTemplates[0]?.userId).toBe(user.id);
 		expect(unlockedTemplates[0]?.templateId).toBe(template.id);
@@ -42,9 +40,7 @@ describe("UnlockedTemplateService.unlockTemplate", () => {
 			where: { id: user.id },
 		});
 		expect(after.downloadCredits).toBe(before.downloadCredits + 3);
-		expect(after.freeDownloadsRemaining).toBe(
-			before.freeDownloadsRemaining + 2,
-		);
+		expect(after.freeDownloadsRemaining).toBe(before.freeDownloadsRemaining + 2);
 
 		const grant = await prismaTest.downloadGrant.findUnique({
 			where: {
@@ -85,9 +81,7 @@ describe("UnlockedTemplateService.unlockTemplate", () => {
 		});
 		// 10 - 4, pas de +3 cadeau crédits
 		expect(after.downloadCredits).toBe(6);
-		expect(after.freeDownloadsRemaining).toBe(
-			before.freeDownloadsRemaining + 2,
-		);
+		expect(after.freeDownloadsRemaining).toBe(before.freeDownloadsRemaining + 2);
 		const row = await prismaTest.unlockedTemplate.findUniqueOrThrow({
 			where: {
 				userId_templateId: {
@@ -156,9 +150,7 @@ describe("UnlockedTemplateService.findAllByUser", () => {
 		await unlockedTemplateService.unlockTemplate(user.id, template.id, {
 			method: "gift",
 		});
-		const unlockedTemplates = await unlockedTemplateService.findAllByUser(
-			user.id,
-		);
+		const unlockedTemplates = await unlockedTemplateService.findAllByUser(user.id);
 		expect(unlockedTemplates.length).toBe(1);
 		expect(unlockedTemplates[0]?.userId).toBe(user.id);
 		expect(unlockedTemplates[0]?.templateId).toBe(template.id);
@@ -166,16 +158,12 @@ describe("UnlockedTemplateService.findAllByUser", () => {
 
 	it("returns an empty array if the user has no unlocked templates", async () => {
 		const user = await createTestUser();
-		const unlockedTemplates = await unlockedTemplateService.findAllByUser(
-			user.id,
-		);
+		const unlockedTemplates = await unlockedTemplateService.findAllByUser(user.id);
 		expect(unlockedTemplates.length).toBe(0);
 	});
 
 	it("throws an error if the user is not found", async () => {
-		await expect(
-			unlockedTemplateService.findAllByUser("123"),
-		).rejects.toThrow(NotFoundError);
+		await expect(unlockedTemplateService.findAllByUser("123")).rejects.toThrow(NotFoundError);
 	});
 });
 
@@ -186,20 +174,14 @@ describe("UnlockedTemplateService.hasUnlocked", () => {
 		await unlockedTemplateService.unlockTemplate(user.id, template.id, {
 			method: "gift",
 		});
-		const hasUnlocked = await unlockedTemplateService.hasUnlocked(
-			user.id,
-			template.id,
-		);
+		const hasUnlocked = await unlockedTemplateService.hasUnlocked(user.id, template.id);
 		expect(hasUnlocked).toBe(true);
 	});
 
 	it("returns false if the template is not unlocked for the user", async () => {
 		const user = await createTestUser();
 		const template = await createTestTemplate();
-		const hasUnlocked = await unlockedTemplateService.hasUnlocked(
-			user.id,
-			template.id,
-		);
+		const hasUnlocked = await unlockedTemplateService.hasUnlocked(user.id, template.id);
 		expect(hasUnlocked).toBe(false);
 	});
 });
@@ -212,23 +194,17 @@ describe("UnlockedTemplateService.delete", () => {
 			method: "gift",
 		});
 		await unlockedTemplateService.delete(user.id, template.id);
-		const unlockedTemplates = await unlockedTemplateService.findAllByUser(
-			user.id,
-		);
+		const unlockedTemplates = await unlockedTemplateService.findAllByUser(user.id);
 		expect(unlockedTemplates.length).toBe(0);
 	});
 
 	it("throws an error if the user is not found", async () => {
-		await expect(
-			unlockedTemplateService.delete("123", "123"),
-		).rejects.toThrow(NotFoundError);
+		await expect(unlockedTemplateService.delete("123", "123")).rejects.toThrow(NotFoundError);
 	});
 
 	it("throws an error if the template is not found", async () => {
 		const user = await createTestUser();
-		await expect(
-			unlockedTemplateService.delete(user.id, "123"),
-		).rejects.toThrow(NotFoundError);
+		await expect(unlockedTemplateService.delete(user.id, "123")).rejects.toThrow(NotFoundError);
 	});
 });
 
@@ -237,14 +213,12 @@ describe("UnlockedTemplateService.unlockManyTemplates", () => {
 		const user = await createTestUser();
 		const template1 = await createTestTemplate();
 		const template2 = await createTestTemplate();
-		const result = await unlockedTemplateService.unlockManyTemplates(
-			user.id,
-			[template1.id, template2.id],
-		);
+		const result = await unlockedTemplateService.unlockManyTemplates(user.id, [
+			template1.id,
+			template2.id,
+		]);
 		expect(result.count).toBe(2);
-		const unlockedTemplates = await unlockedTemplateService.findAllByUser(
-			user.id,
-		);
+		const unlockedTemplates = await unlockedTemplateService.findAllByUser(user.id);
 		expect(unlockedTemplates.length).toBe(2);
 		const ids = unlockedTemplates.map((u) => u.templateId);
 		expect(ids).toContain(template1.id);
@@ -264,10 +238,7 @@ describe("UnlockedTemplateService.unlockManyTemplates", () => {
 		const mid = await prismaTest.user.findUniqueOrThrow({
 			where: { id: user.id },
 		});
-		const result = await unlockedTemplateService.unlockManyTemplates(
-			user.id,
-			[template.id],
-		);
+		const result = await unlockedTemplateService.unlockManyTemplates(user.id, [template.id]);
 		expect(result.count).toBe(0);
 		const after = await prismaTest.user.findUniqueOrThrow({
 			where: { id: user.id },
@@ -284,10 +255,7 @@ describe("UnlockedTemplateService.unlockManyTemplates", () => {
 	it("throws an error if the templates are not found", async () => {
 		const user = await createTestUser();
 		await expect(
-			unlockedTemplateService.unlockManyTemplates(user.id, [
-				"123",
-				"123",
-			]),
+			unlockedTemplateService.unlockManyTemplates(user.id, ["123", "123"]),
 		).rejects.toThrow(NotFoundError);
 	});
 });

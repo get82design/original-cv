@@ -6,10 +6,7 @@ interface ToggleAfficherCacherProps {
 	compact?: boolean;
 }
 
-export const ToggleAfficherCacher = ({
-	name,
-	compact = false,
-}: ToggleAfficherCacherProps) => {
+export const ToggleAfficherCacher = ({ name, compact = false }: ToggleAfficherCacherProps) => {
 	const { control, watch } = useFormContext();
 	return (
 		<Controller
@@ -18,9 +15,7 @@ export const ToggleAfficherCacher = ({
 			render={({ field }) => (
 				<div
 					className={
-						compact
-							? "inline-flex h-8 items-center"
-							: "flex flex-column align-items-center gap-2"
+						compact ? "inline-flex h-8 items-center" : "flex flex-column align-items-center gap-2"
 					}
 				>
 					<ToggleButton
@@ -30,11 +25,7 @@ export const ToggleAfficherCacher = ({
 						checked={watch(name)}
 						onChange={field.onChange}
 						className={compact ? "photo-toggle-compact" : undefined}
-						pt={
-							compact
-								? { root: { className: "h-8 m-0 p-0 border-0" } }
-								: undefined
-						}
+						pt={compact ? { root: { className: "h-8 m-0 p-0 border-0" } } : undefined}
 					/>
 				</div>
 			)}

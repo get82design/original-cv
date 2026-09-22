@@ -4,10 +4,7 @@ import { TRPCError } from "@trpc/server";
 import { createTag } from "../utils/create-test-cv-full-flow";
 import { createProfileTagGroup } from "../utils/create-test-user-with-profile";
 import { createTestUser } from "../utils/create-test-user";
-import {
-	createTestCaller,
-	createTestSession,
-} from "./helpers/create-test-caller";
+import { createTestCaller, createTestSession } from "./helpers/create-test-caller";
 
 describe("profileTagRouter", () => {
 	async function setup() {
@@ -219,8 +216,8 @@ describe("profileTagRouter", () => {
 	it("delete returns NOT_FOUND for unknown id", async () => {
 		const { caller } = await setup();
 
-		await expect(
-			caller.profileTag.delete({ id: "unknown-id" }),
-		).rejects.toMatchObject({ code: "NOT_FOUND" });
+		await expect(caller.profileTag.delete({ id: "unknown-id" })).rejects.toMatchObject({
+			code: "NOT_FOUND",
+		});
 	});
 });

@@ -1,9 +1,6 @@
 import { prisma } from "../../../lib/prisma";
 import { ConflictError, NotFoundError } from "../errors";
-import type {
-	CreateTagSourceInput,
-	UpdateTagSourceInput,
-} from "../schemas/tagSource.schema";
+import type { CreateTagSourceInput, UpdateTagSourceInput } from "../schemas/tagSource.schema";
 
 export class TagService {
 	async create(data: CreateTagSourceInput) {

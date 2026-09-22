@@ -7,11 +7,9 @@ import {
 import { protectedProcedure, router } from "../trpc";
 
 export const tagBaseRouter = router({
-	create: protectedProcedure
-		.input(createTagSourceSchema)
-		.mutation(async ({ input }) => {
-			return tagService.create(input);
-		}),
+	create: protectedProcedure.input(createTagSourceSchema).mutation(async ({ input }) => {
+		return tagService.create(input);
+	}),
 	findAll: protectedProcedure.query(async () => {
 		return tagService.findAll();
 	}),
@@ -20,9 +18,7 @@ export const tagBaseRouter = router({
 		.mutation(async ({ input }) => {
 			return tagService.update(input.id, input.data);
 		}),
-	delete: protectedProcedure
-		.input(z.object({ id: z.string() }))
-		.mutation(async ({ input }) => {
-			return tagService.delete(input.id);
-		}),
+	delete: protectedProcedure.input(z.object({ id: z.string() })).mutation(async ({ input }) => {
+		return tagService.delete(input.id);
+	}),
 });

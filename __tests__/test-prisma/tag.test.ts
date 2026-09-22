@@ -1,11 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { createTestUserWithProfile } from "../utils/create-test-user-with-profile";
 import { prismaTest } from "../../lib/prismaTest";
-import type {
-	Tag,
-	ProfileTag,
-	ProfileTagGroup,
-} from "../../generated/prisma/client";
+import type { Tag, ProfileTag, ProfileTagGroup } from "../../generated/prisma/client";
 
 describe("Tag model", () => {
 	//! 1- CREATE TESTS
@@ -146,9 +142,7 @@ describe("Tag model", () => {
 					},
 				},
 			});
-			const allTags = updatedProfile!.tags!.flatMap((group) =>
-				group.tags.map((ps) => ps.tag.name),
-			);
+			const allTags = updatedProfile!.tags!.flatMap((group) => group.tags.map((ps) => ps.tag.name));
 			expect(allTags).toContain("TypeScript");
 			expect(allTags).toContain("react");
 			expect(allTags.length).toBe(2);

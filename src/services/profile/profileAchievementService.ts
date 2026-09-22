@@ -3,10 +3,7 @@ import { compactOrder } from "../../utils/compactOrder";
 import { reorderItems } from "../../utils/reorderCvItems";
 import { ConflictError } from "../errors/ConflictError";
 import { NotFoundError } from "../errors/NotFoundError";
-import type {
-	CreateAchievementInput,
-	UpdateAchievementInput,
-} from "../schemas/achievement.schema";
+import type { CreateAchievementInput, UpdateAchievementInput } from "../schemas/achievement.schema";
 
 export class ProfileAchievementService {
 	async create(profileId: string, data: CreateAchievementInput) {
@@ -114,13 +111,9 @@ export class ProfileAchievementService {
 			},
 			data: {
 				...(data.title !== undefined ? { title: data.title } : {}),
-				...(data.description !== undefined
-					? { description: data.description }
-					: {}),
+				...(data.description !== undefined ? { description: data.description } : {}),
 				...(data.year !== undefined ? { year: data.year } : {}),
-				...(data.technology !== undefined
-					? { technology: data.technology }
-					: {}),
+				...(data.technology !== undefined ? { technology: data.technology } : {}),
 			},
 		});
 	}

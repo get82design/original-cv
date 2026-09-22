@@ -32,9 +32,9 @@ describe("adminTemplateService", () => {
 
 	it("updateCatalog rejects empty patch", async () => {
 		const template = await createTestTemplate();
-		await expect(
-			adminTemplateService.updateCatalog(template.id, {}),
-		).rejects.toBeInstanceOf(ValidationError);
+		await expect(adminTemplateService.updateCatalog(template.id, {})).rejects.toBeInstanceOf(
+			ValidationError,
+		);
 	});
 
 	it("updateCatalog rejects negative prices", async () => {
@@ -74,8 +74,8 @@ describe("adminTemplateService", () => {
 	});
 
 	it("getTemplate throws NotFound", async () => {
-		await expect(
-			adminTemplateService.getTemplate("missing-template"),
-		).rejects.toBeInstanceOf(NotFoundError);
+		await expect(adminTemplateService.getTemplate("missing-template")).rejects.toBeInstanceOf(
+			NotFoundError,
+		);
 	});
 });

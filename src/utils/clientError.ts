@@ -1,10 +1,7 @@
 import { TRPCClientError } from "@trpc/client";
 
 /** Message utilisateur depuis une erreur tRPC / Error. */
-export function getClientErrorMessage(
-	err: unknown,
-	fallback = "Une erreur est survenue.",
-): string {
+export function getClientErrorMessage(err: unknown, fallback = "Une erreur est survenue."): string {
 	if (err instanceof TRPCClientError) {
 		const msg = err.message?.trim();
 		if (msg) return msg;

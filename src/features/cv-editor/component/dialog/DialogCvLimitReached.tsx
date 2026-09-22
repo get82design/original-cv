@@ -81,9 +81,8 @@ export const DialogCvLimitReached = ({
 		>
 			<div className="flex flex-col gap-4 p-2 text-zinc-900 dark:text-zinc-100">
 				<p className="m-0 text-sm leading-relaxed">
-					Vous avez atteint le nombre maximum de CV enregistrés. Vous pouvez
-					écraser un CV existant, ou acheter un nouvel emplacement de
-					sauvegarde.
+					Vous avez atteint le nombre maximum de CV enregistrés. Vous pouvez écraser un CV existant,
+					ou acheter un nouvel emplacement de sauvegarde.
 				</p>
 
 				<div className="flex flex-col gap-2">
@@ -93,9 +92,7 @@ export const DialogCvLimitReached = ({
 					{loading ? (
 						<p className="m-0 text-sm text-zinc-500">Chargement de vos CV…</p>
 					) : cvs.length === 0 ? (
-						<p className="m-0 text-sm text-zinc-500">
-							Aucun CV trouvé sur votre compte.
-						</p>
+						<p className="m-0 text-sm text-zinc-500">Aucun CV trouvé sur votre compte.</p>
 					) : (
 						<ul className="m-0 p-0 list-none flex flex-col gap-2 max-h-64 overflow-y-auto">
 							{cvs.map((cv) => {
@@ -118,9 +115,7 @@ export const DialogCvLimitReached = ({
 														{cv.title || "CV sans titre"}
 													</p>
 													<p className="m-0 mt-0.5 text-xs text-zinc-500 dark:text-zinc-400">
-														{cv.template?.name
-															? `Modèle ${cv.template.name} · `
-															: ""}
+														{cv.template?.name ? `Modèle ${cv.template.name} · ` : ""}
 														Modifié le {formatDate(cv.updatedAt)}
 													</p>
 												</div>
@@ -141,8 +136,7 @@ export const DialogCvLimitReached = ({
 					)}
 					{selectedId && (
 						<p className="m-0 text-xs text-amber-700 dark:text-amber-300">
-							Le CV sélectionné sera définitivement remplacé par le contenu
-							actuel.
+							Le CV sélectionné sera définitivement remplacé par le contenu actuel.
 						</p>
 					)}
 				</div>

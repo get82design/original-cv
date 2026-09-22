@@ -6,11 +6,7 @@ describe("CV Fullflow Integration with competences", () => {
 	it("should create a CV with competence group and competences", async () => {
 		const { user, template } = await utils.createUserAndTemplate();
 		const cv = await utils.createCV(user.id, template.id);
-		const competenceGroup = await utils.createCompetenceGroup(
-			cv.id,
-			"competences",
-			1,
-		);
+		const competenceGroup = await utils.createCompetenceGroup(cv.id, "competences", 1);
 		const competence = await utils.createCompetence("JavaScript");
 		await utils.addCompetenceToGroup(competence.id, competenceGroup.id);
 
@@ -23,21 +19,13 @@ describe("CV Fullflow Integration with competences", () => {
 			},
 		});
 
-		expect(dbCV!.competences[0]!.cvCompetences[0]!.competence.name).toBe(
-			"JavaScript",
-		);
+		expect(dbCV!.competences[0]!.cvCompetences[0]!.competence.name).toBe("JavaScript");
 	});
 
 	it("should cascade delete CV modules and items", async () => {
-		const { user, template } = await utils.createUserAndTemplate(
-			"delete@fullflow.com",
-		);
+		const { user, template } = await utils.createUserAndTemplate("delete@fullflow.com");
 		const cv = await utils.createCV(user.id, template.id);
-		const competenceGroup = await utils.createCompetenceGroup(
-			cv.id,
-			"competences",
-			1,
-		);
+		const competenceGroup = await utils.createCompetenceGroup(cv.id, "competences", 1);
 		const competence = await utils.createCompetence("TypeScript");
 		await utils.addCompetenceToGroup(competence.id, competenceGroup.id);
 

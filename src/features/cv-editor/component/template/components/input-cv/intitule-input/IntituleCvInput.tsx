@@ -1,23 +1,21 @@
-import { TextareaCv } from "@/components/input-writer/input-textarea-cv/InputTextareaCv"
-import { useCreateCvContext } from "@/features/cv-editor/component/context/CreateCvContext"
-import { FieldNameHeader } from "@/features/cv-editor/utils/fields/fieldNameHeader"
-import type { BaseTextSettings } from "@/services/schemas/cvTemplate.schema"
-import { useFormContext } from "react-hook-form"
+import { TextareaCv } from "@/components/input-writer/input-textarea-cv/InputTextareaCv";
+import { useCreateCvContext } from "@/features/cv-editor/component/context/CreateCvContext";
+import { FieldNameHeader } from "@/features/cv-editor/utils/fields/fieldNameHeader";
+import type { BaseTextSettings } from "@/services/schemas/cvTemplate.schema";
+import { useFormContext } from "react-hook-form";
 
 interface IntituleCvInputProps {
-	forceWidthFull?: boolean
-	textAlign?: "left" | "right" | "center" | "justify" | undefined
+	forceWidthFull?: boolean;
+	textAlign?: "left" | "right" | "center" | "justify" | undefined;
 }
 
 export const IntituleCvInput = ({
 	forceWidthFull: _forceWidthFull = false,
 	textAlign = "left",
 }: IntituleCvInputProps) => {
-	const { watch } = useFormContext()
-	const watchModelHeaderSubTitle: BaseTextSettings = watch(
-		FieldNameHeader.settingsSubTitle,
-	)
-	const { setSelectModifInput, setSelectInputForm } = useCreateCvContext()
+	const { watch } = useFormContext();
+	const watchModelHeaderSubTitle: BaseTextSettings = watch(FieldNameHeader.settingsSubTitle);
+	const { setSelectModifInput, setSelectInputForm } = useCreateCvContext();
 	return (
 		<TextareaCv
 			className="w-full"
@@ -25,8 +23,8 @@ export const IntituleCvInput = ({
 			name={FieldNameHeader.subTitle}
 			allowNewline
 			onClick={() => {
-				setSelectModifInput(FieldNameHeader.settingsSubTitle)
-				setSelectInputForm("")
+				setSelectModifInput(FieldNameHeader.settingsSubTitle);
+				setSelectInputForm("");
 			}}
 			textColor={watchModelHeaderSubTitle?.colorSelect}
 			textAlign={textAlign ?? watchModelHeaderSubTitle?.textAlign ?? "left"}
@@ -35,5 +33,5 @@ export const IntituleCvInput = ({
 				model: watchModelHeaderSubTitle,
 			}}
 		/>
-	)
-}
+	);
+};

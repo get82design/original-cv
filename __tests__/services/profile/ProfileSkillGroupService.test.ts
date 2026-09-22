@@ -81,9 +81,7 @@ describe("ProfileSkillGroupService.findAllByProfileId", () => {
 			order: 2,
 			skills: [],
 		});
-		const skillGroups = await profileSkillGroupService.findAllByProfileId(
-			profile.id,
-		);
+		const skillGroups = await profileSkillGroupService.findAllByProfileId(profile.id);
 		expect(skillGroups.length).toBe(2);
 		expect(skillGroups[0]?.title).toBe("Skill Group 1");
 		expect(skillGroups[0]?.order).toBe(1);
@@ -94,9 +92,7 @@ describe("ProfileSkillGroupService.findAllByProfileId", () => {
 	it("returns empty array if no skill groups exist", async () => {
 		const user = await createTestUser();
 		const profile = await createTestProfile(user.id, "John", "Doe");
-		const skillGroups = await profileSkillGroupService.findAllByProfileId(
-			profile.id,
-		);
+		const skillGroups = await profileSkillGroupService.findAllByProfileId(profile.id);
 		expect(skillGroups).toEqual([]);
 	});
 
@@ -115,9 +111,7 @@ describe("ProfileSkillGroupService.findAllByProfileId", () => {
 			order: 2,
 			skills: [],
 		});
-		const skillGroups = await profileSkillGroupService.findAllByProfileId(
-			profile.id,
-		);
+		const skillGroups = await profileSkillGroupService.findAllByProfileId(profile.id);
 		expect(skillGroups.length).toBe(1);
 		expect(skillGroups[0]?.title).toBe("Skill Group 1");
 		expect(skillGroups[0]?.order).toBe(1);
@@ -133,13 +127,10 @@ describe("ProfileSkillGroupService.update", () => {
 			order: 1,
 			skills: [],
 		});
-		const updatedSkillGroup = await profileSkillGroupService.update(
-			skillGroup.id,
-			{
-				title: "Skill Group 2",
-				skills: [],
-			},
-		);
+		const updatedSkillGroup = await profileSkillGroupService.update(skillGroup.id, {
+			title: "Skill Group 2",
+			skills: [],
+		});
 		expect(updatedSkillGroup.title).toBe("Skill Group 2");
 		expect(updatedSkillGroup.order).toBe(1);
 	});
@@ -191,9 +182,7 @@ describe("ProfileSkillGroupService.move", () => {
 			skills: [],
 		});
 		await profileSkillGroupService.move(skillGroup2.id, 1);
-		const result = await profileSkillGroupService.findAllByProfileId(
-			profile.id,
-		);
+		const result = await profileSkillGroupService.findAllByProfileId(profile.id);
 
 		expect(result[0]!.id).toBe(skillGroup2.id);
 		expect(result[1]!.id).toBe(skillGroup1.id);
@@ -201,9 +190,7 @@ describe("ProfileSkillGroupService.move", () => {
 
 	// TEST 2 : skill group inexistant
 	it("throws if skill group does not exist", async () => {
-		await expect(
-			profileSkillGroupService.move("unknown-id", 1),
-		).rejects.toThrow(NotFoundError);
+		await expect(profileSkillGroupService.move("unknown-id", 1)).rejects.toThrow(NotFoundError);
 	});
 
 	// TEST 3 : ordre invalide
@@ -215,9 +202,7 @@ describe("ProfileSkillGroupService.move", () => {
 			order: 1,
 			skills: [],
 		});
-		await expect(
-			profileSkillGroupService.move(skillGroup.id, 0),
-		).rejects.toThrow();
+		await expect(profileSkillGroupService.move(skillGroup.id, 0)).rejects.toThrow();
 	});
 
 	it("move no-op if order is the same", async () => {
@@ -248,18 +233,14 @@ describe("ProfileSkillGroupService.delete", () => {
 			skills: [],
 		});
 		await profileSkillGroupService.delete(skillGroup.id);
-		const result = await profileSkillGroupService.findAllByProfileId(
-			profile.id,
-		);
+		const result = await profileSkillGroupService.findAllByProfileId(profile.id);
 
 		expect(result).toHaveLength(0);
 	});
 
 	// TEST 2 : skill group inexistant
 	it("throws if skill group does not exist", async () => {
-		await expect(profileSkillGroupService.delete("unknown-id")).rejects.toThrow(
-			NotFoundError,
-		);
+		await expect(profileSkillGroupService.delete("unknown-id")).rejects.toThrow(NotFoundError);
 	});
 
 	// TEST 3 : réorganisation des skill groups après suppression
@@ -277,9 +258,7 @@ describe("ProfileSkillGroupService.delete", () => {
 			skills: [],
 		});
 		await profileSkillGroupService.delete(skillGroup.id);
-		const result = await profileSkillGroupService.findAllByProfileId(
-			profile.id,
-		);
+		const result = await profileSkillGroupService.findAllByProfileId(profile.id);
 
 		expect(result).toHaveLength(1);
 		expect(result[0]!.order).toBe(1);

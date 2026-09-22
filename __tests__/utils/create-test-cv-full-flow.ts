@@ -1,8 +1,5 @@
 // __tests__/integration/helpers/cvFullflowUtils.ts
-import type {
-	CVModuleItemType,
-	CVModuleType,
-} from "../../generated/prisma/client";
+import type { CVModuleItemType, CVModuleType } from "../../generated/prisma/client";
 import { CvTimelineStatus, Level } from "../../generated/prisma/enums";
 import { prismaTest } from "../../lib/prismaTest";
 import { createTestTemplate } from "./create-test-template";
@@ -18,11 +15,7 @@ export async function createUserAndTemplate(email = "test@fullflow.com") {
 	return { user, template };
 }
 
-export async function createCV(
-	userId: string,
-	templateId: string,
-	title = "Fullflow CV",
-) {
+export async function createCV(userId: string, templateId: string, title = "Fullflow CV") {
 	return prismaTest.cV.create({
 		data: { title, userId, templateId },
 	});
@@ -50,11 +43,7 @@ export async function createModuleItem(
 }
 
 // === SKILLS ===
-export async function createSkillGroup(
-	cvId: string,
-	title: string,
-	order: number,
-) {
+export async function createSkillGroup(cvId: string, title: string, order: number) {
 	return prismaTest.cvSkillGroup.create({ data: { cvId, title, order } });
 }
 
@@ -62,22 +51,14 @@ export async function createSkill(skillName: string) {
 	return prismaTest.skill.create({ data: { name: skillName } });
 }
 
-export async function addSkillToGroup(
-	skillId: string,
-	groupId: string,
-	level: Level,
-) {
+export async function addSkillToGroup(skillId: string, groupId: string, level: Level) {
 	return prismaTest.cvSkill.create({
 		data: { skillId, groupId, level: level ?? Level.Intermédiaire },
 	});
 }
 
 // === COMPETENCES ===
-export async function createCompetenceGroup(
-	cvId: string,
-	title: string,
-	order: number,
-) {
+export async function createCompetenceGroup(cvId: string, title: string, order: number) {
 	return prismaTest.cvCompetenceGroup.create({ data: { cvId, title, order } });
 }
 
@@ -85,19 +66,12 @@ export async function createCompetence(competenceName: string) {
 	return prismaTest.competence.create({ data: { name: competenceName } });
 }
 
-export async function addCompetenceToGroup(
-	competenceId: string,
-	groupId: string,
-) {
+export async function addCompetenceToGroup(competenceId: string, groupId: string) {
 	return prismaTest.cvCompetence.create({ data: { competenceId, groupId } });
 }
 
 // === TAGS ===
-export async function createTagGroup(
-	cvId: string,
-	title: string,
-	order: number,
-) {
+export async function createTagGroup(cvId: string, title: string, order: number) {
 	return prismaTest.cvTagGroup.create({ data: { cvId, title, order } });
 }
 
@@ -184,10 +158,7 @@ export async function createExperience(
 	});
 }
 
-export async function createMissionExperience(
-	cvExperienceId: string,
-	content: string,
-) {
+export async function createMissionExperience(cvExperienceId: string, content: string) {
 	return prismaTest.cvMissionExperience.create({
 		data: { cvExperienceId, content },
 	});
@@ -215,12 +186,7 @@ export async function createAchievement(
 }
 
 // === EXPERTISES ===
-export async function createExpertise(
-	cvId: string,
-	title: string,
-	level: Level,
-	order: number,
-) {
+export async function createExpertise(cvId: string, title: string, level: Level, order: number) {
 	return prismaTest.cvExpertise.create({ data: { cvId, title, level, order } });
 }
 
@@ -263,31 +229,17 @@ export async function createFormation(
 }
 
 // === LANGUAGES ===
-export async function createLanguage(
-	cvId: string,
-	name: string,
-	level: Level,
-	order: number,
-) {
+export async function createLanguage(cvId: string, name: string, level: Level, order: number) {
 	return prismaTest.cvLanguage.create({ data: { cvId, name, level, order } });
 }
 
 // === PASSIONS ===
-export async function createPassion(
-	cvId: string,
-	title: string,
-	icon: string,
-	order: number,
-) {
+export async function createPassion(cvId: string, title: string, icon: string, order: number) {
 	return prismaTest.cvPassion.create({ data: { cvId, title, icon, order } });
 }
 
 // === PHILOSOPHIES ===
-export async function createPhilosophy(
-	cvId: string,
-	citation: string,
-	author?: string | null,
-) {
+export async function createPhilosophy(cvId: string, citation: string, author?: string | null) {
 	return prismaTest.cvPhilosophy.create({
 		data: { cvId, citation, author: author ?? null },
 	});
@@ -331,10 +283,7 @@ export async function createProject(
 	});
 }
 
-export async function createMissionProject(
-	cvProjectId: string,
-	content: string,
-) {
+export async function createMissionProject(cvProjectId: string, content: string) {
 	return prismaTest.cvMissionProject.create({ data: { cvProjectId, content } });
 }
 
@@ -415,20 +364,13 @@ export async function createVolunteering(
 	});
 }
 
-export async function createMissionVolunteering(
-	cvVolunteeringId: string,
-	content: string,
-) {
+export async function createMissionVolunteering(cvVolunteeringId: string, content: string) {
 	return prismaTest.cvMissionVolunteering.create({
 		data: { cvVolunteeringId, content },
 	});
 }
 
-export async function buildCvComplete(
-	cvId: string,
-	dateStart: Date,
-	dateEnd: Date,
-) {
+export async function buildCvComplete(cvId: string, dateStart: Date, dateEnd: Date) {
 	await createHeader(
 		cvId,
 		"Mon CV",
@@ -449,21 +391,10 @@ export async function buildCvComplete(
 	const skillGroup = await createSkillGroup(cvId, "Mon Skill Group", 1);
 	const skill = await createSkill("Mon Skill");
 	await addSkillToGroup(skill.id, skillGroup.id, Level.Intermédiaire);
-	const competenceGroup = await createCompetenceGroup(
-		cvId,
-		"Mon Competence Group",
-		1,
-	);
+	const competenceGroup = await createCompetenceGroup(cvId, "Mon Competence Group", 1);
 	const competence = await createCompetence("Mon Competence");
 	await addCompetenceToGroup(competence.id, competenceGroup.id);
-	await createFormation(
-		cvId,
-		"Mon Formation",
-		dateStart,
-		1,
-		"Mon Organisme Formation",
-		dateEnd,
-	);
+	await createFormation(cvId, "Mon Formation", dateStart, 1, "Mon Organisme Formation", dateEnd);
 	await createLanguage(cvId, "Mon Language", Level.Intermédiaire, 1);
 	await createPassion(cvId, "Mon Passion", "Mon Icon", 1);
 	await createPhilosophy(cvId, "Mon Citation", "Mon Auteur");
@@ -489,13 +420,7 @@ export async function buildCvComplete(
 		dateEnd,
 		"Mon Url",
 	);
-	await createSocialMedia(
-		cvId,
-		"Mon Social Media",
-		"Mon Username",
-		"Mon Icon",
-		1,
-	);
+	await createSocialMedia(cvId, "Mon Social Media", "Mon Username", "Mon Icon", 1);
 	await createStrength(cvId, "Mon Strength", 1, "Mon Icon");
 	const volunteering = await createVolunteering(
 		cvId,
@@ -520,20 +445,8 @@ export async function buildCvComplete(
 		"Mon Location",
 	);
 	await createMissionExperience(experience.id, "Mon Mission Experience");
-	await createAchievement(
-		cvId,
-		"Mon Achievement",
-		1,
-		"Mon Description",
-		2026,
-		"Mon Technology",
-	);
-	await createCertification(
-		cvId,
-		"Mon Certification",
-		1,
-		"Mon Organisme Certification",
-	);
+	await createAchievement(cvId, "Mon Achievement", 1, "Mon Description", 2026, "Mon Technology");
+	await createCertification(cvId, "Mon Certification", 1, "Mon Organisme Certification");
 	await createEducation(
 		cvId,
 		"Mon Education",

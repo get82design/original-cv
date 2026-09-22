@@ -15,8 +15,7 @@ export const FREE_DOWNLOAD_GRANT_REASONS = [
 	"FIRST_CV_SAVED",
 ] as const;
 
-export type FreeDownloadGrantReason =
-	(typeof FREE_DOWNLOAD_GRANT_REASONS)[number];
+export type FreeDownloadGrantReason = (typeof FREE_DOWNLOAD_GRANT_REASONS)[number];
 
 export class UserService {
 	async findAll() {
@@ -176,21 +175,14 @@ export class UserService {
 			templateId = cv?.templateId;
 		}
 		if (!templateId) return;
-		await templateAccessService.assertCanDownloadTemplate(
-			userId,
-			templateId,
-		);
+		await templateAccessService.assertCanDownloadTemplate(userId, templateId);
 	}
 
 	/**
 	 * Accorde des téléchargements gratuits (one-shot par reason).
 	 * Si la raison a déjà été accordée → ConflictError, pas de double cadeau.
 	 */
-	async grantFreeDownload(
-		id: string,
-		reason: FreeDownloadGrantReason,
-		amount = 1,
-	) {
+	async grantFreeDownload(id: string, reason: FreeDownloadGrantReason, amount = 1) {
 		if (amount < 1) {
 			throw new ValidationError("Grant amount must be at least 1");
 		}
@@ -307,21 +299,12 @@ export class UserService {
 	}
 
 	async updatePlan(id: string, plan: PlanRole, subscriptionEnd?: Date) {
-		const premiumPlans: PlanRole[] = [
-			PlanRole.PREMIUM,
-			PlanRole.PREMIUM_PLUS_IA,
-		];
+		const premiumPlans: PlanRole[] = [PlanRole.PREMIUM, PlanRole.PREMIUM_PLUS_IA];
 		const user = await this.findById(id);
 		if (premiumPlans.includes(plan) && !subscriptionEnd) {
-			throw new ValidationError(
-				"Subscription end date is required for premium plan",
-			);
+			throw new ValidationError("Subscription end date is required for premium plan");
 		}
-		if (
-			premiumPlans.includes(plan) &&
-			subscriptionEnd &&
-			subscriptionEnd < new Date()
-		) {
+		if (premiumPlans.includes(plan) && subscriptionEnd && subscriptionEnd < new Date()) {
 			throw new ValidationError("Subscription end date must be in the future");
 		}
 

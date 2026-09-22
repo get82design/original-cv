@@ -15,20 +15,15 @@ export const unlockedTemplateRouter = router({
 			}),
 		)
 		.mutation(async ({ input, ctx }) => {
-			return unlockedTemplateService.unlockTemplate(
-				ctx.session.user.id,
-				input.templateId,
-				{ method: "credits" },
-			);
+			return unlockedTemplateService.unlockTemplate(ctx.session.user.id, input.templateId, {
+				method: "credits",
+			});
 		}),
 
 	unlockMany: protectedProcedure
 		.input(z.object({ templateIds: z.array(z.string()).min(1) }))
 		.mutation(async ({ input, ctx }) => {
-			return unlockedTemplateService.unlockManyTemplates(
-				ctx.session.user.id,
-				input.templateIds,
-			);
+			return unlockedTemplateService.unlockManyTemplates(ctx.session.user.id, input.templateIds);
 		}),
 
 	findAll: protectedProcedure.query(async ({ ctx }) => {
@@ -38,18 +33,12 @@ export const unlockedTemplateRouter = router({
 	hasUnlocked: protectedProcedure
 		.input(z.object({ templateId: z.string() }))
 		.query(async ({ input, ctx }) => {
-			return unlockedTemplateService.hasUnlocked(
-				ctx.session.user.id,
-				input.templateId,
-			);
+			return unlockedTemplateService.hasUnlocked(ctx.session.user.id, input.templateId);
 		}),
 
 	delete: protectedProcedure
 		.input(z.object({ templateId: z.string() }))
 		.mutation(async ({ input, ctx }) => {
-			return unlockedTemplateService.delete(
-				ctx.session.user.id,
-				input.templateId,
-			);
+			return unlockedTemplateService.delete(ctx.session.user.id, input.templateId);
 		}),
 });

@@ -65,36 +65,34 @@ export const InputTextCv = ({
 				control={control}
 				render={({ field, fieldState }) => (
 					<>
-					<PrimeInputText
-						{...field}
-						style={{
-							padding: "0px",
-							border: "none",
-							boxShadow: "none",
-							minWidth: "40px",
-							fontFamily: "inherit",
-							fontSize: getSize(),
-							fontWeight: getWeight(),
-							textAlign: textAlign,
-							textTransform: "inherit",
-							backgroundColor: "transparent",
-							color: `var(--${color})`,
-							width: forceWidthFull
-								? "100%"
-								: field.value === "" && props.placeholder
-									? `${props.placeholder.length}ch`
-									: `${field.value?.length}ch`,
-						}}
-						onFocus={(e) => op.current && op.current.show(e, e.target)}
-						onBlur={(e) => op.current && op.current.hide()}
-						ref={ref}
-						{...props}
-					/>
-					{fieldState.error && (
-						<span className="text-red-500 text-xs -mt-1 mb-1">
-							{fieldState.error.message}
-						</span>
-					)}
+						<PrimeInputText
+							{...field}
+							style={{
+								padding: "0px",
+								border: "none",
+								boxShadow: "none",
+								minWidth: "40px",
+								fontFamily: "inherit",
+								fontSize: getSize(),
+								fontWeight: getWeight(),
+								textAlign: textAlign,
+								textTransform: "inherit",
+								backgroundColor: "transparent",
+								color: `var(--${color})`,
+								width: forceWidthFull
+									? "100%"
+									: field.value === "" && props.placeholder
+										? `${props.placeholder.length}ch`
+										: `${field.value?.length}ch`,
+							}}
+							onFocus={(e) => op.current && op.current.show(e, e.target)}
+							onBlur={(e) => op.current && op.current.hide()}
+							ref={ref}
+							{...props}
+						/>
+						{fieldState.error && (
+							<span className="text-red-500 text-xs -mt-1 mb-1">{fieldState.error.message}</span>
+						)}
 					</>
 				)}
 			/>

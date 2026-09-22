@@ -9,12 +9,7 @@ export const createCompetenceGroupSchema = z.object({
 	settings: competenceContentSchema.optional(),
 });
 
-export const updateCompetenceGroupSchema =
-	createCompetenceGroupSchema.partial();
+export const updateCompetenceGroupSchema = createCompetenceGroupSchema.partial();
 
-export type CreateCompetenceGroupInput = z.infer<
-	typeof createCompetenceGroupSchema
->;
-export type UpdateCompetenceGroupInput = z.infer<
-	typeof updateCompetenceGroupSchema
->;
+export type CreateCompetenceGroupInput = z.infer<typeof createCompetenceGroupSchema>;
+export type UpdateCompetenceGroupInput = z.infer<typeof updateCompetenceGroupSchema>;

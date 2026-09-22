@@ -1,9 +1,6 @@
 import { AppCard } from "@/components/card/AppCard";
 import { TitleAppTwo } from "@/components/title/TitleAppTwo";
-import type {
-	CertificationInput,
-	ProfileSaveInput,
-} from "@/services/schemas/profileSave.schema";
+import type { CertificationInput, ProfileSaveInput } from "@/services/schemas/profileSave.schema";
 import type { MenuItem } from "primereact/menuitem";
 import { SpeedDial } from "primereact/speeddial";
 import { Tooltip } from "primereact/tooltip";
@@ -20,9 +17,7 @@ import { trpc } from "@utils/trpc";
 import { DialogSelectCv } from "../common/DialogSelectCv";
 import { DialogSelectCertification } from "./DialogSelectCertification";
 
-function createEmptyCertification(opts?: {
-	order?: number;
-}): ListItem<CertificationInput> {
+function createEmptyCertification(opts?: { order?: number }): ListItem<CertificationInput> {
 	return {
 		clientKey: `certification-${uuid()}`,
 		order: opts?.order ?? 1,
@@ -39,10 +34,7 @@ export function ProfileCertification({ cvs }: { cvs: CV[] }) {
 	const [toDelete, setToDelete] = useState<Set<string>>(new Set());
 	const [visibleMaj, setVisibleMaj] = useState(false);
 	const [idCv, setIdCv] = useState<string | undefined>(undefined);
-	const { data: cvSelected } = trpc.cv.byId.useQuery(
-		{ id: idCv ?? "" },
-		{ enabled: !!idCv },
-	);
+	const { data: cvSelected } = trpc.cv.byId.useQuery({ id: idCv ?? "" }, { enabled: !!idCv });
 	const [visibleSelect, setVisibleSelect] = useState(false);
 
 	const { control, watch, setValue } = useFormContext<ProfileSaveInput>();
@@ -128,12 +120,7 @@ export function ProfileCertification({ cvs }: { cvs: CV[] }) {
 			)}
 			<AppCard className="relative group">
 				<div className="opacity-30 absolute top-2 left-3">
-					<TitleAppTwo
-						firstPart={""}
-						secondPart={"Certification"}
-						size={"text-2xl"}
-						withSpace
-					/>
+					<TitleAppTwo firstPart={""} secondPart={"Certification"} size={"text-2xl"} withSpace />
 				</div>
 				<div className="mt-10 flex flex-col gap-2">
 					{fields.map((field, idx) => {
@@ -168,9 +155,7 @@ export function ProfileCertification({ cvs }: { cvs: CV[] }) {
 						);
 					})}
 					{fields.length === 0 && (
-						<p className="w-full font-light text-gray-400">
-							Aucune certification enregistrée.
-						</p>
+						<p className="w-full font-light text-gray-400">Aucune certification enregistrée.</p>
 					)}
 					{openDelete && (
 						<MiniFooterMultiFunc

@@ -1,7 +1,4 @@
-import type {
-	BaseTextSettings,
-	PrizeContentSettings,
-} from "@/services/schemas/cvTemplate.schema";
+import type { BaseTextSettings, PrizeContentSettings } from "@/services/schemas/cvTemplate.schema";
 import { useFormContext } from "react-hook-form";
 import { useSectionList } from "../../../hooks/useSectionList";
 import { FieldNamePrize } from "@/features/cv-editor/utils/fields/fieldNamePrize";
@@ -17,13 +14,11 @@ import { moduleField } from "@/features/cv-editor/utils/fields/moduleField";
 
 export const SectionPrizeOne = () => {
 	const { watch } = useFormContext();
-	const watchModelPrizeTitle: BaseTextSettings = watch(
-		FieldNamePrize.settingsSectionTitle,
-	);
+	const watchModelPrizeTitle: BaseTextSettings = watch(FieldNamePrize.settingsSectionTitle);
 	const modules = watch("modules");
 	const path = moduleField(modules, "prize", "settings", "content");
 	const cols = watch(`${path}.columns`) ?? 3;
-	
+
 	const {
 		items: watchPrizes,
 		itemSelected,
@@ -36,8 +31,7 @@ export const SectionPrizeOne = () => {
 	});
 
 	const itemKey =
-		watch("layoutGeneral.defaultStyles")?.components?.sectionPrize?.item ??
-		"CardPrizeOne";
+		watch("layoutGeneral.defaultStyles")?.components?.sectionPrize?.item ?? "CardPrizeOne";
 	const Card = PrizeCardRegister[itemKey] ?? CardPrizeOne;
 
 	return (

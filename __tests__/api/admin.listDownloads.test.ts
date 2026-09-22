@@ -3,18 +3,15 @@ import { prismaTest } from "../../lib/prismaTest";
 import { createTestUser } from "../utils/create-test-user";
 import { createTestTemplate } from "../utils/create-test-template";
 import { createCV } from "../utils/create-test-cv-full-flow";
-import {
-	createTestCaller,
-	createTestSession,
-} from "./helpers/create-test-caller";
+import { createTestCaller, createTestSession } from "./helpers/create-test-caller";
 
 describe("admin.listDownloads", () => {
 	it("rejects non-admin", async () => {
 		const user = await createTestUser();
 		const caller = await createTestCaller(createTestSession(user));
-		await expect(
-			caller.admin.listDownloads({ period: "7d" }),
-		).rejects.toMatchObject({ code: "FORBIDDEN" });
+		await expect(caller.admin.listDownloads({ period: "7d" })).rejects.toMatchObject({
+			code: "FORBIDDEN",
+		});
 	});
 
 	it("returns download events for ADMIN", async () => {
@@ -79,9 +76,7 @@ describe("admin.listDownloads", () => {
 			period: "all",
 			variant: "WITHOUT_LOGO",
 		});
-		expect(paid.items.every((i) => i.variant === "WITHOUT_LOGO")).toBe(
-			true,
-		);
+		expect(paid.items.every((i) => i.variant === "WITHOUT_LOGO")).toBe(true);
 
 		const free = await caller.admin.listDownloads({
 			period: "all",

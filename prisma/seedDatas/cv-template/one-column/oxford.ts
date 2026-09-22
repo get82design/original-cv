@@ -3,7 +3,7 @@ import { defineTemplate } from "../_shared/defineTemplate";
 import { sharedLayout } from "../_shared/layouts";
 
 export const oxford = defineTemplate({
-    name: "Oxford",
+	name: "Oxford",
 	slug: "oxford-noLine-x",
 	tokens: oxfordTokens,
 	primaryColor: { name: "mauve", primary: "-600" },
@@ -26,7 +26,7 @@ export const oxford = defineTemplate({
 		},
 		headerPrimaryColor: true,
 	},
-    modules: {
+	modules: {
 		description: { title: "À propos", isActive: true, order: 1 },
 		experience: { title: "Expériences", isActive: true, order: 2 },
 		education: { title: "Formations", isActive: true, order: 3, columns: 2 },
@@ -36,4 +36,4 @@ export const oxford = defineTemplate({
 		passion: { title: "Passions", isActive: true, order: 7, columns: 3 },
 		skill: { title: "Skills", design: "stars", isActive: false },
 	},
-})
+});

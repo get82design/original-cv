@@ -5,9 +5,6 @@ import {
 
 export type GroupSkillCardProps = CardGroupSkillOneProps;
 
-export const GroupSkillCardRegister: Record<
-	string,
-	React.ComponentType<GroupSkillCardProps>
-> = {
+export const GroupSkillCardRegister: Record<string, React.ComponentType<GroupSkillCardProps>> = {
 	CardGroupSkillOne,
 };

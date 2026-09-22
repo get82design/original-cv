@@ -1,17 +1,11 @@
 import { describe, expect, it } from "vitest";
 import { TRPCError } from "@trpc/server";
 
-import {
-	CVModuleItemType,
-	CVModuleType,
-} from "../../generated/prisma/enums";
+import { CVModuleItemType, CVModuleType } from "../../generated/prisma/enums";
 import { createCV } from "../utils/create-test-cv-full-flow";
 import { createTestTemplate } from "../utils/create-test-template";
 import { createTestUser } from "../utils/create-test-user";
-import {
-	createTestCaller,
-	createTestSession,
-} from "./helpers/create-test-caller";
+import { createTestCaller, createTestSession } from "./helpers/create-test-caller";
 
 describe("cvModuleItemRouter", () => {
 	async function setup() {
@@ -247,8 +241,8 @@ describe("cvModuleItemRouter", () => {
 	it("delete returns NOT_FOUND for unknown id", async () => {
 		const { caller } = await setup();
 
-		await expect(
-			caller.cvModuleItem.delete({ id: "unknown-id" }),
-		).rejects.toMatchObject({ code: "NOT_FOUND" });
+		await expect(caller.cvModuleItem.delete({ id: "unknown-id" })).rejects.toMatchObject({
+			code: "NOT_FOUND",
+		});
 	});
 });

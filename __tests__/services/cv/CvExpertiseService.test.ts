@@ -208,9 +208,7 @@ describe("CvExpertiseService.move", () => {
 
 	// TEST 2 : déplacement d'un expertise inexistant
 	it("throws if expertise does not exist", async () => {
-		await expect(cvExpertiseService.move("unknown-id", 1)).rejects.toThrow(
-			NotFoundError,
-		);
+		await expect(cvExpertiseService.move("unknown-id", 1)).rejects.toThrow(NotFoundError);
 	});
 
 	// TEST 3 : déplacement d'un expertise à une position invalide
@@ -263,9 +261,7 @@ describe("CvExpertiseService.delete", () => {
 
 	// TEST 2 : suppression d'un expertise inexistant
 	it("throws if expertise does not exist", async () => {
-		await expect(cvExpertiseService.delete("unknown-id")).rejects.toThrow(
-			NotFoundError,
-		);
+		await expect(cvExpertiseService.delete("unknown-id")).rejects.toThrow(NotFoundError);
 	});
 
 	// TEST 3 : reordonnancement des expertises restants après suppression

@@ -1,9 +1,6 @@
 import { prisma } from "../../../lib/prisma";
 import { ConflictError, NotFoundError } from "../errors";
-import type {
-	CreateDescriptionInput,
-	UpdateDescriptionInput,
-} from "../schemas/description.schema";
+import type { CreateDescriptionInput, UpdateDescriptionInput } from "../schemas/description.schema";
 
 export class ProfileDescriptionService {
 	async create(profileId: string, data: CreateDescriptionInput) {
@@ -73,9 +70,7 @@ export class ProfileDescriptionService {
 				profileId,
 			},
 			data: {
-				...(data.description !== undefined
-					? { description: data.description }
-					: {}),
+				...(data.description !== undefined ? { description: data.description } : {}),
 			},
 		});
 	}

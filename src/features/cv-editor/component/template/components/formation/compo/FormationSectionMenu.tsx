@@ -6,13 +6,13 @@ import { useRef } from "react";
 import { ToolbarOptionsButton } from "@/features/cv-editor/component/template/components/common-compo/section/ToolbarOptionsButton";
 
 export const FormationSectionMenu = () => {
-    const menuRef = useRef<Menu>(null);
+	const menuRef = useRef<Menu>(null);
 	const { watch } = useFormContext();
 	const modules = watch("modules");
 	const pathDesign = moduleField(modules, "formation", "settings", "content");
 
 	const formationMod = modules?.find((m: { type: string }) => m.type === "formation");
-    const inSidebar = (formationMod?.column ?? 0) === 0;
+	const inSidebar = (formationMod?.column ?? 0) === 0;
 
 	// → modules.{i}.settings.content
 	const columnsPath = `${pathDesign}.columns`;
@@ -26,18 +26,8 @@ export const FormationSectionMenu = () => {
 						<div className="flex flex-col py-1 px-4 gap-2">
 							<p>Nombre de colonnes</p>
 							<div className="grid grid-cols-2 gap-6">
-								<RadioRhf
-									name={columnsPath}
-									label="1"
-									value="1"
-									checked={watchColumns === "1"}
-								/>
-								<RadioRhf
-									name={columnsPath}
-									label="2"
-									value="2"
-									checked={watchColumns === "2"}
-								/>
+								<RadioRhf name={columnsPath} label="1" value="1" checked={watchColumns === "1"} />
+								<RadioRhf name={columnsPath} label="2" value="2" checked={watchColumns === "2"} />
 							</div>
 						</div>
 					),
@@ -47,11 +37,11 @@ export const FormationSectionMenu = () => {
 	];
 
 	if (inSidebar) return null;
-	
+
 	return (
 		<>
 			<ToolbarOptionsButton menuRef={menuRef} />
 			<Menu model={items} popup ref={menuRef} style={{ width: 300 }} />
 		</>
 	);
-}
+};

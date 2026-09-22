@@ -3,10 +3,7 @@ import { useCreateCvContext } from "@/features/cv-editor/component/context/Creat
 import { FieldNameAchievement } from "@/features/cv-editor/utils/fields/fieldNameAchievement";
 import { dataFieldContent } from "@/features/cv-editor/utils/fields/moduleField";
 import type { AchievementItemContentInput } from "@/services/schemas/cvSave.schema";
-import {
-	SortableContext,
-	verticalListSortingStrategy,
-} from "@dnd-kit/sortable";
+import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import type { ListItem } from "@utils/type";
 import { Button } from "primereact/button";
 import { useFormContext } from "react-hook-form";
@@ -31,11 +28,7 @@ export const AchievementDnd = ({
 	const { setSectionSelected, sectionSelected } = useCreateCvContext();
 	const { setValue } = useFormContext();
 	const itemsMenu = (idx: number) => {
-		const pathContent = dataFieldContent(
-			"datas.achievement.content",
-			idx,
-			"content.settings",
-		);
+		const pathContent = dataFieldContent("datas.achievement.content", idx, "content.settings");
 		return [
 			{
 				label: "Options",
@@ -116,10 +109,7 @@ export const AchievementDnd = ({
 							const fresh = createNewItem();
 							setValue(
 								FieldNameAchievement.content,
-								[
-									...watchAchievements,
-									{ ...fresh, order: watchAchievements.length + 1 },
-								],
+								[...watchAchievements, { ...fresh, order: watchAchievements.length + 1 }],
 								{ shouldDirty: true },
 							);
 						}}

@@ -16,9 +16,7 @@ import { CardProjectOne } from "./compo/CardProjectOne";
 
 export const SectionProjectOne = () => {
 	const { watch } = useFormContext();
-	const watchModelProjectTitle: BaseTextSettings = watch(
-		FieldNameProject.settingsSectionTitle,
-	);
+	const watchModelProjectTitle: BaseTextSettings = watch(FieldNameProject.settingsSectionTitle);
 
 	const {
 		items: watchProjects,
@@ -32,8 +30,7 @@ export const SectionProjectOne = () => {
 	});
 
 	const itemKey =
-		watch("layoutGeneral.defaultStyles")?.components?.sectionProject?.item ??
-		"CardProjectOne";
+		watch("layoutGeneral.defaultStyles")?.components?.sectionProject?.item ?? "CardProjectOne";
 	const Card = ProjectCardRegister[itemKey] ?? CardProjectOne;
 
 	return (

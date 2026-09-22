@@ -24,30 +24,17 @@ export function MiniaturePassionRenderer({
 }: {
 	templateConfig: TemplateDefaultStyles;
 }) {
-	const miniatureKey =
-		templateConfig?.components?.sectionPassion?.miniature ?? "MiniPassionOne";
-	const MiniatureComponent =
-		MiniatureRegister[miniatureKey] ?? DefaultMiniature;
+	const miniatureKey = templateConfig?.components?.sectionPassion?.miniature ?? "MiniPassionOne";
+	const MiniatureComponent = MiniatureRegister[miniatureKey] ?? DefaultMiniature;
 	return <MiniatureComponent />;
 }
-export function IconPassionRenderer({
-	templateConfig,
-}: {
-	templateConfig: TemplateDefaultStyles;
-}) {
-	const iconKey =
-		templateConfig?.components?.sectionPassion?.icon ?? "IconPassion";
+export function IconPassionRenderer({ templateConfig }: { templateConfig: TemplateDefaultStyles }) {
+	const iconKey = templateConfig?.components?.sectionPassion?.icon ?? "IconPassion";
 	const IconComponent = IconRegister[iconKey] ?? DefaultIcon;
 	return <IconComponent />;
 }
-export function PassionRenderer({
-	templateConfig,
-}: {
-	templateConfig: TemplateDefaultStyles;
-}) {
-	const passionKey =
-		templateConfig?.components?.sectionPassion?.component ??
-		"SectionPassionOne";
+export function PassionRenderer({ templateConfig }: { templateConfig: TemplateDefaultStyles }) {
+	const passionKey = templateConfig?.components?.sectionPassion?.component ?? "SectionPassionOne";
 	const PassionComponent = PassionRegister[passionKey] ?? DefaultPassion;
 	return <PassionComponent />;
 }

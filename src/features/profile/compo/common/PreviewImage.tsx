@@ -12,9 +12,7 @@ export const PreviewImage = ({ cv, action, width }: PreviewImageProps) => {
 	const src = cv.previewUrl ?? `/assets/img/${name}.png`;
 
 	return (
-		<div
-			className={`${width} relative shadow-md group overflow-hidden rounded`}
-		>
+		<div className={`${width} relative shadow-md group overflow-hidden rounded`}>
 			<img
 				src={src}
 				alt={cv.title}

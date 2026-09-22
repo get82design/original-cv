@@ -5,10 +5,7 @@ import { prismaTest } from "../../lib/prismaTest";
 import { createCV } from "../utils/create-test-cv-full-flow";
 import { createTestTemplate } from "../utils/create-test-template";
 import { createTestUser } from "../utils/create-test-user";
-import {
-	createTestCaller,
-	createTestSession,
-} from "./helpers/create-test-caller";
+import { createTestCaller, createTestSession } from "./helpers/create-test-caller";
 
 describe("userRouter", () => {
 	it("me returns UNAUTHORIZED without session", async () => {
@@ -183,26 +180,26 @@ describe("userRouter", () => {
 
 	it("register creates a user without session", async () => {
 		const caller = await createTestCaller(); // pas de session
-	
+
 		const created = await caller.user.register({
 			email: "api@test.com",
 			password: "password123",
 			name: "Bob",
 		});
-	
+
 		expect(created.email).toBe("api@test.com");
 		expect(created.name).toBe("Bob");
 		expect(created).not.toHaveProperty("password");
 	});
-	
+
 	it("register returns CONFLICT when email already exists", async () => {
 		const caller = await createTestCaller();
-	
+
 		await caller.user.register({
 			email: "same@test.com",
 			password: "password123",
 		});
-	
+
 		await expect(
 			caller.user.register({
 				email: "same@test.com",
@@ -210,10 +207,10 @@ describe("userRouter", () => {
 			}),
 		).rejects.toMatchObject({ code: "CONFLICT" });
 	});
-	
+
 	it("register rejects invalid input (Zod)", async () => {
 		const caller = await createTestCaller();
-	
+
 		await expect(
 			caller.user.register({
 				email: "not-an-email",
@@ -226,18 +223,16 @@ describe("userRouter", () => {
 		const user = await createTestUser();
 		const caller = await createTestCaller();
 
-		await expect(
-			caller.user.forgotPassword({ email: user.email }),
-		).resolves.toEqual({ ok: true });
+		await expect(caller.user.forgotPassword({ email: user.email })).resolves.toEqual({ ok: true });
 
 		const tokens = await prismaTest.passwordResetToken.findMany({
 			where: { email: user.email },
 		});
 		expect(tokens).toHaveLength(1);
 
-		await expect(
-			caller.user.forgotPassword({ email: "ghost@test.com" }),
-		).resolves.toEqual({ ok: true });
+		await expect(caller.user.forgotPassword({ email: "ghost@test.com" })).resolves.toEqual({
+			ok: true,
+		});
 	});
 
 	it("resetPassword updates password via public procedure", async () => {

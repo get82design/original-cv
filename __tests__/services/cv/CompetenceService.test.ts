@@ -104,9 +104,7 @@ describe("CompetenceService.delete", () => {
 	});
 
 	it("throws if competence does not exist", async () => {
-		await expect(competenceService.delete("unknown-id")).rejects.toThrow(
-			NotFoundError,
-		);
+		await expect(competenceService.delete("unknown-id")).rejects.toThrow(NotFoundError);
 	});
 
 	it("throws if competence is used", async () => {
@@ -134,8 +132,6 @@ describe("CompetenceService.delete", () => {
 			order: 1,
 		});
 
-		await expect(competenceService.delete(competence.id)).rejects.toThrow(
-			ConflictError,
-		);
+		await expect(competenceService.delete(competence.id)).rejects.toThrow(ConflictError);
 	});
 });

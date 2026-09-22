@@ -15,9 +15,7 @@ describe("ProfilePhilosophyService.create", () => {
 		});
 
 		expect(philosophy.profileId).toBe(profile.id);
-		expect(philosophy.citation).toBe(
-			"La simplicité est la sophistication suprême",
-		);
+		expect(philosophy.citation).toBe("La simplicité est la sophistication suprême");
 		expect(philosophy.author).toBe("Léonard de Vinci");
 	});
 
@@ -80,9 +78,9 @@ describe("ProfilePhilosophyService.findByProfileId", () => {
 		const user = await createTestUser();
 		const profile = await createTestProfile(user.id, "John", "Doe");
 
-		await expect(
-			profilePhilosophyService.findByProfileId(profile.id),
-		).rejects.toThrow(NotFoundError);
+		await expect(profilePhilosophyService.findByProfileId(profile.id)).rejects.toThrow(
+			NotFoundError,
+		);
 	});
 });
 
@@ -125,17 +123,15 @@ describe("ProfilePhilosophyService.delete", () => {
 			citation: "Ma philosophie",
 		});
 		await profilePhilosophyService.delete(profile.id);
-		await expect(
-			profilePhilosophyService.findByProfileId(profile.id),
-		).rejects.toThrow(NotFoundError);
+		await expect(profilePhilosophyService.findByProfileId(profile.id)).rejects.toThrow(
+			NotFoundError,
+		);
 	});
 
 	// TEST 2 : philosophy inexistante
 	it("throws if philosophy does not exist", async () => {
 		const user = await createTestUser();
 		const profile = await createTestProfile(user.id, "John", "Doe");
-		await expect(profilePhilosophyService.delete(profile.id)).rejects.toThrow(
-			NotFoundError,
-		);
+		await expect(profilePhilosophyService.delete(profile.id)).rejects.toThrow(NotFoundError);
 	});
 });

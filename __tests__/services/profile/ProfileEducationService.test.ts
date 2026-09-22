@@ -1,10 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { createTestUser } from "../../utils/create-test-user";
-import {
-	ConflictError,
-	NotFoundError,
-	ValidationError,
-} from "../../../src/services/errors";
+import { ConflictError, NotFoundError, ValidationError } from "../../../src/services/errors";
 import { CvTimelineStatus } from "../../../generated/prisma/enums";
 import { profileEducationService } from "../../../src/services/profile/profileEducationService";
 import { createTestProfile } from "../../utils/create-test-profile";
@@ -252,9 +248,7 @@ describe("ProfileEducationService.findAllByProfileId", () => {
 			start: new Date("2020-01-01"),
 			order: 1,
 		});
-		const result = await profileEducationService.findAllByProfileId(
-			profileA.id,
-		);
+		const result = await profileEducationService.findAllByProfileId(profileA.id);
 
 		expect(result).toHaveLength(1);
 		expect(result[0]!.title).toBe("Education 1");
@@ -476,9 +470,7 @@ describe("ProfileEducationService.move", () => {
 
 	// TEST 2 : education inexistant
 	it("throws if education does not exist", async () => {
-		await expect(profileEducationService.move("unknown-id", 1)).rejects.toThrow(
-			NotFoundError,
-		);
+		await expect(profileEducationService.move("unknown-id", 1)).rejects.toThrow(NotFoundError);
 	});
 
 	// TEST 3 : ordre invalide
@@ -492,9 +484,7 @@ describe("ProfileEducationService.move", () => {
 			start: new Date("2020-01-01"),
 			order: 1,
 		});
-		await expect(
-			profileEducationService.move(education1.id, 0),
-		).rejects.toThrow();
+		await expect(profileEducationService.move(education1.id, 0)).rejects.toThrow();
 	});
 
 	it("move no-op if order is the same", async () => {
@@ -536,9 +526,7 @@ describe("ProfileEducationService.delete", () => {
 
 	// TEST 2 : education inexistant
 	it("throws if education does not exist", async () => {
-		await expect(profileEducationService.delete("unknown-id")).rejects.toThrow(
-			NotFoundError,
-		);
+		await expect(profileEducationService.delete("unknown-id")).rejects.toThrow(NotFoundError);
 	});
 
 	// TEST 3 : réorganisation des educations après suppression

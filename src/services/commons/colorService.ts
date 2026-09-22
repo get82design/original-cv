@@ -77,10 +77,7 @@ export class ColorService {
 			});
 
 			if (existing) {
-				throw new ConflictError(
-					"COLOR_ALREADY_EXISTS",
-					"La couleur existe déjà",
-				);
+				throw new ConflictError("COLOR_ALREADY_EXISTS", "La couleur existe déjà");
 			}
 		}
 

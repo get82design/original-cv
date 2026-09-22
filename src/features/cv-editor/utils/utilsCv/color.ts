@@ -5,10 +5,7 @@ import { useEffect, useState } from "react";
 import { FieldNameLayoutGeneral } from "../fields/fieldNameLayoutGeneral";
 import { useColumnFg } from "../../component/kit-dnd/shared/ColumnFgContext";
 
-export const useInputCvColor = (
-	textColor: string,
-	opts?: { ignoreColumnFg?: boolean },
-) => {
+export const useInputCvColor = (textColor: string, opts?: { ignoreColumnFg?: boolean }) => {
 	const { watch } = useFormContext();
 	const { colors } = useModelAndColorContext();
 	const watchPrimaryColor = watch(FieldNameLayoutGeneral.primaryColor);
@@ -55,9 +52,7 @@ export const GetPrimaryColor = () => {
 
 	useEffect(() => {
 		if (watchPrimaryColor) {
-			setPrimaryColor(
-				watchPrimaryColor.name + (watchPrimaryColor.primary ?? ""),
-			);
+			setPrimaryColor(watchPrimaryColor.name + (watchPrimaryColor.primary ?? ""));
 		}
 	}, [watchPrimaryColor]);
 

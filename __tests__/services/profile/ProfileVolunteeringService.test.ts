@@ -1,10 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { createTestUser } from "../../utils/create-test-user";
-import {
-	ConflictError,
-	NotFoundError,
-	ValidationError,
-} from "../../../src/services/errors";
+import { ConflictError, NotFoundError, ValidationError } from "../../../src/services/errors";
 import { createTestProfile } from "../../utils/create-test-profile";
 import { profileVolunteeringService } from "../../../src/services/profile/profileVolunteeringService";
 import { expectMoveNoOp } from "../../utils/move-noop";
@@ -170,9 +166,7 @@ describe("ProfileVolunteeringService.findAllByProfileId", () => {
 			order: 2,
 		});
 
-		const result = await profileVolunteeringService.findAllByProfileId(
-			profile.id,
-		);
+		const result = await profileVolunteeringService.findAllByProfileId(profile.id);
 
 		expect(result).toHaveLength(2);
 		expect(result[0]!.title).toBe("Volunteering 1");
@@ -183,9 +177,7 @@ describe("ProfileVolunteeringService.findAllByProfileId", () => {
 	it("returns empty array if no volunteering exists", async () => {
 		const user = await createTestUser();
 		const profile = await createTestProfile(user.id, "John", "Doe");
-		const result = await profileVolunteeringService.findAllByProfileId(
-			profile.id,
-		);
+		const result = await profileVolunteeringService.findAllByProfileId(profile.id);
 
 		expect(result).toEqual([]);
 	});
@@ -210,9 +202,7 @@ describe("ProfileVolunteeringService.findAllByProfileId", () => {
 			start: new Date("2020-01-01"),
 			order: 1,
 		});
-		const result = await profileVolunteeringService.findAllByProfileId(
-			profileA.id,
-		);
+		const result = await profileVolunteeringService.findAllByProfileId(profileA.id);
 
 		expect(result).toHaveLength(1);
 		expect(result[0]!.title).toBe("Volunteering 1");
@@ -351,9 +341,7 @@ describe("ProfileVolunteeringService.move", () => {
 			order: 2,
 		});
 		await profileVolunteeringService.move(volunteering2.id, 1);
-		const result = await profileVolunteeringService.findAllByProfileId(
-			profile.id,
-		);
+		const result = await profileVolunteeringService.findAllByProfileId(profile.id);
 
 		expect(result[0]!.id).toBe(volunteering2.id);
 		expect(result[1]!.id).toBe(volunteering1.id);
@@ -361,9 +349,7 @@ describe("ProfileVolunteeringService.move", () => {
 
 	// TEST 2 : volunteering inexistant
 	it("throws if volunteering does not exist", async () => {
-		await expect(
-			profileVolunteeringService.move("unknown-id", 1),
-		).rejects.toThrow(NotFoundError);
+		await expect(profileVolunteeringService.move("unknown-id", 1)).rejects.toThrow(NotFoundError);
 	});
 
 	// TEST 3 : ordre invalide
@@ -377,9 +363,7 @@ describe("ProfileVolunteeringService.move", () => {
 			start: new Date("2020-01-01"),
 			order: 1,
 		});
-		await expect(
-			profileVolunteeringService.move(volunteering1.id, 0),
-		).rejects.toThrow();
+		await expect(profileVolunteeringService.move(volunteering1.id, 0)).rejects.toThrow();
 	});
 
 	it("move no-op if order is the same", async () => {
@@ -387,16 +371,13 @@ describe("ProfileVolunteeringService.move", () => {
 		const profile = await createTestProfile(user.id, "John", "Doe");
 		return await expectMoveNoOp({
 			createEntity: async () => {
-				const volunteering = await profileVolunteeringService.create(
-					profile.id,
-					{
-						title: "Volunteering 1",
-						organisation: "Organisation 1",
-						missions: [],
-						start: new Date("2020-01-01"),
-						order: 1,
-					},
-				);
+				const volunteering = await profileVolunteeringService.create(profile.id, {
+					title: "Volunteering 1",
+					organisation: "Organisation 1",
+					missions: [],
+					start: new Date("2020-01-01"),
+					order: 1,
+				});
 				return { id: volunteering.id, order: volunteering.order };
 			},
 			moveEntity: (id, order) => profileVolunteeringService.move(id, order),
@@ -417,18 +398,14 @@ describe("ProfileVolunteeringService.delete", () => {
 			order: 1,
 		});
 		await profileVolunteeringService.delete(volunteering1.id);
-		const result = await profileVolunteeringService.findAllByProfileId(
-			profile.id,
-		);
+		const result = await profileVolunteeringService.findAllByProfileId(profile.id);
 
 		expect(result).toHaveLength(0);
 	});
 
 	// TEST 2 : volunteering inexistant
 	it("throws if volunteering does not exist", async () => {
-		await expect(
-			profileVolunteeringService.delete("unknown-id"),
-		).rejects.toThrow(NotFoundError);
+		await expect(profileVolunteeringService.delete("unknown-id")).rejects.toThrow(NotFoundError);
 	});
 
 	// TEST 3 : réorganisation des volunteerings après suppression
@@ -457,9 +434,7 @@ describe("ProfileVolunteeringService.delete", () => {
 			order: 3,
 		});
 		await profileVolunteeringService.delete(volunteering2.id);
-		const result = await profileVolunteeringService.findAllByProfileId(
-			profile.id,
-		);
+		const result = await profileVolunteeringService.findAllByProfileId(profile.id);
 
 		expect(result).toHaveLength(2);
 		expect(result[0]!.order).toBe(1);

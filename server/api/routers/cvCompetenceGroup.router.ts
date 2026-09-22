@@ -9,10 +9,7 @@ import {
 import { assertCvOwnership } from "../helpers/assertCvOwnership";
 import { protectedProcedure, router } from "../trpc";
 
-async function assertCompetenceGroupCvOwnership(
-	groupId: string,
-	userId: string,
-) {
+async function assertCompetenceGroupCvOwnership(groupId: string, userId: string) {
 	const group = await prisma.cvCompetenceGroup.findUnique({
 		where: { id: groupId },
 		select: { id: true, cvId: true },

@@ -576,7 +576,7 @@ export const chicagoTokens: ThemeTokens = {
 		...classiqueTokens.headerSubTitle,
 		textAlign: "right",
 	},
-}
+};
 
 export const tokyoTokens: ThemeTokens = {
 	...classiqueTokens,
@@ -598,7 +598,7 @@ export const tokyoTokens: ThemeTokens = {
 		...classiqueTokens.headerSubTitle,
 		textAlign: "right",
 	},
-}
+};
 
 export const lisbonTokens: ThemeTokens = {
 	...classiqueTokens,
@@ -620,7 +620,7 @@ export const lisbonTokens: ThemeTokens = {
 		...classiqueTokens.headerSubTitle,
 		textAlign: "right",
 	},
-}
+};
 
 export const florenceTokens: ThemeTokens = {
 	...classiqueTokens,
@@ -642,7 +642,7 @@ export const florenceTokens: ThemeTokens = {
 		...classiqueTokens.headerSubTitle,
 		textAlign: "right",
 	},
-}
+};
 
 export const helsinkiTokens: ThemeTokens = {
 	...classiqueTokens,
@@ -684,7 +684,7 @@ export const helsinkiTokens: ThemeTokens = {
 		...classiqueTokens.body,
 		sizeModel: "12px",
 	},
-}
+};
 
 export const naraTokens: ThemeTokens = {
 	...classiqueTokens,
@@ -823,7 +823,7 @@ export const eindhovenTokens: ThemeTokens = {
 		textAlign: "center",
 		colorSelect: "black",
 	},
-}
+};
 
 export const oxfordTokens: ThemeTokens = {
 	...classiqueTokens,
@@ -851,7 +851,7 @@ export const oxfordTokens: ThemeTokens = {
 		textAlign: "center",
 		colorSelect: "black",
 	},
-}
+};
 
 export const singaporeTokens: ThemeTokens = {
 	...classiqueTokens,

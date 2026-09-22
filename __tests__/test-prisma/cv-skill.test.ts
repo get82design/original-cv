@@ -46,9 +46,7 @@ describe("Skill, CvSkillGroup, CvSkill models", () => {
 		// 1-2: ne pas pouvoir créer une skill avec un nom déjà existant
 		it("should not allow duplicate skill names", async () => {
 			await prismaTest.skill.create({ data: { name: "JavaScript" } });
-			await expect(
-				prismaTest.skill.create({ data: { name: "JavaScript" } }),
-			).rejects.toThrow();
+			await expect(prismaTest.skill.create({ data: { name: "JavaScript" } })).rejects.toThrow();
 		});
 
 		// 1-3: peut créer un skill dans un cv

@@ -203,7 +203,7 @@ describe("CvSocialMediaService.move", () => {
 		const cv = await createCV(user.id, template.id);
 		const linkedin = await cvSocialMediaService.create(cv.id, {
 			socialNetwork: "LinkedIn",
-			username: "john",	
+			username: "john",
 			icon: "faLinkedin",
 			order: 1,
 		});
@@ -222,9 +222,7 @@ describe("CvSocialMediaService.move", () => {
 
 	// TEST 2 : social media inexistant
 	it("throws if social media does not exist", async () => {
-		await expect(cvSocialMediaService.move("unknown-id", 1)).rejects.toThrow(
-			NotFoundError,
-		);
+		await expect(cvSocialMediaService.move("unknown-id", 1)).rejects.toThrow(NotFoundError);
 	});
 
 	// TEST 3 : ordre invalide
@@ -279,9 +277,7 @@ describe("CvSocialMediaService.delete", () => {
 
 	// TEST 2 : social media inexistant
 	it("throws if social media does not exist", async () => {
-		await expect(cvSocialMediaService.delete("unknown-id")).rejects.toThrow(
-			NotFoundError,
-		);
+		await expect(cvSocialMediaService.delete("unknown-id")).rejects.toThrow(NotFoundError);
 	});
 
 	// TEST 3 : réorganisation des social medias après suppression

@@ -1,9 +1,6 @@
 import { prisma } from "../../../lib/prisma";
 import { ConflictError, NotFoundError } from "../errors";
-import type {
-	CreatePhilosophyInput,
-	UpdatePhilosophyInput,
-} from "../schemas/philosophy.schema";
+import type { CreatePhilosophyInput, UpdatePhilosophyInput } from "../schemas/philosophy.schema";
 
 export class ProfilePhilosophyService {
 	// CRÉATION

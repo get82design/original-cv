@@ -18,8 +18,7 @@ export const RadioColorRhf = ({
 	...props
 }: FormRadioColorProps) => {
 	const { control, setValue } = useFormContext();
-	const sizeClass =
-		swatchSize === "xs" ? "w-4 h-4" : swatchSize === "sm" ? "w-5 h-5" : "w-8 h-8";
+	const sizeClass = swatchSize === "xs" ? "w-4 h-4" : swatchSize === "sm" ? "w-5 h-5" : "w-8 h-8";
 	return (
 		<Controller
 			name={name}
@@ -42,8 +41,7 @@ export const RadioColorRhf = ({
 								className={`rounded-full color-index-${index}`}
 								style={{
 									border: `${
-										(general && field.value?.name === props.value?.name) ||
-										props.checked
+										(general && field.value?.name === props.value?.name) || props.checked
 											? "solid 2px text-primary dark:text-primary-dark"
 											: ""
 									}`,
@@ -55,9 +53,7 @@ export const RadioColorRhf = ({
 									onClick={() => setValue(name, props.value)}
 									style={{
 										backgroundColor: `var(${color})`,
-										outline: selected
-											? "2px solid var(--teal-500)"
-											: "2px solid transparent",
+										outline: selected ? "2px solid var(--teal-500)" : "2px solid transparent",
 										outlineOffset: "1px",
 										cursor: "pointer",
 									}}

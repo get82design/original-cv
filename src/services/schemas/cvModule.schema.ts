@@ -2,17 +2,8 @@ import z from "zod";
 import { CVModuleTypeSchema } from "./enums";
 
 /** JSON libre pour les perso UI (fontSize, color, align, show, …) */
-type JsonValue =
-	| string
-	| number
-	| boolean
-	| null
-	| JsonValue[]
-	| { [key: string]: JsonValue };
-export const cvModuleSettingsSchema = z.record(
-	z.string(),
-	z.any(),
-) as z.ZodType<JsonValue>;
+type JsonValue = string | number | boolean | null | JsonValue[] | { [key: string]: JsonValue };
+export const cvModuleSettingsSchema = z.record(z.string(), z.any()) as z.ZodType<JsonValue>;
 export type JsonValueType = z.infer<typeof cvModuleSettingsSchema>;
 
 export const createCvModuleSchema = z.object({

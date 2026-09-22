@@ -221,9 +221,7 @@ describe("CvCertificationService.move", () => {
 
 	// TEST 2 : certification inexistant
 	it("throws if certification does not exist", async () => {
-		await expect(cvCertificationService.move("unknown-id", 1)).rejects.toThrow(
-			NotFoundError,
-		);
+		await expect(cvCertificationService.move("unknown-id", 1)).rejects.toThrow(NotFoundError);
 	});
 
 	// TEST 3 : ordre invalide
@@ -236,9 +234,7 @@ describe("CvCertificationService.move", () => {
 			organismeCertification: "Organisme 1",
 			order: 1,
 		});
-		await expect(
-			cvCertificationService.move(certification1.id, 0),
-		).rejects.toThrow();
+		await expect(cvCertificationService.move(certification1.id, 0)).rejects.toThrow();
 	});
 
 	it("move no-op if order is the same", async () => {
@@ -278,9 +274,7 @@ describe("CvCertificationService.delete", () => {
 
 	// TEST 2 : certification inexistant
 	it("throws if certification does not exist", async () => {
-		await expect(cvCertificationService.delete("unknown-id")).rejects.toThrow(
-			NotFoundError,
-		);
+		await expect(cvCertificationService.delete("unknown-id")).rejects.toThrow(NotFoundError);
 	});
 
 	// TEST 3 : réorganisation des certifications après suppression

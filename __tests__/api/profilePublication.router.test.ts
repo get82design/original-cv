@@ -2,10 +2,7 @@ import { describe, expect, it } from "vitest";
 import { TRPCError } from "@trpc/server";
 
 import { createTestUser } from "../utils/create-test-user";
-import {
-	createTestCaller,
-	createTestSession,
-} from "./helpers/create-test-caller";
+import { createTestCaller, createTestSession } from "./helpers/create-test-caller";
 
 describe("profilePublicationRouter", () => {
 	async function createUserWithProfile() {
@@ -236,8 +233,8 @@ describe("profilePublicationRouter", () => {
 	it("delete returns NOT_FOUND for unknown publication", async () => {
 		const { caller } = await createUserWithProfile();
 
-		await expect(
-			caller.profilePublication.delete({ id: "unknown" }),
-		).rejects.toMatchObject({ code: "NOT_FOUND" });
+		await expect(caller.profilePublication.delete({ id: "unknown" })).rejects.toMatchObject({
+			code: "NOT_FOUND",
+		});
 	});
 });

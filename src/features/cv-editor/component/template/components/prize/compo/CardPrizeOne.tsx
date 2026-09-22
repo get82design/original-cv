@@ -48,8 +48,7 @@ export const CardPrizeOne = ({
 	const watchModelDomaine = watch(`${pathContent}.settings.domaine`);
 
 	const deletePrize = (itemToDelete: ListItem<PrizeItemContentInput>) => {
-		const list = (getValues(FieldNamePrize.content) ??
-			[]) as ListItem<PrizeItemContentInput>[];
+		const list = (getValues(FieldNamePrize.content) ?? []) as ListItem<PrizeItemContentInput>[];
 
 		const newList = list
 			.filter((entry) => entry.clientKey !== itemToDelete.clientKey)
@@ -89,12 +88,7 @@ export const CardPrizeOne = ({
 				itemsMenu ? (
 					<>
 						<ToolbarOptionsButton menuRef={menuLeft} />
-						<Menu
-							model={itemsMenu(index)}
-							popup
-							ref={menuLeft}
-							style={{ width: 300 }}
-						/>
+						<Menu model={itemsMenu(index)} popup ref={menuLeft} style={{ width: 300 }} />
 					</>
 				) : null
 			}

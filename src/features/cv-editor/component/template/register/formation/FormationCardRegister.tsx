@@ -5,9 +5,6 @@ import {
 
 export type FormationCardProps = CardFormationOneProps;
 
-export const FormationCardRegister: Record<
-	string,
-	React.ComponentType<FormationCardProps>
-> = {
+export const FormationCardRegister: Record<string, React.ComponentType<FormationCardProps>> = {
 	CardFormationOne,
 };

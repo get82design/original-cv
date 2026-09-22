@@ -40,11 +40,7 @@ export const CardPassionOne = ({
 	const { setSelectModifInput, setSelectInputForm } = useCreateCvContext();
 
 	const watchGeneral = watch(FieldNameLayoutGeneral.layout);
-	const pathContent = dataFieldContent(
-		"datas.passion.content",
-		index,
-		"content",
-	);
+	const pathContent = dataFieldContent("datas.passion.content", index, "content");
 	const watchWithIcon = watchGeneral?.titleSection.withIcon;
 	const watchListStyle = watchGeneral?.listStyle;
 	const menuLeft = useRef<Menu>(null);
@@ -52,8 +48,7 @@ export const CardPassionOne = ({
 	const watchModelTitleOfPassion = watch(`${pathContent}.settings.passion`);
 
 	const deletePassion = (itemToDelete: ListItem<PassionItemContentInput>) => {
-		const list = (getValues(FieldNamePassion.content) ??
-			[]) as ListItem<PassionItemContentInput>[];
+		const list = (getValues(FieldNamePassion.content) ?? []) as ListItem<PassionItemContentInput>[];
 
 		const newList = list
 			.filter((entry) => entry.clientKey !== itemToDelete.clientKey)
@@ -93,12 +88,7 @@ export const CardPassionOne = ({
 				itemsMenu ? (
 					<>
 						<ToolbarOptionsButton menuRef={menuLeft} />
-						<Menu
-							model={itemsMenu(index)}
-							popup
-							ref={menuLeft}
-							style={{ width: 300 }}
-						/>
+						<Menu model={itemsMenu(index)} popup ref={menuLeft} style={{ width: 300 }} />
 					</>
 				) : null
 			}
@@ -122,15 +112,16 @@ export const CardPassionOne = ({
 						placeholder="Passion / intérêt"
 						onClick={() => {
 							setSelectModifInput(`${pathContent}.settings.passion`);
-							setSelectInputForm('');
-						} }
+							setSelectInputForm("");
+						}}
 						name={`${pathContent}.title`}
 						textColor={watchModelTitleOfPassion?.colorSelect}
 						dataInput={{
 							changeSize: "1px",
 							model: watchModelTitleOfPassion,
-						}} 
-						textAlign={watchModelTitleOfPassion?.textAlign ?? "left"}					/>
+						}}
+						textAlign={watchModelTitleOfPassion?.textAlign ?? "left"}
+					/>
 				}
 			/>
 		</SectionItemShell>

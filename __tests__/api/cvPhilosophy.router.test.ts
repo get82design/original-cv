@@ -4,10 +4,7 @@ import { TRPCError } from "@trpc/server";
 import { createCV } from "../utils/create-test-cv-full-flow";
 import { createTestTemplate } from "../utils/create-test-template";
 import { createTestUser } from "../utils/create-test-user";
-import {
-	createTestCaller,
-	createTestSession,
-} from "./helpers/create-test-caller";
+import { createTestCaller, createTestSession } from "./helpers/create-test-caller";
 
 describe("cvPhilosophyRouter", () => {
 	it("create returns UNAUTHORIZED without session", async () => {
@@ -144,9 +141,9 @@ describe("cvPhilosophyRouter", () => {
 		const template = await createTestTemplate();
 		const cv = await createCV(user.id, template.id);
 
-		await expect(
-			caller.cvPhilosophy.byCvId({ cvId: cv.id }),
-		).rejects.toMatchObject({ code: "NOT_FOUND" });
+		await expect(caller.cvPhilosophy.byCvId({ cvId: cv.id })).rejects.toMatchObject({
+			code: "NOT_FOUND",
+		});
 	});
 
 	it("update updates a philosophy via tRPC", async () => {
@@ -196,9 +193,9 @@ describe("cvPhilosophyRouter", () => {
 
 		await caller.cvPhilosophy.delete({ cvId: cv.id });
 
-		await expect(
-			caller.cvPhilosophy.byCvId({ cvId: cv.id }),
-		).rejects.toMatchObject({ code: "NOT_FOUND" });
+		await expect(caller.cvPhilosophy.byCvId({ cvId: cv.id })).rejects.toMatchObject({
+			code: "NOT_FOUND",
+		});
 	});
 
 	it("delete returns NOT_FOUND when philosophy does not exist", async () => {
@@ -207,8 +204,8 @@ describe("cvPhilosophyRouter", () => {
 		const template = await createTestTemplate();
 		const cv = await createCV(user.id, template.id);
 
-		await expect(
-			caller.cvPhilosophy.delete({ cvId: cv.id }),
-		).rejects.toMatchObject({ code: "NOT_FOUND" });
+		await expect(caller.cvPhilosophy.delete({ cvId: cv.id })).rejects.toMatchObject({
+			code: "NOT_FOUND",
+		});
 	});
 });

@@ -2,18 +2,15 @@ import { describe, expect, it } from "vitest";
 import { TRPCError } from "@trpc/server";
 
 import { createTestUser } from "../utils/create-test-user";
-import {
-	createTestCaller,
-	createTestSession,
-} from "./helpers/create-test-caller";
+import { createTestCaller, createTestSession } from "./helpers/create-test-caller";
 
 describe("colorRouter", () => {
 	it("create returns UNAUTHORIZED without session", async () => {
 		const caller = await createTestCaller();
 
-		await expect(
-			caller.color.create({ name: "Red", primary: "#FF0000" }),
-		).rejects.toMatchObject({ code: "UNAUTHORIZED" });
+		await expect(caller.color.create({ name: "Red", primary: "#FF0000" })).rejects.toMatchObject({
+			code: "UNAUTHORIZED",
+		});
 	});
 
 	it("create creates a color via tRPC", async () => {
@@ -34,7 +31,7 @@ describe("colorRouter", () => {
 		const caller = await createTestCaller(createTestSession(user));
 
 		await expect(
-            // @ts-expect-error — test de validation runtime
+			// @ts-expect-error — test de validation runtime
 			caller.color.create({
 				name: "Red",
 			}),
@@ -47,9 +44,9 @@ describe("colorRouter", () => {
 
 		await caller.color.create({ name: "Red", primary: "#FF0000" });
 
-		await expect(
-			caller.color.create({ name: " red ", primary: "#111111" }),
-		).rejects.toMatchObject({ code: "CONFLICT" });
+		await expect(caller.color.create({ name: " red ", primary: "#111111" })).rejects.toMatchObject({
+			code: "CONFLICT",
+		});
 	});
 
 	it("findAll returns colors sorted by order", async () => {
@@ -92,9 +89,9 @@ describe("colorRouter", () => {
 		const user = await createTestUser();
 		const caller = await createTestCaller(createTestSession(user));
 
-		await expect(
-			caller.color.findById({ id: "unknown-id" }),
-		).rejects.toMatchObject({ code: "NOT_FOUND" });
+		await expect(caller.color.findById({ id: "unknown-id" })).rejects.toMatchObject({
+			code: "NOT_FOUND",
+		});
 	});
 
 	it("findByName returns a color or null", async () => {
@@ -172,8 +169,8 @@ describe("colorRouter", () => {
 		const user = await createTestUser();
 		const caller = await createTestCaller(createTestSession(user));
 
-		await expect(
-			caller.color.delete({ id: "unknown-id" }),
-		).rejects.toMatchObject({ code: "NOT_FOUND" });
+		await expect(caller.color.delete({ id: "unknown-id" })).rejects.toMatchObject({
+			code: "NOT_FOUND",
+		});
 	});
 });

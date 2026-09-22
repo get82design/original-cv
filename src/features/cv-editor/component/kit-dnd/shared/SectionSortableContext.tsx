@@ -1,11 +1,7 @@
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { useCreateCvContext } from "../../context/CreateCvContext";
-import {
-	MdCloudDownload,
-	MdDelete,
-	MdDragIndicator,
-} from "react-icons/md";
+import { MdCloudDownload, MdDelete, MdDragIndicator } from "react-icons/md";
 import type { ItemGeneralProps } from "@utils/type";
 import { useState } from "react";
 import { DialogDataSectionFromProfile } from "../../dialog/dataFromProfile/DialogDataSectionFromProfile";
@@ -24,18 +20,9 @@ export const SectionSortableContext = ({
 	deleteSection,
 	sectionMenu,
 }: SectionSortableContextProps) => {
-	const [
-		visibleDialogDataSectionFromProfile,
-		setVisibleDialogDataSectionFromProfile,
-	] = useState(false);
-	const {
-		attributes,
-		listeners,
-		setNodeRef,
-		transform,
-		transition,
-		isDragging,
-	} = useSortable({
+	const [visibleDialogDataSectionFromProfile, setVisibleDialogDataSectionFromProfile] =
+		useState(false);
+	const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
 		id: item.id,
 		data: {
 			type: "section",
@@ -56,11 +43,7 @@ export const SectionSortableContext = ({
 	const isSectionSelected = item.id === sectionSelected;
 
 	return (
-		<div
-			ref={setNodeRef}
-			style={style}
-			className="section-card relative"
-		>
+		<div ref={setNodeRef} style={style} className="section-card relative">
 			{isSectionSelected ? (
 				<div className="absolute z-100 bg-white dark:bg-gray-800 w-auto left-0 -top-7 rounded-md flex gap-0 items-center border border-gray-200 dark:border-gray-600 shadow-sm">
 					<div
@@ -70,10 +53,7 @@ export const SectionSortableContext = ({
 						{...attributes}
 						{...listeners}
 					>
-						<MdDragIndicator
-							size={CV_TOOLBAR_ICON_SIZE}
-							className="cursor-move"
-						/>
+						<MdDragIndicator size={CV_TOOLBAR_ICON_SIZE} className="cursor-move" />
 					</div>
 					{sectionMenu ? (
 						<>
@@ -99,10 +79,7 @@ export const SectionSortableContext = ({
 						aria-label="Supprimer"
 						onClick={() => deleteSection(item)}
 					>
-						<MdDelete
-							size={CV_TOOLBAR_ICON_SIZE}
-							style={{ color: "var(--red-500)" }}
-						/>
+						<MdDelete size={CV_TOOLBAR_ICON_SIZE} style={{ color: "var(--red-500)" }} />
 					</button>
 				</div>
 			) : null}

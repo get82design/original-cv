@@ -3,10 +3,7 @@ import { useCreateCvContext } from "@/features/cv-editor/component/context/Creat
 import { FieldNamePassion } from "@/features/cv-editor/utils/fields/fieldNamePassion";
 import { dataFieldContent } from "@/features/cv-editor/utils/fields/moduleField";
 import type { PassionItemContentInput } from "@/services/schemas/cvSave.schema";
-import {
-	horizontalListSortingStrategy,
-	SortableContext,
-} from "@dnd-kit/sortable";
+import { horizontalListSortingStrategy, SortableContext } from "@dnd-kit/sortable";
 import type { ListItem } from "@utils/type";
 import { Button } from "primereact/button";
 import { useFormContext } from "react-hook-form";
@@ -34,11 +31,7 @@ export const PassionDnd = ({
 }: PassionDndProps) => {
 	const { setSectionSelected, sectionSelected } = useCreateCvContext();
 	const itemsMenu = (idx: number) => {
-		const pathContent = dataFieldContent(
-			"datas.passion.content",
-			idx,
-			"content.settings",
-		);
+		const pathContent = dataFieldContent("datas.passion.content", idx, "content.settings");
 		return [
 			{
 				label: "Options",

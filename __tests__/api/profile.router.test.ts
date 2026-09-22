@@ -2,10 +2,7 @@ import { describe, expect, it } from "vitest";
 import { TRPCError } from "@trpc/server";
 
 import { createTestUser } from "../utils/create-test-user";
-import {
-	createTestCaller,
-	createTestSession,
-} from "./helpers/create-test-caller";
+import { createTestCaller, createTestSession } from "./helpers/create-test-caller";
 
 describe("profileRouter", () => {
 	it("create returns UNAUTHORIZED without session", async () => {
@@ -128,9 +125,9 @@ describe("profileRouter", () => {
 		const user = await createTestUser();
 		const caller = await createTestCaller(createTestSession(user));
 
-		await expect(
-			caller.profile.update({ firstName: "Jane" }),
-		).rejects.toMatchObject({ code: "NOT_FOUND" });
+		await expect(caller.profile.update({ firstName: "Jane" })).rejects.toMatchObject({
+			code: "NOT_FOUND",
+		});
 	});
 
 	it("delete removes the current user profile", async () => {
