@@ -26,6 +26,7 @@ const FEATURE_OPTIONS: { label: string; value: AiFeature | null }[] = [
 	{ label: "Import PDF", value: AiFeature.IMPORT_CV },
 	{ label: "Relecture", value: AiFeature.REVIEW_CV },
 	{ label: "Reformulation", value: AiFeature.REWRITE_SECTION },
+	{ label: "Lettre de motivation", value: AiFeature.COVER_LETTER },
 ];
 
 function formatDate(d: Date | string | null | undefined) {
@@ -48,6 +49,8 @@ function aiFeatureLabel(feature: AiFeature) {
 			return "Relecture";
 		case "REWRITE_SECTION":
 			return "Reformulation";
+		case "COVER_LETTER":
+			return "Lettre de motivation";
 	}
 }
 

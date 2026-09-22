@@ -368,9 +368,17 @@ export function AdminDashboardPage() {
 					</section>
 
 					<section>
-						<h3 className="mb-1.5 m-0 text-sm font-semibold uppercase tracking-wide text-zinc-500">
-							Ventes
-						</h3>
+						<div className="mb-1.5 flex items-center justify-between gap-3">
+							<h3 className="m-0 text-sm font-semibold uppercase tracking-wide text-zinc-500">
+								Ventes
+							</h3>
+							<Link
+								href="/admin/billing"
+								className="text-xs font-medium text-primary hover:underline dark:text-primary-dark"
+							>
+								Tarifs & packs →
+							</Link>
+						</div>
 						<div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
 							<MetricCard
 								title="CA"

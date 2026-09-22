@@ -434,6 +434,7 @@ html.dark #panel-modif-cv.cv-modif-tabview {
 .p-dialog.dialog-select-model,
 .p-dialog.dialog-download-cv,
 .p-dialog.dialog-assistant-ia,
+.p-dialog.dialog-ai-payment,
 .p-dialog.dialog-start-content,
 .p-dialog.dialog-import-review,
 .p-dialog.dialog-cv-review-result,
@@ -469,6 +470,11 @@ html.dark #panel-modif-cv.cv-modif-tabview {
         padding-bottom: 1rem;
     }
 
+    &.dialog-ai-payment .p-dialog-content {
+        padding-top: 1rem;
+        padding-bottom: 1rem;
+    }
+
     .p-dialog-footer {
         border-top-color: #e4e4e7;
         padding: 0.625rem 1rem;
@@ -480,6 +486,7 @@ html.dark .p-dialog.dialog-cv-limit,
 html.dark .p-dialog.dialog-select-model,
 html.dark .p-dialog.dialog-download-cv,
 html.dark .p-dialog.dialog-assistant-ia,
+html.dark .p-dialog.dialog-ai-payment,
 html.dark .p-dialog.dialog-start-content,
 html.dark .p-dialog.dialog-import-review,
 html.dark .p-dialog.dialog-cv-review-result,
@@ -633,6 +640,7 @@ html.dark .auth-form .p-inputtext:-webkit-autofill:focus {
 
 /* Admin filters — InputText / Dropdown light & dark */
 .admin-filters .p-inputtext,
+.admin-filters .p-inputtextarea,
 .admin-filters .p-dropdown {
     background: #ffffff;
     color: #18181b;
@@ -640,11 +648,13 @@ html.dark .auth-form .p-inputtext:-webkit-autofill:focus {
 }
 
 .admin-filters .p-inputtext:enabled:hover,
+.admin-filters .p-inputtextarea:enabled:hover,
 .admin-filters .p-dropdown:not(.p-disabled):hover {
     border-color: #a1a1aa;
 }
 
-.admin-filters .p-inputtext::placeholder {
+.admin-filters .p-inputtext::placeholder,
+.admin-filters .p-inputtextarea::placeholder {
     color: #a1a1aa;
 }
 
@@ -657,6 +667,7 @@ html.dark .auth-form .p-inputtext:-webkit-autofill:focus {
 }
 
 html.dark .admin-filters .p-inputtext,
+html.dark .admin-filters .p-inputtextarea,
 html.dark .admin-filters .p-dropdown {
     background: #18181b;
     color: #f4f4f5;
@@ -664,11 +675,13 @@ html.dark .admin-filters .p-dropdown {
 }
 
 html.dark .admin-filters .p-inputtext:enabled:hover,
+html.dark .admin-filters .p-inputtextarea:enabled:hover,
 html.dark .admin-filters .p-dropdown:not(.p-disabled):hover {
     border-color: #52525b;
 }
 
-html.dark .admin-filters .p-inputtext::placeholder {
+html.dark .admin-filters .p-inputtext::placeholder,
+html.dark .admin-filters .p-inputtextarea::placeholder {
     color: #71717a;
 }
 

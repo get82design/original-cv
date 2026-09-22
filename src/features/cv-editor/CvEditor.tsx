@@ -22,6 +22,7 @@ import { SpeedDial } from "primereact/speeddial";
 import { Tooltip } from "primereact/tooltip";
 import { DialogDataFromProfile } from "./component/dialog/dataFromProfile/DialogDataFromProfile";
 import { DialogAssistantIa, type AiActionId } from "@/components/dialog/DialogAssistantIa";
+import { DialogAiPayment } from "@/components/dialog/DialogAiPayment";
 import { DialogCvReviewResult } from "@/components/dialog/DialogCvReviewResult";
 import { DialogRewriteSection } from "@/components/dialog/DialogRewriteSection";
 import {
@@ -47,6 +48,8 @@ import {
 import { applyCvRewriteToForm } from "./utils/applyCvRewriteToForm";
 import { useAiAdvice } from "./component/context/AiAdviceContext";
 import { useModelAndColorContext } from "./component/context/ModelAndColorContext";
+import type { AiCreditPaymentChoice } from "@/services/ai/aiBillingService";
+import type { BillableAiFeature } from "@/services/ai/aiBillingService";
 import { isTemplateLocked } from "./utils/isTemplateLocked";
 
 export const CvEditor = () => {
@@ -74,9 +77,25 @@ export const CvEditor = () => {
 		useState<string | null>(null);
 	const [downloadPreviewLoading, setDownloadPreviewLoading] = useState(false);
 	const [dockOpen, setDockOpen] = useState(false);
+	const [paymentDialog, setPaymentDialog] = useState<{
+		feature: BillableAiFeature;
+		title: string;
+		pending:
+			| { kind: "review"; cvText: string }
+			| {
+					kind: "rewrite";
+					sectionType: CvRewriteSectionType;
+					sectionLabel: string;
+					sourceText: string;
+			  };
+	} | null>(null);
 	const { data: downloadStatus } = trpc.user.getDownloadStatus.useQuery(
 		undefined,
 		{ enabled: visibleDownloadDialog && status === "authenticated" },
+	);
+	const billingOptionsQuery = trpc.ai.getBillingOptions.useQuery(
+		{ feature: paymentDialog?.feature ?? "REVIEW_CV" },
+		{ enabled: !!paymentDialog && status === "authenticated" },
 	);
 	const reviewCvMutation = trpc.ai.reviewCv.useMutation();
 	const rewriteSectionMutation = trpc.ai.rewriteSection.useMutation();
@@ -409,28 +428,60 @@ export const CvEditor = () => {
 			});
 			return;
 		}
-		setCvReview(null);
-		setVisibleCvReview(true);
+		setPaymentDialog({
+			feature: "REVIEW_CV",
+			title: "Payer la relecture",
+			pending: { kind: "review", cvText },
+		});
+	};
+
+	const executePaidAiAction = async (choice: AiCreditPaymentChoice) => {
+		if (!paymentDialog) return;
+		const pending = paymentDialog.pending;
 		try {
-			const { review } = await reviewCvMutation.mutateAsync({ cvText });
-			setCvReview(review);
-			pushAdvice({
-				kind: "review-cv",
-				title: "Relecture générale",
-				review,
+			if (pending.kind === "review") {
+				setPaymentDialog(null);
+				setCvReview(null);
+				setVisibleCvReview(true);
+				const { review } = await reviewCvMutation.mutateAsync({
+					cvText: pending.cvText,
+					paymentMethod: choice,
+				});
+				setCvReview(review);
+				pushAdvice({
+					kind: "review-cv",
+					title: "Relecture générale",
+					review,
+				});
+				return;
+			}
+
+			setPaymentDialog(null);
+			setRewriteSectionType(pending.sectionType);
+			setRewriteResult(null);
+			setVisibleRewrite(true);
+			const { rewrite } = await rewriteSectionMutation.mutateAsync({
+				sectionType: pending.sectionType,
+				sectionLabel: pending.sectionLabel,
+				sourceText: pending.sourceText,
+				paymentMethod: choice,
 			});
+			setRewriteResult(rewrite);
 		} catch (err) {
-			setVisibleCvReview(false);
+			if (pending.kind === "review") setVisibleCvReview(false);
+			else {
+				setRewriteSectionType(null);
+				setVisibleRewrite(false);
+			}
 			const rateLimited = isTooManyRequestsError(err);
 			toast.current?.show({
 				severity: "error",
 				summary: rateLimited
 					? "Assistant saturé"
-					: "Relecture impossible",
-				detail: getClientErrorMessage(
-					err,
-					"Une erreur est survenue.",
-				),
+					: pending.kind === "review"
+						? "Relecture impossible"
+						: "Reformulation impossible",
+				detail: getClientErrorMessage(err, "Une erreur est survenue."),
 				life: rateLimited ? 7000 : 5000,
 			});
 		}
@@ -453,6 +504,15 @@ export const CvEditor = () => {
 		sectionType: CvRewriteSectionType;
 		label: string;
 	}) => {
+		if (status !== "authenticated") {
+			toast.current?.show({
+				severity: "error",
+				summary: "Connexion requise",
+				detail: "Connectez-vous pour utiliser la reformulation IA.",
+				life: 4000,
+			});
+			return;
+		}
 		const cv = getValues() as CvFormValues;
 		const extracted = extractCvSectionSourceText(cv, section.sectionType);
 		if (!extracted) {
@@ -464,30 +524,17 @@ export const CvEditor = () => {
 			});
 			return;
 		}
-		setRewriteSectionType(section.sectionType);
-		setRewriteResult(null);
-		try {
-			const { rewrite } = await rewriteSectionMutation.mutateAsync({
+		setVisibleRewrite(false);
+		setPaymentDialog({
+			feature: "REWRITE_SECTION",
+			title: "Payer la reformulation",
+			pending: {
+				kind: "rewrite",
 				sectionType: section.sectionType,
 				sectionLabel: extracted.sectionLabel,
 				sourceText: extracted.sourceText,
-			});
-			setRewriteResult(rewrite);
-		} catch (err) {
-			setRewriteSectionType(null);
-			const rateLimited = isTooManyRequestsError(err);
-			toast.current?.show({
-				severity: "error",
-				summary: rateLimited
-					? "Assistant saturé"
-					: "Reformulation impossible",
-				detail: getClientErrorMessage(
-					err,
-					"Une erreur est survenue.",
-				),
-				life: rateLimited ? 7000 : 5000,
-			});
-		}
+			},
+		});
 	};
 
 	const onApplyRewrite = () => {
@@ -580,6 +627,28 @@ export const CvEditor = () => {
 					visible={visibleAssistantIa}
 					onHide={() => setVisibleAssistantIa(false)}
 					onSelectAction={onSelectAiAction}
+				/>
+				<DialogAiPayment
+					visible={!!paymentDialog}
+					onHide={() => {
+						if (
+							reviewCvMutation.isPending ||
+							rewriteSectionMutation.isPending
+						) {
+							return;
+						}
+						setPaymentDialog(null);
+					}}
+					title={paymentDialog?.title ?? "Payer l’action IA"}
+					options={billingOptionsQuery.data}
+					loading={billingOptionsQuery.isFetching}
+					confirming={
+						reviewCvMutation.isPending ||
+						rewriteSectionMutation.isPending
+					}
+					onConfirm={(choice) => {
+						void executePaidAiAction(choice);
+					}}
 				/>
 				<DialogCvReviewResult
 					visible={visibleCvReview}

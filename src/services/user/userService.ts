@@ -251,7 +251,7 @@ export class UserService {
 	/** Compteur mensuel + log admin (feature + détail optionnel) */
 	async logAiUsage(
 		id: string,
-		feature: "IMPORT_CV" | "REVIEW_CV" | "REWRITE_SECTION",
+		feature: "IMPORT_CV" | "REVIEW_CV" | "REWRITE_SECTION" | "COVER_LETTER",
 		detail?: string,
 	) {
 		await this.findById(id);

@@ -159,6 +159,13 @@ enum AiFeature {
   IMPORT_CV
   REVIEW_CV
   REWRITE_SECTION
+  COVER_LETTER
+}
+
+/** Mode de paiement crédits pour une action IA (hors import) */
+enum AiPaymentMethod {
+  FREE
+  PAID
 }
 
 model AiEvent {
@@ -167,12 +174,42 @@ model AiEvent {
   feature   AiFeature
   /** ex. label de section pour REWRITE_SECTION */
   detail    String?
+  /** null pour IMPORT_CV (quotas, pas de crédits) */
+  paymentMethod AiPaymentMethod?
+  creditsSpent  Int?
   userId    String?
   user      User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
 
   @@index([createdAt])
   @@index([feature, createdAt])
   @@index([userId])
+}
+
+/** Tarifs crédits par feature IA (hors IMPORT_CV) */
+model AiFeaturePrice {
+  feature   AiFeature @id
+  /** null = option free non proposée */
+  costFree  Int?
+  /** null = option paid non proposée */
+  costPaid  Int?
+  updatedAt DateTime  @updatedAt
+}
+
+/** Packs de crédits (vitrine / futur Stripe) */
+model CreditPack {
+  id              String   @id @default(cuid())
+  name            String
+  description     String?
+  priceCents      Int
+  downloadCredits Int
+  freeDownloads   Int      @default(0)
+  sortOrder       Int      @default(0)
+  isActive        Boolean  @default(true)
+  stripePriceId   String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([isActive, sortOrder])
 }
 
 /** Log d’une erreur API / tRPC (ops admin) */

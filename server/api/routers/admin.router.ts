@@ -4,11 +4,13 @@ import { adminProcedure, router } from "../trpc";
 import { adminAiService } from "../../../src/services/admin/adminAiService";
 import { adminApiErrorService } from "../../../src/services/admin/adminApiErrorService";
 import { adminCreditLogService } from "../../../src/services/admin/adminCreditLogService";
+import { adminCreditPackService } from "../../../src/services/admin/adminCreditPackService";
 import { adminCvService } from "../../../src/services/admin/adminCvService";
 import { adminDownloadService } from "../../../src/services/admin/adminDownloadService";
 import { adminTemplateService } from "../../../src/services/admin/adminTemplateService";
 import { adminUnlockService } from "../../../src/services/admin/adminUnlockService";
 import { adminUserService } from "../../../src/services/admin/adminUserService";
+import { aiBillingService } from "../../../src/services/ai/aiBillingService";
 import {
 	adminDashboardPeriodSchema,
 	adminDashboardService,
@@ -141,14 +143,14 @@ export const adminRouter = router({
 			return adminUserService.updateUser(
 				id,
 				patch,
-				ctx.session.user.id,
+				ctx.session?.user.id ?? "",
 			);
 		}),
 
 	softResetUser: adminProcedure
 		.input(z.object({ id: z.string().min(1) }))
 		.mutation(({ ctx, input }) =>
-			adminUserService.softResetUser(input.id, ctx.session.user.id),
+			adminUserService.softResetUser(input.id, ctx.session?.user.id ?? ""),
 		),
 
 	unlockTemplateForUser: adminProcedure
@@ -263,6 +265,87 @@ export const adminRouter = router({
 			}),
 		)
 		.query(({ input }) => adminAiService.listAiEvents(input)),
+
+	listAiFeaturePrices: adminProcedure.query(() =>
+		aiBillingService.listPrices(),
+	),
+
+	upsertAiFeaturePrice: adminProcedure
+		.input(
+			z.object({
+				feature: z.enum([
+					"REVIEW_CV",
+					"REWRITE_SECTION",
+					"COVER_LETTER",
+				]),
+				costFree: z.number().int().min(1).max(100).nullable(),
+				costPaid: z.number().int().min(1).max(100).nullable(),
+			}),
+		)
+		.mutation(({ input }) => aiBillingService.upsertPrice(input)),
+
+	listCreditPacks: adminProcedure
+		.input(
+			z
+				.object({
+					activeOnly: z.boolean().optional(),
+				})
+				.optional(),
+		)
+		.query(({ input }) =>
+			adminCreditPackService.listPacks(input ?? undefined),
+		),
+
+	createCreditPack: adminProcedure
+		.input(
+			z.object({
+				name: z.string().trim().min(1).max(120),
+				description: z.string().trim().max(500).nullable().optional(),
+				priceCents: z.number().int().min(0).max(100_000_000),
+				downloadCredits: z.number().int().min(1).max(10_000),
+				freeDownloads: z.number().int().min(0).max(10_000).optional(),
+				sortOrder: z.number().int().min(0).max(10_000).optional(),
+				isActive: z.boolean().optional(),
+				stripePriceId: z.string().trim().max(120).nullable().optional(),
+			}),
+		)
+		.mutation(({ input }) => adminCreditPackService.createPack(input)),
+
+	updateCreditPack: adminProcedure
+		.input(
+			z.object({
+				id: z.string().min(1),
+				name: z.string().trim().min(1).max(120).optional(),
+				description: z.string().trim().max(500).nullable().optional(),
+				priceCents: z
+					.number()
+					.int()
+					.min(0)
+					.max(100_000_000)
+					.optional(),
+				downloadCredits: z
+					.number()
+					.int()
+					.min(1)
+					.max(10_000)
+					.optional(),
+				freeDownloads: z.number().int().min(0).max(10_000).optional(),
+				sortOrder: z.number().int().min(0).max(10_000).optional(),
+				isActive: z.boolean().optional(),
+				stripePriceId: z.string().trim().max(120).nullable().optional(),
+			}),
+		)
+		.mutation(({ input }) => {
+			const { id, ...patch } = input;
+			return adminCreditPackService.updatePack(id, patch);
+		}),
+
+	deleteCreditPack: adminProcedure
+		.input(z.object({ id: z.string().min(1) }))
+		.mutation(async ({ input }) => {
+			await adminCreditPackService.deletePack(input.id);
+			return { ok: true as const };
+		}),
 
 	listApiErrors: adminProcedure
 		.input(

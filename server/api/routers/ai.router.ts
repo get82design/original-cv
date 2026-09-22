@@ -1,27 +1,48 @@
 import { z } from "zod";
 import { assertCvImportQuota } from "../../../src/services/ai/cvImportQuota";
+import {
+	aiBillingService,
+	type BillableAiFeature,
+} from "../../../src/services/ai/aiBillingService";
 import { cvImportService } from "../../../src/services/ai/cvImportService";
 import { geminiService } from "../../../src/services/ai/geminiService";
 import { cvRewriteSectionTypeSchema } from "../../../src/services/schemas/cvRewriteSection.schema";
 import { userService } from "../../../src/services/user/userService";
 import { protectedProcedure, router } from "../trpc";
 
+const aiPaymentChoiceSchema = z.enum(["free", "paid"]);
+
+const billableFeatureSchema = z.enum([
+	"REVIEW_CV",
+	"REWRITE_SECTION",
+	"COVER_LETTER",
+]);
+
 /**
- * TODO(ai-billing / V1+) :
- * - Quotas par plan (FREE / STANDARD / PREMIUM_PLUS_IA) quand les plans seront en prod.
- * - Coût par action IA (review / rewrite…) : pas toutes au même prix ;
- *   certaines en crédits payants et/ou free, d’autres payants uniquement.
- * - Au plafond crédits V1 (sans plans) : pousser vers l’achat de crédits.
- * Import PDF : gratuit mais plafonné (voir assertCvImportQuota).
- * Autres actions : usage logué via logAiUsage, pas encore de débit crédits.
+ * Import PDF : gratuit plafonné (assertCvImportQuota).
+ * Review / rewrite : débit crédits (free ou paid) au choix user.
  */
 export const aiRouter = router({
 	/** Valide la clé Google AI Studio (server-only). */
 	ping: protectedProcedure.query(() => geminiService.ping()),
 
+	/** Prix + soldes pour le dialog de choix free / paid. */
+	getBillingOptions: protectedProcedure
+		.input(z.object({ feature: billableFeatureSchema }))
+		.query(({ ctx, input }) =>
+			aiBillingService.getBillingOptions(
+				ctx.session.user.id,
+				input.feature as BillableAiFeature,
+			),
+		),
+
+	/** Tarifs crédits des services IA (hors import) — affichage catalogue. */
+	listFeaturePrices: protectedProcedure.query(() =>
+		aiBillingService.listPrices(),
+	),
+
 	/**
 	 * Import CV depuis un PDF (base64) → draft Zod.
-	 * PDF → PNG → Gemini vision → cvImportDraftSchema.
 	 * Gratuit, plafonné (2/24h, 5/7j, 10/30j) — check avant Gemini.
 	 */
 	importCvFromPdf: protectedProcedure
@@ -50,11 +71,22 @@ export const aiRouter = router({
 		.input(
 			z.object({
 				cvText: z.string().trim().min(1).max(50_000),
+				paymentMethod: aiPaymentChoiceSchema,
 			}),
 		)
 		.mutation(async ({ ctx, input }) => {
+			const userId = ctx.session.user.id;
+			await aiBillingService.assertCanPay(
+				userId,
+				"REVIEW_CV",
+				input.paymentMethod,
+			);
 			const review = await geminiService.reviewCv(input.cvText);
-			await userService.logAiUsage(ctx.session.user.id, "REVIEW_CV");
+			await aiBillingService.consumeAndLog({
+				userId,
+				feature: "REVIEW_CV",
+				choice: input.paymentMethod,
+			});
 			return { review };
 		}),
 
@@ -67,19 +99,27 @@ export const aiRouter = router({
 				sectionType: cvRewriteSectionTypeSchema,
 				sectionLabel: z.string().trim().min(1).max(120),
 				sourceText: z.string().trim().min(1).max(50_000),
+				paymentMethod: aiPaymentChoiceSchema,
 			}),
 		)
 		.mutation(async ({ ctx, input }) => {
+			const userId = ctx.session.user.id;
+			await aiBillingService.assertCanPay(
+				userId,
+				"REWRITE_SECTION",
+				input.paymentMethod,
+			);
 			const rewrite = await geminiService.rewriteSection({
 				sectionType: input.sectionType,
 				sectionLabel: input.sectionLabel,
 				sourceText: input.sourceText,
 			});
-			await userService.logAiUsage(
-				ctx.session.user.id,
-				"REWRITE_SECTION",
-				input.sectionLabel,
-			);
+			await aiBillingService.consumeAndLog({
+				userId,
+				feature: "REWRITE_SECTION",
+				choice: input.paymentMethod,
+				detail: input.sectionLabel,
+			});
 			return { rewrite };
 		}),
 });
