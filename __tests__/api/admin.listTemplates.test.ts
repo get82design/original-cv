@@ -92,6 +92,27 @@ describe("admin.updateTemplateCatalog", () => {
 		expect(cleared.isPremium).toBe(false);
 		expect(cleared.unlockGifts).toBeNull();
 	});
+
+	it("rejects update with no catalog field (Zod refine)", async () => {
+		const template = await createTestTemplate();
+		const admin = await createTestUser();
+		const caller = await createTestCaller(
+			createTestSession({
+				id: admin.id,
+				email: admin.email,
+				role: "ADMIN",
+			}),
+		);
+
+		await expect(
+			caller.admin.updateTemplateCatalog({ id: template.id }),
+		).rejects.toMatchObject({
+			code: "BAD_REQUEST",
+			message: expect.stringContaining(
+				"Au moins un champ catalogue à mettre à jour",
+			),
+		});
+	});
 });
 
 describe("admin.getTemplate", () => {

@@ -51,4 +51,49 @@ describe("admin.listCreditLogs", () => {
 		expect(hit?.actorUserEmail).toBe(admin.email);
 		expect(hit?.targetUserEmail).toBe(target.email);
 	});
+
+	it("filters by kind and search", async () => {
+		const target = await createTestUser();
+		const unique = `credit-search-${Date.now()}`;
+		await prismaTest.user.update({
+			where: { id: target.id },
+			data: { email: `${unique}@test.com` },
+		});
+		const admin = await createTestUser();
+		await prismaTest.adminCreditLog.create({
+			data: {
+				kind: "FREE_DOWNLOADS",
+				reason: "ADMIN_SET",
+				before: 0,
+				after: 2,
+				delta: 2,
+				targetUserId: target.id,
+				actorUserId: admin.id,
+			},
+		});
+
+		const caller = await createTestCaller(
+			createTestSession({
+				id: admin.id,
+				email: admin.email,
+				role: "ADMIN",
+			}),
+		);
+
+		const byKind = await caller.admin.listCreditLogs({
+			period: "all",
+			kind: "FREE_DOWNLOADS",
+		});
+		expect(byKind.items.every((i) => i.kind === "FREE_DOWNLOADS")).toBe(
+			true,
+		);
+
+		const bySearch = await caller.admin.listCreditLogs({
+			period: "all",
+			search: unique,
+		});
+		expect(bySearch.items.some((i) => i.targetUserId === target.id)).toBe(
+			true,
+		);
+	});
 });

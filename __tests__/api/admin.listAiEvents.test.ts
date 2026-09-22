@@ -70,4 +70,31 @@ describe("admin.listAiEvents", () => {
 			true,
 		);
 	});
+
+	it("filters by email search", async () => {
+		const user = await createTestUser();
+		const unique = `ai-search-${Date.now()}`;
+		await prismaTest.user.update({
+			where: { id: user.id },
+			data: { email: `${unique}@test.com` },
+		});
+		await prismaTest.aiEvent.create({
+			data: { feature: "REVIEW_CV", userId: user.id },
+		});
+
+		const admin = await createTestUser();
+		const caller = await createTestCaller(
+			createTestSession({
+				id: admin.id,
+				email: admin.email,
+				role: "ADMIN",
+			}),
+		);
+
+		const result = await caller.admin.listAiEvents({
+			period: "all",
+			search: unique,
+		});
+		expect(result.items.some((i) => i.userId === user.id)).toBe(true);
+	});
 });

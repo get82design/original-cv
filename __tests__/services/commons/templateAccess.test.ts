@@ -10,7 +10,7 @@ import {
 } from "../../../src/services/commons/templateAccess";
 import { templateAccessService } from "../../../src/services/commons/templateAccessService";
 import { unlockedTemplateService } from "../../../src/services/commons/unlockedTemplateService";
-import { ForbiddenError, ValidationError } from "../../../src/services/errors";
+import { ForbiddenError, NotFoundError, ValidationError } from "../../../src/services/errors";
 import { createTestUser } from "../../utils/create-test-user";
 import { createTestTemplate } from "../../utils/create-test-template";
 import { prismaTest } from "../../../lib/prismaTest";
@@ -122,5 +122,81 @@ describe("templateAccessService", () => {
 		await expect(
 			templateAccessService.assertCanUseTemplate(user.id, template.id),
 		).rejects.toThrow(ValidationError);
+	});
+
+	it("throws NotFound for unknown template", async () => {
+		await expect(
+			templateAccessService.getTemplateAccessFields("missing-template"),
+		).rejects.toThrow(NotFoundError);
+	});
+
+	it("assertCanUnlockTemplate blocks inactive templates", async () => {
+		const template = await createTestTemplate();
+		await prismaTest.cVTemplate.update({
+			where: { id: template.id },
+			data: { isActive: false },
+		});
+
+		await expect(
+			templateAccessService.assertCanUnlockTemplate(template.id),
+		).rejects.toMatchObject({
+			message: "Ce modèle n’est pas disponible",
+		});
+	});
+
+	it("assertCanUnlockTemplate allows active templates", async () => {
+		const template = await createTestTemplate();
+
+		await expect(
+			templateAccessService.assertCanUnlockTemplate(template.id),
+		).resolves.toBeUndefined();
+	});
+
+	it("userCanUse reflects active flag", async () => {
+		const user = await createTestUser();
+		const template = await createTestTemplate();
+
+		expect(
+			await templateAccessService.userCanUse(user.id, template.id),
+		).toBe(true);
+
+		await prismaTest.cVTemplate.update({
+			where: { id: template.id },
+			data: { isActive: false },
+		});
+
+		expect(
+			await templateAccessService.userCanUse(user.id, template.id),
+		).toBe(false);
+	});
+
+	it("userCanDownload reflects premium unlock", async () => {
+		const user = await createTestUser();
+		const template = await createTestTemplate();
+		await prismaTest.cVTemplate.update({
+			where: { id: template.id },
+			data: { isPremium: true },
+		});
+
+		expect(
+			await templateAccessService.userCanDownload(user.id, template.id),
+		).toBe(false);
+
+		await unlockedTemplateService.unlockTemplate(user.id, template.id, {
+			method: "gift",
+		});
+
+		expect(
+			await templateAccessService.userCanDownload(user.id, template.id),
+		).toBe(true);
+	});
+
+	it("userCanDownload allows free templates without unlock", async () => {
+		const user = await createTestUser();
+		const template = await createTestTemplate();
+
+		expect(
+			await templateAccessService.userCanDownload(user.id, template.id),
+		).toBe(true);
 	});
 });

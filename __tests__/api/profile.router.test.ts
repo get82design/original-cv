@@ -156,4 +156,22 @@ describe("profileRouter", () => {
 			code: "NOT_FOUND",
 		});
 	});
+
+	it("save creates a profile via tRPC", async () => {
+		const user = await createTestUser();
+		const caller = await createTestCaller(createTestSession(user));
+
+		const saved = await caller.profile.save({
+			firstName: "Ada",
+			lastName: "Lovelace",
+			phone: "0600000000",
+			location: "Londres",
+			email: "ada@test.com",
+			photo: "ada.png",
+		});
+
+		expect(saved.firstName).toBe("Ada");
+		expect(saved.lastName).toBe("Lovelace");
+		expect(saved.userId).toBe(user.id);
+	});
 });

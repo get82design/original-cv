@@ -89,4 +89,38 @@ describe("admin.listDownloads", () => {
 		});
 		expect(free.items.every((i) => i.variant === "WITH_LOGO")).toBe(true);
 	});
+
+	it("filters by email search and falls back for unknown templateId", async () => {
+		const user = await createTestUser();
+		const unique = `dl-search-${Date.now()}`;
+		await prismaTest.user.update({
+			where: { id: user.id },
+			data: { email: `${unique}@test.com` },
+		});
+		await prismaTest.downloadEvent.create({
+			data: {
+				variant: "WITH_LOGO",
+				hadAccount: true,
+				userId: user.id,
+				templateId: "orphan-template-id",
+			},
+		});
+
+		const admin = await createTestUser();
+		const caller = await createTestCaller(
+			createTestSession({
+				id: admin.id,
+				email: admin.email,
+				role: "ADMIN",
+			}),
+		);
+
+		const result = await caller.admin.listDownloads({
+			period: "all",
+			search: unique,
+		});
+		const hit = result.items.find((i) => i.userId === user.id);
+		expect(hit).toBeTruthy();
+		expect(hit?.templateName).toBe("orphan-template-id");
+	});
 });

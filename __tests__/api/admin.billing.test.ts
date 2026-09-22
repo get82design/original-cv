@@ -88,4 +88,56 @@ describe("admin billing (packs + AI prices)", () => {
 			where: { name: { startsWith: "Test pack" } },
 		});
 	});
+
+	it("rejects createCreditPack with empty name via Zod", async () => {
+		const user = await createTestUser();
+		const caller = await createTestCaller(
+			createTestSession({
+				id: user.id,
+				email: user.email,
+				role: "ADMIN",
+			}),
+		);
+
+		await expect(
+			caller.admin.createCreditPack({
+				name: "   ",
+				priceCents: 100,
+				downloadCredits: 1,
+			}),
+		).rejects.toMatchObject({ code: "BAD_REQUEST" });
+	});
+
+	it("rejects deleteCreditPack for unknown id", async () => {
+		const user = await createTestUser();
+		const caller = await createTestCaller(
+			createTestSession({
+				id: user.id,
+				email: user.email,
+				role: "ADMIN",
+			}),
+		);
+
+		await expect(
+			caller.admin.deleteCreditPack({ id: "missing-pack-id" }),
+		).rejects.toMatchObject({ code: "NOT_FOUND" });
+	});
+
+	it("rejects updateCreditPack for unknown id", async () => {
+		const user = await createTestUser();
+		const caller = await createTestCaller(
+			createTestSession({
+				id: user.id,
+				email: user.email,
+				role: "ADMIN",
+			}),
+		);
+
+		await expect(
+			caller.admin.updateCreditPack({
+				id: "missing-pack-id",
+				name: "Nope",
+			}),
+		).rejects.toMatchObject({ code: "NOT_FOUND" });
+	});
 });

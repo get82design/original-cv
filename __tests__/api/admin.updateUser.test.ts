@@ -127,6 +127,25 @@ describe("admin.updateUser", () => {
 			caller.admin.updateUser({ id: target.id, plan: "PREMIUM" }),
 		).rejects.toMatchObject({ code: "BAD_REQUEST" });
 	});
+
+	it("rejects update with no mutable field (Zod refine)", async () => {
+		const target = await createTestUser();
+		const admin = await createTestUser();
+		const caller = await createTestCaller(
+			createTestSession({
+				id: admin.id,
+				email: admin.email,
+				role: "ADMIN",
+			}),
+		);
+
+		await expect(
+			caller.admin.updateUser({ id: target.id }),
+		).rejects.toMatchObject({
+			code: "BAD_REQUEST",
+			message: expect.stringContaining("Au moins un champ à mettre à jour"),
+		});
+	});
 });
 
 describe("admin.softResetUser", () => {

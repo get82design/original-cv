@@ -1,24 +1,9 @@
 import "dotenv/config";
-// import { PrismaPg } from "@prisma/adapter-pg";
-import { PrismaClient } from "../generated/prisma/client";
+import { prisma } from "./prisma";
 
-// const connectionString = `${process.env.DATABASE_TEST_URL}`;
-
-// const adapter = new PrismaPg({ connectionString });
-// const prisma = new PrismaClient({ adapter });
-
-// export { prisma };
-
-const databaseUrl = process.env.DATABASE_TEST_URL;
-
-if (!databaseUrl) {
-	throw new Error("DATABASE_TEST_URL is not defined");
-}
-
-export const prismaTest = new PrismaClient({
-	datasources: {
-		db: {
-			url: databaseUrl,
-		},
-	},
-});
+/**
+ * Alias du client app en environnement de test.
+ * Un seul PrismaClient → évite d’épuiser max_connections Postgres
+ * sur la suite longue (services + helpers utilisent `prisma` et `prismaTest`).
+ */
+export const prismaTest = prisma;

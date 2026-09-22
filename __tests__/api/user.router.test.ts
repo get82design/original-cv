@@ -221,4 +221,49 @@ describe("userRouter", () => {
 			}),
 		).rejects.toBeInstanceOf(TRPCError);
 	});
+
+	it("forgotPassword returns ok for known and unknown emails", async () => {
+		const user = await createTestUser();
+		const caller = await createTestCaller();
+
+		await expect(
+			caller.user.forgotPassword({ email: user.email }),
+		).resolves.toEqual({ ok: true });
+
+		const tokens = await prismaTest.passwordResetToken.findMany({
+			where: { email: user.email },
+		});
+		expect(tokens).toHaveLength(1);
+
+		await expect(
+			caller.user.forgotPassword({ email: "ghost@test.com" }),
+		).resolves.toEqual({ ok: true });
+	});
+
+	it("resetPassword updates password via public procedure", async () => {
+		const { createHash, randomBytes } = await import("crypto");
+		const { compare } = await import("bcrypt");
+		const user = await createTestUser();
+		const rawToken = randomBytes(32).toString("hex");
+		await prismaTest.passwordResetToken.create({
+			data: {
+				email: user.email,
+				tokenHash: createHash("sha256").update(rawToken).digest("hex"),
+				expiresAt: new Date(Date.now() + 60 * 60 * 1000),
+			},
+		});
+
+		const caller = await createTestCaller();
+		await expect(
+			caller.user.resetPassword({
+				token: rawToken,
+				password: "brand-new-99",
+			}),
+		).resolves.toEqual({ ok: true });
+
+		const refreshed = await prismaTest.user.findUniqueOrThrow({
+			where: { id: user.id },
+		});
+		expect(await compare("brand-new-99", refreshed.password!)).toBe(true);
+	});
 });

@@ -1,12 +1,18 @@
 import { describe, expect, it } from "vitest";
-import { createTestUser } from "../../utils/create-test-user";
-import { userService } from "../../../src/services/user/userService";
-import { ConflictError, NotFoundError, ValidationError } from "../../../src/services/errors";
-import { createTestTemplate } from "../../utils/create-test-template";
-import { createCV } from "../../utils/create-test-cv-full-flow";
+import { createHash, randomBytes } from "crypto";
+import { compare } from "bcrypt";
 import { PlanRole } from "../../../generated/prisma/enums";
 import { prisma } from "../../../lib/prisma";
-import { compare } from "bcrypt";
+import {
+	ConflictError,
+	ForbiddenError,
+	NotFoundError,
+	ValidationError,
+} from "../../../src/services/errors";
+import { userService } from "../../../src/services/user/userService";
+import { createCV } from "../../utils/create-test-cv-full-flow";
+import { createTestTemplate } from "../../utils/create-test-template";
+import { createTestUser } from "../../utils/create-test-user";
 
 describe("UserService.findAll", () => {
 	it("returns all users", async () => {
@@ -606,5 +612,194 @@ describe("credentials password check (login logic)", () => {
 	it("returns null for unknown email", async () => {
 		const user = await userService.findByEmail("unknown@test.com");
 		expect(user).toBeNull();
+	});
+});
+
+describe("UserService.logAiUsage", () => {
+	it("increments counter and stores optional detail", async () => {
+		const user = await createTestUser();
+
+		await userService.logAiUsage(user.id, "REVIEW_CV", "  note  ");
+
+		const refreshed = await prisma.user.findUniqueOrThrow({
+			where: { id: user.id },
+		});
+		expect(refreshed.iaRequestsUsed).toBe(1);
+
+		const event = await prisma.aiEvent.findFirstOrThrow({
+			where: { userId: user.id },
+		});
+		expect(event.feature).toBe("REVIEW_CV");
+		expect(event.detail).toBe("note");
+	});
+
+	it("omits detail when empty", async () => {
+		const user = await createTestUser();
+		await userService.logAiUsage(user.id, "IMPORT_CV");
+
+		const event = await prisma.aiEvent.findFirstOrThrow({
+			where: { userId: user.id },
+		});
+		expect(event.detail).toBeNull();
+	});
+});
+
+describe("UserService premium download gate", () => {
+	it("blocks free download of locked premium template", async () => {
+		const user = await createTestUser();
+		await prisma.user.update({
+			where: { id: user.id },
+			data: { freeDownloadsRemaining: 2 },
+		});
+		const template = await createTestTemplate();
+		await prisma.cVTemplate.update({
+			where: { id: template.id },
+			data: { isPremium: true },
+		});
+
+		await expect(
+			userService.consumeFreeDownload(user.id, {
+				templateId: template.id,
+			}),
+		).rejects.toBeInstanceOf(ForbiddenError);
+	});
+
+	it("resolves templateId from cvId for premium check", async () => {
+		const user = await createTestUser();
+		await prisma.user.update({
+			where: { id: user.id },
+			data: { downloadCredits: 2 },
+		});
+		const template = await createTestTemplate();
+		await prisma.cVTemplate.update({
+			where: { id: template.id },
+			data: { isPremium: true },
+		});
+		const cv = await createCV(user.id, template.id);
+
+		await expect(
+			userService.consumePaidDownload(user.id, { cvId: cv.id }),
+		).rejects.toBeInstanceOf(ForbiddenError);
+	});
+});
+
+describe("UserService.updateProfile", () => {
+	it("throws NotFoundError for unknown user", async () => {
+		await expect(
+			userService.updateProfile("missing-user", { name: "x" }),
+		).rejects.toThrow(NotFoundError);
+	});
+});
+
+describe("UserService password reset", () => {
+	it("requestPasswordReset creates a token for known email", async () => {
+		const user = await createTestUser();
+
+		const result = await userService.requestPasswordReset(
+			`  ${user.email.toUpperCase()}  `,
+		);
+		expect(result).toEqual({ ok: true });
+
+		const tokens = await prisma.passwordResetToken.findMany({
+			where: { email: user.email },
+		});
+		expect(tokens).toHaveLength(1);
+		expect(tokens[0]!.expiresAt.getTime()).toBeGreaterThan(Date.now());
+	});
+
+	it("requestPasswordReset returns ok without leaking unknown emails", async () => {
+		const result = await userService.requestPasswordReset(
+			"nobody-exists@test.com",
+		);
+		expect(result).toEqual({ ok: true });
+
+		const tokens = await prisma.passwordResetToken.findMany({
+			where: { email: "nobody-exists@test.com" },
+		});
+		expect(tokens).toHaveLength(0);
+	});
+
+	it("resetPassword updates password and clears tokens", async () => {
+		const user = await createTestUser();
+		const rawToken = randomBytes(32).toString("hex");
+		const tokenHash = createHash("sha256").update(rawToken).digest("hex");
+		await prisma.passwordResetToken.create({
+			data: {
+				email: user.email,
+				tokenHash,
+				expiresAt: new Date(Date.now() + 60 * 60 * 1000),
+			},
+		});
+
+		const result = await userService.resetPassword({
+			token: rawToken,
+			password: "new-password-99",
+		});
+		expect(result).toEqual({ ok: true });
+
+		const refreshed = await prisma.user.findUniqueOrThrow({
+			where: { id: user.id },
+		});
+		expect(await compare("new-password-99", refreshed.password!)).toBe(true);
+
+		const tokens = await prisma.passwordResetToken.findMany({
+			where: { email: user.email },
+		});
+		expect(tokens).toHaveLength(0);
+	});
+
+	it("resetPassword rejects expired token", async () => {
+		const user = await createTestUser();
+		const rawToken = randomBytes(32).toString("hex");
+		const tokenHash = createHash("sha256").update(rawToken).digest("hex");
+		await prisma.passwordResetToken.create({
+			data: {
+				email: user.email,
+				tokenHash,
+				expiresAt: new Date(Date.now() - 1000),
+			},
+		});
+
+		await expect(
+			userService.resetPassword({
+				token: rawToken,
+				password: "whatever",
+			}),
+		).rejects.toMatchObject({
+			message: expect.stringContaining("invalide ou expiré"),
+		});
+
+		const tokens = await prisma.passwordResetToken.findMany({
+			where: { email: user.email },
+		});
+		expect(tokens).toHaveLength(0);
+	});
+
+	it("resetPassword rejects unknown token", async () => {
+		await expect(
+			userService.resetPassword({
+				token: "deadbeef".repeat(8),
+				password: "whatever",
+			}),
+		).rejects.toBeInstanceOf(ValidationError);
+	});
+
+	it("resetPassword rejects when user no longer exists", async () => {
+		const rawToken = randomBytes(32).toString("hex");
+		const tokenHash = createHash("sha256").update(rawToken).digest("hex");
+		await prisma.passwordResetToken.create({
+			data: {
+				email: "ghost-reset@test.com",
+				tokenHash,
+				expiresAt: new Date(Date.now() + 60 * 60 * 1000),
+			},
+		});
+
+		await expect(
+			userService.resetPassword({
+				token: rawToken,
+				password: "whatever",
+			}),
+		).rejects.toBeInstanceOf(ValidationError);
 	});
 });
