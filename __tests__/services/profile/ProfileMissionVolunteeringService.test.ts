@@ -31,9 +31,6 @@ describe("ProfileMissionVolunteeringService.create", () => {
 	});
 
 	it("throws if volunteering does not exist", async () => {
-		const user = await createTestUser();
-		const profile = await createTestProfile(user.id, "John", "Doe");
-
 		await expect(
 			profileMissionVolunteeringService.create("invalid-volunteering-id", {
 				content: "Développement API REST",
@@ -178,7 +175,7 @@ describe("ProfileMissionVolunteeringService.update", () => {
 			start: new Date("2020-01-01"),
 			order: 1,
 		});
-		const mission = await profileMissionVolunteeringService.create(volunteering.id, {
+		await profileMissionVolunteeringService.create(volunteering.id, {
 			content: "Mission 1",
 			order: 1,
 		});
@@ -229,7 +226,7 @@ describe("ProfileMissionVolunteeringService.move", () => {
 			order: 1,
 		});
 
-		const mission2 = await profileMissionVolunteeringService.create(volunteering.id, {
+		await profileMissionVolunteeringService.create(volunteering.id, {
 			content: "Mission 2",
 			order: 2,
 		});
@@ -350,7 +347,7 @@ describe("ProfileMissionVolunteeringService.delete", () => {
 			content: "Mission 1",
 			order: 1,
 		});
-		const mission2 = await profileMissionVolunteeringService.create(volunteering.id, {
+		await profileMissionVolunteeringService.create(volunteering.id, {
 			content: "Mission 2",
 			order: 2,
 		});

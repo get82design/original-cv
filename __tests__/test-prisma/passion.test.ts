@@ -297,7 +297,7 @@ describe("Passion model", () => {
 
 		// 6-3: 2 profile peuvent avoir le même order
 		it("should allow same order for different profiles", async () => {
-			const user1 = await createTestUserWithProfile({
+			await createTestUserWithProfile({
 				passions: [
 					{
 						title: "Passion 1",
@@ -307,7 +307,7 @@ describe("Passion model", () => {
 				],
 			});
 
-			const user2 = await createTestUserWithProfile({
+			await createTestUserWithProfile({
 				passions: [
 					{
 						title: "Passion 2",

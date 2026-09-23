@@ -42,7 +42,7 @@ export function DialogSelectLanguage({
 		setTarget(event.target);
 	};
 
-	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+	// biome-ignore lint/correctness/useExhaustiveDependencies: reset picklist uniquement à l'ouverture du dialog
 	useEffect(() => {
 		if (!visible) return;
 		setTarget(listLanguageInProfile);
@@ -54,7 +54,7 @@ export function DialogSelectLanguage({
 				.map((exp) => cvLanguageToProfile(exp))
 				.filter((e) => !already.has(`${e.content.name}|${e.content.level ?? ""}`)),
 		);
-	}, [visible, listLanguageFromCv]);
+	}, [visible]);
 
 	const templateFooter = () => {
 		return (

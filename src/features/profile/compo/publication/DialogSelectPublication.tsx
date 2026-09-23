@@ -46,7 +46,7 @@ export const DialogSelectPublication = ({
 		setTarget(event.target);
 	};
 
-	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+	// biome-ignore lint/correctness/useExhaustiveDependencies: reset picklist uniquement à l'ouverture du dialog
 	useEffect(() => {
 		if (!visible) return;
 		setTarget(listPublicationInProfile);
@@ -58,7 +58,7 @@ export const DialogSelectPublication = ({
 				.map((exp) => cvPublicationToProfile(exp))
 				.filter((e) => !already.has(`${e.content.title}|${e.content.journalName ?? ""}`)),
 		);
-	}, [visible, listPublicationFromCv]);
+	}, [visible]);
 
 	const templateFooter = () => {
 		return (

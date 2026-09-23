@@ -45,7 +45,7 @@ export function DialogSelectFormation({
 		setTarget(event.target);
 	};
 
-	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+	// biome-ignore lint/correctness/useExhaustiveDependencies: reset picklist uniquement à l'ouverture du dialog
 	useEffect(() => {
 		if (!visible) return;
 		setTarget(listFormationInProfile);
@@ -57,7 +57,7 @@ export function DialogSelectFormation({
 				.map((form) => cvFormationToProfile(form))
 				.filter((e) => !already.has(`${e.content.title}|${e.content.organismeFormation ?? ""}`)),
 		);
-	}, [visible, listFormationFromCv]);
+	}, [visible]);
 
 	const templateFooter = () => {
 		return (

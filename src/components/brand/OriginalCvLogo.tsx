@@ -17,10 +17,10 @@ type OriginalCvLogoProps = SVGProps<SVGSVGElement> & {
 /** Logo OriginalCV — tokens --logo-light / --logo-deep / --logo-bg / --logo-ink. */
 export const OriginalCvLogo = ({ tokens, style, className, ...props }: OriginalCvLogoProps) => {
 	const tokenStyle = {
-		...(tokens?.light ? { ["--logo-light"]: tokens.light } : {}),
-		...(tokens?.deep ? { ["--logo-deep"]: tokens.deep } : {}),
-		...(tokens?.bg ? { ["--logo-bg"]: tokens.bg } : {}),
-		...(tokens?.ink ? { ["--logo-ink"]: tokens.ink } : {}),
+		...(tokens?.light ? { "--logo-light": tokens.light } : {}),
+		...(tokens?.deep ? { "--logo-deep": tokens.deep } : {}),
+		...(tokens?.bg ? { "--logo-bg": tokens.bg } : {}),
+		...(tokens?.ink ? { "--logo-ink": tokens.ink } : {}),
 	} as CSSProperties;
 
 	return (
@@ -34,7 +34,8 @@ export const OriginalCvLogo = ({ tokens, style, className, ...props }: OriginalC
 			{...props}
 		>
 			<defs>
-				<style dangerouslySetInnerHTML={{ __html: LOGO_CSS }} />
+				{/* <style dangerouslySetInnerHTML={{ __html: LOGO_CSS }} /> */}
+				<style>{LOGO_CSS}</style>
 			</defs>
 			<title>originalCV</title>
 			<g id="fond">

@@ -4,7 +4,7 @@ import { PlanRole } from "../../../generated/prisma/enums";
 import { prisma } from "../../../lib/prisma";
 import { ConflictError, NotFoundError, ValidationError } from "../errors";
 import type { UpdateUserInput } from "../schemas/user.schema";
-import { createHash, randomBytes } from "crypto";
+import { createHash, randomBytes } from "node:crypto";
 import { sendPasswordResetEmail } from "../mail/mailService";
 import { templateAccessService } from "../commons/templateAccessService";
 

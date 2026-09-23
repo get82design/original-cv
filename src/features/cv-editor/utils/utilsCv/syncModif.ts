@@ -37,7 +37,9 @@ export function syncSectionTitleProp(
 	value: unknown,
 ) {
 	for (const path of SECTION_TITLE_PATHS) {
-		setValue(`${path}.${prop}`, value as any, { shouldDirty: true });
+		setValue(`${path}.${prop}` as Path<CvFormValues>, value as never, {
+			shouldDirty: true,
+		});
 	}
 }
 

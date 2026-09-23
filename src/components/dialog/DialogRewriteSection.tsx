@@ -133,8 +133,8 @@ export const DialogRewriteSection = ({
 											) : null}
 											{item.bullets.length > 0 ? (
 												<ul className="m-0 mt-1 list-disc pl-4 text-xs text-zinc-600 dark:text-zinc-400">
-													{item.bullets.map((b, j) => (
-														<li key={j}>{b}</li>
+													{item.bullets.map((b) => (
+														<li key={b}>{b}</li>
 													))}
 												</ul>
 											) : null}

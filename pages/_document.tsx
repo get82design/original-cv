@@ -5,6 +5,7 @@ export default function Document() {
 		<Html lang="fr">
 			<Head>
 				<script
+				// biome-ignore lint/security/noDangerouslySetInnerHtml: script thème FOUC, contenu statique
 					dangerouslySetInnerHTML={{
 						__html: `
               (function () {

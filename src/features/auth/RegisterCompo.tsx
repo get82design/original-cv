@@ -1,7 +1,7 @@
 import { Button } from "primereact/button";
 import { AppCard } from "../../components/card/AppCard";
 import { Divider } from "primereact/divider";
-import { FaFacebook, FaGithub, FaGoogle } from "react-icons/fa";
+import { FaGithub, FaGoogle } from "react-icons/fa";
 import { FloatLabel } from "primereact/floatlabel";
 import { InputText } from "primereact/inputtext";
 import { useState } from "react";

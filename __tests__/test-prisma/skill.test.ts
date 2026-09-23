@@ -72,7 +72,7 @@ describe("Skill model", () => {
 
 		// 1-2: peut créer 2 profiles avec la même skill
 		it("should allow two profiles to share the same skill", async () => {
-			const user1 = await createTestUserWithProfile({
+			await createTestUserWithProfile({
 				skillGroups: [
 					{
 						title: "Langages",
@@ -81,7 +81,7 @@ describe("Skill model", () => {
 					},
 				],
 			});
-			const user2 = await createTestUserWithProfile({
+			await createTestUserWithProfile({
 				skillGroups: [
 					{
 						title: "Langages",

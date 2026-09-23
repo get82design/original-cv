@@ -1,6 +1,5 @@
 import { useCreateCvContext } from "@/features/cv-editor/component/context/CreateCvContext";
 import { useColumnFg } from "@/features/cv-editor/component/kit-dnd/shared/ColumnFgContext";
-import { FieldNameLayoutGeneral } from "@/features/cv-editor/utils/fields/fieldNameLayoutGeneral";
 import { useInputCvColor } from "@/features/cv-editor/utils/utilsCv/color";
 import type { ListItem } from "@utils/type";
 import { useFormContext } from "react-hook-form";
@@ -31,7 +30,6 @@ export const CardTagOne = ({
 	const { watch, getValues, setValue } = useFormContext();
 	const { setSelectModifInput, setSelectInputForm, sectionSelected } = useCreateCvContext();
 
-	const watchGeneral = watch(FieldNameLayoutGeneral.layout);
 	const pathContent = `datas.tagGroup.content.${groupIndex}.content.tags.${index}.content`;
 	const watchDesign = watch(`datas.tagGroup.content.${groupIndex}.content.settings.design`);
 	const watchModelTag = watch(`datas.tagGroup.content.${groupIndex}.content.settings.tags`);
@@ -122,7 +120,8 @@ export const CardTagOne = ({
 								dataInput={{ changeSize: "2px", model: watchModelTag }}
 							/>
 						) : (
-							<span
+							<button
+								type="button"
 								className="my-0"
 								style={{ color: tagCssColor ? `var(--${tagCssColor})` : undefined }}
 								onClick={() => {
@@ -131,7 +130,7 @@ export const CardTagOne = ({
 								}}
 							>
 								{label || "Tag"}
-							</span>
+							</button>
 						)}
 					</TagCv>
 				}

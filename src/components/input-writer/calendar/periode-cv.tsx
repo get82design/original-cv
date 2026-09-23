@@ -98,7 +98,7 @@ export const PeriodeCv = ({
 								fontFamily: "inherit",
 							}}
 							onClick={(e) => {
-								op.current && op.current.toggle(e);
+								op.current?.toggle(e);
 								setSelectInputForm(afficherCacher);
 								setSelectModifInput(fieldName);
 							}}
@@ -166,11 +166,11 @@ export const PeriodeCv = ({
 								</TabPanel>
 							</TabView>
 							<div className="mt-2 w-full flex justify-between">
-								<Button onClick={(e) => op.current && op.current.toggle(e)}>Annuler</Button>
+								<Button onClick={(e) => op.current?.toggle(e)}>Annuler</Button>
 								<Button
 									disabled={!periode.start && !periode.end}
 									onClick={(e) => {
-										op.current && op.current.toggle(e);
+										op.current?.toggle(e);
 										field.onChange(datePeriode);
 									}}
 								>

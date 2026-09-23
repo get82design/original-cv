@@ -35,7 +35,7 @@ describe("CvMissionVolunteeringService.create", () => {
 	it("throws if volunteering does not exist", async () => {
 		const user = await createTestUser();
 		const template = await createTestTemplate();
-		const cv = await createCV(user.id, template.id);
+		await createCV(user.id, template.id);
 
 		await expect(
 			cvMissionVolunteeringService.create("invalid-volunteering-id", {
@@ -169,20 +169,6 @@ describe("CvMissionVolunteeringService.update", () => {
 	});
 
 	it("throws if mission does not exist", async () => {
-		const user = await createTestUser();
-		const template = await createTestTemplate();
-		const cv = await createCV(user.id, template.id);
-		const volunteering = await cvVolunteeringService.create(cv.id, {
-			title: "Volunteering 1",
-			organisation: "Organisation 1",
-			missions: [],
-			start: new Date("2020-01-01"),
-			order: 1,
-		});
-		const mission = await cvMissionVolunteeringService.create(volunteering.id, {
-			content: "Mission 1",
-			order: 1,
-		});
 		await expect(
 			cvMissionVolunteeringService.update("invalid-mission-id", {
 				content: "Mission 2",
@@ -232,7 +218,7 @@ describe("CvMissionVolunteeringService.move", () => {
 			order: 1,
 		});
 
-		const mission2 = await cvMissionVolunteeringService.create(volunteering.id, {
+		await cvMissionVolunteeringService.create(volunteering.id, {
 			content: "Mission 2",
 			order: 2,
 		});
@@ -354,7 +340,7 @@ describe("CvMissionVolunteeringService.delete", () => {
 			content: "Mission 1",
 			order: 1,
 		});
-		const mission2 = await cvMissionVolunteeringService.create(volunteering.id, {
+		await cvMissionVolunteeringService.create(volunteering.id, {
 			content: "Mission 2",
 			order: 2,
 		});

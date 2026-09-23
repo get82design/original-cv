@@ -71,7 +71,7 @@ export function createInitProject(opts?: {
 	settings?: ProjectContentSettings;
 }): ListItem<ProjectItemContentInput> {
 	return {
-		clientKey: "project-" + uuid(),
+		clientKey: `project-${uuid()}`,
 		order: opts?.order ?? 0,
 		content: {
 			title: "",

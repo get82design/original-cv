@@ -13,7 +13,7 @@ import { pointerWithin } from "@dnd-kit/core";
 
 export const EssaiKitDnd = () => {
 	const sensors = useSensors(useSensor(PointerSensor));
-	function handleDragEnd(event) {
+	function handleDragEnd(event: DragEndEvent) {
 		const { active, over } = event;
 		if (!over) return;
 
@@ -41,15 +41,15 @@ export const EssaiKitDnd = () => {
 				if (!activeGroup) return prevSections;
 
 				const groupIndex = prevSections.findIndex((g) => g.id === activeGroup.id);
-				const oldIndex = activeGroup.skills.findIndex((s) => s.id === activeId);
-				const newIndex = activeGroup.skills.findIndex((s) => s.id === overId);
+				const oldIndex = activeGroup.skills.findIndex((s: { id: string }) => s.id === activeId);
+				const newIndex = activeGroup.skills.findIndex((s: { id: string }) => s.id === overId);
 
 				// Si l'index est valide (la compétence est relâchée sur une autre compétence du même groupe)
 				if (oldIndex !== -1 && newIndex !== -1 && groupIndex !== -1) {
 					const newSections = [...prevSections];
 					const group = newSections[groupIndex];
 					if (!group) return prevSections;
-					group.skills = arrayMove(activeGroup.skills, oldIndex, newIndex);
+					group.skills = arrayMove(activeGroup.skills, oldIndex, newIndex) as { id: string; name: string }[];
 					return newSections;
 				}
 
@@ -58,7 +58,7 @@ export const EssaiKitDnd = () => {
 		}
 	}
 
-	function handleDragOver(event) {
+	function handleDragOver(event: DragOverEvent) {
 		const { active, over } = event;
 		if (!over) return;
 
@@ -91,12 +91,12 @@ export const EssaiKitDnd = () => {
 			const activeGroupIndex = prevSections.findIndex((g) => g.id === activeGroup.id);
 			const overGroupIndex = prevSections.findIndex((g) => g.id === overGroup.id);
 
-			const activeSkillIndex = activeGroup.skills.findIndex((s) => s.id === activeId);
+			const activeSkillIndex = activeGroup.skills.findIndex((s: { id: string }) => s.id === activeId);
 
 			// Déterminer le nouvel index de la compétence dans le groupe de destination
-			let newSkillIndex;
+			let newSkillIndex: number;
 			if (overId.startsWith("skill-")) {
-				newSkillIndex = overGroup.skills.findIndex((s) => s.id === overId);
+				newSkillIndex = overGroup.skills.findIndex((s: { id: string }) => s.id === overId);
 			} else {
 				// Si on survole le conteneur du groupe vide, on place la compétence à la fin
 				newSkillIndex = overGroup.skills.length;
@@ -139,12 +139,12 @@ export const EssaiKitDnd = () => {
 	]);
 
 	// Trouve le groupe qui contient une compétence spécifique (via l'ID de la compétence)
-	const findGroupOfSkill = (sections, skillId) => {
+	const findGroupOfSkill = (sections: { id: string; skills: { id: string }[] }[], skillId: string) => {
 		return sections.find((group) => group.skills.some((skill) => skill.id === skillId));
 	};
 
 	// Trouve un groupe directement par son propre ID
-	const findGroupById = (sections, groupId) => {
+	const findGroupById = (sections: { id: string; skills: { id: string }[] }[], groupId: string) => {
 		return sections.find((group) => group.id === groupId);
 	};
 
@@ -167,8 +167,8 @@ export const EssaiKitDnd = () => {
 	);
 };
 
-function SkillGroup({ group }: { group: any }) {
-	const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+function SkillGroup({ group }: { group: { id: string; title: string; skills: { id: string; name: string }[] } }) {
+	const { attributes, listeners, setNodeRef, transition, isDragging } = useSortable({
 		id: group.id,
 	});
 
@@ -197,8 +197,8 @@ function SkillGroup({ group }: { group: any }) {
 	);
 }
 
-function SkillItem({ skill }) {
-	const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+function SkillItem({ skill }: { skill: { id: string; name: string } }) {
+	const { attributes, listeners, setNodeRef, transition, isDragging } = useSortable({
 		id: skill.id,
 	});
 

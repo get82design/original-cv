@@ -420,7 +420,7 @@ describe("CvModuleItemService.move", () => {
 		const philosophy = await cvPhilosophyService.create(cv.id, {
 			citation: "Philosophy",
 		});
-		const moduleItem = await cvModuleItemService.create(module.id, {
+		await cvModuleItemService.create(module.id, {
 			itemType: CVModuleItemType.cvDescription,
 			itemId: description.id,
 			order: 1,
@@ -552,7 +552,7 @@ describe("CvModuleItemService.delete", () => {
 			itemId: description.id,
 			order: 1,
 		});
-		const moduleItem2 = await cvModuleItemService.create(module.id, {
+		await cvModuleItemService.create(module.id, {
 			itemType: CVModuleItemType.cvPhilosophy,
 			itemId: philosophy.id,
 			order: 2,

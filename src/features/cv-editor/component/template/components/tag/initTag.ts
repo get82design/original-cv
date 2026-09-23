@@ -31,13 +31,13 @@ export function createInitTag(opts?: {
 	settings?: TagContentSettings;
 }): ListItem<TagGroupItemContentInput> {
 	return {
-		clientKey: "tagGroup-" + uuid(),
+		clientKey: `tagGroup-${uuid()}`,
 		order: opts?.order ?? 1,
 		content: {
-			title: "tag group " + uuid(),
+			title: `tag group ${uuid()}`,
 			tags: [
 				{
-					clientKey: "tag-" + uuid(),
+					clientKey: `tag-${uuid()}`,
 					order: 1,
 					content: {
 						name: "",

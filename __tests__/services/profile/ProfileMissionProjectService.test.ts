@@ -29,9 +29,6 @@ describe("ProfileMissionProjectService.create", () => {
 	});
 
 	it("throws if project does not exist", async () => {
-		const user = await createTestUser();
-		const profile = await createTestProfile(user.id, "John", "Doe");
-
 		await expect(
 			profileMissionProjectService.create("invalid-project-id", {
 				content: "Développement API REST",
@@ -154,7 +151,7 @@ describe("ProfileMissionProjectService.update", () => {
 			start: new Date("2020-01-01"),
 			order: 1,
 		});
-		const mission = await profileMissionProjectService.create(project.id, {
+		await profileMissionProjectService.create(project.id, {
 			content: "Mission 1",
 			order: 1,
 		});
@@ -201,7 +198,7 @@ describe("ProfileMissionProjectService.move", () => {
 			order: 1,
 		});
 
-		const mission2 = await profileMissionProjectService.create(project.id, {
+		await profileMissionProjectService.create(project.id, {
 			content: "Mission 2",
 			order: 2,
 		});
@@ -308,7 +305,7 @@ describe("ProfileMissionProjectService.delete", () => {
 			content: "Mission 1",
 			order: 1,
 		});
-		const mission2 = await profileMissionProjectService.create(project.id, {
+		await profileMissionProjectService.create(project.id, {
 			content: "Mission 2",
 			order: 2,
 		});

@@ -84,8 +84,8 @@ export const DialogCvReviewResult = ({
 						{review.strengths.length > 0 ? (
 							<Section title="Points forts">
 								<ul className="m-0 list-disc space-y-1 pl-4 text-sm">
-									{review.strengths.map((s, i) => (
-										<li key={i}>{s}</li>
+									{review.strengths.map((s) => (
+										<li key={s}>{s}</li>
 									))}
 								</ul>
 							</Section>
@@ -94,8 +94,8 @@ export const DialogCvReviewResult = ({
 						{review.improvements.length > 0 ? (
 							<Section title="Pistes d’amélioration">
 								<ul className="m-0 flex list-none flex-col gap-2.5 p-0">
-									{review.improvements.map((item, i) => (
-										<li key={i} className="text-sm">
+									{review.improvements.map((item) => (
+										<li key={item.area + item.suggestion} className="text-sm">
 											<p className="m-0 font-semibold">
 												{item.area}
 												{item.priority ? (
@@ -116,8 +116,8 @@ export const DialogCvReviewResult = ({
 						{review.quickWins.length > 0 ? (
 							<Section title="Quick wins">
 								<ul className="m-0 list-disc space-y-1 pl-4 text-sm">
-									{review.quickWins.map((q, i) => (
-										<li key={i}>{q}</li>
+									{review.quickWins.map((q) => (
+										<li key={q}>{q}</li>
 									))}
 								</ul>
 							</Section>

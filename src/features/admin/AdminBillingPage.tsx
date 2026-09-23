@@ -80,7 +80,7 @@ export function AdminBillingPage() {
 		}
 		setPriceDrafts(next);
 		// eslint-disable-next-line react-hooks/exhaustive-deps -- sync from server only
-	}, [pricesQuery.data]);
+	}, [pricesQuery.data, priceDrafts]);
 
 	const upsertPriceMutation = trpc.admin.upsertAiFeaturePrice.useMutation({
 		onSuccess: async () => {
@@ -485,13 +485,14 @@ export function AdminBillingPage() {
 				}
 			>
 				<div className="admin-filters flex flex-col gap-3">
-					<label className="flex flex-col gap-1 text-sm">
+					<label htmlFor="admin-billing-name" className="flex flex-col gap-1 text-sm">
 						<span className="text-zinc-600 dark:text-zinc-400">Nom</span>
-						<InputText value={draftName} onChange={(e) => setDraftName(e.target.value)} />
+						<InputText id="admin-billing-name" value={draftName} onChange={(e) => setDraftName(e.target.value)} />
 					</label>
-					<label className="flex flex-col gap-1 text-sm">
+					<label htmlFor="admin-billing-description" className="flex flex-col gap-1 text-sm">
 						<span className="text-zinc-600 dark:text-zinc-400">Description</span>
 						<InputTextarea
+							id="admin-billing-description"
 							value={draftDescription}
 							onChange={(e) => setDraftDescription(e.target.value)}
 							rows={2}
@@ -499,9 +500,10 @@ export function AdminBillingPage() {
 						/>
 					</label>
 					<div className="grid grid-cols-2 gap-3">
-						<label className="flex flex-col gap-1 text-sm">
+						<label htmlFor="admin-billing-price" className="flex flex-col gap-1 text-sm">
 							<span className="text-zinc-600 dark:text-zinc-400">Prix (€)</span>
 							<InputNumber
+								id="admin-billing-price"
 								value={draftPriceEuros}
 								onValueChange={(e) => setDraftPriceEuros(e.value ?? null)}
 								mode="currency"
@@ -510,33 +512,42 @@ export function AdminBillingPage() {
 								minFractionDigits={2}
 							/>
 						</label>
-						<label className="flex flex-col gap-1 text-sm">
+						<label htmlFor="admin-billing-sort" className="flex flex-col gap-1 text-sm">
 							<span className="text-zinc-600 dark:text-zinc-400">Ordre</span>
 							<InputNumber
+								id="admin-billing-sort"
+								value={draftSort}
+								onValueChange={(e) => setDraftSort(e.value ?? 0)}
+								min={0}
+							/>
+							<InputNumber
+								id="admin-billing-sort"
 								value={draftSort}
 								onValueChange={(e) => setDraftSort(e.value ?? 0)}
 								min={0}
 							/>
 						</label>
-						<label className="flex flex-col gap-1 text-sm">
+						<label htmlFor="admin-billing-credits" className="flex flex-col gap-1 text-sm">
 							<span className="text-zinc-600 dark:text-zinc-400">Crédits payants</span>
 							<InputNumber
+								id="admin-billing-credits"
 								value={draftCredits}
 								onValueChange={(e) => setDraftCredits(e.value ?? null)}
 								min={1}
 							/>
 						</label>
-						<label className="flex flex-col gap-1 text-sm">
+						<label htmlFor="admin-billing-free" className="flex flex-col gap-1 text-sm">
 							<span className="text-zinc-600 dark:text-zinc-400">Free DL (bonus)</span>
 							<InputNumber
+								id="admin-billing-free"
 								value={draftFree}
 								onValueChange={(e) => setDraftFree(e.value ?? 0)}
 								min={0}
 							/>
 						</label>
 					</div>
-					<label className="flex items-center gap-2 text-sm">
-						<Checkbox checked={draftActive} onChange={(e) => setDraftActive(!!e.checked)} />
+					<label htmlFor="admin-billing-active" className="flex items-center gap-2 text-sm">
+						<Checkbox id="admin-billing-active" checked={draftActive} onChange={(e) => setDraftActive(!!e.checked)} />
 						<span>Actif (visible vitrine)</span>
 					</label>
 				</div>

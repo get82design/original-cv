@@ -357,7 +357,7 @@ describe("Expertise model", () => {
 
 		// 6-3: 2 profile peuvent avoir le même order
 		it("should allow same order for different profiles", async () => {
-			const user1 = await createTestUserWithProfile({
+			await createTestUserWithProfile({
 				expertises: [
 					{
 						title: "React",
@@ -367,7 +367,7 @@ describe("Expertise model", () => {
 				],
 			});
 
-			const user2 = await createTestUserWithProfile({
+			await createTestUserWithProfile({
 				expertises: [
 					{
 						title: "React",

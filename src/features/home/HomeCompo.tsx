@@ -26,7 +26,7 @@ function templateImageAlt(template: TemplateCv): string {
 export const HomeComponent = () => {
 	const breakpoint = useMediaQuery("(min-width: 1024px)");
 	const isSm = useMediaQuery("(min-width: 640px)");
-	const { data: session, status } = useSession();
+	const { status } = useSession();
 	const { data: templates } = trpc.cvTemplate.findAll.useQuery();
 	const featured = useMemo(() => {
 		if (!templates?.length) return [];

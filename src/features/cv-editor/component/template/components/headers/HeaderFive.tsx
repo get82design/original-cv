@@ -19,7 +19,7 @@ export function HeaderFive() {
 	const watchDataHeaderTitleSettings = watch(FieldNameHeader.title);
 	const watchDataHeaderSubTitleSettings = watch(FieldNameHeader.subTitle);
 
-	const onSelect = (event: React.MouseEvent<HTMLInputElement>) => {
+	const onSelect = (_event: React.MouseEvent<HTMLInputElement>) => {
 		//   if (((event.target as HTMLInputElement).files as FileList)[0]) {
 		//     const blob = new Blob([((event.target as HTMLInputElement).files as FileList)[0]], { type: 'image/*' })
 		//     const blobUrl = URL.createObjectURL(blob)
@@ -35,7 +35,7 @@ export function HeaderFive() {
 
 	const onUpload = () => {
 		// console.log('TESTTEST', refPhoto.current)
-		refPhoto.current && refPhoto.current.click();
+		refPhoto.current?.click();
 	};
 	return (
 		<HeaderFiveContainer

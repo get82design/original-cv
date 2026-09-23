@@ -241,7 +241,7 @@ describe("CvModuleService.update", () => {
 			settings: {},
 			isActive: true,
 		});
-		const module2 = await cvModuleService.create(cv.id, {
+		await cvModuleService.create(cv.id, {
 			type: CVModuleType.philosophy,
 			title: "Philosophy",
 			column: 0,

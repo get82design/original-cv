@@ -3,7 +3,7 @@ import type {
 	SkillGroupItemContentInput,
 	TagGroupItemContentInput,
 } from "@/services/schemas/cvSave.schema";
-import type { CompetenceGroupInput, TagGroupInput } from "@/services/schemas/profileSave.schema";
+import type { CompetenceGroupInput, CompetenceInput, SkillInput, TagGroupInput, TagInput } from "@/services/schemas/profileSave.schema";
 import {
 	isBlankAchievement,
 	isBlankCertification,
@@ -395,7 +395,7 @@ export const cvValidationSchema = z
 				//   });
 				// }
 				(group.content?.skills ?? []).forEach((skill, si) => {
-					if (isBlankSkill(skill as any)) return;
+					if (isBlankSkill(skill as ListItem<SkillInput>)) return;
 					if (!skill.content?.name?.trim()) {
 						ctx.addIssue({
 							code: "custom",
@@ -429,7 +429,7 @@ export const cvValidationSchema = z
 				//   });
 				// }
 				(group.content?.tags ?? []).forEach((tag, si) => {
-					if (isBlankTag(tag as any)) return;
+					if (isBlankTag(tag as ListItem<TagInput>)) return;
 					const name = (tag as { content?: { name?: string } }).content?.name?.trim();
 					if (!name) {
 						ctx.addIssue({
@@ -454,7 +454,7 @@ export const cvValidationSchema = z
 				//   });
 				// }
 				(group.content?.competences ?? []).forEach((competence, si) => {
-					if (isBlankCompetence(competence as any)) return;
+					if (isBlankCompetence(competence as ListItem<CompetenceInput>)) return;
 					const name = (competence as { content?: { name?: string } }).content?.name?.trim();
 					if (!name) {
 						ctx.addIssue({

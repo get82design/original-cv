@@ -107,8 +107,8 @@ export const DialogImportReview = ({
 				{draft.experiences.length > 0 ? (
 					<Section title="Expériences" count={draft.experiences.length}>
 						<ul className="m-0 flex list-none flex-col gap-2 p-0">
-							{draft.experiences.map((exp, i) => (
-								<li key={`${exp.title}-${i}`} className="text-sm">
+							{draft.experiences.map((exp) => (
+								<li key={`${exp.title}-${exp.company}`} className="text-sm">
 									<p className="m-0 font-semibold">
 										{exp.title}
 										{exp.company ? ` · ${exp.company}` : ""}
@@ -120,8 +120,8 @@ export const DialogImportReview = ({
 									) : null}
 									{exp.missions.length > 0 ? (
 										<ul className="m-0 mt-1 list-disc pl-4 text-xs text-zinc-600 dark:text-zinc-400">
-											{exp.missions.slice(0, 4).map((m, j) => (
-												<li key={j}>{m.content}</li>
+											{exp.missions.slice(0, 4).map((m) => (
+												<li key={m.content}>{m.content}</li>
 											))}
 											{exp.missions.length > 4 ? <li>… +{exp.missions.length - 4}</li> : null}
 										</ul>
@@ -135,8 +135,8 @@ export const DialogImportReview = ({
 				{draft.educations.length > 0 ? (
 					<Section title="Formations / études" count={draft.educations.length}>
 						<ul className="m-0 list-none space-y-1 p-0 text-sm">
-							{draft.educations.map((ed, i) => (
-								<li key={`${ed.title}-${i}`}>
+							{draft.educations.map((ed) => (
+								<li key={`${ed.title}-${ed.school}`}>
 									<span className="font-semibold">{ed.title}</span>
 									{ed.school ? ` · ${ed.school}` : ""}
 								</li>
@@ -164,8 +164,8 @@ export const DialogImportReview = ({
 				{draft.certifications.length > 0 ? (
 					<Section title="Certifications" count={draft.certifications.length}>
 						<ul className="m-0 list-none space-y-1 p-0 text-sm">
-							{draft.certifications.map((c, i) => (
-								<li key={`${c.title}-${i}`}>
+							{draft.certifications.map((c) => (
+								<li key={`${c.title}-${c.organismeCertification}`}>
 									{c.title}
 									{c.organismeCertification ? ` · ${c.organismeCertification}` : ""}
 								</li>
@@ -177,8 +177,8 @@ export const DialogImportReview = ({
 				{draft.warnings.length > 0 ? (
 					<Section title="Avertissements IA" count={draft.warnings.length}>
 						<ul className="m-0 list-disc space-y-1 pl-4 text-xs text-amber-800 dark:text-amber-300">
-							{draft.warnings.map((w, i) => (
-								<li key={i}>{w}</li>
+							{draft.warnings.map((w) => (
+								<li key={w}>{w}</li>
 							))}
 						</ul>
 					</Section>

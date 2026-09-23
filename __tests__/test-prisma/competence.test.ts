@@ -68,7 +68,7 @@ describe("Competence model", () => {
 
 		// 1-2: peut créer deux profiles avec la même compétence
 		it("should allow two profiles to share the same competence", async () => {
-			const user1 = await createTestUserWithProfile({
+			await createTestUserWithProfile({
 				competenceGroups: [
 					{
 						title: "Langages",
@@ -78,7 +78,7 @@ describe("Competence model", () => {
 				],
 			});
 
-			const user2 = await createTestUserWithProfile({
+			await createTestUserWithProfile({
 				competenceGroups: [
 					{
 						title: "Frontend",
@@ -100,7 +100,7 @@ describe("Competence model", () => {
 	describe("CREATE ERRORS", () => {
 		// 2-1: ne peut pas créer un profileCompetence sans un groupe
 		it("should not create a profileCompetence without a group", async () => {
-			const user = await createTestUserWithProfile();
+			await createTestUserWithProfile();
 
 			// Essayer de créer un profileCompetence sans groupe
 			await expect(

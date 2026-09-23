@@ -365,7 +365,7 @@ describe("ProfileTagService.move", () => {
 		const tag2 = await tagService.create({
 			name: "Tag 2",
 		});
-		const profileTag2 = await profileTagService.create(tagGroup1.id, {
+		await profileTagService.create(tagGroup1.id, {
 			tagId: tag2.id,
 			order: 2,
 		});
@@ -469,7 +469,7 @@ describe("ProfileTagService.delete", () => {
 		const tag2 = await tagService.create({
 			name: "Tag 2",
 		});
-		const profileTag2 = await profileTagService.create(tagGroup.id, {
+		await profileTagService.create(tagGroup.id, {
 			tagId: tag2.id,
 			order: 2,
 		});

@@ -1,4 +1,4 @@
-import { tagService, TagService } from "../../src/services/commons/tagService";
+import { tagService } from "../../src/services/commons/tagService";
 import { CvSaveService } from "../../src/services/cv/cvSaveService";
 import { stockholmTokens } from "./themeTokens";
 import type { ThemeTokens } from "./themeTokens";

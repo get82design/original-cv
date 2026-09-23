@@ -33,7 +33,7 @@ export function createInitSocialMedia(opts?: {
 	settings?: SocialMediaContentSettings;
 }): ListItem<SocialMediaItemContentInput> {
 	return {
-		clientKey: "socialMedia-" + uuid(),
+		clientKey: `socialMedia-${uuid()}`,
 		order: opts?.order ?? 1,
 		content: {
 			socialNetwork: "",

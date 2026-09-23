@@ -19,7 +19,7 @@ import { DialogSelectStrength } from "./DailogSelectStrength";
 
 export function createEmptyStrength(opts?: { order?: number }): ListItem<StrengthInput> {
 	return {
-		clientKey: "strength-" + uuid(),
+		clientKey: `strength-${uuid()}`,
 		order: opts?.order ?? 1,
 		content: {
 			title: "",

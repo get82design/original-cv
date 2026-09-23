@@ -1,5 +1,4 @@
 import { InputTextCv } from "@/components/input-writer/input-text-cv/InputTextCv";
-import { useChangeTextFormat } from "@/features/cv-editor/utils/utilsCv/font";
 import type { BaseTextSettings } from "@/services/schemas/cvTemplate.schema";
 import { useFormContext } from "react-hook-form";
 import { FieldNameHeader } from "@/features/cv-editor/utils/fields/fieldNameHeader";

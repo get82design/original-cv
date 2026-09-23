@@ -21,14 +21,14 @@ import { createEducationSchema } from "./education.schema";
 import { createSkillGroupSchema } from "./skillGroup.schema";
 import { skillInCvFormSchema } from "./skill.schema";
 import { createCompetenceGroupSchema } from "./competenceGroup.schema";
-import { competenceInCvFormSchema, createCompetenceSchema } from "./competence.schema";
+import { competenceInCvFormSchema } from "./competence.schema";
 import {
 	baseSettingsSchema,
 	philosophyContentSchema,
 	templateDefaultStylesSchema,
 	templateLayoutSchema,
 } from "./cvTemplate.schema";
-import { createTagSchema, tagInCvFormSchema } from "./tag.schema";
+import { tagInCvFormSchema } from "./tag.schema";
 import { createTagGroupSchema } from "./tagGroup.schema";
 
 /** Id local front (ex: "experience-1") */

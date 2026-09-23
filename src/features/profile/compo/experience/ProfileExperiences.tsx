@@ -20,7 +20,7 @@ import { DialogSelectExperience } from "./DialogSelectExperience";
 
 export function createEmptyExperience(opts?: { order?: number }): ListItem<ExperienceInput> {
 	return {
-		clientKey: "experience-" + uuid(),
+		clientKey: `experience-${uuid()}`,
 		order: opts?.order ?? 1,
 		content: {
 			title: "",
@@ -36,7 +36,7 @@ export function createEmptyExperience(opts?: { order?: number }): ListItem<Exper
 
 export function createEmptyMission(order = 0) {
 	return {
-		clientKey: "mission-" + uuid(),
+		clientKey: `mission-${uuid()}`,
 		order,
 		content: { content: "" },
 	};

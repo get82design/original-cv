@@ -231,6 +231,7 @@ describe("CvLanguageService.update", () => {
 				textAlign: "left" as const,
 			},
 			design: "stars" as const,
+			columns: 3 as const,
 		};
 		const updated = await cvLanguageService.update(language.id, { settings });
 		expect(updated.settings).toEqual(settings);
@@ -243,12 +244,12 @@ describe("CvLanguageService.move", () => {
 		const user = await createTestUser();
 		const template = await createTestTemplate();
 		const cv = await createCV(user.id, template.id);
-		const french = await cvLanguageService.create(cv.id, {
+		await cvLanguageService.create(cv.id, {
 			name: "Français",
 			level: Level.Senior,
 			order: 1,
 		});
-		const english = await cvLanguageService.create(cv.id, {
+		await cvLanguageService.create(cv.id, {
 			name: "Anglais",
 			level: Level.Intermédiaire,
 			order: 2,
@@ -329,7 +330,7 @@ describe("CvLanguageService.delete", () => {
 		const user = await createTestUser();
 		const template = await createTestTemplate();
 		const cv = await createCV(user.id, template.id);
-		const french = await cvLanguageService.create(cv.id, {
+		await cvLanguageService.create(cv.id, {
 			name: "Français",
 			level: Level.Senior,
 			order: 1,

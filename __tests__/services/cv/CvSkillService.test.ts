@@ -36,9 +36,6 @@ describe("CvSkillService.create", () => {
 	});
 
 	it("throws if group does not exist", async () => {
-		const user = await createTestUser();
-		const template = await createTestTemplate();
-		const cv = await createCV(user.id, template.id);
 		await expect(
 			cvSkillService.create("unknown-group", {
 				skillId: "unknown-skill",
@@ -410,7 +407,7 @@ describe("CvSkillService.move", () => {
 		const skill2 = await skillService.create({
 			name: "Skill 2",
 		});
-		const cvSkill2 = await cvSkillService.create(skillGroup1.id, {
+		await cvSkillService.create(skillGroup1.id, {
 			skillId: skill2.id,
 			order: 2,
 			level: Level.Débutant,
@@ -525,7 +522,7 @@ describe("CvSkillService.delete", () => {
 		const skill2 = await skillService.create({
 			name: "Skill 2",
 		});
-		const cvSkill2 = await cvSkillService.create(skillGroup.id, {
+		await cvSkillService.create(skillGroup.id, {
 			skillId: skill2.id,
 			order: 2,
 			level: Level.Débutant,

@@ -173,12 +173,12 @@ describe("ProfileExpertiseService.move", () => {
 	it("moves a expertise to another position", async () => {
 		const user = await createTestUser();
 		const profile = await createTestProfile(user.id, "John", "Doe");
-		const french = await profileExpertiseService.create(profile.id, {
+		await profileExpertiseService.create(profile.id, {
 			title: "Français",
 			level: Level.Senior,
 			order: 1,
 		});
-		const english = await profileExpertiseService.create(profile.id, {
+		await profileExpertiseService.create(profile.id, {
 			title: "Anglais",
 			level: Level.Intermédiaire,
 			order: 2,
@@ -255,7 +255,7 @@ describe("ProfileExpertiseService.delete", () => {
 	it("reorders remaining expertises after deletion", async () => {
 		const user = await createTestUser();
 		const profile = await createTestProfile(user.id, "John", "Doe");
-		const french = await profileExpertiseService.create(profile.id, {
+		await profileExpertiseService.create(profile.id, {
 			title: "Français",
 			level: Level.Senior,
 			order: 1,

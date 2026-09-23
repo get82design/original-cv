@@ -10,7 +10,7 @@ import { TitleAppOne } from "@/components/title/TitleAppOne";
 import { AppCard } from "@/components/card/AppCard";
 import { trpc } from "@utils/trpc";
 import type { AdminDashboardPeriod } from "@/services/admin/adminDashboardService";
-import { AdminCreditKind, AdminCreditReason } from "../../../generated/prisma/enums";
+import { AdminCreditKind, type AdminCreditReason } from "../../../generated/prisma/enums";
 
 const PERIOD_OPTIONS: { label: string; value: AdminDashboardPeriod }[] = [
 	{ label: "24 h", value: "1d" },
@@ -149,10 +149,11 @@ export function AdminCreditLogsPage() {
 			<AppCard className="admin-filters mb-4">
 				<div className="flex flex-col gap-3 lg:flex-row lg:items-end">
 					<div className="flex-1">
-						<label className="mb-1 block text-xs text-zinc-500">Recherche</label>
+						<label htmlFor="admin-credit-logs-search" className="mb-1 block text-xs text-zinc-500">Recherche</label>
 						<div className="relative w-full">
 							<i className="pi pi-search pointer-events-none absolute top-1/2 left-3 z-10 -translate-y-1/2 text-sm text-zinc-500 dark:text-zinc-400" />
 							<InputText
+								id="admin-credit-logs-search"
 								value={searchInput}
 								onChange={(e) => setSearchInput(e.target.value)}
 								placeholder="Email cible ou admin…"
@@ -161,8 +162,9 @@ export function AdminCreditLogsPage() {
 						</div>
 					</div>
 					<div className="w-full lg:w-56">
-						<label className="mb-1 block text-xs text-zinc-500">Type</label>
+						<label htmlFor="admin-credit-logs-kind" className="mb-1 block text-xs text-zinc-500">Type</label>
 						<Dropdown
+							id="admin-credit-logs-kind"
 							value={kind}
 							options={KIND_OPTIONS}
 							onChange={(e) => {

@@ -23,7 +23,7 @@ export const GeneralColor = () => {
 							general
 							key={color.name}
 							name={FieldNameLayoutGeneral.primaryColor}
-							color={"--" + color.name + color.primary}
+							color={`--${color.name}${color.primary}`}
 							value={color}
 							swatchSize="sm"
 						/>

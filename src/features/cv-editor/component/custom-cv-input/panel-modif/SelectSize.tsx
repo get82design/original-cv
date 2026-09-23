@@ -22,7 +22,7 @@ export const SelectSize = ({ watchSelectInput, select }: SelectSizeProps) => {
 			<SelectButtonRhf
 				className="shadow-none panel-modification"
 				value={watchSelectInput?.sizeSelect}
-				name={select + ".sizeSelect"}
+				name={`${select}.sizeSelect`}
 				itemTemplate={sizeTemplate}
 				options={sizeOptions}
 				pt={{ button: { className: "p-button-sm text-xs py-1 px-2.5 min-h-[2rem]" } }}

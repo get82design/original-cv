@@ -272,8 +272,9 @@ export function AdminUserDetailPage() {
 									) : null}
 									<div className="flex flex-wrap items-end gap-2">
 										<div className="w-[7.5rem]">
-											<label className="mb-1 block text-xs text-zinc-500">Plan</label>
+											<label htmlFor="admin-user-detail-plan" className="mb-1 block text-xs text-zinc-500">Plan</label>
 											<Dropdown
+												id="admin-user-detail-plan"
 												value={planDraft}
 												options={PLAN_OPTIONS}
 												onChange={(e) => {
@@ -288,8 +289,9 @@ export function AdminUserDetailPage() {
 											/>
 										</div>
 										<div className="w-36">
-											<label className="mb-1 block text-xs text-zinc-500">Fin abo</label>
+											<label htmlFor="admin-user-detail-sub-end" className="mb-1 block text-xs text-zinc-500">Fin abo</label>
 											<Calendar
+												id="admin-user-detail-sub-end"
 												value={subEndDraft}
 												onChange={(e) => setSubEndDraft((e.value as Date | null) ?? null)}
 												dateFormat="dd/mm/yy"
@@ -331,8 +333,9 @@ export function AdminUserDetailPage() {
 									</p>
 									<div className="flex flex-wrap items-end gap-2">
 										<div className="min-w-0 flex-1">
-											<label className="mb-1 block text-xs text-zinc-500">Modèle</label>
+											<label htmlFor="admin-user-detail-gift-template" className="mb-1 block text-xs text-zinc-500">Modèle</label>
 											<Dropdown
+												id="admin-user-detail-gift-template"
 												value={giftTemplateId}
 												options={giftTemplateOptions}
 												onChange={(e) => setGiftTemplateId((e.value as string | null) ?? null)}

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { createHash, randomBytes } from "crypto";
+import { createHash, randomBytes } from "node:crypto";
 import { compare } from "bcrypt";
 import { PlanRole } from "../../../generated/prisma/enums";
 import { prisma } from "../../../lib/prisma";

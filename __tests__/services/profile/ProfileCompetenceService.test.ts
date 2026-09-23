@@ -365,7 +365,7 @@ describe("ProfileCompetenceService.move", () => {
 		const competence2 = await competenceService.create({
 			name: "Competence 2",
 		});
-		const profileCompetence2 = await profileCompetenceService.create(competenceGroup1.id, {
+		await profileCompetenceService.create(competenceGroup1.id, {
 			competenceId: competence2.id,
 			order: 2,
 		});
@@ -469,7 +469,7 @@ describe("ProfileCompetenceService.delete", () => {
 		const competence2 = await competenceService.create({
 			name: "Competence 2",
 		});
-		const profileCompetence2 = await profileCompetenceService.create(competenceGroup.id, {
+		await profileCompetenceService.create(competenceGroup.id, {
 			competenceId: competence2.id,
 			order: 2,
 		});

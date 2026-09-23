@@ -499,7 +499,7 @@ describe("Volunteering model", () => {
 
 		// 6-3: 2 profile peuvent avoir le même order
 		it("should allow same order for different profiles", async () => {
-			const user1 = await createTestUserWithProfile({
+			await createTestUserWithProfile({
 				volunteerings: [
 					{
 						title: "Benevolats 1",
@@ -514,7 +514,7 @@ describe("Volunteering model", () => {
 				],
 			});
 
-			const user2 = await createTestUserWithProfile({
+			await createTestUserWithProfile({
 				volunteerings: [
 					{
 						title: "Benevolats 2",
@@ -542,7 +542,7 @@ describe("Volunteering model", () => {
 						organisation: "Org",
 						start: new Date(),
 						missions: [],
-					} as any,
+					},
 				],
 			});
 

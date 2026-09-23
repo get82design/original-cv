@@ -121,37 +121,35 @@ export function TwoColumnSideBar({ deleteSection }: TwoColumnSideBarProps) {
 								backgroundColor: cssToken ? `var(--${cssToken})` : undefined,
 							}}
 						>
-							<>
-								{headerPlacement === "sidebar" && (
-									<button
-										type="button"
-										onClick={() => setSectionSelected("header")}
-										className="w-full"
-									>
-										{HeaderComponent && <HeaderComponent />}
-									</button>
-								)}
-								<SortableContext
-									items={left.map((item) => item.id)}
-									strategy={verticalListSortingStrategy}
-								>
-									{left.map((item) => (
-										// biome-ignore lint/a11y/noStaticElementInteractions: wrapper section
-										// biome-ignore lint/a11y/useKeyWithClickEvents: sélection section
-										<div
-											key={item.id}
-											className="sections-container-left"
-											onClick={() => setSectionSelected(item.id)}
-										>
-											<SectionSortableContext
-												item={item}
-												deleteSection={deleteSection}
-												sectionMenu={item.sectionMenu}
-											/>
-										</div>
-									))}
-								</SortableContext>
-							</>
+                            {headerPlacement === "sidebar" && (
+                                <button
+                                    type="button"
+                                    onClick={() => setSectionSelected("header")}
+                                    className="w-full"
+                                >
+                                    {HeaderComponent && <HeaderComponent />}
+                                </button>
+                            )}
+                            <SortableContext
+                                items={left.map((item) => item.id)}
+                                strategy={verticalListSortingStrategy}
+                            >
+                                {left.map((item) => (
+                                    // biome-ignore lint/a11y/noStaticElementInteractions: wrapper section
+                                    // biome-ignore lint/a11y/useKeyWithClickEvents: sélection section
+                                    <div
+                                        key={item.id}
+                                        className="sections-container-left"
+                                        onClick={() => setSectionSelected(item.id)}
+                                    >
+                                        <SectionSortableContext
+                                            item={item}
+                                            deleteSection={deleteSection}
+                                            sectionMenu={item.sectionMenu}
+                                        />
+                                    </div>
+                                ))}
+                            </SortableContext>
 						</ColumnDropZone>
 
 						{/* Colonne 1 — main */}

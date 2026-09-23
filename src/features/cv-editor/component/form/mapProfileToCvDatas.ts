@@ -15,7 +15,7 @@ export function mapProfileToCvDatas(
 	model: TemplateCv,
 ): Partial<CvFormValues["datas"]> {
 	const { modules, header } = templateStructureSchema.parse(model.structure);
-	const byType = Object.fromEntries(modules.map((m) => [m.type, m]));
+	// const byType = Object.fromEntries(modules.map((m) => [m.type, m]));
 
 	const exp = getModule(modules, "experience");
 	const edu = getModule(modules, "education");

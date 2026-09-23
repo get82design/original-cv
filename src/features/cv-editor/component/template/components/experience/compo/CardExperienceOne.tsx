@@ -3,7 +3,7 @@ import { FieldNameExperience } from "@/features/cv-editor/utils/fields/fieldName
 import { FieldNameLayoutGeneral } from "@/features/cv-editor/utils/fields/fieldNameLayoutGeneral";
 import { dataFieldContent } from "@/features/cv-editor/utils/fields/moduleField";
 import type { ExperienceItemContentInput } from "@/services/schemas/cvSave.schema";
-import type { ListItem } from "@utils/type";
+import type { ListItem, WithMissions } from "@utils/type";
 import { Menu } from "primereact/menu";
 import { useCallback, useRef, type JSX } from "react";
 import { useFormContext } from "react-hook-form";
@@ -29,7 +29,7 @@ export interface CardExperienceOneProps {
 			template: JSX.Element;
 		}[];
 	}[];
-	addElmList: (e: ListItem<ExperienceItemContentInput>, elm: string, index: number) => void;
+	addElmList: (e: ListItem<WithMissions>, elm: string, index: number) => void;
 	deleteMission: (index: number, idx: number) => void;
 }
 
@@ -84,7 +84,7 @@ export const CardExperienceOne = ({
 	};
 
 	const elmList = useCallback(
-		(_content: ListItem<any>, idx: number) => (
+		(_content: ListItem<{ content: unknown }>, idx: number) => (
 			<ElementList
 				key={idx}
 				index={index}
@@ -225,7 +225,7 @@ export const CardExperienceOne = ({
 					<ListInSection
 						pathContent={pathContent}
 						watchIfListAffiche={watch(`${pathContent}.settings.withListMissions`)}
-						item={item}
+						item={item as ListItem<WithMissions>}
 						index={index}
 						itemSelected={itemSelected}
 						elmList={elmList}

@@ -29,6 +29,7 @@ describe("CvStrengthService.create", () => {
 		await expect(
 			cvStrengthService.create("unknown-cv", {
 				title: "Autonomie",
+				order: 1,
 			}),
 		).rejects.toThrow(NotFoundError);
 	});
@@ -40,10 +41,12 @@ describe("CvStrengthService.create", () => {
 		const cv = await createCV(user.id, template.id);
 		await cvStrengthService.create(cv.id, {
 			title: "Autonomie",
+			order: 1,
 		});
 		await expect(
 			cvStrengthService.create(cv.id, {
 				title: "Autonomie",
+				order: 2,
 			}),
 		).rejects.toThrow(ConflictError);
 	});
@@ -105,9 +108,11 @@ describe("CvStrengthService.findAllByCvId", () => {
 		const cvB = await createCV(user.id, template.id);
 		await cvStrengthService.create(cvA.id, {
 			title: "Autonomie",
+			order: 1,
 		});
 		await cvStrengthService.create(cvB.id, {
 			title: "Communication",
+			order: 1,
 		});
 		const result = await cvStrengthService.findAllByCvId(cvA.id);
 
@@ -266,7 +271,7 @@ describe("CvStrengthService.delete", () => {
 		const user = await createTestUser();
 		const template = await createTestTemplate();
 		const cv = await createCV(user.id, template.id);
-		const autonomy = await cvStrengthService.create(cv.id, {
+		await cvStrengthService.create(cv.id, {
 			title: "Autonomie",
 			order: 1,
 		});

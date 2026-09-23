@@ -195,14 +195,14 @@ describe("Philosophy model", () => {
 
 		// 6-2: 2 profile peuvent avoir la même philosophie
 		it("should allow same order for different profiles", async () => {
-			const user1 = await createTestUserWithProfile({
+			await createTestUserWithProfile({
 				philosophy: {
 					citation: "Ce que je sais c'est que je ne sais rien",
 					author: "Platon",
 				},
 			});
 
-			const user2 = await createTestUserWithProfile({
+			await createTestUserWithProfile({
 				philosophy: {
 					citation: "Ce que je sais c'est que je ne sais rien",
 					author: "Platon",

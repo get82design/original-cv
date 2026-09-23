@@ -1,5 +1,4 @@
 import type { TemplateLayout } from "@/services/schemas/cvTemplate.schema";
-import type { HeaderChrome } from "../utils/headerLayout";
 import type { JSX } from "react";
 
 interface HeaderFiveContainerProps {

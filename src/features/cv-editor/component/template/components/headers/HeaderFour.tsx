@@ -2,7 +2,6 @@ import { useFormContext } from "react-hook-form";
 import { EmailInput } from "../input-cv/email-input/EmailCvInput";
 import { IntituleCvInput } from "../input-cv/intitule-input/IntituleCvInput";
 import { LocationInput } from "../input-cv/location-input/LocationCvInput";
-import { NomPrenomInput } from "../input-cv/nom-input/NomPrenomInput";
 import { PhoneInput } from "../input-cv/phone-input/PhoneCvInput";
 import { HeaderFourContainer } from "./content/HeaderFourContainer";
 import { FieldNameLayoutGeneral } from "@/features/cv-editor/utils/fields/fieldNameLayoutGeneral";
@@ -24,7 +23,7 @@ export const HeaderFour = () => {
 	const chrome = getHeaderChrome(watchGeneral); // watchGeneral = layout
 	const [photo, setPhoto] = useState(watchPhoto);
 
-	const onSelect = (event: React.MouseEvent<HTMLInputElement>) => {
+	const onSelect = (_event: React.MouseEvent<HTMLInputElement>) => {
 		//   if (((event.target as HTMLInputElement).files as FileList)[0]) {
 		//     const blob = new Blob([((event.target as HTMLInputElement).files as FileList)[0]], { type: 'image/*' })
 		//     const blobUrl = URL.createObjectURL(blob)
@@ -40,7 +39,7 @@ export const HeaderFour = () => {
 
 	const onUpload = () => {
 		// console.log('TESTTEST', refPhoto.current)
-		refPhoto.current && refPhoto.current.click();
+		refPhoto.current?.click();
 	};
 
 	return (

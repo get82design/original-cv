@@ -192,10 +192,11 @@ export function AdminTemplatesPage() {
 			<AppCard className="admin-filters mb-4">
 				<div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
 					<div className="min-w-0 flex-1 sm:max-w-md">
-						<label className="mb-1 block text-xs text-zinc-500">Recherche</label>
+						<label htmlFor="admin-templates-search" className="mb-1 block text-xs text-zinc-500">Recherche</label>
 						<div className="relative w-full">
 							<i className="pi pi-search pointer-events-none absolute top-1/2 left-3 z-10 -translate-y-1/2 text-sm text-zinc-500 dark:text-zinc-400" />
 							<InputText
+								id="admin-templates-search"
 								value={searchInput}
 								onChange={(e) => setSearchInput(e.target.value)}
 								placeholder="Nom du modèle…"
@@ -205,8 +206,9 @@ export function AdminTemplatesPage() {
 					</div>
 					<div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:items-end">
 						<div className="w-full sm:w-32">
-							<label className="mb-1 block text-xs text-zinc-500">Actif</label>
+							<label htmlFor="admin-templates-active" className="mb-1 block text-xs text-zinc-500">Actif</label>
 							<Dropdown
+								id="admin-templates-active"
 								value={isActive}
 								options={BOOL_OPTIONS}
 								onChange={(e) => {
@@ -219,8 +221,9 @@ export function AdminTemplatesPage() {
 							/>
 						</div>
 						<div className="w-full sm:w-32">
-							<label className="mb-1 block text-xs text-zinc-500">Premium</label>
+							<label htmlFor="admin-templates-premium" className="mb-1 block text-xs text-zinc-500">Premium</label>
 							<Dropdown
+								id="admin-templates-premium"
 								value={isPremium}
 								options={BOOL_OPTIONS}
 								onChange={(e) => {
@@ -233,8 +236,9 @@ export function AdminTemplatesPage() {
 							/>
 						</div>
 						<div className="w-full sm:w-36">
-							<label className="mb-1 block text-xs text-zinc-500">À la une</label>
+							<label htmlFor="admin-templates-featured" className="mb-1 block text-xs text-zinc-500">À la une</label>
 							<Dropdown
+								id="admin-templates-featured"
 								value={isFeatured}
 								options={BOOL_OPTIONS}
 								onChange={(e) => {
@@ -387,24 +391,25 @@ export function AdminTemplatesPage() {
 				{editing ? (
 					<div className="admin-user-actions flex flex-col gap-4">
 						<div className="flex flex-wrap gap-4">
-							<label className="flex items-center gap-2 text-sm">
-								<Checkbox checked={draftActive} onChange={(e) => setDraftActive(!!e.checked)} />
+							<label htmlFor="admin-templates-active" className="flex items-center gap-2 text-sm">
+								<Checkbox id="admin-templates-active" checked={draftActive} onChange={(e) => setDraftActive(!!e.checked)} />
 								Actif
 							</label>
-							<label className="flex items-center gap-2 text-sm">
-								<Checkbox checked={draftPremium} onChange={(e) => setDraftPremium(!!e.checked)} />
+							<label htmlFor="admin-templates-premium" className="flex items-center gap-2 text-sm">
+								<Checkbox id="admin-templates-premium" checked={draftPremium} onChange={(e) => setDraftPremium(!!e.checked)} />
 								Premium
 							</label>
-							<label className="flex items-center gap-2 text-sm">
-								<Checkbox checked={draftFeatured} onChange={(e) => setDraftFeatured(!!e.checked)} />
+							<label htmlFor="admin-templates-featured" className="flex items-center gap-2 text-sm">
+								<Checkbox id="admin-templates-featured" checked={draftFeatured} onChange={(e) => setDraftFeatured(!!e.checked)} />
 								À la une
 							</label>
 						</div>
 
 						<div className="grid gap-3 sm:grid-cols-3">
 							<div>
-								<label className="mb-1 block text-xs text-zinc-500">Prix (€)</label>
+								<label htmlFor="admin-templates-price-euros" className="mb-1 block text-xs text-zinc-500">Prix (€)</label>
 								<InputNumber
+									id="admin-templates-price-euros"
 									value={draftPriceEuros}
 									onValueChange={(e) =>
 										setDraftPriceEuros(e.value == null ? null : Number(e.value))
@@ -418,8 +423,9 @@ export function AdminTemplatesPage() {
 								/>
 							</div>
 							<div>
-								<label className="mb-1 block text-xs text-zinc-500">Prix (crédits)</label>
+								<label htmlFor="admin-templates-price-credits" className="mb-1 block text-xs text-zinc-500">Prix (crédits)</label>
 								<InputNumber
+									id="admin-templates-price-credits"
 									value={draftPriceCredits}
 									onValueChange={(e) =>
 										setDraftPriceCredits(e.value == null ? null : Number(e.value))
@@ -431,8 +437,9 @@ export function AdminTemplatesPage() {
 								/>
 							</div>
 							<div>
-								<label className="mb-1 block text-xs text-zinc-500">Ordre</label>
+								<label htmlFor="admin-templates-sort" className="mb-1 block text-xs text-zinc-500">Ordre</label>
 								<InputNumber
+									id="admin-templates-sort"
 									value={draftSort}
 									onValueChange={(e) => setDraftSort(typeof e.value === "number" ? e.value : 0)}
 									min={0}
@@ -449,8 +456,9 @@ export function AdminTemplatesPage() {
 							</p>
 							<div className="grid gap-3 sm:grid-cols-2">
 								<div>
-									<label className="mb-1 block text-xs text-zinc-500">Crédits DL</label>
+									<label htmlFor="admin-templates-gift-credits" className="mb-1 block text-xs text-zinc-500">Crédits DL</label>
 									<InputNumber
+										id="admin-templates-gift-credits"
 										value={draftGiftCredits}
 										onValueChange={(e) =>
 											setDraftGiftCredits(e.value == null ? null : Number(e.value))
@@ -461,8 +469,9 @@ export function AdminTemplatesPage() {
 									/>
 								</div>
 								<div>
-									<label className="mb-1 block text-xs text-zinc-500">Free DL</label>
+									<label htmlFor="admin-templates-gift-free" className="mb-1 block text-xs text-zinc-500">Free DL</label>
 									<InputNumber
+										id="admin-templates-gift-free"
 										value={draftGiftFree}
 										onValueChange={(e) =>
 											setDraftGiftFree(e.value == null ? null : Number(e.value))

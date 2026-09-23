@@ -71,12 +71,12 @@ describe("ProfileSkillGroupService.findAllByProfileId", () => {
 	it("finds all skill groups by Profile ID", async () => {
 		const user = await createTestUser();
 		const profile = await createTestProfile(user.id, "John", "Doe");
-		const skillGroup = await profileSkillGroupService.create(profile.id, {
+		await profileSkillGroupService.create(profile.id, {
 			title: "Skill Group 1",
 			order: 1,
 			skills: [],
 		});
-		const skillGroup2 = await profileSkillGroupService.create(profile.id, {
+		await profileSkillGroupService.create(profile.id, {
 			title: "Skill Group 2",
 			order: 2,
 			skills: [],
@@ -101,7 +101,7 @@ describe("ProfileSkillGroupService.findAllByProfileId", () => {
 		const user2 = await createTestUser();
 		const profile = await createTestProfile(user.id, "John", "Doe");
 		const profile2 = await createTestProfile(user2.id, "John2", "Doe2");
-		const skillGroup = await profileSkillGroupService.create(profile.id, {
+		await profileSkillGroupService.create(profile.id, {
 			title: "Skill Group 1",
 			order: 1,
 			skills: [],
@@ -252,7 +252,7 @@ describe("ProfileSkillGroupService.delete", () => {
 			order: 1,
 			skills: [],
 		});
-		const skillGroup2 = await profileSkillGroupService.create(profile.id, {
+		await profileSkillGroupService.create(profile.id, {
 			title: "Skill Group 2",
 			order: 2,
 			skills: [],

@@ -33,7 +33,7 @@ export const StrengthDnd = ({
 	colOfStrength,
 }: StrengthDndProps) => {
 	const { setValue } = useFormContext();
-	const { setSectionSelected, sectionSelected } = useCreateCvContext();
+	const { sectionSelected } = useCreateCvContext();
 
 	const itemsMenu = (idx: number) => {
 		const pathContent = dataFieldContent("datas.strength.content", idx, "content.settings");

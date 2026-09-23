@@ -38,7 +38,7 @@ export const TitleSection = ({
 					onClick={() => {
 						setSelectModifInput(fieldName);
 						setSelectInputForm("");
-						setSectionSelected && setSectionSelected("");
+						setSectionSelected?.("");
 					}}
 					textColor={watchInput?.colorSelect}
 					textAlign={watchInput?.textAlign || "left"}

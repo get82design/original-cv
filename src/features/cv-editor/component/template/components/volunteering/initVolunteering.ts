@@ -71,7 +71,7 @@ export function createInitVolunteering(opts?: {
 	settings?: VolunteeringContentSettings;
 }): ListItem<VolunteeringItemContentInput> {
 	return {
-		clientKey: "volunteering-" + uuid(),
+		clientKey: `volunteering-${uuid()}`,
 		order: opts?.order ?? 1,
 		content: {
 			title: "",

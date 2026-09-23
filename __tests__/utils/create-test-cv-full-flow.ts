@@ -2,8 +2,6 @@
 import type { CVModuleItemType, CVModuleType } from "../../generated/prisma/client";
 import { CvTimelineStatus, Level } from "../../generated/prisma/enums";
 import { prismaTest } from "../../lib/prismaTest";
-import { createTestTemplate } from "./create-test-template";
-import { createTestUser } from "./create-test-user";
 
 export async function createUserAndTemplate(email = "test@fullflow.com") {
 	const user = await prismaTest.user.create({

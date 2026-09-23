@@ -49,7 +49,7 @@ export const SectionSortableContext = ({
 					<div
 						className={cvToolbarIconBtnClass}
 						title="Déplacer"
-						aria-label="Déplacer"
+						// aria-label="Déplacer"
 						{...attributes}
 						{...listeners}
 					>

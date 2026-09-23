@@ -32,7 +32,7 @@ export const ProjectDnd = ({
 		const pathContent = dataFieldContent("datas.project.content", index, "content.missions");
 
 		const newMission = {
-			clientKey: "mission-" + uuid(),
+			clientKey: `mission-${uuid()}`,
 			content: { content: elm },
 			order: (item.content.missions?.length ?? 0) + 1,
 		};

@@ -34,8 +34,6 @@ describe("ProfileSkillService.create", () => {
 	});
 
 	it("throws if group does not exist", async () => {
-		const user = await createTestUser();
-		const profile = await createTestProfile(user.id, "John", "Doe");
 		await expect(
 			profileSkillService.create("unknown-group", {
 				skillId: "unknown-skill",
@@ -394,7 +392,7 @@ describe("ProfileSkillService.move", () => {
 		const skill2 = await skillService.create({
 			name: "Skill 2",
 		});
-		const profileSkill2 = await profileSkillService.create(skillGroup1.id, {
+		await profileSkillService.create(skillGroup1.id, {
 			skillId: skill2.id,
 			order: 2,
 			level: Level.Débutant,
@@ -505,7 +503,7 @@ describe("ProfileSkillService.delete", () => {
 		const skill2 = await skillService.create({
 			name: "Skill 2",
 		});
-		const profileSkill2 = await profileSkillService.create(skillGroup.id, {
+		await profileSkillService.create(skillGroup.id, {
 			skillId: skill2.id,
 			order: 2,
 			level: Level.Débutant,

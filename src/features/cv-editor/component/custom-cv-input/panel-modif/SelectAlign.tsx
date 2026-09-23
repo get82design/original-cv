@@ -30,7 +30,7 @@ export const SelectAlign = ({ watchSelectInput, select }: SelectAlignProps) => {
 			<SelectButtonRhf
 				className="shadow-none panel-modification"
 				value={watchSelectInput?.textAlign}
-				name={select + ".textAlign"}
+				name={`${select}.textAlign`}
 				itemTemplate={justifyTemplate}
 				optionLabel={"value"}
 				options={justifyOptions}

@@ -47,7 +47,7 @@ export const DialogSelectCompetenceGroup = ({
 		setTarget(event.target);
 	};
 
-	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+	// biome-ignore lint/correctness/useExhaustiveDependencies: reset picklist uniquement à l'ouverture du dialog
 	useEffect(() => {
 		if (!visible) return;
 		setTarget(listCompetenceGroupInProfile);
@@ -57,7 +57,7 @@ export const DialogSelectCompetenceGroup = ({
 				.map((exp) => cvCompetenceGroupToProfile(exp))
 				.filter((e) => !already.has(`${e.content.title}`)),
 		);
-	}, [visible, listCompetenceGroupFromCv]);
+	}, [visible]);
 
 	const templateFooter = () => {
 		return (

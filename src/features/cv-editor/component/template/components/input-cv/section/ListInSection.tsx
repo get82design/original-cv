@@ -2,24 +2,21 @@ import { useCreateCvContext } from "@/features/cv-editor/component/context/Creat
 import { InputTextarea } from "primereact/inputtextarea";
 import { useState, type JSX } from "react";
 import { CommonListContainer } from "../../common-compo/list/CommonListContainer";
+import type { ListItem, WithMissions } from "@utils/type";
 
-interface ListItem<T> {
-	clientKey: string;
-	order: number;
-	content: T;
+type MissionItem = ListItem<{ content: unknown }>;
+
+interface ListInSectionProps<T extends WithMissions> {
+  watchIfListAffiche: boolean;
+  item: ListItem<T>; // parent (expérience, etc.)
+  index: number;
+  itemSelected: string;
+  elmList: (content: MissionItem, idx: number) => JSX.Element; // ← mission
+  addElmList: (item: ListItem<T>, newElm: string, index: number) => void;
+  pathContent: string;
 }
 
-interface ListInSectionProps {
-	watchIfListAffiche: boolean;
-	item: ListItem<any>;
-	index: number;
-	itemSelected: string;
-	elmList: (content: ListItem<any>, idx: number) => JSX.Element;
-	addElmList: (item: ListItem<any>, newElm: string, index: number) => void;
-	pathContent: string;
-}
-
-export const ListInSection = ({
+export const ListInSection = <T extends WithMissions>({
 	watchIfListAffiche,
 	item,
 	index,
@@ -27,7 +24,7 @@ export const ListInSection = ({
 	elmList,
 	addElmList,
 	pathContent,
-}: ListInSectionProps) => {
+}: ListInSectionProps<T>) => {
 	const [newElm, setNewElm] = useState("");
 	const { setSelectModifInput, setSelectInputForm } = useCreateCvContext();
 	return (

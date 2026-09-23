@@ -321,7 +321,7 @@ describe("CV model", () => {
 				},
 			});
 
-			const cv1 = await prismaTest.cV.create({
+			await prismaTest.cV.create({
 				data: {
 					title: "CV 1",
 					templateId: template.id,

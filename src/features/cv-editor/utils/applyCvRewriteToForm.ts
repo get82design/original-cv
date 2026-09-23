@@ -58,7 +58,8 @@ export function applyCvRewriteToForm(
 	rewrite: CvRewriteSection,
 ): CvFormValues {
 	const next = structuredClone(cv);
-	const datas = next.datas ?? (next.datas = {});
+	if (!next.datas) next.datas = {};
+    const datas = next.datas;
 
 	switch (sectionType) {
 		case "description": {

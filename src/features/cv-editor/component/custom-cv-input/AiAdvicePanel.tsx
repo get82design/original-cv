@@ -41,8 +41,8 @@ function AdviceCard({ entry, onRemove }: { entry: AiAdviceEntry; onRemove: () =>
 			</p>
 			{review.improvements.length > 0 ? (
 				<ul className="m-0 list-disc space-y-1 pl-4 text-xs text-zinc-600 dark:text-zinc-400">
-					{review.improvements.slice(0, 4).map((item, i) => (
-						<li key={i}>
+					{review.improvements.slice(0, 4).map((item) => (
+						<li key={item.area + item.suggestion}>
 							<span className="font-medium text-zinc-800 dark:text-zinc-200">{item.area}</span>
 							{" — "}
 							{item.suggestion}

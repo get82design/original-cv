@@ -84,7 +84,7 @@ export const CardVolunteeringOne = ({
 	};
 
 	const elmList = useCallback(
-		(_content: ListItem<any>, idx: number) => (
+		(_content:  ListItem<{ content: unknown }>, idx: number) => (
 			<ElementList
 				key={idx}
 				index={index}

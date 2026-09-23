@@ -11,13 +11,13 @@ export const NavBar = () => {
 	const breakpoint = useMediaQuery("(min-width: 1024px)");
 	return (
 		<div className={"navbar h-screen lg:w-16 xl:w-20 py-4 fixed bg-white dark:bg-black z-30"}>
-			<div
+			<nav
 				className="flex flex-col items-center justify-between h-full"
 				onMouseEnter={() => setVisible(true)}
 			>
 				<div className="flex flex-col items-center gap-8">
-					<Link href="#">
-						<svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+					<Link href="#" aria-label="Accueil originalCV">
+						<svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
 							<g fill="none" fillRule="evenodd">
 								<path
 									d="M10 0h12a10 10 0 0110 10v12a10 10 0 01-10 10H10A10 10 0 010 22V10A10 10 0 0110 0z"
@@ -55,7 +55,7 @@ export const NavBar = () => {
 					</div>
 				</div>
 				<Button text icon={<MdAccountCircle style={{ width: "40px", height: "40px" }} />} />
-			</div>
+			</nav>
 			<SideBarMenu ref={refPanelDashboard} visible={visible} setVisible={setVisible} />
 		</div>
 	);

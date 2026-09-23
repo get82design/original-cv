@@ -195,12 +195,12 @@ describe("ProfileLanguageService.move", () => {
 	it("moves a language to another position", async () => {
 		const user = await createTestUser();
 		const profile = await createTestProfile(user.id, "John", "Doe");
-		const french = await profileLanguageService.create(profile.id, {
+		await profileLanguageService.create(profile.id, {
 			name: "Français",
 			level: Level.Senior,
 			order: 1,
 		});
-		const english = await profileLanguageService.create(profile.id, {
+		await profileLanguageService.create(profile.id, {
 			name: "Anglais",
 			level: Level.Intermédiaire,
 			order: 2,
@@ -277,7 +277,7 @@ describe("ProfileLanguageService.delete", () => {
 	it("reorders remaining languages after deletion", async () => {
 		const user = await createTestUser();
 		const profile = await createTestProfile(user.id, "John", "Doe");
-		const french = await profileLanguageService.create(profile.id, {
+		await profileLanguageService.create(profile.id, {
 			name: "Français",
 			level: Level.Senior,
 			order: 1,

@@ -34,7 +34,7 @@ describe("Tag model", () => {
 
 		// 1-2: peut créer deux profiles avec la même tag
 		it("should allow two profiles to share the same tag", async () => {
-			const user1 = await createTestUserWithProfile({
+			await createTestUserWithProfile({
 				tagGroups: [
 					{
 						title: "Langages",
@@ -44,7 +44,7 @@ describe("Tag model", () => {
 				],
 			});
 
-			const user2 = await createTestUserWithProfile({
+			await createTestUserWithProfile({
 				tagGroups: [
 					{
 						title: "Frontend",
@@ -66,7 +66,7 @@ describe("Tag model", () => {
 	describe("CREATE ERRORS", () => {
 		// 2-1: ne peut pas créer un profileTag sans un groupe
 		it("should not create a profileTag without a group", async () => {
-			const user = await createTestUserWithProfile();
+			await createTestUserWithProfile();
 
 			// Essayer de créer un profileTag sans groupe
 			await expect(

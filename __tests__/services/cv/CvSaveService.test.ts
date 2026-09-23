@@ -71,10 +71,10 @@ const languageItemSettings = {
 	design: "stars" as const,
 };
 
-const expertiseItemSettings = {
-	title: baseTextSettings,
-	design: "stars" as const,
-};
+// const expertiseItemSettings = {
+// 	title: baseTextSettings,
+// 	design: "stars" as const,
+// };
 
 const educationItemSettings = {
 	diplome: baseTextSettings,
@@ -212,6 +212,7 @@ function buildSaveInput(
 								withTitle: true,
 								withStatus: true,
 								withPeriode: true,
+								columns: 1,
 							},
 						},
 					},
@@ -231,6 +232,7 @@ function buildSaveInput(
 								organismeCertification: baseTextSettings,
 								withTitle: true,
 								withOrganismeCertification: true,
+								columns: 1,
 							},
 						},
 					},
@@ -251,6 +253,7 @@ function buildSaveInput(
 								withTitle: true,
 								withDomain: true,
 								withIcon: true,
+								columns: 1,
 							},
 						},
 					},
@@ -268,6 +271,7 @@ function buildSaveInput(
 							settings: {
 								title: baseTextSettings,
 								design: "stars" as const,
+								columns: 1,
 							},
 						},
 					},
@@ -303,6 +307,7 @@ function buildSaveInput(
 								withIcon: true,
 								withSocialNetwork: true,
 								withUsername: true,
+								columns: 1,
 							},
 						},
 					},
@@ -319,9 +324,9 @@ function buildSaveInput(
 							icon: "BsBalloonHeartFill",
 							settings: {
 								passion: baseTextSettings,
-								withPassion: true,
 								withIcon: true,
 								iconColor: "primaryColor" as const,
+								columns: 1,
 							},
 						},
 					},
@@ -336,7 +341,7 @@ function buildSaveInput(
 						content: {
 							name: "Language 1",
 							level: Level.Débutant,
-							settings: languageItemSettings,
+							settings: { ...languageItemSettings, columns: 1 },
 						},
 					},
 				],
@@ -387,6 +392,7 @@ function buildSaveInput(
 								iconColor: "primaryColor",
 								strength: baseTextSettings,
 								description: baseTextSettings,
+								columns: 1,
 							},
 						},
 					},
@@ -431,7 +437,7 @@ function buildSaveInput(
 							start: new Date("2020-01-01"),
 							end: new Date("2022-01-01"),
 							obtained: CvTimelineStatus.COMPLETED,
-							settings: educationItemSettings,
+							settings: { ...educationItemSettings, columns: 1 },
 						},
 					},
 				],
@@ -475,6 +481,7 @@ function buildSaveInput(
 											clientKey: "competence-1",
 											order: 1,
 											content: {
+												name: "Competence 1",
 												competenceId: opts.competenceId,
 											},
 										},
@@ -498,6 +505,7 @@ function buildSaveInput(
 											clientKey: "tag-1",
 											order: 1,
 											content: {
+												name: "Tag 1",
 												tagId: opts.tagId,
 											},
 										},
@@ -515,6 +523,7 @@ function buildSaveInput(
 				order: 1,
 				isActive: true,
 				settings: {},
+				column: 1,
 			},
 			{
 				type: CVModuleType.experience,
@@ -522,6 +531,7 @@ function buildSaveInput(
 				isActive: true,
 				title: "Expériences",
 				settings: {},
+				column: 1,
 			},
 			{
 				type: CVModuleType.project,
@@ -529,6 +539,7 @@ function buildSaveInput(
 				isActive: true,
 				title: "Projets",
 				settings: {},
+				column: 1,
 			},
 			{
 				type: CVModuleType.volunteering,
@@ -536,6 +547,7 @@ function buildSaveInput(
 				isActive: true,
 				title: "Volontariat",
 				settings: {},
+				column: 1,
 			},
 			{
 				type: CVModuleType.formation,
@@ -543,6 +555,7 @@ function buildSaveInput(
 				isActive: true,
 				title: "Formations",
 				settings: {},
+				column: 1,
 			},
 			{
 				type: CVModuleType.certification,
@@ -550,6 +563,7 @@ function buildSaveInput(
 				isActive: true,
 				title: "Certifications",
 				settings: {},
+				column: 1,
 			},
 			{
 				type: CVModuleType.prize,
@@ -557,6 +571,7 @@ function buildSaveInput(
 				isActive: true,
 				title: "Prix",
 				settings: {},
+				column: 1,
 			},
 			{
 				type: CVModuleType.expertise,
@@ -564,6 +579,7 @@ function buildSaveInput(
 				isActive: true,
 				title: "Expertises",
 				settings: {},
+				column: 1,
 			},
 			{
 				type: CVModuleType.philosophy,
@@ -578,6 +594,7 @@ function buildSaveInput(
 						withAuthor: true,
 					},
 				},
+				column: 1,
 			},
 			{
 				type: CVModuleType.socialMedia,
@@ -585,6 +602,7 @@ function buildSaveInput(
 				isActive: true,
 				title: "Réseaux sociaux",
 				settings: {},
+				column: 1,
 			},
 			{
 				type: CVModuleType.passion,
@@ -592,6 +610,7 @@ function buildSaveInput(
 				isActive: true,
 				title: "Passions",
 				settings: {},
+				column: 1,
 			},
 			{
 				type: CVModuleType.language,
@@ -599,6 +618,7 @@ function buildSaveInput(
 				isActive: true,
 				title: "Langues",
 				settings: {},
+				column: 1,
 			},
 			{
 				type: CVModuleType.publication,
@@ -606,6 +626,7 @@ function buildSaveInput(
 				isActive: true,
 				title: "Publications",
 				settings: {},
+				column: 1,
 			},
 			{
 				type: CVModuleType.strength,
@@ -613,6 +634,7 @@ function buildSaveInput(
 				isActive: true,
 				title: "Atouts",
 				settings: {},
+				column: 1,
 			},
 			{
 				type: CVModuleType.achievement,
@@ -620,6 +642,7 @@ function buildSaveInput(
 				isActive: true,
 				title: "Achievements",
 				settings: {},
+				column: 1,
 			},
 			{
 				type: CVModuleType.education,
@@ -627,6 +650,7 @@ function buildSaveInput(
 				isActive: true,
 				title: "Éducation",
 				settings: {},
+				column: 1,
 			},
 			{
 				type: CVModuleType.skill,
@@ -634,6 +658,7 @@ function buildSaveInput(
 				isActive: true,
 				title: "Skills",
 				settings: {},
+				column: 1,
 			},
 			{
 				type: CVModuleType.competence,
@@ -641,6 +666,7 @@ function buildSaveInput(
 				isActive: true,
 				title: "Competences",
 				settings: {},
+				column: 1,
 			},
 			{
 				type: CVModuleType.tag,
@@ -648,6 +674,7 @@ function buildSaveInput(
 				isActive: true,
 				title: "Tags",
 				settings: {},
+				column: 1,
 			},
 		],
 		...overrides,
@@ -918,6 +945,7 @@ describe("CvSaveService.save", () => {
 						order: 1,
 						isActive: true,
 						settings: {},
+						column: 1,
 					},
 				],
 			}),
@@ -1343,6 +1371,7 @@ describe("CvSaveService.save", () => {
 										withOrganismeFormation: true,
 										withPeriode: true,
 										withStatus: true,
+										columns: 1,
 									},
 								},
 							},
@@ -1428,6 +1457,7 @@ describe("CvSaveService.save", () => {
 										organismeCertification: baseTextSettings,
 										withTitle: true,
 										withOrganismeCertification: true,
+										columns: 1,
 									},
 								},
 							},
@@ -1509,6 +1539,7 @@ describe("CvSaveService.save", () => {
 										withTitle: true,
 										withDomain: true,
 										withIcon: true,
+										columns: 1,
 									},
 								},
 							},
@@ -1625,6 +1656,7 @@ describe("CvSaveService.save", () => {
 										withIcon: true,
 										withSocialNetwork: true,
 										withUsername: true,
+										columns: 1,
 									},
 								},
 							},
@@ -1641,6 +1673,7 @@ describe("CvSaveService.save", () => {
 										withIcon: true,
 										withSocialNetwork: true,
 										withUsername: true,
+										columns: 1,
 									},
 								},
 							},
@@ -1676,6 +1709,7 @@ describe("CvSaveService.save", () => {
 										withIcon: true,
 										withSocialNetwork: true,
 										withUsername: true,
+										columns: 1,
 									},
 								},
 							},
@@ -1755,8 +1789,8 @@ describe("CvSaveService.save", () => {
 									icon: "🎨 updated",
 									settings: {
 										passion: baseTextSettings,
-										withPassion: true,
 										withIcon: true,
+										columns: 1,
 									},
 								},
 							},
@@ -1832,7 +1866,7 @@ describe("CvSaveService.save", () => {
 								content: {
 									name: "Language 1 updated",
 									level: Level.Débutant,
-									settings: languageItemSettings,
+									settings: { ...languageItemSettings, columns: 1 },
 								},
 							},
 						],
@@ -1983,6 +2017,7 @@ describe("CvSaveService.save", () => {
 										strength: baseTextSettings,
 										description: baseTextSettings,
 										withDescription: true,
+										columns: 1,
 									},
 								},
 							},
@@ -2000,6 +2035,7 @@ describe("CvSaveService.save", () => {
 										strength: baseTextSettings,
 										description: baseTextSettings,
 										withDescription: true,
+										columns: 1,
 									},
 								},
 							},
@@ -2036,6 +2072,7 @@ describe("CvSaveService.save", () => {
 										strength: baseTextSettings,
 										description: baseTextSettings,
 										withDescription: true,
+										columns: 1,
 									},
 								},
 							},
@@ -2179,7 +2216,7 @@ describe("CvSaveService.save", () => {
 									start: new Date("2020-01-01"),
 									end: new Date("2022-01-01"),
 									obtained: CvTimelineStatus.COMPLETED,
-									settings: educationItemSettings,
+									settings: { ...educationItemSettings, columns: 1 },
 								},
 							},
 							{
@@ -2193,7 +2230,7 @@ describe("CvSaveService.save", () => {
 									start: new Date("2020-01-01"),
 									end: new Date("2022-01-01"),
 									obtained: CvTimelineStatus.COMPLETED,
-									settings: educationItemSettings,
+									settings: { ...educationItemSettings, columns: 1 },
 								},
 							},
 						],
@@ -2226,7 +2263,7 @@ describe("CvSaveService.save", () => {
 									start: new Date("2020-01-01"),
 									end: new Date("2022-01-01"),
 									obtained: CvTimelineStatus.COMPLETED,
-									settings: educationItemSettings,
+									settings: { ...educationItemSettings, columns: 1 },
 								},
 							},
 						],
@@ -2457,6 +2494,7 @@ describe("CvSaveService.save", () => {
 											clientKey: "s-a",
 											order: 1,
 											content: {
+												name: competenceA.name,
 												competenceId: competenceA.id,
 											},
 										},
@@ -2464,6 +2502,7 @@ describe("CvSaveService.save", () => {
 											clientKey: "s-b",
 											order: 2,
 											content: {
+												name: competenceB.name,
 												competenceId: competenceB.id,
 											},
 										},
@@ -2480,6 +2519,7 @@ describe("CvSaveService.save", () => {
 											clientKey: "s-c",
 											order: 1,
 											content: {
+												name: competenceC.name,
 												competenceId: competenceC.id,
 											},
 										},
@@ -2516,6 +2556,7 @@ describe("CvSaveService.save", () => {
 											clientKey: "s-a",
 											order: 1,
 											content: {
+												name: competenceA.name,
 												competenceId: competenceA.id,
 											},
 										},
@@ -2524,6 +2565,7 @@ describe("CvSaveService.save", () => {
 											clientKey: "s-c-new",
 											order: 2,
 											content: {
+												name: competenceC.name,
 												competenceId: competenceC.id,
 											},
 										},
@@ -2571,6 +2613,7 @@ describe("CvSaveService.save", () => {
 											clientKey: "s-a",
 											order: 1,
 											content: {
+												name: tagA.name,
 												tagId: tagA.id,
 											},
 										},
@@ -2578,6 +2621,7 @@ describe("CvSaveService.save", () => {
 											clientKey: "s-b",
 											order: 2,
 											content: {
+												name: tagB.name,
 												tagId: tagB.id,
 											},
 										},
@@ -2594,6 +2638,7 @@ describe("CvSaveService.save", () => {
 											clientKey: "s-c",
 											order: 1,
 											content: {
+												name: tagC.name,
 												tagId: tagC.id,
 											},
 										},
@@ -2630,6 +2675,7 @@ describe("CvSaveService.save", () => {
 											clientKey: "s-a",
 											order: 1,
 											content: {
+												name: tagA.name,
 												tagId: tagA.id,
 											},
 										},
@@ -2638,6 +2684,7 @@ describe("CvSaveService.save", () => {
 											clientKey: "s-c-new",
 											order: 2,
 											content: {
+												name: tagC.name,
 												tagId: tagC.id,
 											},
 										},
@@ -3077,6 +3124,7 @@ describe("CvSaveService.save", () => {
 						order: 1,
 						isActive: false,
 						settings: {},
+						column: 1,
 					},
 				],
 			}),
@@ -3199,10 +3247,10 @@ describe("CvSaveService.save", () => {
 				modules: [],
 			}),
 		);
-		const projectId = created.projects[0]?.id!;
-		const keepMissionId = created.projects[0]?.cvMissions.find((m) => m.content === "Mission A")
-			?.id!;
-		expect(keepMissionId).toBeDefined();
+		const projectId = created.projects[0]?.id;
+        expect(projectId).toBeDefined();
+		const keepMissionId = created.projects[0]?.cvMissions.find((m) => m.content === "Mission A")?.id;
+        expect(keepMissionId).toBeDefined();
 		const updated = await cvSaveService.save(
 			user.id,
 			buildSaveInput(template.id, {
@@ -3280,9 +3328,9 @@ describe("CvSaveService.save", () => {
 				modules: [],
 			}),
 		);
-		const volunteeringId = created.volunteerings[0]?.id!;
-		const keepMissionId = created.volunteerings[0]?.cvMissions.find((m) => m.content === "Aide A")
-			?.id!;
+		const volunteeringId = created.volunteerings[0]?.id;
+        expect(volunteeringId).toBeDefined();
+		const keepMissionId = created.volunteerings[0]?.cvMissions.find((m) => m.content === "Mission A")?.id;
 		expect(keepMissionId).toBeDefined();
 		const updated = await cvSaveService.save(
 			user.id,

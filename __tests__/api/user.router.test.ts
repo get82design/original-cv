@@ -236,7 +236,7 @@ describe("userRouter", () => {
 	});
 
 	it("resetPassword updates password via public procedure", async () => {
-		const { createHash, randomBytes } = await import("crypto");
+		const { createHash, randomBytes } = await import("node:crypto");
 		const { compare } = await import("bcrypt");
 		const user = await createTestUser();
 		const rawToken = randomBytes(32).toString("hex");

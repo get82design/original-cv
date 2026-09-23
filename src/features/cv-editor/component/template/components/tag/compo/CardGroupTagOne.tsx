@@ -28,7 +28,7 @@ export type CardGroupTagOneProps = {
 			template: JSX.Element;
 		}[];
 	}[];
-	colOfTag: number;
+	// colOfTag: number;
 };
 
 export const CardGroupTagOne = ({
@@ -37,7 +37,7 @@ export const CardGroupTagOne = ({
 	itemSelected,
 	setItemSelected,
 	itemsMenu,
-	colOfTag,
+	// colOfTag,
 }: CardGroupTagOneProps) => {
 	const { setSelectModifInput, setSelectInputForm } = useCreateCvContext();
 	const { watch, getValues, setValue } = useFormContext();
@@ -132,7 +132,7 @@ export const CardGroupTagOne = ({
 						setItemSelected={setItemSelected}
 						itemSelected={itemSelected}
 						clientKeyGroup={item.clientKey}
-						colOfTag={colOfTag}
+						// colOfTag={colOfTag}
 						CardComponent={Card}
 					/>
 				}

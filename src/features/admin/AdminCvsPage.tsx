@@ -222,10 +222,11 @@ export function AdminCvsPage() {
 					<AppCard className="admin-filters mb-4">
 						<div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
 							<div className="min-w-0 flex-1 sm:max-w-md">
-								<label className="mb-1 block text-xs text-zinc-500">Recherche</label>
+								<label htmlFor="admin-cvs-search" className="mb-1 block text-xs text-zinc-500">Recherche</label>
 								<div className="relative w-full">
 									<i className="pi pi-search pointer-events-none absolute top-1/2 left-3 z-10 -translate-y-1/2 text-sm text-zinc-500 dark:text-zinc-400" />
 									<InputText
+										id="admin-cvs-search"
 										value={searchInput}
 										onChange={(e) => setSearchInput(e.target.value)}
 										placeholder="Email utilisateur…"
@@ -235,8 +236,9 @@ export function AdminCvsPage() {
 							</div>
 							<div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:items-end">
 								<div className="w-full sm:w-52">
-									<label className="mb-1 block text-xs text-zinc-500">Template</label>
+									<label htmlFor="admin-cvs-template" className="mb-1 block text-xs text-zinc-500">Template</label>
 									<Dropdown
+										id="admin-cvs-template"
 										value={templateId}
 										options={templateOptions}
 										onChange={(e) => {
@@ -249,8 +251,9 @@ export function AdminCvsPage() {
 									/>
 								</div>
 								<div className="w-full sm:w-44">
-									<label className="mb-1 block text-xs text-zinc-500">Couleur</label>
+									<label htmlFor="admin-cvs-color" className="mb-1 block text-xs text-zinc-500">Couleur</label>
 									<Dropdown
+										id="admin-cvs-color"
 										value={primaryColorName}
 										options={colorOptions}
 										onChange={(e) => {
@@ -367,8 +370,9 @@ export function AdminCvsPage() {
 				<>
 					<AppCard className="admin-filters mb-4">
 						<div className="w-full sm:w-56">
-							<label className="mb-1 block text-xs text-zinc-500">Trier par</label>
+							<label htmlFor="admin-cvs-sort" className="mb-1 block text-xs text-zinc-500">Trier par</label>
 							<Dropdown
+								id="admin-cvs-sort"
 								value={templateSort}
 								options={TEMPLATE_SORT_OPTIONS}
 								onChange={(e) => setTemplateSort(e.value as AdminTopTemplateSort)}

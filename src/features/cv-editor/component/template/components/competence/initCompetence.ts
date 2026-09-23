@@ -31,13 +31,13 @@ export function createInitCompetence(opts?: {
 	settings?: CompetenceContentSettings;
 }): ListItem<CompetenceGroupItemContentInput> {
 	return {
-		clientKey: "competenceGroup-" + uuid(),
+		clientKey: `competenceGroup-${uuid()}`,
 		order: opts?.order ?? 1,
 		content: {
-			title: "competence group " + uuid(),
+			title: `competence group ${uuid()}`,
 			competences: [
 				{
-					clientKey: "competence-" + uuid(),
+					clientKey: `competence-${uuid()}`,
 					order: 1,
 					content: {
 						competenceId: undefined,

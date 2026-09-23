@@ -70,12 +70,12 @@ describe("ProfileCompetenceGroupService.findAllByProfileId", () => {
 	it("finds all competence groups by profile ID", async () => {
 		const user = await createTestUser();
 		const profile = await createTestProfile(user.id, "John", "Doe");
-		const competenceGroup = await profileCompetenceGroupService.create(profile.id, {
+		await profileCompetenceGroupService.create(profile.id, {
 			title: "Competence Group 1",
 			order: 1,
 			competences: [],
 		});
-		const competenceGroup2 = await profileCompetenceGroupService.create(profile.id, {
+		await profileCompetenceGroupService.create(profile.id, {
 			title: "Competence Group 2",
 			order: 2,
 			competences: [],
@@ -100,7 +100,7 @@ describe("ProfileCompetenceGroupService.findAllByProfileId", () => {
 		const user2 = await createTestUser();
 		const profile = await createTestProfile(user.id, "John", "Doe");
 		const profile2 = await createTestProfile(user2.id, "John2", "Doe2");
-		const competenceGroup = await profileCompetenceGroupService.create(profile.id, {
+		await profileCompetenceGroupService.create(profile.id, {
 			title: "Competence Group 1",
 			order: 1,
 			competences: [],
@@ -255,7 +255,7 @@ describe("ProfileCompetenceGroupService.delete", () => {
 			order: 1,
 			competences: [],
 		});
-		const competenceGroup2 = await profileCompetenceGroupService.create(profile.id, {
+		await profileCompetenceGroupService.create(profile.id, {
 			title: "Competence Group 2",
 			order: 2,
 			competences: [],

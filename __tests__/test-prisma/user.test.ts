@@ -205,7 +205,7 @@ describe("User model", () => {
 	describe("UPDATE ERRORS", () => {
 		// 4-1: ne peut pas mettre à jour un email déjà existant
 		it("should not allow updating to duplicate email", async () => {
-			const user1 = await prismaTest.user.create({
+			await prismaTest.user.create({
 				data: { name: "A", email: "a@test.com", password: "123" },
 			});
 

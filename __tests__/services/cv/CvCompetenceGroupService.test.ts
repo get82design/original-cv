@@ -75,12 +75,12 @@ describe("CvCompetenceGroupService.findAllByCvId", () => {
 		const user = await createTestUser();
 		const template = await createTestTemplate();
 		const cv = await createCV(user.id, template.id);
-		const competenceGroup = await cvCompetenceGroupService.create(cv.id, {
+		await cvCompetenceGroupService.create(cv.id, {
 			title: "Competence Group 1",
 			order: 1,
 			competences: [],
 		});
-		const competenceGroup2 = await cvCompetenceGroupService.create(cv.id, {
+		await cvCompetenceGroupService.create(cv.id, {
 			title: "Competence Group 2",
 			order: 2,
 			competences: [],
@@ -106,7 +106,7 @@ describe("CvCompetenceGroupService.findAllByCvId", () => {
 		const template = await createTestTemplate();
 		const cv = await createCV(user.id, template.id);
 		const cv2 = await createCV(user.id, template.id);
-		const competenceGroup = await cvCompetenceGroupService.create(cv.id, {
+		await cvCompetenceGroupService.create(cv.id, {
 			title: "Competence Group 1",
 			order: 1,
 			competences: [],
@@ -264,7 +264,7 @@ describe("CvCompetenceGroupService.delete", () => {
 			order: 1,
 			competences: [],
 		});
-		const competenceGroup2 = await cvCompetenceGroupService.create(cv.id, {
+		await cvCompetenceGroupService.create(cv.id, {
 			title: "Competence Group 2",
 			order: 2,
 			competences: [],

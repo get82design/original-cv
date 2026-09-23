@@ -30,7 +30,7 @@ export const TitleSectionContainer = ({
 	const bg = general.titleSection.bgColor;
 	const shadeBg = general.titleSection.shadeBgColor;
 
-	const [name, info1, info2] = modelName?.split("-") ?? [];
+	const [_name, info1, _info2] = modelName?.split("-") ?? [];
 
 	const accent = general.pageAccent; // ou watch("layoutGeneral.layout.pageAccent")
 	const onBand = accent?.type === "leftBand";

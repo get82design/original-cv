@@ -42,7 +42,7 @@ export function DialogSelectPassion({
 		setTarget(event.target);
 	};
 
-	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+	// biome-ignore lint/correctness/useExhaustiveDependencies: reset picklist uniquement à l'ouverture du dialog
 	useEffect(() => {
 		if (!visible) return;
 		setTarget(listPassionInProfile);
@@ -54,7 +54,7 @@ export function DialogSelectPassion({
 				.map((exp) => cvPassionToProfile(exp))
 				.filter((e) => !already.has(`${e.content.title}|${e.content.icon ?? ""}`)),
 		);
-	}, [visible, listPassionFromCv]);
+	}, [visible]);
 
 	const templateFooter = () => {
 		return (

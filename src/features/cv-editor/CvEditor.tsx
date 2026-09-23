@@ -43,7 +43,7 @@ import { isTemplateLocked } from "./utils/isTemplateLocked";
 export const CvEditor = () => {
 	const { data } = trpc.cv.allByUser.useQuery();
 	console.log(data);
-	const { data: session, status } = useSession();
+	const { status } = useSession();
 	const { data: profile } = trpc.profile.completeMe.useQuery();
 	const [itemNoUse, setItemNoUse] = useState<TemplateModule[]>([]);
 	const [visibleDialogDataFromProfile, setVisibleDialogDataFromProfile] = useState(false);

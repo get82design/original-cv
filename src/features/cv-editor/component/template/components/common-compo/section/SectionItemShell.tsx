@@ -82,6 +82,8 @@ export function SectionItemShell({
 			className={`section-card relative ${className} ${highlightClass}`}
 		>
 			{leading}
+			{/* biome-ignore lint/a11y/noStaticElementInteractions: sélection item, contient déjà des boutons */}
+            {/* biome-ignore lint/a11y/useKeyWithClickEvents: idem — pas de button wrapper */}
 			<div
 				className={`relative w-full ${toolbarBgClass}`}
 				onClick={(e) => {
@@ -93,7 +95,7 @@ export function SectionItemShell({
 				{showToolbar && (
 					<div className="absolute w-auto right-0 -top-8 flex justify-center z-20">
 						<div className="rounded-md bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 shadow-sm flex items-center">
-							<div
+							<button
 								className={cvToolbarIconBtnClass}
 								title="Déplacer"
 								aria-label="Déplacer"
@@ -101,7 +103,7 @@ export function SectionItemShell({
 								{...attributes}
 							>
 								<MdDragIndicator size={CV_TOOLBAR_ICON_SIZE} className="cursor-move" />
-							</div>
+							</button>
 							{toolbarExtra ? (
 								<>
 									<span className="w-px self-stretch bg-gray-200 dark:bg-gray-600" />

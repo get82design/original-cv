@@ -1,6 +1,5 @@
 import { useCreateCvContext } from "@/features/cv-editor/component/context/CreateCvContext";
 import { FieldNameExpertise } from "@/features/cv-editor/utils/fields/fieldNameExpertise";
-import { FieldNameLayoutGeneral } from "@/features/cv-editor/utils/fields/fieldNameLayoutGeneral";
 import { moduleField } from "@/features/cv-editor/utils/fields/moduleField";
 import type { ExpertiseItemContentInput } from "@/services/schemas/cvSave.schema";
 import type { ListItem } from "@utils/type";
@@ -8,7 +7,6 @@ import { useFormContext } from "react-hook-form";
 import { SectionItemShell } from "../../common-compo/section/SectionItemShell";
 import { InputTextCv } from "@/components/input-writer/input-text-cv/InputTextCv";
 import { RatingCvInput } from "../../input-cv/rating-cv/RatingCvInput";
-import type { TemplateLayout } from "@/services/schemas/cvTemplate.schema";
 import type { JSX } from "react";
 
 export interface CardExpertiseOneProps {
@@ -29,7 +27,6 @@ export const CardExpertiseOne = ({
 
 	const pathContentSettings = moduleField(watch("modules"), "expertise", "settings", "content");
 	const watchDesignExpertise = watch(`${pathContentSettings}.design`);
-	const watchGeneral = watch(FieldNameLayoutGeneral.layout);
 	const pathContent = `datas.expertise.content.${index}.content`;
 	const watchModelTitle = watch(`${pathContent}.settings.title`);
 
@@ -64,7 +61,6 @@ export const CardExpertiseOne = ({
 			onDelete={() => deleteExpertise(item)}
 		>
 			<ContentExpertiseContainer
-				general={watchGeneral}
 				expertiseCompo={
 					<InputTextCv
 						placeholder="Expertise"
@@ -88,13 +84,11 @@ export const CardExpertiseOne = ({
 };
 
 interface ContentExpertiseContainerProps {
-	general: TemplateLayout;
 	expertiseCompo: JSX.Element;
 	levelCompo: JSX.Element;
 }
 
 export const ContentExpertiseContainer = ({
-	general,
 	expertiseCompo,
 	levelCompo,
 }: ContentExpertiseContainerProps) => {

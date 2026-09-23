@@ -61,7 +61,7 @@ export function createInitPublication(opts?: {
 	settings?: PublicationContentSettings;
 }): ListItem<PublicationItemContentInput> {
 	return {
-		clientKey: "publication-" + uuid(),
+		clientKey: `publication-${uuid()}`,
 		order: opts?.order ?? 1,
 		content: {
 			title: "",

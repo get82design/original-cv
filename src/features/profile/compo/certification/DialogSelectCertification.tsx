@@ -42,7 +42,7 @@ export const DialogSelectCertification = ({
 		setTarget(event.target);
 	};
 
-	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+	// biome-ignore lint/correctness/useExhaustiveDependencies: reset picklist uniquement à l'ouverture du dialog
 	useEffect(() => {
 		if (!visible) return;
 		setTarget(listCertificationInProfile);
@@ -58,7 +58,7 @@ export const DialogSelectCertification = ({
 					(e) => !already.has(`${e.content.title}|${e.content.organismeCertification ?? ""}`),
 				),
 		);
-	}, [visible, listCertificationFromCv]);
+	}, [visible]);
 
 	const templateFooter = () => {
 		return (

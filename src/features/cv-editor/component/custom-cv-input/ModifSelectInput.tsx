@@ -62,11 +62,11 @@ export const ModifSelectInput = () => {
 				syncItemSettingsProp(getValues, setValue, selectModifInput, "textAlign", textAlign);
 		}
 		prev.current = { sizeSelect, weightSelect, colorSelect, textAlign };
-	}, [sync, canSync, sizeSelect, weightSelect, colorSelect, textAlign, setValue]);
+	}, [sync, canSync, sizeSelect, weightSelect, colorSelect, textAlign, setValue, canSyncItem, selectModifInput, getValues, canSyncSection]);
 
 	useEffect(() => {
 		prev.current = { sizeSelect, weightSelect, colorSelect, textAlign };
-	}, [selectModifInput]); // eslint: intentionnelvolontairement pas watchSelectInput ici
+	}, [/*selectModifInput,*/ colorSelect, sizeSelect, weightSelect, textAlign]); // eslint: intentionnelvolontairement pas watchSelectInput ici
 
 	return (
 		<div className="w-full flex flex-col gap-2">

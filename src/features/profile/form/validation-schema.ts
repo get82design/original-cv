@@ -243,8 +243,8 @@ export const validationSchema = z
 		skillGroups: z
 			.array(z.any())
 			.optional()
-			.superRefine((items, ctx) => {
-				items?.forEach((item, i) => {
+			.superRefine((items) => {
+				items?.forEach((item) => {
 					if (isBlankSkillGroup(item)) return;
 					// if (!item.content?.title?.trim()) {
 					// 	ctx.addIssue({
@@ -258,16 +258,16 @@ export const validationSchema = z
 		competenceGroups: z
 			.array(z.any())
 			.optional()
-			.superRefine((items, ctx) => {
-				items?.forEach((item, i) => {
+			.superRefine((items) => {
+				items?.forEach((item) => {
 					if (isBlankCompetenceGroup(item)) return;
 				});
 			}),
 		tagGroups: z
 			.array(z.any())
 			.optional()
-			.superRefine((items, ctx) => {
-				items?.forEach((item, i) => {
+			.superRefine((items) => {
+				items?.forEach((item) => {
 					if (isBlankTagGroup(item)) return;
 				});
 			}),

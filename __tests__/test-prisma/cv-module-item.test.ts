@@ -39,7 +39,7 @@ describe("CvModule model", () => {
 		it("should create multiple items in a module", async () => {
 			const { module } = await createTestModule();
 
-			const item1 = await prismaTest.cVModuleItem.create({
+			await prismaTest.cVModuleItem.create({
 				data: {
 					moduleId: module.id,
 					itemType: "cvSkillGroup",
@@ -48,7 +48,7 @@ describe("CvModule model", () => {
 				},
 			});
 
-			const item2 = await prismaTest.cVModuleItem.create({
+			await prismaTest.cVModuleItem.create({
 				data: {
 					moduleId: module.id,
 					itemType: "cvSkillGroup",

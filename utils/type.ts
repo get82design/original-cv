@@ -7,6 +7,10 @@ export interface ItemGeneralProps {
 
 export interface ListItem<T> {
 	clientKey: string;
-	order: number;
+	order?: number;
 	content: T;
 }
+
+export type WithMissions = {
+	missions?: Array<ListItem<{ content: unknown }>>;
+};

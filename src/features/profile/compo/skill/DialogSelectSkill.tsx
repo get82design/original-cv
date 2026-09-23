@@ -46,7 +46,7 @@ export const DialogSelectSkillGroup = ({
 		setTarget(event.target);
 	};
 
-	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+	// biome-ignore lint/correctness/useExhaustiveDependencies: reset picklist uniquement à l'ouverture du dialog
 	useEffect(() => {
 		if (!visible) return;
 		setTarget(listSkillGroupInProfile);
@@ -56,7 +56,7 @@ export const DialogSelectSkillGroup = ({
 				.map((exp) => cvSkillGroupToProfile(exp))
 				.filter((e) => !already.has(`${e.content.title}`)),
 		);
-	}, [visible, listSkillGroupFromCv]);
+	}, [visible]);
 
 	const templateFooter = () => {
 		return (

@@ -448,7 +448,7 @@ describe("Formation model", () => {
 
 		// 5-3: 2 profile peuvent avoir le même order, title et organismeFormation
 		it("should allow same order, title and organismeFormation for different profiles", async () => {
-			const user1 = await createTestUserWithProfile({
+			await createTestUserWithProfile({
 				formations: [
 					{
 						title: "Forma 1",
@@ -460,7 +460,7 @@ describe("Formation model", () => {
 				],
 			});
 
-			const user2 = await createTestUserWithProfile({
+			await createTestUserWithProfile({
 				formations: [
 					{
 						title: "Forma 1",

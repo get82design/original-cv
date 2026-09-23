@@ -119,10 +119,11 @@ export function AdminUsersPage() {
 			<AppCard className="admin-filters mb-4">
 				<div className="flex flex-col gap-3 lg:flex-row lg:items-end">
 					<div className="flex-1">
-						<label className="mb-1 block text-xs text-zinc-500">Recherche</label>
+						<label htmlFor="admin-users-search" className="mb-1 block text-xs text-zinc-500">Recherche</label>
 						<div className="relative w-full">
 							<i className="pi pi-search pointer-events-none absolute top-1/2 left-3 z-10 -translate-y-1/2 text-sm text-zinc-500 dark:text-zinc-400" />
 							<InputText
+								id="admin-users-search"
 								value={searchInput}
 								onChange={(e) => setSearchInput(e.target.value)}
 								placeholder="Email ou nom…"
@@ -131,8 +132,9 @@ export function AdminUsersPage() {
 						</div>
 					</div>
 					<div className="w-full lg:w-44">
-						<label className="mb-1 block text-xs text-zinc-500">Plan</label>
+						<label htmlFor="admin-users-plan" className="mb-1 block text-xs text-zinc-500">Plan</label>
 						<Dropdown
+							id="admin-users-plan"
 							value={plan}
 							options={PLAN_OPTIONS}
 							onChange={(e) => {
@@ -145,8 +147,9 @@ export function AdminUsersPage() {
 						/>
 					</div>
 					<div className="w-full lg:w-40">
-						<label className="mb-1 block text-xs text-zinc-500">Statut</label>
+						<label htmlFor="admin-users-status" className="mb-1 block text-xs text-zinc-500">Statut</label>
 						<Dropdown
+							id="admin-users-status"
 							value={isActive}
 							options={ACTIVE_OPTIONS}
 							onChange={(e) => {

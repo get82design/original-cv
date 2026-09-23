@@ -529,7 +529,7 @@ describe("Project model", () => {
 
 		// 6-3: 2 profile peuvent avoir le même order
 		it("should allow same order for different profiles", async () => {
-			const user1 = await createTestUserWithProfile({
+			await createTestUserWithProfile({
 				projects: [
 					{
 						title: "Projet 1",
@@ -544,7 +544,7 @@ describe("Project model", () => {
 				],
 			});
 
-			const user2 = await createTestUserWithProfile({
+			await createTestUserWithProfile({
 				projects: [
 					{
 						title: "Projet 2",
@@ -595,7 +595,7 @@ describe("Project model", () => {
 						title: "Default order",
 						start: new Date(),
 						missions: [],
-					} as any,
+					},
 				],
 			});
 

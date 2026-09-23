@@ -139,10 +139,11 @@ export function AdminDownloadsPage() {
 			<AppCard className="admin-filters mb-4">
 				<div className="flex flex-col gap-3 lg:flex-row lg:items-end">
 					<div className="flex-1">
-						<label className="mb-1 block text-xs text-zinc-500">Recherche</label>
+						<label htmlFor="admin-downloads-search" className="mb-1 block text-xs text-zinc-500">Recherche</label>
 						<div className="relative w-full">
 							<i className="pi pi-search pointer-events-none absolute top-1/2 left-3 z-10 -translate-y-1/2 text-sm text-zinc-500 dark:text-zinc-400" />
 							<InputText
+								id="admin-downloads-search"
 								value={searchInput}
 								onChange={(e) => setSearchInput(e.target.value)}
 								placeholder="Email utilisateur…"
@@ -151,8 +152,9 @@ export function AdminDownloadsPage() {
 						</div>
 					</div>
 					<div className="w-full lg:w-44">
-						<label className="mb-1 block text-xs text-zinc-500">Type</label>
+						<label htmlFor="admin-downloads-variant" className="mb-1 block text-xs text-zinc-500">Type</label>
 						<Dropdown
+							id="admin-downloads-variant"
 							value={variant}
 							options={VARIANT_OPTIONS}
 							onChange={(e) => {

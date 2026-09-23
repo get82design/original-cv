@@ -42,7 +42,7 @@ export const DialogSelectExpertise = ({
 		setTarget(event.target);
 	};
 
-	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+	// biome-ignore lint/correctness/useExhaustiveDependencies: reset picklist uniquement à l'ouverture du dialog
 	useEffect(() => {
 		if (!visible) return;
 		setTarget(listExpertiseInProfile);
@@ -54,7 +54,7 @@ export const DialogSelectExpertise = ({
 				.map((exp) => cvExpertiseToProfile(exp))
 				.filter((e) => !already.has(`${e.content.title}|${e.content.level ?? ""}`)),
 		);
-	}, [visible, listExpertiseFromCv]);
+	}, [visible]);
 
 	const templateFooter = () => {
 		return (

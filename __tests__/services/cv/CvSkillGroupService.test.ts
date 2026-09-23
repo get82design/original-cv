@@ -76,12 +76,12 @@ describe("CvSkillGroupService.findAllByCvId", () => {
 		const user = await createTestUser();
 		const template = await createTestTemplate();
 		const cv = await createCV(user.id, template.id);
-		const skillGroup = await cvSkillGroupService.create(cv.id, {
+		await cvSkillGroupService.create(cv.id, {
 			title: "Skill Group 1",
 			order: 1,
 			skills: [],
 		});
-		const skillGroup2 = await cvSkillGroupService.create(cv.id, {
+		await cvSkillGroupService.create(cv.id, {
 			title: "Skill Group 2",
 			order: 2,
 			skills: [],
@@ -107,7 +107,7 @@ describe("CvSkillGroupService.findAllByCvId", () => {
 		const template = await createTestTemplate();
 		const cv = await createCV(user.id, template.id);
 		const cv2 = await createCV(user.id, template.id);
-		const skillGroup = await cvSkillGroupService.create(cv.id, {
+		await cvSkillGroupService.create(cv.id, {
 			title: "Skill Group 1",
 			order: 1,
 			skills: [],
@@ -265,7 +265,7 @@ describe("CvSkillGroupService.delete", () => {
 			order: 1,
 			skills: [],
 		});
-		const skillGroup2 = await cvSkillGroupService.create(cv.id, {
+		await cvSkillGroupService.create(cv.id, {
 			title: "Skill Group 2",
 			order: 2,
 			skills: [],

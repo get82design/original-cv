@@ -34,13 +34,13 @@ export function createInitSkill(opts?: {
 	settings?: SkillContentSettings;
 }): ListItem<SkillGroupItemContentInput> {
 	return {
-		clientKey: "skillGroup-" + uuid(),
+		clientKey: `skillGroup-${uuid()}`,
 		order: opts?.order ?? 1,
 		content: {
-			title: "skill group " + uuid(),
+			title: `skill group ${uuid()}`,
 			skills: [
 				{
-					clientKey: "skill-" + uuid(),
+					clientKey: `skill-${uuid()}`,
 					order: 1,
 					content: {
 						name: "",

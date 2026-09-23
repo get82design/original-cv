@@ -46,7 +46,7 @@ export const ProfileCompetence = ({ cvs }: { cvs: CV[] }) => {
 	const { data: cvSelected } = trpc.cv.byId.useQuery({ id: idCv ?? "" }, { enabled: !!idCv });
 	const [visibleSelect, setVisibleSelect] = useState(false);
 
-	const { control, watch, setValue } = useFormContext<ProfileSaveInput>();
+	const { control } = useFormContext<ProfileSaveInput>();
 	const { fields, append, remove, replace } = useFieldArray({
 		control,
 		name: "competenceGroups",
@@ -140,7 +140,7 @@ export const ProfileCompetence = ({ cvs }: { cvs: CV[] }) => {
 									{openDelete && (
 										<Checkbox
 											checked={toDelete.has(field.clientKey)}
-											onChange={(e) => toggle(field.clientKey)}
+											onChange={() => toggle(field.clientKey)}
 										/>
 									)}
 									<TextareaProfile

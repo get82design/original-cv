@@ -22,7 +22,6 @@ import {
 	buildTagModule,
 } from "./buildTemplateModules";
 import type {
-	CreateCvTemplateInput,
 	createCvTemplateSchema,
 	TemplateLayout,
 } from "@/services/schemas/cvTemplate.schema";
@@ -36,6 +35,11 @@ export const sharedLayout = {
 	space: "md",
 	withPhoto: false,
 	stylePhoto: "flat",
+	headerPrimaryColor: false,
+	photoSide: "left",
+	sidebarSide: "left",
+	headerPlacement: "top",
+	lockPhotoSide: false,
 	titleSection: {
 		textTransform: "capitalize",
 		withIcon: false,

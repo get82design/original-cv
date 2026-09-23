@@ -493,7 +493,7 @@ describe("Publication model", () => {
 
 		// 6-3: 2 profile peuvent avoir le même order
 		it("should allow same order for different profiles", async () => {
-			const user1 = await createTestUserWithProfile({
+			await createTestUserWithProfile({
 				publications: [
 					{
 						title: "Publication 1",
@@ -507,7 +507,7 @@ describe("Publication model", () => {
 				],
 			});
 
-			const user2 = await createTestUserWithProfile({
+			await createTestUserWithProfile({
 				publications: [
 					{
 						title: "Publication 2",

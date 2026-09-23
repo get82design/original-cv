@@ -44,6 +44,7 @@ const defaultSettings: FormationContentSettings = {
 	withOrganismeFormation: true,
 	withPeriode: true,
 	withStatus: true,
+	columns: 1,
 };
 
 export function createInitFormation(opts?: {
@@ -51,7 +52,7 @@ export function createInitFormation(opts?: {
 	settings?: FormationContentSettings;
 }): ListItem<FormationItemContentInput> {
 	return {
-		clientKey: "formation-" + uuid(),
+		clientKey: `formation-${uuid()}`,
 		order: opts?.order ?? 1,
 		content: {
 			title: "",

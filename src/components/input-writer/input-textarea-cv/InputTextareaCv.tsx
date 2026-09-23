@@ -52,11 +52,10 @@ export const TextareaCv = ({
 	const ref = useRef<HTMLTextAreaElement>(null);
 	const wrapperRef = useRef<HTMLSpanElement>(null);
 	const op = useRef<OverlayPanel>(null);
-	const { control, watch } = useFormContext();
+	const { control } = useFormContext();
 	const color = useInputCvColor(textColor);
 	const { getSize, getWeight } = useChangeTextFormat(dataInput);
 	const isLg = useMediaQuery("(min-width: 1024px)");
-	const value = watch(name);
 	const fontSize = getSize();
 	const fontWeight = getWeight();
 
@@ -70,25 +69,25 @@ export const TextareaCv = ({
 		let raf = 0;
 		let cancelled = false;
 
-		const fit = () => {
+		const fitHeight = () => {
 			if (cancelled) return;
 			if (!fitTextareaHeight(el)) {
-				raf = requestAnimationFrame(fit);
+				raf = requestAnimationFrame(fitHeight);
 			}
 		};
 
-		fit();
-		const ro = new ResizeObserver(fit);
+		fitHeight();
+		const ro = new ResizeObserver(fitHeight);
 		ro.observe(wrapper);
-		window.addEventListener(CV_TEXTAREA_RECALC_EVENT, fit);
+		window.addEventListener(CV_TEXTAREA_RECALC_EVENT, fitHeight);
 
 		return () => {
 			cancelled = true;
 			cancelAnimationFrame(raf);
 			ro.disconnect();
-			window.removeEventListener(CV_TEXTAREA_RECALC_EVENT, fit);
+			window.removeEventListener(CV_TEXTAREA_RECALC_EVENT, fitHeight);
 		};
-	}, [value, fontSize, fontWeight, textAlign, color]);
+	}, [color]);
 
 	return (
 		<span ref={wrapperRef} className={`w-full ${className}`}>
@@ -127,8 +126,8 @@ export const TextareaCv = ({
 									return false;
 								}
 							}}
-							onFocus={(e) => op.current && op.current.show(e, e.target)}
-							onBlur={(e) => op.current && op.current.hide()}
+							onFocus={(e) => op.current?.show(e, e.target)}
+							onBlur={() => op.current?.hide()}
 							autoResize
 							ref={ref}
 							{...props}

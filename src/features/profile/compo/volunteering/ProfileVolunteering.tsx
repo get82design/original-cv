@@ -21,7 +21,7 @@ import { DialogSelectVolunteering } from "./DialogSelectVolunteering";
 
 export function createEmptyVolunteering(opts?: { order?: number }): ListItem<VolunteeringInput> {
 	return {
-		clientKey: "volunteering-" + uuid(),
+		clientKey: `volunteering-${uuid()}`,
 		order: opts?.order ?? 1,
 		content: {
 			title: "",
@@ -37,7 +37,7 @@ export function createEmptyVolunteering(opts?: { order?: number }): ListItem<Vol
 
 export function createEmptyMission(order = 0) {
 	return {
-		clientKey: "mission-" + uuid(),
+		clientKey: `mission-${uuid()}`,
 		order,
 		content: { content: "" },
 	};
@@ -52,7 +52,7 @@ export const ProfileVolunteering = ({ cvs }: { cvs: CV[] }) => {
 	const { data: cvSelected } = trpc.cv.byId.useQuery({ id: idCv ?? "" }, { enabled: !!idCv });
 	const [visibleSelect, setVisibleSelect] = useState(false);
 
-	const { control, watch, setValue } = useFormContext<ProfileSaveInput>();
+	const { control } = useFormContext<ProfileSaveInput>();
 	const { fields, append, remove, replace } = useFieldArray({
 		control,
 		name: "volunteerings",

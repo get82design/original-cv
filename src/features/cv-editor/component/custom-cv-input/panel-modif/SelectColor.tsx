@@ -14,7 +14,7 @@ export const SelectColor = ({ watchSelectInput, select }: SelectColorProps) => {
 	const [primaryColor, setPrimaryColor] = useState("");
 	useEffect(() => {
 		if (watchPrimaryColor) {
-			setPrimaryColor("--" + watchPrimaryColor.name + watchPrimaryColor.primary);
+			setPrimaryColor(`--${watchPrimaryColor.name}${watchPrimaryColor.primary}`);
 		}
 	}, [watchPrimaryColor]);
 	return (
@@ -23,7 +23,7 @@ export const SelectColor = ({ watchSelectInput, select }: SelectColorProps) => {
 			<div className="w-full flex gap-1.5 items-center">
 				<RadioColorRhf
 					index={4}
-					name={select + ".colorSelect"}
+					name={`${select}.colorSelect`}
 					color={"--white"}
 					value={"white"}
 					checked={watchSelectInput?.colorSelect === "white"}
@@ -31,7 +31,7 @@ export const SelectColor = ({ watchSelectInput, select }: SelectColorProps) => {
 				/>
 				<RadioColorRhf
 					index={1}
-					name={select + ".colorSelect"}
+					name={`${select}.colorSelect`}
 					color={"--black"}
 					value={"black"}
 					checked={watchSelectInput?.colorSelect === "black"}
@@ -39,16 +39,16 @@ export const SelectColor = ({ watchSelectInput, select }: SelectColorProps) => {
 				/>
 				<RadioColorRhf
 					index={2}
-					name={select + ".colorSelect"}
+					name={`${select}.colorSelect`}
 					color={"--gray-700"}
 					value={"gray"}
 					checked={watchSelectInput?.colorSelect === "gray"}
 					swatchSize="sm"
 				/>
-				{watch(select + ".withPrimaryColor") && watchPrimaryColor && (
+				{watch(`${select}.withPrimaryColor`) && watchPrimaryColor && (
 					<RadioColorRhf
 						index={3}
-						name={select + ".colorSelect"}
+						name={`${select}.colorSelect`}
 						color={primaryColor}
 						value={"primaryColor"}
 						checked={watchSelectInput?.colorSelect === "primaryColor"}

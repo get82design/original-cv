@@ -5,7 +5,6 @@ import { createCV } from "../../utils/create-test-cv-full-flow";
 import { competenceService } from "../../../src/services/commons/competenceService";
 import { createTestTemplate } from "../../utils/create-test-template";
 import { createTestUser } from "../../utils/create-test-user";
-import { Level } from "../../../generated/prisma/enums";
 import { ConflictError, NotFoundError } from "../../../src/services/errors";
 import { expectMoveNoOp } from "../../utils/move-noop";
 
@@ -34,9 +33,6 @@ describe("CvCompetenceService.create", () => {
 	});
 
 	it("throws if group does not exist", async () => {
-		const user = await createTestUser();
-		const template = await createTestTemplate();
-		const cv = await createCV(user.id, template.id);
 		await expect(
 			cvCompetenceService.create("unknown-group", {
 				competenceId: "unknown-competence",
@@ -382,7 +378,7 @@ describe("CvCompetenceService.move", () => {
 		const competence2 = await competenceService.create({
 			name: "Competence 2",
 		});
-		const cvCompetence2 = await cvCompetenceService.create(competenceGroup1.id, {
+		await cvCompetenceService.create(competenceGroup1.id, {
 			competenceId: competence2.id,
 			order: 2,
 		});
@@ -490,7 +486,7 @@ describe("CvCompetenceService.delete", () => {
 		const competence2 = await competenceService.create({
 			name: "Competence 2",
 		});
-		const cvCompetence2 = await cvCompetenceService.create(competenceGroup.id, {
+		await cvCompetenceService.create(competenceGroup.id, {
 			competenceId: competence2.id,
 			order: 2,
 		});

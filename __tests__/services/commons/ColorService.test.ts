@@ -89,7 +89,7 @@ describe("ColorService.findById", () => {
 
 describe("ColorService.findByName", () => {
 	it("returns a color by name", async () => {
-		const color = await colorService.create({
+		await colorService.create({
 			name: "Red",
 			primary: "#FF0000",
 		});

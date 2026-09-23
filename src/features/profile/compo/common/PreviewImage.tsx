@@ -1,5 +1,6 @@
 import type { JSX } from "react";
 import type { CV } from "../../CompoPage";
+import Image from "next/image";
 
 interface PreviewImageProps {
 	cv: CV;
@@ -13,8 +14,10 @@ export const PreviewImage = ({ cv, action, width }: PreviewImageProps) => {
 
 	return (
 		<div className={`${width} relative shadow-md group overflow-hidden rounded`}>
-			<img
+			<Image
 				src={src}
+				width={794}   // ~A4 à 96dpi en largeur
+				height={1123} // 794 × 1.414
 				alt={cv.title}
 				className="w-full aspect-[1/1.414] object-cover object-top bg-gray-100"
 				onError={(e) => {

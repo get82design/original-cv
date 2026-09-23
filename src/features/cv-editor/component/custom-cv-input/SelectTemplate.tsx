@@ -24,11 +24,12 @@ export const SelectTemplate = () => {
 
 	return (
 		<div className="w-full grid grid-cols-2 gap-4 px-2 py-2">
-			{modeles.map((model, idx) => {
+			{modeles.map((model) => {
 				const selected = watchTemplateId === model.id;
 				const locked = isTemplateLocked(model, unlockedIds);
 				return (
-					<div
+					<button
+						type="button"
 						className="group w-full h-56 rounded-lg shadow-md relative overflow-hidden cursor-pointer"
 						style={{
 							border: selected ? "solid 2px var(--primary-color)" : "",
@@ -37,7 +38,7 @@ export const SelectTemplate = () => {
 							backgroundPosition: "top center",
 							backgroundRepeat: "no-repeat",
 						}}
-						key={idx}
+						key={model.id}
 						onClick={() => {
 							const next = switchTemplate(getValues() as CvFormValues, model, {
 								updateModules: true,
@@ -57,7 +58,7 @@ export const SelectTemplate = () => {
 						<p className="absolute bottom-0 inset-x-0 z-20 text-center text-sm font-semibold px-2 py-1 bg-black/40 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-150">
 							{model.name}
 						</p>
-					</div>
+					</button>
 				);
 			})}
 		</div>

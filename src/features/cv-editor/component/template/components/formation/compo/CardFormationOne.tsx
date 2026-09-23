@@ -48,7 +48,7 @@ export const CardFormationOne = ({
 	const watchModelTitleOfFormation = watch(`${pathContent}.settings.title`);
 	const watchModelOrganismeFormation = watch(`${pathContent}.settings.organismeFormation`);
 	const watchModelYearOfFormation = watch(`${pathContent}.settings.periode`);
-	const watchModelStatusOfFormation = watch(`${pathContent}.settings.status`);
+	// const watchModelStatusOfFormation = watch(`${pathContent}.settings.status`);
 
 	const deleteFormation = (itemToDelete: ListItem<FormationItemContentInput>) => {
 		const list = (getValues(FieldNameFormation.content) ??

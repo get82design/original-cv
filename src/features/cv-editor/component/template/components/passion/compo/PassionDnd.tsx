@@ -29,7 +29,7 @@ export const PassionDnd = ({
 	colOfPassion,
 	CardComponent,
 }: PassionDndProps) => {
-	const { setSectionSelected, sectionSelected } = useCreateCvContext();
+	const { sectionSelected } = useCreateCvContext();
 	const itemsMenu = (idx: number) => {
 		const pathContent = dataFieldContent("datas.passion.content", idx, "content.settings");
 		return [
@@ -63,7 +63,6 @@ export const PassionDnd = ({
 					passions={watchPassions}
 					itemSelected={itemSelected}
 					setItemSelected={setItemSelected}
-					setSectionSelected={setSectionSelected}
 					showAddPassion={showAddPassion}
 					createNewItem={createNewItem}
 					itemsMenu={itemsMenu}
@@ -78,7 +77,6 @@ interface CompoPassionDndProps {
 	passions: ListItem<PassionItemContentInput>[];
 	itemSelected: string;
 	setItemSelected: (e: string) => void;
-	setSectionSelected: (e: string) => void;
 	showAddPassion: boolean;
 	createNewItem: () => ListItem<PassionItemContentInput>;
 	itemsMenu: (idx: number) => {
@@ -94,7 +92,6 @@ export const CompoPassionDnd = ({
 	passions,
 	itemSelected,
 	setItemSelected,
-	setSectionSelected,
 	showAddPassion,
 	createNewItem,
 	itemsMenu,

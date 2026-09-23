@@ -122,6 +122,7 @@ export function buildModules(tokens: ThemeTokens, overrides: ModuleOverrides = {
 		const o = overrides[key] ?? {};
 		// `column` = placement page (pas les builders) ; `columns` = grille interne (passé via ...rest)
 		const { column, ...rest } = o;
+    // biome-ignore lint/performance/noDynamicNamespaceImportAccess: seed-only
 		const built = builders[`build${capitalize(key)}Module` as ModuleBuilderName](tokens, {
 			order: o.order ?? i + 1,
 			title: o.title ?? DEFAULT_TITLES[key],

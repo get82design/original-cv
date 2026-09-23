@@ -252,7 +252,7 @@ describe("ProfileStrengthService.delete", () => {
 	it("reorders remaining strengths after deletion", async () => {
 		const user = await createTestUser();
 		const profile = await createTestProfile(user.id, "John", "Doe");
-		const autonomy = await profileStrengthService.create(profile.id, {
+		await profileStrengthService.create(profile.id, {
 			title: "Autonomie",
 			order: 1,
 		});

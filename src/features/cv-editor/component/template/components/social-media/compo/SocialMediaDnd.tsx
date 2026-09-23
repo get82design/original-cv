@@ -28,7 +28,7 @@ export const SocialMediaDnd = ({
 	colOfSocialMedia,
 	CardComponent,
 }: SocialMediaDndProps) => {
-	const { setSectionSelected, sectionSelected } = useCreateCvContext();
+	const { sectionSelected } = useCreateCvContext();
 	const showAddSocialMedia = sectionSelected === "section-socialMedia";
 	return (
 		<SortableContext
@@ -42,7 +42,6 @@ export const SocialMediaDnd = ({
 					socialMedias={watchSocialMedias}
 					itemSelected={itemSelected}
 					setItemSelected={setItemSelected}
-					setSectionSelected={setSectionSelected}
 					showAddSocialMedia={showAddSocialMedia}
 					createNewItem={createNewItem}
 					CardComponent={CardComponent}
@@ -56,7 +55,6 @@ interface CompoSocialMediaDndProps {
 	socialMedias: ListItem<SocialMediaItemContentInput>[];
 	itemSelected: string;
 	setItemSelected: (e: string) => void;
-	setSectionSelected: (e: string) => void;
 	showAddSocialMedia: boolean;
 	createNewItem: () => ListItem<SocialMediaItemContentInput>;
 	CardComponent: React.ComponentType<SocialMediaCardProps>;
@@ -66,7 +64,6 @@ export const CompoSocialMediaDnd = ({
 	socialMedias,
 	itemSelected,
 	setItemSelected,
-	setSectionSelected,
 	showAddSocialMedia,
 	createNewItem,
 	CardComponent,

@@ -1,6 +1,7 @@
 import { Dialog } from "primereact/dialog";
 import { Button } from "primereact/button";
 import { useState } from "react";
+import Image from "next/image";
 
 export type DownloadCvMode = "free" | "paid";
 
@@ -167,10 +168,18 @@ export const DialogDownloadCv = ({
 					</p>
 					<div className="relative overflow-hidden rounded-lg border border-zinc-200 dark:border-zinc-700 bg-zinc-100 dark:bg-zinc-900">
 						{previewUrl ? (
-							<img
+							// <img
+							// 	src={previewUrl}
+							// 	alt={title}
+							// 	className="block w-full aspect-[1/1.414] object-cover object-top"
+							// />
+							<Image
 								src={previewUrl}
 								alt={title}
+								width={794}   // ~A4 à 96dpi en largeur
+								height={1123} // 794 × 1.414
 								className="block w-full aspect-[1/1.414] object-cover object-top"
+								unoptimized // si blob: / data URL
 							/>
 						) : (
 							<div className="flex aspect-[1/1.414] w-full flex-col items-center justify-center gap-2 px-6 text-center">

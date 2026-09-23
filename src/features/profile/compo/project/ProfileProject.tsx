@@ -20,7 +20,7 @@ import { DialogSelectProject } from "./DialogSelectProject";
 
 export function createEmptyProject(opts?: { order?: number }): ListItem<ProjectInput> {
 	return {
-		clientKey: "project-" + uuid(),
+		clientKey: `project-${uuid()}`,
 		order: opts?.order ?? 1,
 		content: {
 			title: "",
@@ -37,7 +37,7 @@ export function createEmptyProject(opts?: { order?: number }): ListItem<ProjectI
 
 export function createEmptyMission(order = 0) {
 	return {
-		clientKey: "mission-" + uuid(),
+		clientKey: `mission-${uuid()}`,
 		order,
 		content: { content: "" },
 	};

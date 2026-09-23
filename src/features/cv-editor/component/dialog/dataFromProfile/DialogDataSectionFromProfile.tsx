@@ -394,7 +394,7 @@ export const DialogDataSectionFromProfile = ({
 				},
 			),
 		);
-	}, [visible, sectionName]);
+	}, [visible, cvSection]);
 
 	const onValidate = () => {
 		if (draft) setValue(`datas.${datasKey}`, draft, { shouldDirty: true });
@@ -447,7 +447,7 @@ export const DialogDataSectionFromProfile = ({
 				<ScalarTransfer
 					profileText={profile?.philosophy?.citation ?? ""}
 					cvText={(draft?.content as { citation?: string })?.citation ?? ""}
-					onApply={(text) =>
+					onApply={() =>
 						setDraft(
 							(d) =>
 								d && {
@@ -472,7 +472,7 @@ export const DialogDataSectionFromProfile = ({
 						profile?.experiences ?? [],
 						cvSection?.content?.[0]?.content?.settings ?? createInitExperience().content.settings,
 					)}
-					target={(draft?.content as any[]) ?? []}
+					target={Array.isArray(draft?.content) ? draft.content : []}
 					onChange={(next) => setDraft((d) => d && { ...d, content: next })}
 					getKey={(item) => `${item.content.title}|${item.content.company ?? ""}`}
 					itemTemplate={(item) => <p className="font-semibold">{item.content.title}</p>}
@@ -484,7 +484,7 @@ export const DialogDataSectionFromProfile = ({
 						profile?.achievements ?? [],
 						cvSection?.content?.[0]?.content?.settings ?? createInitAchievement().content.settings,
 					)}
-					target={(draft?.content as any[]) ?? []}
+					target={Array.isArray(draft?.content) ? draft.content : []}
 					onChange={(next) => setDraft((d) => d && { ...d, content: next })}
 					getKey={(item) => `${item.content.title}|${item.content.technology ?? ""}`}
 					itemTemplate={(item) => <p className="font-semibold">{item.content.title}</p>}
@@ -497,7 +497,7 @@ export const DialogDataSectionFromProfile = ({
 						cvSection?.content?.[0]?.content?.settings ??
 							createInitCertification().content.settings,
 					)}
-					target={(draft?.content as any[]) ?? []}
+					target={Array.isArray(draft?.content) ? draft.content : []}
 					onChange={(next) => setDraft((d) => d && { ...d, content: next })}
 					getKey={(item) => `${item.content.title}|${item.content.organismeCertification ?? ""}`}
 					itemTemplate={(item) => <p className="font-semibold">{item.content.title}</p>}
@@ -509,7 +509,7 @@ export const DialogDataSectionFromProfile = ({
 						profile?.educations ?? [],
 						cvSection?.content?.[0]?.content?.settings ?? createInitEducation().content.settings,
 					)}
-					target={(draft?.content as any[]) ?? []}
+					target={Array.isArray(draft?.content) ? draft.content : []}
 					onChange={(next) => setDraft((d) => d && { ...d, content: next })}
 					getKey={(item) => `${item.content.title}|${item.content.school ?? ""}`}
 					itemTemplate={(item) => <p className="font-semibold">{item.content.title}</p>}
@@ -521,7 +521,7 @@ export const DialogDataSectionFromProfile = ({
 						profile?.expertises ?? [],
 						cvSection?.content?.[0]?.content?.settings ?? createInitExpertise().content.settings,
 					)}
-					target={(draft?.content as any[]) ?? []}
+					target={Array.isArray(draft?.content) ? draft.content : []}
 					onChange={(next) => setDraft((d) => d && { ...d, content: next })}
 					getKey={(item) => `${item.content.title}|${item.content.level ?? ""}`}
 					itemTemplate={(item) => <p className="font-semibold">{item.content.title}</p>}
@@ -533,7 +533,7 @@ export const DialogDataSectionFromProfile = ({
 						profile?.formations ?? [],
 						cvSection?.content?.[0]?.content?.settings ?? createInitFormation().content.settings,
 					)}
-					target={(draft?.content as any[]) ?? []}
+					target={Array.isArray(draft?.content) ? draft.content : []}
 					onChange={(next) => setDraft((d) => d && { ...d, content: next })}
 					getKey={(item) => `${item.content.title}|${item.content.organismeFormation ?? ""}`}
 					itemTemplate={(item) => <p className="font-semibold">{item.content.title}</p>}
@@ -545,7 +545,7 @@ export const DialogDataSectionFromProfile = ({
 						profile?.languages ?? [],
 						cvSection?.content?.[0]?.content?.settings ?? createInitLanguage().content.settings,
 					)}
-					target={(draft?.content as any[]) ?? []}
+					target={Array.isArray(draft?.content) ? draft.content : []}
 					onChange={(next) => setDraft((d) => d && { ...d, content: next })}
 					getKey={(item) => `${item.content.name}|${item.content.level ?? ""}`}
 					itemTemplate={(item) => <p className="font-semibold">{item.content.name}</p>}
@@ -557,7 +557,7 @@ export const DialogDataSectionFromProfile = ({
 						profile?.passions ?? [],
 						cvSection?.content?.[0]?.content?.settings ?? createInitPassion().content.settings,
 					)}
-					target={(draft?.content as any[]) ?? []}
+					target={Array.isArray(draft?.content) ? draft.content : []}
 					onChange={(next) => setDraft((d) => d && { ...d, content: next })}
 					getKey={(item) => `${item.content.title}|${item.content.icon ?? ""}`}
 					itemTemplate={(item) => <p className="font-semibold">{item.content.title}</p>}
@@ -569,7 +569,7 @@ export const DialogDataSectionFromProfile = ({
 						profile?.prizes ?? [],
 						cvSection?.content?.[0]?.content?.settings ?? createInitPrize().content.settings,
 					)}
-					target={(draft?.content as any[]) ?? []}
+					target={Array.isArray(draft?.content) ? draft.content : []}
 					onChange={(next) => setDraft((d) => d && { ...d, content: next })}
 					getKey={(item) => `${item.content.title}|${item.content.domaine ?? ""}`}
 					itemTemplate={(item) => <p className="font-semibold">{item.content.title}</p>}
@@ -581,7 +581,7 @@ export const DialogDataSectionFromProfile = ({
 						profile?.projects ?? [],
 						cvSection?.content?.[0]?.content?.settings ?? createInitProject().content.settings,
 					)}
-					target={(draft?.content as any[]) ?? []}
+					target={Array.isArray(draft?.content) ? draft.content : []}
 					onChange={(next) => setDraft((d) => d && { ...d, content: next })}
 					getKey={(item) => `${item.content.title}|${item.content.technology ?? ""}`}
 					itemTemplate={(item) => <p className="font-semibold">{item.content.title}</p>}
@@ -593,7 +593,7 @@ export const DialogDataSectionFromProfile = ({
 						profile?.publications ?? [],
 						cvSection?.content?.[0]?.content?.settings ?? createInitPublication().content.settings,
 					)}
-					target={(draft?.content as any[]) ?? []}
+					target={Array.isArray(draft?.content) ? draft.content : []}
 					onChange={(next) => setDraft((d) => d && { ...d, content: next })}
 					getKey={(item) => `${item.content.title}|${item.content.journalName ?? ""}`}
 					itemTemplate={(item) => <p className="font-semibold">{item.content.title}</p>}
@@ -605,7 +605,7 @@ export const DialogDataSectionFromProfile = ({
 						profile?.socialMedias ?? [],
 						cvSection?.content?.[0]?.content?.settings ?? createInitSocialMedia().content.settings,
 					)}
-					target={(draft?.content as any[]) ?? []}
+					target={Array.isArray(draft?.content) ? draft.content : []}
 					onChange={(next) => setDraft((d) => d && { ...d, content: next })}
 					getKey={(item) => `${item.content.socialNetwork}|${item.content.username ?? ""}`}
 					itemTemplate={(item) => <p className="font-semibold">{item.content.socialNetwork}</p>}
@@ -617,7 +617,7 @@ export const DialogDataSectionFromProfile = ({
 						profile?.strengths ?? [],
 						cvSection?.content?.[0]?.content?.settings ?? createInitStrength().content.settings,
 					)}
-					target={(draft?.content as any[]) ?? []}
+					target={Array.isArray(draft?.content) ? draft.content : []}
 					onChange={(next) => setDraft((d) => d && { ...d, content: next })}
 					getKey={(item) => `${item.content.title}|${item.content.icon ?? ""}`}
 					itemTemplate={(item) => <p className="font-semibold">{item.content.title}</p>}
@@ -629,7 +629,7 @@ export const DialogDataSectionFromProfile = ({
 						profile?.volunteerings ?? [],
 						cvSection?.content?.[0]?.content?.settings ?? createInitVolunteering().content.settings,
 					)}
-					target={(draft?.content as any[]) ?? []}
+					target={Array.isArray(draft?.content) ? draft.content : []}
 					onChange={(next) => setDraft((d) => d && { ...d, content: next })}
 					getKey={(item) => `${item.content.title}|${item.content.organisation ?? ""}`}
 					itemTemplate={(item) => <p className="font-semibold">{item.content.title}</p>}

@@ -111,7 +111,7 @@ export function useCvPageDnd(
 	const handleSectionDragEnd = (
 		activeId: string | number,
 		overId: string | number,
-		activeData: Record<string, unknown>,
+		// activeData: Record<string, unknown>,
 		overData: Record<string, unknown> | undefined,
 	) => {
 		const activeCol = findColumnOf(activeId);
@@ -209,7 +209,7 @@ export function useCvPageDnd(
 			handleSectionDragEnd(
 				active.id,
 				over.id,
-				activeData as Record<string, unknown>,
+				// activeData as Record<string, unknown>,
 				overData as Record<string, unknown> | undefined,
 			);
 			return;

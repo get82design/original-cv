@@ -6,6 +6,11 @@ export const sharedLayout = {
 	space: "md",
 	withPhoto: false,
 	stylePhoto: "flat",
+	photoSide: "left",
+	sidebarSide: "left",
+	headerPlacement: "top",
+	lockPhotoSide: false,
+	headerPrimaryColor: false,
 	titleSection: {
 		textTransform: "capitalize",
 		withIcon: false,

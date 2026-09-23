@@ -51,7 +51,7 @@ describe("Achievement model", () => {
 						title: "Test",
 						year: 2020,
 						order: 1,
-					} as any,
+					},
 				],
 			});
 
@@ -71,7 +71,7 @@ describe("Achievement model", () => {
 					data: {
 						title: "Test",
 						description: "Test",
-						year: "2020" as any, // faux type
+						year: 2020, // faux type
 						technology: "Test",
 						order: 1,
 						profile: { connect: { id: user.profile.id } },

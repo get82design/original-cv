@@ -26,6 +26,7 @@ const defaultSettings: PrizeContentSettings = {
 	withDomain: true,
 	withIcon: true,
 	iconColor: "primaryColor",
+	columns: 1,
 };
 
 export function createInitPrize(opts?: {
@@ -33,7 +34,7 @@ export function createInitPrize(opts?: {
 	settings?: PrizeContentSettings;
 }): ListItem<PrizeItemContentInput> {
 	return {
-		clientKey: "prize-" + uuid(),
+		clientKey: `prize-${uuid()}`,
 		order: opts?.order ?? 0,
 		content: {
 			title: "",

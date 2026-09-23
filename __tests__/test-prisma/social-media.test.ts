@@ -376,7 +376,7 @@ describe("SocialMedia model", () => {
 
 		// 6-3: 2 profile peuvent avoir le même order
 		it("should allow same order for different profiles", async () => {
-			const user1 = await createTestUserWithProfile({
+			await createTestUserWithProfile({
 				socialMedias: [
 					{
 						socialNetwork: "facebook",
@@ -387,7 +387,7 @@ describe("SocialMedia model", () => {
 				],
 			});
 
-			const user2 = await createTestUserWithProfile({
+			await createTestUserWithProfile({
 				socialMedias: [
 					{
 						socialNetwork: "facebook",

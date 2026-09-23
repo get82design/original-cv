@@ -1,11 +1,9 @@
 import { useCreateCvContext } from "@/features/cv-editor/component/context/CreateCvContext";
-import { FieldNameLayoutGeneral } from "@/features/cv-editor/utils/fields/fieldNameLayoutGeneral";
 import type { ListItem } from "@utils/type";
 import { useFormContext } from "react-hook-form";
 import { SectionItemShell } from "../../common-compo/section/SectionItemShell";
 import { InputTextCv } from "@/components/input-writer/input-text-cv/InputTextCv";
 import { RatingCvInput } from "../../input-cv/rating-cv/RatingCvInput";
-import type { TemplateLayout } from "@/services/schemas/cvTemplate.schema";
 import type { JSX } from "react";
 
 export type CardSkillOneProps = {
@@ -30,7 +28,6 @@ export const CardSkillOne = ({
 	const { watch, getValues, setValue } = useFormContext();
 	const { setSelectModifInput, setSelectInputForm } = useCreateCvContext();
 
-	const watchGeneral = watch(FieldNameLayoutGeneral.layout);
 	const pathContent = `datas.skillGroup.content.${groupIndex}.content.skills.${index}.content`;
 	const watchModelSkill = watch(`datas.skillGroup.content.${groupIndex}.content.settings.skills`);
 	const watchDesignSkill = watch(`datas.skillGroup.content.${groupIndex}.content.settings.design`);
@@ -68,8 +65,6 @@ export const CardSkillOne = ({
 			// pas de leading / toolbarExtra
 		>
 			<ContentSkillContainer
-				general={watchGeneral}
-				item={item}
 				skillCompo={
 					<InputTextCv
 						placeholder="Skill"
@@ -93,15 +88,11 @@ export const CardSkillOne = ({
 };
 
 interface ContentSkillContainerProps {
-	general: TemplateLayout;
-	item: ListItem<unknown>;
 	skillCompo: JSX.Element;
 	levelCompo: JSX.Element;
 }
 
 export const ContentSkillContainer = ({
-	general,
-	item,
 	skillCompo,
 	levelCompo,
 }: ContentSkillContainerProps) => {

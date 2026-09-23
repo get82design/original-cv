@@ -46,6 +46,7 @@ export default function Home() {
 				<meta name="twitter:description" content={PAGE_DESCRIPTION} />
 				<script
 					type="application/ld+json"
+					 // biome-ignore lint/security/noDangerouslySetInnerHtml: JSON-LD SEO, données app contrôlées
 					dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
 				/>
 			</Head>

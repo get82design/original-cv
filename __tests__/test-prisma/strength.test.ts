@@ -278,11 +278,11 @@ describe("Strength model", () => {
 
 		// 6-3: 2 profile peuvent avoir le même order
 		it("should allow same order for different profiles", async () => {
-			const user1 = await createTestUserWithProfile({
+			await createTestUserWithProfile({
 				strengths: [{ title: "Atout 1", order: 1 }],
 			});
 
-			const user2 = await createTestUserWithProfile({
+			await createTestUserWithProfile({
 				strengths: [{ title: "Atout 2", order: 1 }],
 			});
 
@@ -296,7 +296,7 @@ describe("Strength model", () => {
 				strengths: [
 					{
 						title: "Default Order",
-					} as any,
+					},
 				],
 			});
 

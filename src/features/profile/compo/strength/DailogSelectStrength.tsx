@@ -43,7 +43,7 @@ export function DialogSelectStrength({
 		setTarget(event.target);
 	};
 
-	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+	// biome-ignore lint/correctness/useExhaustiveDependencies: reset picklist uniquement à l'ouverture du dialog
 	useEffect(() => {
 		if (!visible) return;
 		setTarget(listStrengthInProfile);
@@ -55,7 +55,7 @@ export function DialogSelectStrength({
 				.map((exp) => cvStrengthToProfile(exp))
 				.filter((e) => !already.has(`${e.content.title}|${e.content.icon ?? ""}`)),
 		);
-	}, [visible, listStrengthFromCv]);
+	}, [visible]);
 
 	const templateFooter = () => {
 		return (

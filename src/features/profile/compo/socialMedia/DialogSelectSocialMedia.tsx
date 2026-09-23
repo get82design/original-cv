@@ -43,7 +43,7 @@ export function DialogSelectSocialMedia({
 		setTarget(event.target);
 	};
 
-	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+	// biome-ignore lint/correctness/useExhaustiveDependencies: reset picklist uniquement à l'ouverture du dialog
 	useEffect(() => {
 		if (!visible) return;
 		setTarget(listSocialMediaInProfile);
@@ -55,7 +55,7 @@ export function DialogSelectSocialMedia({
 				.map((exp) => cvSocialMediaToProfile(exp))
 				.filter((e) => !already.has(`${e.content.icon}|${e.content.socialNetwork ?? ""}`)),
 		);
-	}, [visible, listSocialMediaFromCv]);
+	}, [visible]);
 
 	const templateFooter = () => {
 		return (

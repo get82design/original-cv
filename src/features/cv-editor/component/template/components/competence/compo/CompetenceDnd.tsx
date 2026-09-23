@@ -4,7 +4,6 @@ import { Button } from "primereact/button";
 import { useFormContext } from "react-hook-form";
 import { v4 as uuid } from "uuid";
 import {
-	horizontalListSortingStrategy,
 	SortableContext,
 	verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
@@ -31,7 +30,7 @@ export const CompetenceDnd = ({
 	const { sectionSelected, setSectionSelected } = useCreateCvContext();
 	const createNewItem = () => {
 		return {
-			clientKey: "competence-" + uuid(),
+			clientKey: `competence-${uuid()}`,
 			order: competences.length + 1,
 			content: { competenceId: "" },
 		};

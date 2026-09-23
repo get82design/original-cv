@@ -13,7 +13,7 @@ import { FieldNameHeader } from "@/features/cv-editor/utils/fields/fieldNameHead
 import type { BaseTextSettings } from "@/services/schemas/cvTemplate.schema";
 
 export const HeaderOne = () => {
-	const { watch, setValue } = useFormContext();
+	const { watch } = useFormContext();
 	const watchGeneral = watch(FieldNameLayoutGeneral.layout);
 	const watchPhoto = watch(FieldNameCv.photo);
 	const chrome = getHeaderChrome(watchGeneral); // watchGeneral = layout
@@ -26,7 +26,7 @@ export const HeaderOne = () => {
 			? "right" // flip photo → texte côté photo
 			: (watchDataHeaderTitleSettings?.textAlign ?? "left"); // tokens : left | center | right
 
-	const onSelect = (event: React.MouseEvent<HTMLInputElement>) => {
+	const onSelect = (_event: React.MouseEvent<HTMLInputElement>) => {
 		//   if (((event.target as HTMLInputElement).files as FileList)[0]) {
 		//     const blob = new Blob([((event.target as HTMLInputElement).files as FileList)[0]], { type: 'image/*' })
 		//     const blobUrl = URL.createObjectURL(blob)
@@ -42,7 +42,7 @@ export const HeaderOne = () => {
 
 	const onUpload = () => {
 		// console.log('TESTTEST', refPhoto.current)
-		refPhoto.current && refPhoto.current.click();
+		refPhoto.current?.click();
 	};
 
 	return (

@@ -1,5 +1,4 @@
 import { createContext, useContext, useState, type JSX } from "react";
-import { useFormContext } from "react-hook-form";
 
 interface ProfileAddDeleteProps {
 	addExperience: boolean;
@@ -35,7 +34,6 @@ interface ProfileProviderProps {
 
 export const ProfileProvider = ({ children }: ProfileProviderProps) => {
 	const [etatSave, setEtatSave] = useState(false);
-	const { getValues } = useFormContext();
 	const [profileAddDelete, setProfileAddDelete] =
 		useState<ProfileAddDeleteProps>(initProfileAddDelete);
 

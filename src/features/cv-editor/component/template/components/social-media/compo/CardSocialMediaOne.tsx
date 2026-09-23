@@ -1,5 +1,4 @@
 import { useCreateCvContext } from "@/features/cv-editor/component/context/CreateCvContext";
-import { FieldNameLayoutGeneral } from "@/features/cv-editor/utils/fields/fieldNameLayoutGeneral";
 import { FieldNameSocialMedia } from "@/features/cv-editor/utils/fields/fieldNameSocialMedia";
 import type { SocialMediaItemContentInput } from "@/services/schemas/cvSave.schema";
 import type { ListItem } from "@utils/type";
@@ -9,7 +8,6 @@ import { useFormContext } from "react-hook-form";
 import { SectionItemShell } from "../../common-compo/section/SectionItemShell";
 import { SelectSocialIcon } from "@/components/icon/SelectIcon";
 import { InputTextCv } from "@/components/input-writer/input-text-cv/InputTextCv";
-import type { TemplateLayout } from "@/services/schemas/cvTemplate.schema";
 import { ToolbarOptionsButton } from "@/features/cv-editor/component/template/components/common-compo/section/ToolbarOptionsButton";
 
 export interface CardSocialMediaOneProps {
@@ -36,7 +34,6 @@ export const CardSocialMediaOne = ({
 	const menuLeft = useRef<Menu>(null);
 	const { setSelectModifInput, setSelectInputForm } = useCreateCvContext();
 
-	const watchGeneral = watch(FieldNameLayoutGeneral.layout);
 	const pathContent = `datas.socialMedia.content.${index}.content`;
 	const watchModelSocialMedia = watch(`${pathContent}.settings.socialNetwork`);
 	const watchModelUsername = watch(`${pathContent}.settings.username`);
@@ -81,7 +78,6 @@ export const CardSocialMediaOne = ({
 			}
 		>
 			<ContentSocialMediaContainer
-				general={watchGeneral}
 				item={item}
 				iconCompo={
 					<SelectSocialIcon
@@ -132,7 +128,6 @@ export const CardSocialMediaOne = ({
 };
 
 interface ContentSocialMediaContainerProps {
-	general: TemplateLayout;
 	item: ListItem<SocialMediaItemContentInput>;
 	iconCompo: JSX.Element;
 	socialNetworkCompo: JSX.Element;
@@ -140,7 +135,6 @@ interface ContentSocialMediaContainerProps {
 }
 
 export const ContentSocialMediaContainer = ({
-	general,
 	item,
 	iconCompo,
 	socialNetworkCompo,

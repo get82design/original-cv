@@ -30,7 +30,7 @@ export const SkillDnd = ({
 	const { sectionSelected, setSectionSelected } = useCreateCvContext();
 	const createNewItem = () => {
 		return {
-			clientKey: "skill-" + uuid(),
+			clientKey: `skill-${uuid()}`,
 			order: skills.length + 1,
 			content: { name: "", level: "Débutant" },
 		};

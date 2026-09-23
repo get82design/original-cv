@@ -17,7 +17,6 @@ interface SelectIconProps {
 	color: string;
 	fieldName: string;
 	afficherCacher?: string;
-	columns?: number; // ex. 10 social, 12 basic
 }
 
 export const SelectIcon = ({
@@ -28,7 +27,6 @@ export const SelectIcon = ({
 	color,
 	fieldName,
 	afficherCacher,
-	columns,
 }: SelectIconProps) => {
 	const op = useRef<OverlayPanel>(null);
 	const colorIcon = useInputCvColor(color);
@@ -49,7 +47,7 @@ export const SelectIcon = ({
 				onClick={(e) => {
 					setSelectModifInput(fieldName);
 					setSelectInputForm(afficherCacher ? afficherCacher : "");
-					op.current && op.current.toggle(e);
+					op.current?.toggle(e);
 				}}
 			/>
 			<OverlayPanel ref={op}>

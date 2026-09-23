@@ -399,7 +399,7 @@ describe("Prize model", () => {
 
 		// 6-3: 2 profile peuvent avoir le même order
 		it("should allow same order for different profiles", async () => {
-			const user1 = await createTestUserWithProfile({
+			await createTestUserWithProfile({
 				prizes: [
 					{
 						title: "Prix 1",
@@ -410,7 +410,7 @@ describe("Prize model", () => {
 				],
 			});
 
-			const user2 = await createTestUserWithProfile({
+			await createTestUserWithProfile({
 				prizes: [
 					{
 						title: "Prix 1",

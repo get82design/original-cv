@@ -183,12 +183,12 @@ describe("CvExpertiseService.move", () => {
 		const user = await createTestUser();
 		const template = await createTestTemplate();
 		const cv = await createCV(user.id, template.id);
-		const french = await cvExpertiseService.create(cv.id, {
+		await cvExpertiseService.create(cv.id, {
 			title: "Français",
 			level: Level.Senior,
 			order: 1,
 		});
-		const english = await cvExpertiseService.create(cv.id, {
+		await cvExpertiseService.create(cv.id, {
 			title: "Anglais",
 			level: Level.Intermédiaire,
 			order: 2,
@@ -269,7 +269,7 @@ describe("CvExpertiseService.delete", () => {
 		const user = await createTestUser();
 		const template = await createTestTemplate();
 		const cv = await createCV(user.id, template.id);
-		const french = await cvExpertiseService.create(cv.id, {
+		await cvExpertiseService.create(cv.id, {
 			title: "Français",
 			level: Level.Senior,
 			order: 1,

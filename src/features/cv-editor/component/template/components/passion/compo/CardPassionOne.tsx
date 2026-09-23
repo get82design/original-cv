@@ -10,7 +10,6 @@ import { FieldNamePassion } from "@/features/cv-editor/utils/fields/fieldNamePas
 import { SectionItemShell } from "../../common-compo/section/SectionItemShell";
 import { CommonListLigne } from "../../common-compo/list/CommonListLigne";
 import { SelectBasicIcon } from "@/components/icon/SelectIcon";
-import { InputTextCv } from "@/components/input-writer/input-text-cv/InputTextCv";
 import { CommonPointList } from "../../common-compo/list/CommonPointList";
 import type { TemplateLayout } from "@/services/schemas/cvTemplate.schema";
 import { TextareaCv } from "@/components/input-writer/input-textarea-cv/InputTextareaCv";

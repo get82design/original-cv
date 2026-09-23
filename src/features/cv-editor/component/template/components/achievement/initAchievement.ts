@@ -51,7 +51,7 @@ export function createInitAchievement(opts?: {
 	settings?: AchievementContentSettings;
 }): ListItem<AchievementItemContentInput> {
 	return {
-		clientKey: "realisation-" + uuid(),
+		clientKey: `realisation-${uuid()}`,
 		order: opts?.order ?? 1,
 		content: {
 			title: "",

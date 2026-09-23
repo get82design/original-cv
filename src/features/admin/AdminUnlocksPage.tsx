@@ -156,8 +156,9 @@ export function AdminUnlocksPage() {
 			<AppCard className="admin-filters mb-4">
 				<div className="grid gap-3 sm:grid-cols-2">
 					<div>
-						<label className="mb-1 block text-xs text-zinc-500">Méthode</label>
+						<label htmlFor="admin-unlocks-method" className="mb-1 block text-xs text-zinc-500">Méthode</label>
 						<Dropdown
+							id="admin-unlocks-method"
 							value={method}
 							options={METHOD_OPTIONS}
 							onChange={(e) => {
@@ -170,10 +171,11 @@ export function AdminUnlocksPage() {
 						/>
 					</div>
 					<div>
-						<label className="mb-1 block text-xs text-zinc-500">Email utilisateur</label>
+						<label htmlFor="admin-unlocks-search" className="mb-1 block text-xs text-zinc-500">Email utilisateur</label>
 						<div className="relative w-full">
 							<i className="pi pi-search pointer-events-none absolute top-1/2 left-3 z-10 -translate-y-1/2 text-sm text-zinc-500 dark:text-zinc-400" />
 							<InputText
+								id="admin-unlocks-search"
 								value={searchInput}
 								onChange={(e) => setSearchInput(e.target.value)}
 								placeholder="Rechercher…"

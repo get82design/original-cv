@@ -14,6 +14,7 @@ const defaultSettings: LanguageContentSettings = {
 		textAlign: "left",
 	},
 	design: "stars",
+	columns: 3,
 };
 
 export function createInitLanguage(opts?: {
@@ -21,7 +22,7 @@ export function createInitLanguage(opts?: {
 	settings?: LanguageContentSettings;
 }): ListItem<LanguageItemContentInput> {
 	return {
-		clientKey: "language-" + uuid(),
+		clientKey: `language-${uuid()}`,
 		order: opts?.order ?? 1,
 		content: {
 			name: "",

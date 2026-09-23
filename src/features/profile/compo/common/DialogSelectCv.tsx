@@ -26,7 +26,7 @@ export const DialogSelectCv = ({ visible, onHide, cvs, setIdCv }: DialogSelectCv
 				<div className="w-full flex gap-4 justify-around">
 					{cvs &&
 						cvs.length > 0 &&
-						cvs.map((cv, idx) => {
+						cvs.map((cv) => {
 							return (
 								<PreviewImage
 									key={cv.id}

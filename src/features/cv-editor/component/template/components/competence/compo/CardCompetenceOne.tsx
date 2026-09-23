@@ -1,10 +1,8 @@
 import { useCreateCvContext } from "@/features/cv-editor/component/context/CreateCvContext";
-import { FieldNameLayoutGeneral } from "@/features/cv-editor/utils/fields/fieldNameLayoutGeneral";
 import type { ListItem } from "@utils/type";
 import { useFormContext } from "react-hook-form";
 import { SectionItemShell } from "../../common-compo/section/SectionItemShell";
 import { InputTextCv } from "@/components/input-writer/input-text-cv/InputTextCv";
-import type { TemplateLayout } from "@/services/schemas/cvTemplate.schema";
 import type { JSX } from "react";
 
 export type CardCompetenceOneProps = {
@@ -29,7 +27,6 @@ export const CardCompetenceOne = ({
 	const { watch, getValues, setValue } = useFormContext();
 	const { setSelectModifInput, setSelectInputForm } = useCreateCvContext();
 
-	const watchGeneral = watch(FieldNameLayoutGeneral.layout);
 	const pathContent = `datas.competenceGroup.content.${groupIndex}.content.competences.${index}.content`;
 	const watchModelCompetence = watch(
 		`datas.competenceGroup.content.${groupIndex}.content.settings.competences`,
@@ -68,8 +65,6 @@ export const CardCompetenceOne = ({
 			// pas de leading / toolbarExtra
 		>
 			<ContentCompetenceContainer
-				general={watchGeneral}
-				item={item}
 				competenceCompo={
 					<InputTextCv
 						placeholder="Compétence"
@@ -95,14 +90,10 @@ export const CardCompetenceOne = ({
 };
 
 interface ContentCompetenceContainerProps {
-	general: TemplateLayout;
-	item: ListItem<unknown>;
 	competenceCompo: JSX.Element;
 }
 
 export const ContentCompetenceContainer = ({
-	general,
-	item,
 	competenceCompo,
 }: ContentCompetenceContainerProps) => {
 	return (

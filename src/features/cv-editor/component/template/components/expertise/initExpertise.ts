@@ -14,15 +14,15 @@ const defaultSettings: ExpertiseContentSettings = {
 		textAlign: "left",
 	},
 	design: "stars",
+	columns: 1,
 };
 
 export function createInitExpertise(opts?: {
 	order?: number;
 	settings?: ExpertiseContentSettings;
 }): ListItem<ExpertiseItemContentInput> {
-	const { order = 0, settings = defaultSettings } = opts ?? {};
 	return {
-		clientKey: "expertise-" + uuid(),
+		clientKey: `expertise-${uuid()}`,
 		order: opts?.order ?? 1,
 		content: {
 			title: "",

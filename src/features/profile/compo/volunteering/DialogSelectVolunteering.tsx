@@ -52,7 +52,7 @@ export const DialogSelectVolunteering = ({
 		setTarget(event.target);
 	};
 
-	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+	// biome-ignore lint/correctness/useExhaustiveDependencies: reset picklist uniquement à l'ouverture du dialog
 	useEffect(() => {
 		if (!visible) return;
 		setTarget(listVolunteeringInProfile);
@@ -64,7 +64,7 @@ export const DialogSelectVolunteering = ({
 				.map((exp) => cvVolunteeringToProfile(exp))
 				.filter((e) => !already.has(`${e.content.title}|${e.content.organisation ?? ""}`)),
 		);
-	}, [visible, listVolunteeringFromCv]);
+	}, [visible]);
 
 	const templateFooter = () => {
 		return (

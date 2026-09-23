@@ -52,7 +52,7 @@ export function createInitEducation(opts?: {
 	settings?: EducationContentSettings;
 }): ListItem<EducationItemContentInput> {
 	return {
-		clientKey: "education-" + uuid(),
+		clientKey: `education-${uuid()}`,
 		order: opts?.order ?? 1,
 		content: {
 			title: "",

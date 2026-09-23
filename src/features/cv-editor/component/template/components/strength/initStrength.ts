@@ -26,6 +26,7 @@ const defaultSettings: StrengthContentSettings = {
 	withIcon: true,
 	iconColor: "primaryColor",
 	withDescription: true,
+	columns: 1,
 };
 
 export function createInitStrength(opts?: {
@@ -33,7 +34,7 @@ export function createInitStrength(opts?: {
 	settings?: StrengthContentSettings;
 }): ListItem<StrengthItemContentInput> {
 	return {
-		clientKey: "strength-" + uuid(),
+		clientKey: `strength-${uuid()}`,
 		order: opts?.order ?? 1,
 		content: {
 			title: "",

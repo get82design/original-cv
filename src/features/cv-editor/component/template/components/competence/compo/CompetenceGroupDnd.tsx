@@ -5,7 +5,6 @@ import type { CompetenceGroupItemContentInput } from "@/services/schemas/cvSave.
 import {
 	horizontalListSortingStrategy,
 	SortableContext,
-	verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import type { ListItem } from "@utils/type";
 import { Button } from "primereact/button";

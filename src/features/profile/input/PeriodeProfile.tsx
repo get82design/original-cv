@@ -140,7 +140,7 @@ export const PeriodeProfile = ({
 					</TabPanel>
 				</TabView>
 				<div className="mt-2 w-full flex justify-between">
-					<Button onClick={(e) => op.current && op.current.toggle(e)}>Annuler</Button>
+					<Button onClick={(e) => op.current?.toggle(e)}>Annuler</Button>
 					<Button
 						disabled={!periode.start && !periode.end}
 						// Valider
@@ -164,6 +164,3 @@ export const PeriodeProfile = ({
 	);
 };
 
-function useThemeContext(): { darkMode: any } {
-	throw new Error("Function not implemented.");
-}

@@ -24,6 +24,7 @@ const defaultSettings: CertificationContentSettings = {
 	},
 	withTitle: true,
 	withOrganismeCertification: true,
+	columns: 1,
 };
 
 export function createInitCertification(opts?: {
@@ -31,7 +32,7 @@ export function createInitCertification(opts?: {
 	settings?: CertificationContentSettings;
 }): ListItem<CertificationItemContentInput> {
 	return {
-		clientKey: "certification-" + uuid(),
+		clientKey: `certification-${uuid()}`,
 		order: opts?.order ?? 1,
 		content: {
 			title: "",

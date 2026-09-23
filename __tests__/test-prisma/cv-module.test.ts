@@ -150,7 +150,7 @@ describe("CvModule model", () => {
 		it("should not update to duplicate order", async () => {
 			const { cv } = await createTestCV();
 
-			const m1 = await prismaTest.cVModule.create({
+			await prismaTest.cVModule.create({
 				data: { type: "skill", order: 1, cvId: cv.id },
 			});
 

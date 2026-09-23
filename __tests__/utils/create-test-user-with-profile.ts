@@ -77,15 +77,15 @@ type TestUserOptions = {
 	}[];
 	achievements?: {
 		title: string;
-		description: string;
+		description?: string;
 		year: number;
-		technology: string;
-		order: number;
+		technology?: string;
+		order?: number;
 	}[];
 	strengths?: {
 		title: string;
 		icon?: string;
-		order: number;
+		order?: number;
 	}[];
 	volunteerings?: {
 		title: string;
@@ -95,25 +95,25 @@ type TestUserOptions = {
 		end?: Date;
 		location?: string;
 		missions: string[];
-		order: number;
+		order?: number;
 	}[];
 	projects?: {
-		title: String;
-		description?: String;
-		location?: String;
+		title: string;
+		description?: string;
+		location?: string;
 		start: Date;
 		end?: Date;
-		technology?: String;
+		technology?: string;
 		missions: string[];
-		order: number;
+		order?: number;
 	}[];
 	publications?: {
-		title: String;
-		description?: String;
-		journalName?: String;
+		title: string;
+		description?: string;
+		journalName?: string;
 		start: Date;
 		end?: Date;
-		url?: String;
+		url?: string;
 		order: number;
 	}[];
 	languages?: {
@@ -305,7 +305,7 @@ export async function createTestUserWithProfile(options?: TestUserOptions) {
 							create: options.strengths.map((s) => ({
 								title: s.title,
 								icon: s.icon,
-								order: s.order,
+								order: s.order ?? 0,
 							})),
 						},
 					}),
@@ -328,7 +328,7 @@ export async function createTestUserWithProfile(options?: TestUserOptions) {
 										})),
 									},
 								}),
-								order: v.order,
+								order: v.order ?? 0,
 							})),
 						},
 					}),

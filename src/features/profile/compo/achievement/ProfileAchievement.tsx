@@ -39,7 +39,7 @@ export const ProfileAchievement = ({ cvs }: { cvs: CV[] }) => {
 	const { data: cvSelected } = trpc.cv.byId.useQuery({ id: idCv ?? "" }, { enabled: !!idCv });
 	const [visibleSelect, setVisibleSelect] = useState(false);
 
-	const { control, watch, setValue } = useFormContext<ProfileSaveInput>();
+	const { control } = useFormContext<ProfileSaveInput>();
 	const { fields, append, remove, replace } = useFieldArray({
 		control,
 		name: "achievements",

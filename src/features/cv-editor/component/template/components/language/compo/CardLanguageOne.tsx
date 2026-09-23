@@ -1,6 +1,5 @@
 import { useCreateCvContext } from "@/features/cv-editor/component/context/CreateCvContext";
 import { FieldNameLanguage } from "@/features/cv-editor/utils/fields/fieldNameLanguage";
-import { FieldNameLayoutGeneral } from "@/features/cv-editor/utils/fields/fieldNameLayoutGeneral";
 import { moduleField } from "@/features/cv-editor/utils/fields/moduleField";
 import type { LanguageItemContentInput } from "@/services/schemas/cvSave.schema";
 import type { ListItem } from "@utils/type";
@@ -8,7 +7,6 @@ import { useFormContext } from "react-hook-form";
 import { SectionItemShell } from "../../common-compo/section/SectionItemShell";
 import { InputTextCv } from "@/components/input-writer/input-text-cv/InputTextCv";
 import { RatingCvInput } from "../../input-cv/rating-cv/RatingCvInput";
-import type { TemplateLayout } from "@/services/schemas/cvTemplate.schema";
 import type { JSX } from "react";
 
 export interface CardLanguageOneProps {
@@ -29,7 +27,6 @@ export const CardLanguageOne = ({
 
 	const pathContentSettings = moduleField(watch("modules"), "language", "settings", "content");
 	const watchDesignLanguage = watch(`${pathContentSettings}.design`);
-	const watchGeneral = watch(FieldNameLayoutGeneral.layout);
 	const pathContent = `datas.language.content.${index}.content`;
 	const watchModelLanguage = watch(`${pathContent}.settings.language`);
 
@@ -65,8 +62,6 @@ export const CardLanguageOne = ({
 			onDelete={() => deleteLanguage(item)}
 		>
 			<ContentLanguageContainer
-				general={watchGeneral}
-				item={item}
 				nameCompo={
 					<InputTextCv
 						placeholder="Language"
@@ -90,15 +85,11 @@ export const CardLanguageOne = ({
 };
 
 interface ContentLanguageContainerProps {
-	general: TemplateLayout;
-	item: ListItem<unknown>;
 	nameCompo: JSX.Element;
 	levelCompo: JSX.Element;
 }
 
 export const ContentLanguageContainer = ({
-	general,
-	item,
 	nameCompo,
 	levelCompo,
 }: ContentLanguageContainerProps) => {

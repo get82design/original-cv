@@ -22,7 +22,7 @@ export const SelectWeight = ({ watchSelectInput, select }: SelectWeightProps) =>
 			<SelectButtonRhf
 				className="shadow-none panel-modification"
 				value={watchSelectInput?.weightSelect}
-				name={select + ".weightSelect"}
+				name={`${select}.weightSelect`}
 				itemTemplate={weightTemplate}
 				options={weightOptions}
 				pt={{ button: { className: "p-button-sm text-xs py-1 px-2.5 min-h-[2rem]" } }}

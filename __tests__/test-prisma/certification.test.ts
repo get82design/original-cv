@@ -345,7 +345,7 @@ describe("Certification model", () => {
 
 		// 6-3: 2 profile peuvent avoir le même order
 		it("should allow same order for different profiles", async () => {
-			const user1 = await createTestUserWithProfile({
+			await createTestUserWithProfile({
 				certifications: [
 					{
 						title: "Certif 1",
@@ -355,7 +355,7 @@ describe("Certification model", () => {
 				],
 			});
 
-			const user2 = await createTestUserWithProfile({
+			await createTestUserWithProfile({
 				certifications: [
 					{
 						title: "Certif 1",

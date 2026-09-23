@@ -53,7 +53,7 @@ export const FormProfile = ({ children }: PropsWithChildren) => {
 	const { data: myProfile } = trpc.profile.completeMe.useQuery();
 	// const {mutate: createProfile} = trpc.profile.create.useMutation()
 	// const {mutate: updateProfile} = trpc.profile.update.useMutation()
-	const { mutate: saveProfile, isPending } = trpc.profile.save.useMutation();
+	const { mutate: saveProfile } = trpc.profile.save.useMutation();
 
 	// const methods = useForm<Profile>({
 	const methods = useForm<ProfileSaveInput & { id?: string }>({
@@ -63,7 +63,7 @@ export const FormProfile = ({ children }: PropsWithChildren) => {
 		// defaultValues: profileDefaultValue,
 	});
 
-	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+	// biome-ignore lint/correctness/useExhaustiveDependencies: reset uniquement à l'ouverture du composant
 	useEffect(() => {
 		if (myProfile) reset(mapProfileToSaveInput(myProfile));
 	}, [myProfile]);
@@ -72,7 +72,6 @@ export const FormProfile = ({ children }: PropsWithChildren) => {
 		handleSubmit,
 		// formState: { errors },
 		reset,
-		setValue,
 	} = methods;
 
 	const onSubmit = (data: ProfileSaveInput & { id?: string; userId?: string }) => {

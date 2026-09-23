@@ -85,8 +85,8 @@ export const InputTextCv = ({
 										? `${props.placeholder.length}ch`
 										: `${field.value?.length}ch`,
 							}}
-							onFocus={(e) => op.current && op.current.show(e, e.target)}
-							onBlur={(e) => op.current && op.current.hide()}
+							onFocus={(e) => op.current?.show(e, e.target)}
+							onBlur={() => op.current?.hide()}
 							ref={ref}
 							{...props}
 						/>

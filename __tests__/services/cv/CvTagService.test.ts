@@ -33,9 +33,6 @@ describe("CvTagService.create", () => {
 	});
 
 	it("throws if group does not exist", async () => {
-		const user = await createTestUser();
-		const template = await createTestTemplate();
-		const cv = await createCV(user.id, template.id);
 		await expect(
 			cvTagService.create("unknown-group", {
 				tagId: "unknown-tag",
@@ -381,7 +378,7 @@ describe("CvTagService.move", () => {
 		const tag2 = await tagService.create({
 			name: "Tag 2",
 		});
-		const cvTag2 = await cvTagService.create(tagGroup1.id, {
+		await cvTagService.create(tagGroup1.id, {
 			tagId: tag2.id,
 			order: 2,
 		});
@@ -489,7 +486,7 @@ describe("CvTagService.delete", () => {
 		const tag2 = await tagService.create({
 			name: "Tag 2",
 		});
-		const cvTag2 = await cvTagService.create(tagGroup.id, {
+		await cvTagService.create(tagGroup.id, {
 			tagId: tag2.id,
 			order: 2,
 		});

@@ -104,7 +104,7 @@ describe("CvService.create", () => {
 			where: { id: user.id },
 			data: { maxCvs: 2 },
 		});
-		const cv = await createCV(user.id, template.id);
+		await createCV(user.id, template.id);
 		await expect(
 			cvService.create({
 				userId: user.id,

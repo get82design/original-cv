@@ -72,7 +72,7 @@ export function createInitExperience(opts?: {
 	settings?: ExperienceContentSettings;
 }): ListItem<ExperienceItemContentInput> {
 	return {
-		clientKey: "experience-" + uuid(),
+		clientKey: `experience-${uuid()}`,
 		order: opts?.order ?? 1,
 		content: {
 			title: "",

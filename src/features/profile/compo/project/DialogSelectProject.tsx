@@ -52,7 +52,7 @@ export function DialogSelectProject({
 		setTarget(event.target);
 	};
 
-	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+	// biome-ignore lint/correctness/useExhaustiveDependencies: reset picklist uniquement à l'ouverture du dialog
 	useEffect(() => {
 		if (!visible) return;
 		setTarget(listProjectInProfile);
@@ -64,7 +64,7 @@ export function DialogSelectProject({
 				.map((exp) => cvProjectToProfile(exp))
 				.filter((e) => !already.has(`${e.content.title}|${e.content.location ?? ""}`)),
 		);
-	}, [visible, listProjectFromCv]);
+	}, [visible]);
 
 	const templateFooter = () => {
 		return (

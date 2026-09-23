@@ -46,7 +46,7 @@ export const DialogSelectTagGroup = ({
 		setTarget(event.target);
 	};
 
-	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+	// biome-ignore lint/correctness/useExhaustiveDependencies: reset picklist uniquement à l'ouverture du dialog
 	useEffect(() => {
 		if (!visible) return;
 		setTarget(listTagGroupInProfile);
@@ -56,7 +56,7 @@ export const DialogSelectTagGroup = ({
 				.map((exp) => cvTagGroupToProfile(exp))
 				.filter((e) => !already.has(`${e.content.title}`)),
 		);
-	}, [visible, listTagGroupFromCv]);
+	}, [visible]);
 
 	const templateFooter = () => {
 		return (

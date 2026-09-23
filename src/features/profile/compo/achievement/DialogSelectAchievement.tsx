@@ -45,7 +45,7 @@ export const DialogSelectAchievement = ({
 		setTarget(event.target);
 	};
 
-	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+	// biome-ignore lint/correctness/useExhaustiveDependencies: reset picklist uniquement à l'ouverture du dialog
 	useEffect(() => {
 		if (!visible) return;
 		setTarget(listAchievementInProfile);
@@ -57,7 +57,7 @@ export const DialogSelectAchievement = ({
 				.map((exp) => cvAchievementToProfile(exp))
 				.filter((e) => !already.has(`${e.content.title}|${e.content.technology ?? ""}`)),
 		);
-	}, [visible, listAchievementFromCv]);
+	}, [visible]);
 
 	const templateFooter = () => {
 		return (

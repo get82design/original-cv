@@ -70,12 +70,12 @@ describe("ProfileTagGroupService.findAllByProfileId", () => {
 	it("finds all tag groups by profile ID", async () => {
 		const user = await createTestUser();
 		const profile = await createTestProfile(user.id, "John", "Doe");
-		const tagGroup = await profileTagGroupService.create(profile.id, {
+		await profileTagGroupService.create(profile.id, {
 			title: "Tag Group 1",
 			order: 1,
 			tags: [],
 		});
-		const tagGroup2 = await profileTagGroupService.create(profile.id, {
+		await profileTagGroupService.create(profile.id, {
 			title: "Tag Group 2",
 			order: 2,
 			tags: [],
@@ -100,7 +100,7 @@ describe("ProfileTagGroupService.findAllByProfileId", () => {
 		const user2 = await createTestUser();
 		const profile = await createTestProfile(user.id, "John", "Doe");
 		const profile2 = await createTestProfile(user2.id, "John2", "Doe2");
-		const tagGroup = await profileTagGroupService.create(profile.id, {
+		await profileTagGroupService.create(profile.id, {
 			title: "Tag Group 1",
 			order: 1,
 			tags: [],
@@ -253,7 +253,7 @@ describe("ProfileTagGroupService.delete", () => {
 			order: 1,
 			tags: [],
 		});
-		const tagGroup2 = await profileTagGroupService.create(profile.id, {
+		await profileTagGroupService.create(profile.id, {
 			title: "Tag Group 2",
 			order: 2,
 			tags: [],

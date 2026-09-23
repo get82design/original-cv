@@ -23,7 +23,7 @@ export function createInitPassion(opts?: {
 	settings?: PassionContentSettings;
 }): ListItem<PassionItemContentInput> {
 	return {
-		clientKey: "formation-" + uuid(),
+		clientKey: `passion-${uuid()}`,
 		order: opts?.order ?? 1,
 		content: {
 			title: "",

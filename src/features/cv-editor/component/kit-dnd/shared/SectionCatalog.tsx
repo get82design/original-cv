@@ -18,7 +18,6 @@ import { PublicationRegister } from "../../template/register/publication/Publica
 import { AchievementRegister } from "../../template/register/achievement/AchievementRegister";
 import { CompetenceRegister } from "../../template/register/competence/CompetenceRegister";
 import { TagRegister } from "../../template/register/tag/TagRegister";
-import type { ComponentType } from "react";
 import { PhilosophyRegister } from "../../template/register/philosophy/PhilosophyRegister";
 import { PassionSectionMenu } from "../../template/components/passion/compo/PassionSectionMenu";
 import { PhilosophySectionMenu } from "../../template/components/philosophy/PhilosophySectionMenu";
@@ -30,18 +29,25 @@ import { CertificationSectionMenu } from "../../template/components/certificatio
 import { PrizeSectionMenu } from "../../template/components/prize/compo/PrizeSectionMenu";
 import { SocialMediaSectionMenu } from "../../template/components/social-media/compo/SocialMediaSectionMenu";
 import { SkillGroupSectionMenu } from "../../template/components/skill/compo/SkillGroupSectionMenu";
+import type { TemplateDefaultStyles } from "@/services/schemas/cvTemplate.schema";
 
 export type SectionItem = ItemGeneralProps & {
 	sectionMenu?: React.ReactNode;
 	column?: number;
 };
 
+type TemplateComponents = NonNullable<TemplateDefaultStyles["components"]>;
+type SectionConfigKey = {
+  [K in keyof TemplateComponents]: TemplateComponents[K] extends { component: string }
+    ? K
+    : never;
+}[keyof TemplateComponents];
 type CatalogEntry = {
-	id: string; // "section-experience"
-	configKey: string; // "sectionExperience"
-	register: Record<string, React.ComponentType>;
-	fallback: string; // "SectionExperienceOne"
-	menu?: () => React.ReactNode;
+  id: string;
+  configKey: SectionConfigKey; // plus "string"
+  register: Record<string, React.ComponentType>;
+  fallback: string;
+  menu?: () => React.ReactNode;
 };
 
 export const sectionCatalog: Record<string, CatalogEntry> = {
@@ -179,7 +185,7 @@ export function buildItemUse(
 		isActive: boolean;
 		column?: number;
 	}>,
-	templateConfig: any,
+	templateConfig: TemplateDefaultStyles | null | undefined,
 	column?: number, // plus tard : filtrer par colonne
 ): SectionItem[] {
 	if (!modules) return [];
@@ -195,7 +201,7 @@ export function buildItemUse(
 				id: entry.id,
 				order: mod.order,
 				column: mod.column ?? 0,
-				content: entry.register[key] ?? (entry.register[entry.fallback] as ComponentType<{}>),
+				content: entry.register[key] ?? entry.register[entry.fallback]!,
 				sectionMenu: entry.menu?.(),
 			} satisfies SectionItem;
 		})

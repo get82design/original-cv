@@ -60,7 +60,7 @@ export const RatingCvInput = ({ name, design, ...props }: RatingCvRhf) => {
 					render={({ field }) => {
 						const value = toStars(field.value);
 						return (
-							<div className="flex gap-1 items-center" onClick={() => setSelectInputForm("")}>
+							<div className="flex gap-1 items-center">
 								{[1, 2, 3, 4, 5].map((n) => (
 									<button
 										key={n}
@@ -69,6 +69,7 @@ export const RatingCvInput = ({ name, design, ...props }: RatingCvRhf) => {
 										style={{ backgroundColor: n <= value ? `var(--${primaryColor})` : "#d1d5db" }}
 										onClick={(e) => {
 											e.stopPropagation(); // évite le parent (sélection skill, etc.)
+											setSelectInputForm("")
 											const next = n === value ? Math.max(1, n - 1) : n;
 											field.onChange(toLevel(next));
 										}}
@@ -86,7 +87,7 @@ export const RatingCvInput = ({ name, design, ...props }: RatingCvRhf) => {
 					render={({ field }) => {
 						const value = toStars(field.value);
 						return (
-							<div className="flex gap-1 items-center" onClick={() => setSelectInputForm("")}>
+							<div className="flex gap-1 items-center">
 								{[1, 2, 3, 4, 5].map((n) => (
 									<button
 										key={n}
@@ -95,6 +96,7 @@ export const RatingCvInput = ({ name, design, ...props }: RatingCvRhf) => {
 										style={{ backgroundColor: n <= value ? `var(--${primaryColor})` : "#d1d5db" }}
 										onClick={(e) => {
 											e.stopPropagation(); // évite le parent (sélection skill, etc.)
+											setSelectInputForm("")
 											const next = n === value ? Math.max(1, n - 1) : n;
 											field.onChange(toLevel(next));
 										}}

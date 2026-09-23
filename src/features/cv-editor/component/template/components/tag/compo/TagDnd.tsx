@@ -12,7 +12,7 @@ interface TagDndProps {
 	setItemSelected: (e: string) => void;
 	itemSelected: string;
 	clientKeyGroup: string;
-	colOfTag: number;
+	// colOfTag: number;
 	CardComponent: React.ComponentType<TagCardProps>;
 }
 
@@ -22,14 +22,14 @@ export const TagDnd = ({
 	setItemSelected,
 	itemSelected,
 	clientKeyGroup,
-	colOfTag,
+	// colOfTag,
 	CardComponent,
 }: TagDndProps) => {
 	const { setValue } = useFormContext();
 	const { sectionSelected, setSectionSelected } = useCreateCvContext();
 	const createNewItem = () => {
 		return {
-			clientKey: "tag-" + uuid(),
+			clientKey: `tag-${uuid()}`,
 			order: tags.length + 1,
 			content: { tagId: "", name: "" },
 		};

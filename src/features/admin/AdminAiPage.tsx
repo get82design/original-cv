@@ -151,10 +151,11 @@ export function AdminAiPage() {
 			<AppCard className="admin-filters mb-4">
 				<div className="flex flex-col gap-3 lg:flex-row lg:items-end">
 					<div className="flex-1">
-						<label className="mb-1 block text-xs text-zinc-500">Recherche</label>
+						<label htmlFor="admin-ai-search" className="mb-1 block text-xs text-zinc-500">Recherche</label>
 						<div className="relative w-full">
 							<i className="pi pi-search pointer-events-none absolute top-1/2 left-3 z-10 -translate-y-1/2 text-sm text-zinc-500 dark:text-zinc-400" />
 							<InputText
+								id="admin-ai-search"
 								value={searchInput}
 								onChange={(e) => setSearchInput(e.target.value)}
 								placeholder="Email utilisateur…"
@@ -163,8 +164,9 @@ export function AdminAiPage() {
 						</div>
 					</div>
 					<div className="w-full lg:w-48">
-						<label className="mb-1 block text-xs text-zinc-500">Fonction</label>
+						<label htmlFor="admin-ai-feature" className="mb-1 block text-xs text-zinc-500">Fonction</label>
 						<Dropdown
+						    inputId="admin-ai-feature"
 							value={feature}
 							options={FEATURE_OPTIONS}
 							onChange={(e) => {

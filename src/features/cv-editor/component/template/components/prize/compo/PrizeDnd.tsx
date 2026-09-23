@@ -29,7 +29,7 @@ export const PrizeDnd = ({
 	colOfPrize,
 }: PrizeDndProps) => {
 	const { setValue } = useFormContext();
-	const { setSectionSelected, sectionSelected } = useCreateCvContext();
+	const { sectionSelected } = useCreateCvContext();
 
 	const itemsMenu = (idx: number) => {
 		const pathContent = dataFieldContent("datas.prize.content", idx, "content.settings");

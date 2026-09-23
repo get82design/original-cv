@@ -13,7 +13,7 @@ vi.mock("../../server/auth", () => ({
 }));
 
 import { createTRPCContext } from "../../server/api/context";
-import { authOptions } from "../../server/auth";
+// import { authOptions } from "../../server/auth";
 
 describe("createTRPCContext", () => {
 	beforeEach(() => {

@@ -45,7 +45,7 @@ export const ForgotPasswordCompo = () => {
 											"Si un compte est associé à cet email, vous recevrez un lien de réinitialisation.",
 										);
 									},
-									onError: (e) => {
+									onError: () => {
 										setMessage(null);
 										setMessage(null);
 										setError("Impossible d'envoyer l'email. Réessayez plus tard.");

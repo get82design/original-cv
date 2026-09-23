@@ -31,10 +31,6 @@ describe("CvMissionProjectService.create", () => {
 	});
 
 	it("throws if project does not exist", async () => {
-		const user = await createTestUser();
-		const template = await createTestTemplate();
-		const cv = await createCV(user.id, template.id);
-
 		await expect(
 			cvMissionProjectService.create("invalid-project-id", {
 				content: "Développement API REST",
@@ -163,7 +159,7 @@ describe("CvMissionProjectService.update", () => {
 			start: new Date("2020-01-01"),
 			order: 1,
 		});
-		const mission = await cvMissionProjectService.create(project.id, {
+		await cvMissionProjectService.create(project.id, {
 			content: "Mission 1",
 			order: 1,
 		});
@@ -212,7 +208,7 @@ describe("CvMissionProjectService.move", () => {
 			order: 1,
 		});
 
-		const mission2 = await cvMissionProjectService.create(project.id, {
+		await cvMissionProjectService.create(project.id, {
 			content: "Mission 2",
 			order: 2,
 		});
@@ -324,7 +320,7 @@ describe("CvMissionProjectService.delete", () => {
 			content: "Mission 1",
 			order: 1,
 		});
-		const mission2 = await cvMissionProjectService.create(project.id, {
+		await cvMissionProjectService.create(project.id, {
 			content: "Mission 2",
 			order: 2,
 		});

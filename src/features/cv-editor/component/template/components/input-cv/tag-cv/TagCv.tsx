@@ -1,4 +1,3 @@
-import { useCreateCvContext } from "@/features/cv-editor/component/context/CreateCvContext";
 import { useColumnFg } from "@/features/cv-editor/component/kit-dnd/shared/ColumnFgContext";
 import { GetPrimaryColor } from "@/features/cv-editor/utils/utilsCv/color";
 import { useChangeTextFormat } from "@/features/cv-editor/utils/utilsCv/font";
@@ -139,30 +138,4 @@ export const TagCv = ({
 		default:
 			return;
 	}
-};
-
-interface InTagCvProps {
-	content: string;
-	index: number;
-	groupIndex: number;
-	onDelete: (groupIndex: number, index: number) => void;
-}
-
-const InTagCv = ({ onDelete, content, index, groupIndex }: InTagCvProps) => {
-	const { sectionSelected } = useCreateCvContext();
-	// console.log('sectionSelected:', sectionSelected);
-	return (
-		<>
-			<span className="my-0">{content}</span>
-			{sectionSelected.includes("tag") && (
-				<FaTimes
-					style={{ width: "12px", height: "12px", cursor: "pointer" }}
-					onClick={(e) => {
-						e.stopPropagation();
-						onDelete(groupIndex, index);
-					}}
-				/>
-			)}
-		</>
-	);
 };

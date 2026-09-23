@@ -52,7 +52,7 @@ export const TitleSectionLigne = ({
 			default:
 				break;
 		}
-	}, [iconStyle]);
+	}, [iconStyle, setValue]);
 	const titleTransformTemplate = (option: string) => {
 		return <div className="text-xs">{option}</div>;
 	};

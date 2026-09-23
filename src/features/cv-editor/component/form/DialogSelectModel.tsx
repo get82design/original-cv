@@ -154,103 +154,101 @@ export const DialogSelectModel = ({
 	const showNewCv = draftOption === "Nouveau CV" || !draft;
 
 	return (
-		<>
-			<Dialog
-				style={{ minWidth: "1200px", maxWidth: "85vw" }}
-				visible={visible}
-				onHide={onHide}
-				className="dialog-select-model"
-				header="Modèle de votre CV"
-				closable={false}
-				footer={footerTemplate}
-			>
-				<div className="flex flex-col gap-4 py-4 text-zinc-900 dark:text-zinc-100">
-					<input
-						ref={fileInputRef}
-						type="file"
-						accept="application/pdf,.pdf"
-						className="hidden"
-						onChange={onFileChange}
-					/>
-					{draft ? (
-						<div className="w-full flex flex-col justify-center items-center gap-2">
-							<p className="text-center font-semibold">
-								Vous avez un CV en cours. Voulez-vous le reprendre ?
-							</p>
-							<div className="w-full">
-								<SelectButton
-									value={draftOption}
-									onChange={(e) => setDraftOption(e.value)}
-									options={options}
-									disabled={importing}
-								/>
-							</div>
-						</div>
-					) : null}
-					{profile && showNewCv && (
-						<div className="w-full flex justify-center items-center gap-2">
-							<p>Voulez-vous charger les données de votre profil ?</p>
+		<Dialog
+			style={{ minWidth: "1200px", maxWidth: "85vw" }}
+			visible={visible}
+			onHide={onHide}
+			className="dialog-select-model"
+			header="Modèle de votre CV"
+			closable={false}
+			footer={footerTemplate}
+		>
+			<div className="flex flex-col gap-4 py-4 text-zinc-900 dark:text-zinc-100">
+				<input
+					ref={fileInputRef}
+					type="file"
+					accept="application/pdf,.pdf"
+					className="hidden"
+					onChange={onFileChange}
+				/>
+				{draft ? (
+					<div className="w-full flex flex-col justify-center items-center gap-2">
+						<p className="text-center font-semibold">
+							Vous avez un CV en cours. Voulez-vous le reprendre ?
+						</p>
+						<div className="w-full">
 							<SelectButton
-								value={withProfileValue}
-								onChange={(e) => setWithProfileValue(!!e.value)}
-								optionLabel="label"
-								optionValue="value"
-								options={optionsProfile}
+								value={draftOption}
+								onChange={(e) => setDraftOption(e.value)}
+								options={options}
 								disabled={importing}
 							/>
 						</div>
-					)}
-					{showNewCv && !withProfileValue && (
-						<div className="w-full flex flex-col items-center gap-2 rounded-lg border border-dashed border-zinc-300 px-4 py-3 dark:border-zinc-600">
-							<p className="m-0 text-center font-semibold">Ou importer un CV existant (PDF)</p>
-							<p className="m-0 text-center text-xs text-zinc-500 dark:text-zinc-400">
-								Choisissez un modèle ci-dessous, puis importez.
-							</p>
-							<Button
-								type="button"
-								outlined={!importing}
-								icon={importing ? "pi pi-spin pi-spinner" : "pi pi-upload"}
-								label={importing ? "Import en cours…" : "Importer un CV"}
-								disabled={importing}
-								onClick={() => {
-									if (!modelSelect) {
-										onImportWithoutModel?.();
-										return;
-									}
-									fileInputRef.current?.click();
-								}}
-								className="!text-zinc-700 dark:!text-zinc-200 !border-zinc-300 dark:!border-zinc-600"
-							/>
+					</div>
+				) : null}
+				{profile && showNewCv && (
+					<div className="w-full flex justify-center items-center gap-2">
+						<p>Voulez-vous charger les données de votre profil ?</p>
+						<SelectButton
+							value={withProfileValue}
+							onChange={(e) => setWithProfileValue(!!e.value)}
+							optionLabel="label"
+							optionValue="value"
+							options={optionsProfile}
+							disabled={importing}
+						/>
+					</div>
+				)}
+				{showNewCv && !withProfileValue && (
+					<div className="w-full flex flex-col items-center gap-2 rounded-lg border border-dashed border-zinc-300 px-4 py-3 dark:border-zinc-600">
+						<p className="m-0 text-center font-semibold">Ou importer un CV existant (PDF)</p>
+						<p className="m-0 text-center text-xs text-zinc-500 dark:text-zinc-400">
+							Choisissez un modèle ci-dessous, puis importez.
+						</p>
+						<Button
+							type="button"
+							outlined={!importing}
+							icon={importing ? "pi pi-spin pi-spinner" : "pi pi-upload"}
+							label={importing ? "Import en cours…" : "Importer un CV"}
+							disabled={importing}
+							onClick={() => {
+								if (!modelSelect) {
+									onImportWithoutModel?.();
+									return;
+								}
+								fileInputRef.current?.click();
+							}}
+							className="!text-zinc-700 dark:!text-zinc-200 !border-zinc-300 dark:!border-zinc-600"
+						/>
+					</div>
+				)}
+				{showNewCv ? (
+					<>
+						<p className="-mb-2 text-center font-semibold">
+							Sélectionner une couleur pour votre CV
+						</p>
+						<div className="w-full flex justify-center gap-2">
+							{colors && colors.length > 0
+								? colors.map((color: Color, index) => {
+										return (
+											<RadioColorRhf
+												index={index}
+												general={true}
+												className="col"
+												key={color.name}
+												name={FieldNameLayoutGeneral.primaryColor}
+												color={`--${color.name}${color.primary}`}
+												value={color}
+											/>
+										);
+									})
+								: null}
 						</div>
-					)}
-					{showNewCv ? (
-						<>
-							<p className="-mb-2 text-center font-semibold">
-								Sélectionner une couleur pour votre CV
-							</p>
-							<div className="w-full flex justify-center gap-2">
-								{colors && colors.length > 0
-									? colors.map((color: Color, index) => {
-											return (
-												<RadioColorRhf
-													index={index}
-													general={true}
-													className="col"
-													key={color.name}
-													name={FieldNameLayoutGeneral.primaryColor}
-													color={`--${color.name}${color.primary}`}
-													value={color}
-												/>
-											);
-										})
-									: null}
-							</div>
-							<p className="text-center font-semibold">Choisissez un modèle pour votre CV :</p>
-							<Carousel value={modeles} numScroll={1} numVisible={5} itemTemplate={itemTemplate} />
-						</>
-					) : null}
-				</div>
-			</Dialog>
-		</>
+						<p className="text-center font-semibold">Choisissez un modèle pour votre CV :</p>
+						<Carousel value={modeles} numScroll={1} numVisible={5} itemTemplate={itemTemplate} />
+					</>
+				) : null}
+			</div>
+		</Dialog>
 	);
 };

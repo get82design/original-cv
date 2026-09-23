@@ -75,12 +75,12 @@ describe("CvTagGroupService.findAllByCvId", () => {
 		const user = await createTestUser();
 		const template = await createTestTemplate();
 		const cv = await createCV(user.id, template.id);
-		const tagGroup = await cvTagGroupService.create(cv.id, {
+		await cvTagGroupService.create(cv.id, {
 			title: "Tag Group 1",
 			order: 1,
 			tags: [],
 		});
-		const tagGroup2 = await cvTagGroupService.create(cv.id, {
+		await cvTagGroupService.create(cv.id, {
 			title: "Tag Group 2",
 			order: 2,
 			tags: [],
@@ -106,7 +106,7 @@ describe("CvTagGroupService.findAllByCvId", () => {
 		const template = await createTestTemplate();
 		const cv = await createCV(user.id, template.id);
 		const cv2 = await createCV(user.id, template.id);
-		const tagGroup = await cvTagGroupService.create(cv.id, {
+		await cvTagGroupService.create(cv.id, {
 			title: "Tag Group 1",
 			order: 1,
 			tags: [],
@@ -264,7 +264,7 @@ describe("CvTagGroupService.delete", () => {
 			order: 1,
 			tags: [],
 		});
-		const tagGroup2 = await cvTagGroupService.create(cv.id, {
+		await cvTagGroupService.create(cv.id, {
 			title: "Tag Group 2",
 			order: 2,
 			tags: [],

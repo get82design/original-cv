@@ -333,7 +333,7 @@ export default function ModelList() {
 			return;
 		}
 		setShownCount(Math.min(PAGE, filteredTemplates.length));
-	}, [columnFilter, selectionMode, filteredTemplates]);
+	}, [filteredTemplates]);
 
 	// Si la galerie rétrécit (filtre / sélection), liveCount ne doit pas rester trop haut
 	useEffect(() => {
@@ -387,7 +387,7 @@ export default function ModelList() {
 			requestAnimationFrame(() => setFilterLoading(false));
 		});
 		return () => cancelAnimationFrame(id);
-	}, [filterLoading, galleryReady, filteredTemplates.length, columnFilter, selectionMode]);
+	}, [filterLoading, galleryReady, filteredTemplates.length]);
 
 	const runWithLoader = (action: () => void) => {
 		setFilterLoading(true);

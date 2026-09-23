@@ -20,7 +20,7 @@ import { DialogSelectPublication } from "./DialogSelectPublication";
 
 function createEmptyPublication(opts?: { order?: number }): ListItem<PublicationInput> {
 	return {
-		clientKey: "publication-" + uuid(),
+		clientKey: `publication-${uuid()}`,
 		order: opts?.order ?? 1,
 		content: {
 			title: "",
@@ -42,7 +42,7 @@ export const ProfilePublication = ({ cvs }: { cvs: CV[] }) => {
 	const { data: cvSelected } = trpc.cv.byId.useQuery({ id: idCv ?? "" }, { enabled: !!idCv });
 	const [visibleSelect, setVisibleSelect] = useState(false);
 
-	const { control, watch, setValue } = useFormContext<ProfileSaveInput>();
+	const { control } = useFormContext<ProfileSaveInput>();
 	const { fields, append, remove, replace } = useFieldArray({
 		control,
 		name: "publications",
