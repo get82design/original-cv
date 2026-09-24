@@ -11,14 +11,17 @@ interface PreviewImageProps {
 export const PreviewImage = ({ cv, action, width }: PreviewImageProps) => {
 	const name = cv.template?.name ?? "";
 	const src = cv.previewUrl ?? `/assets/img/${name}.png`;
+	const isRemote = /^https?:\/\//i.test(src);
 
 	return (
 		<div className={`${width} relative shadow-md group overflow-hidden rounded`}>
 			<Image
+				key={src}
 				src={src}
-				width={794}   // ~A4 à 96dpi en largeur
-				height={1123} // 794 × 1.414
+				width={794}
+				height={1123}
 				alt={cv.title}
+				unoptimized={isRemote}
 				className="w-full aspect-[1/1.414] object-cover object-top bg-gray-100"
 				onError={(e) => {
 					e.currentTarget.style.visibility = "hidden";

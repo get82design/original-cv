@@ -492,7 +492,7 @@ export const templateLayoutSchema = z.object({
 				sectionTitle: "inter",
 			},
 		}),
-	stylePhoto: z.enum(["circle", "flat"]).default("circle"),
+	stylePhoto: z.enum(["circle", "flat", "rounded"]).default("circle"),
 	listStyle: z.enum(["none", "line", "point"]).default("none"),
 	headerPrimaryColor: z.boolean().default(false),
 	sidebarTheme: z
@@ -719,6 +719,7 @@ export type CreateCvTemplateInput = z.infer<typeof createCvTemplateSchema>;
 export type UpdateCvTemplateInput = z.infer<typeof updateCvTemplateSchema>;
 export type TemplateModule = z.infer<typeof templateModuleSchema>;
 export type TemplateLayout = z.infer<typeof templateLayoutSchema>;
+export type StylePhoto = NonNullable<TemplateLayout["stylePhoto"]>;
 export type ElmSize = z.infer<typeof elmSizeSchema>;
 export type BaseTextSettings = z.infer<typeof baseSettingsSchema>;
 export type TemplateDefaultStyles = z.infer<typeof templateDefaultStylesSchema>;

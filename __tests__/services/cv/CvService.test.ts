@@ -607,15 +607,15 @@ describe("CvService.setPreview", () => {
 		const updated = await cvService.setPreview(cv.id, user.id, SAMPLE_WITH, SAMPLE_CLEAN);
 
 		expect(updated.previewUrl).toMatch(
-			new RegExp(`^/uploads/cv-previews/${user.id}/${cv.id}-with\\.jpg$`),
+			new RegExp(`^/uploads/cv-previews/${user.id}/${cv.id}-with\\.jpg(\\?v=\\d+)?$`),
 		);
 		expect(updated.previewUrlClean).toMatch(
-			new RegExp(`^/uploads/cv-previews/${user.id}/${cv.id}-clean\\.jpg$`),
+			new RegExp(`^/uploads/cv-previews/${user.id}/${cv.id}-clean\\.jpg(\\?v=\\d+)?$`),
 		);
 
-		// re-save même clé : ne doit pas supprimer le fichier qu’on vient d’écrire
+		// re-save même clé : ne doit pas supprimer le fichier ; ?v= peut changer
 		const again = await cvService.setPreview(cv.id, user.id, SAMPLE_WITH, SAMPLE_CLEAN);
-		expect(again.previewUrl).toBe(updated.previewUrl);
+		expect(again.previewUrl?.split("?")[0]).toBe(updated.previewUrl?.split("?")[0]);
 	});
 
 	it("throws NotFoundError for unknown CV", async () => {

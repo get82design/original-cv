@@ -1,6 +1,7 @@
 import { SelectButtonRhf } from "@/components/input/select-button/SelectButton";
 import { ToggleAfficherCacher } from "@/components/input/toggle-button/AfficherCacher";
 import { FieldNameLayoutGeneral } from "@/features/cv-editor/utils/fields/fieldNameLayoutGeneral";
+import type { StylePhoto } from "@/services/schemas/cvTemplate.schema";
 
 interface TitleIconOption {
 	name: string;
@@ -8,7 +9,7 @@ interface TitleIconOption {
 }
 interface GeneralPhotoProps {
 	watchWithPhoto: boolean;
-	watchStylePhoto: "circle" | "flat";
+	watchStylePhoto: StylePhoto;
 	watchPhotoSide: "left" | "right";
 	watchLockPhotoSide: boolean;
 }
@@ -28,6 +29,7 @@ export const GeneralPhoto = ({
 }: GeneralPhotoProps) => {
 	const photoOptions = [
 		{ value: "flat", name: "Carré" },
+		{ value: "rounded", name: "Arrondi" },
 		{ value: "circle", name: "Rond" },
 	];
 	const photoSideOptions = [

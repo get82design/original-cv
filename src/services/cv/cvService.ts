@@ -250,17 +250,30 @@ export class CvService {
 			select: { id: true, previewUrl: true, previewUrlClean: true },
 		});
 
-		// Ne pas supprimer si c’est la même clé (re-save écrase déjà le fichier).
+		// Ne supprimer que si la clé objet change (ignorer ?v= cache-bust).
 		await Promise.all([
-			cv.previewUrl && cv.previewUrl !== storedWith.publicUrl
+			previewObjectKey(cv.previewUrl) !== previewObjectKey(storedWith.publicUrl)
 				? storage.deleteIfManaged(cv.previewUrl)
 				: Promise.resolve(),
-			cv.previewUrlClean && cv.previewUrlClean !== storedClean.publicUrl
+			previewObjectKey(cv.previewUrlClean) !==
+			previewObjectKey(storedClean.publicUrl)
 				? storage.deleteIfManaged(cv.previewUrlClean)
 				: Promise.resolve(),
 		]);
 
 		return updated;
+	}
+}
+
+function previewObjectKey(url: string | null | undefined): string | null {
+	if (!url) return null;
+	try {
+		if (url.startsWith("http://") || url.startsWith("https://")) {
+			return new URL(url).pathname;
+		}
+		return url.split("?")[0] ?? null;
+	} catch {
+		return url.split("?")[0] ?? null;
 	}
 }
 

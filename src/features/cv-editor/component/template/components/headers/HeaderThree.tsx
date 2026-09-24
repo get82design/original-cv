@@ -7,8 +7,10 @@ import { LocationInput } from "../input-cv/location-input/LocationCvInput";
 import { HeaderThreeContainer } from "./content/HeaderThreeContainer";
 import { FieldNameLayoutGeneral } from "@/features/cv-editor/utils/fields/fieldNameLayoutGeneral";
 import { FieldNameHeader } from "@/features/cv-editor/utils/fields/fieldNameHeader";
+import { FieldNameCv } from "@/features/cv-editor/utils/fields/fieldNameCv";
 import { useCreateCvContext } from "../../../context/CreateCvContext";
 import { getHeaderChrome } from "./utils/headerLayout";
+import { PhotoField } from "@/components/photo/PhotoField";
 
 export const HeaderThree = () => {
 	const { watch } = useFormContext();
@@ -16,7 +18,8 @@ export const HeaderThree = () => {
 	const { setSelectModifInput } = useCreateCvContext();
 	const watchModelHeaderNom = watch(FieldNameHeader.settingsNom);
 	const watchModelHeaderPrenom = watch(FieldNameHeader.settingsPrenom);
-	const chrome = getHeaderChrome(watchGeneral); // watchGeneral = layout
+	const chrome = getHeaderChrome(watchGeneral);
+
 	return (
 		<HeaderThreeContainer
 			modelGeneral={watchGeneral}
@@ -51,10 +54,19 @@ export const HeaderThree = () => {
 					forceWidthFull={true}
 				/>
 			}
-			subTitleCompo={<IntituleCvInput forceWidthFull textAlign={chrome.textAlign} />}
+			subTitleCompo={
+				<IntituleCvInput forceWidthFull textAlign={chrome.textAlign} />
+			}
 			emailCompo={<EmailInput withIcon textAlign={chrome.textAlign} />}
 			phoneCompo={<PhoneInput withIcon textAlign={chrome.textAlign} />}
 			locationCompo={<LocationInput withIcon textAlign={chrome.textAlign} />}
+			photo={
+				<PhotoField
+					name={FieldNameCv.photo}
+					stylePhoto={watchGeneral?.stylePhoto}
+					size={160}
+				/>
+			}
 		/>
 	);
 };

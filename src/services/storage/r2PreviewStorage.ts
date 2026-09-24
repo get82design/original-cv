@@ -69,17 +69,19 @@ export class R2PreviewStorage implements PreviewStorage {
 				Key: objectKey,
 				Body: input.body,
 				ContentType: input.contentType,
+				CacheControl: "public, max-age=0, must-revalidate",
 			}),
 		);
+		// Même clé objet → URL stable ; le ?v= invalide caches navigateur / next/image
 		return {
-			publicUrl: `${this.config.publicUrl}/${objectKey}`,
+			publicUrl: `${this.config.publicUrl}/${objectKey}?v=${Date.now()}`,
 		};
 	}
 
 	async deleteIfManaged(publicUrl: string | null | undefined): Promise<void> {
 		const prefix = `${this.config.publicUrl}/`;
 		if (!publicUrl?.startsWith(prefix)) return;
-		const objectKey = publicUrl.slice(prefix.length);
+		const objectKey = publicUrl.slice(prefix.length).split("?")[0] ?? "";
 		if (!objectKey || objectKey.includes("..")) return;
 		try {
 			await this.client.send(

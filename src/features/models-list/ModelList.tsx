@@ -55,7 +55,7 @@ function GalleryMiniCv({
 	color: Color | null;
 	withPhoto: boolean | null;
 	photoSide: "left" | "right" | null;
-	stylePhoto: "circle" | "flat" | null;
+	stylePhoto: "circle" | "flat" | "rounded" | null;
 	sidebarSide: "left" | "right" | null;
 	marge: ElmSize | null;
 	space: ElmSize | null;
@@ -88,7 +88,9 @@ function GalleryMiniCv({
 	}, [photoSide, methods, template]);
 
 	useEffect(() => {
-		const layout = template.structure as { layout?: { stylePhoto?: "circle" | "flat" } } | null;
+		const layout = template.structure as {
+			layout?: { stylePhoto?: "circle" | "flat" | "rounded" };
+		} | null;
 		const original = layout?.layout?.stylePhoto ?? "circle";
 		methods.setValue("layoutGeneral.layout.stylePhoto", stylePhoto ?? original);
 	}, [stylePhoto, methods, template]);
@@ -197,7 +199,7 @@ function GalleryCard({
 	color: Color | null;
 	withPhoto: boolean | null;
 	photoSide: "left" | "right" | null;
-	stylePhoto: "circle" | "flat" | null;
+	stylePhoto: "circle" | "flat" | "rounded" | null;
 	sidebarSide: "left" | "right" | null;
 	marge: ElmSize | null;
 	space: ElmSize | null;
@@ -456,7 +458,9 @@ export default function ModelList() {
 	const [colorLoading, setColorLoading] = useState(false);
 	const [withPhoto, setWithPhoto] = useState<boolean | null>(null);
 	const [photoSide, setPhotoSide] = useState<"left" | "right" | null>(null);
-	const [stylePhoto, setStylePhoto] = useState<"circle" | "flat" | null>(null);
+	const [stylePhoto, setStylePhoto] = useState<
+		"circle" | "flat" | "rounded" | null
+	>(null);
 	const [sidebarSide, setSidebarSide] = useState<"left" | "right" | null>(null);
 	const [marge, setMarge] = useState<ElmSize | null>(null);
 	const [space, setSpace] = useState<ElmSize | null>(null);
@@ -588,6 +592,12 @@ export default function ModelList() {
 								label="Carré"
 								outlined={stylePhoto !== "flat"}
 								onClick={() => setStylePhoto("flat")}
+							/>
+							<Button
+								size="small"
+								label="Arrondi"
+								outlined={stylePhoto !== "rounded"}
+								onClick={() => setStylePhoto("rounded")}
 							/>
 							<Button
 								size="small"

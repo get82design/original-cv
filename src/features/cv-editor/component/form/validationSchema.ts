@@ -36,6 +36,13 @@ function isModuleActive(
 	return (modules ?? []).some((m) => m.type === type && m.isActive !== false);
 }
 
+/** Garde title/settings/etc. — Zod strip sinon les styles au submit (ex. header.nom/prenom). */
+const sectionPassthrough = z
+	.object({
+		content: z.any().optional(),
+	})
+	.passthrough();
+
 export const cvValidationSchema = z
 	.object({
 		cvId: z.string().optional(),
@@ -49,96 +56,27 @@ export const cvValidationSchema = z
 						prenom: z.string().optional(),
 						nom: z.string().optional(),
 					})
+					.passthrough()
 					.optional(),
-				description: z.object({ content: z.any().optional() }).optional(),
-				philosophy: z
-					.object({ content: z.any().optional(), settings: z.any().optional() })
-					.optional(),
-				experience: z
-					.object({
-						content: z.array(z.any()).optional(),
-					})
-					.optional(),
-				achievement: z
-					.object({
-						content: z.array(z.any()).optional(),
-					})
-					.optional(),
-				certification: z
-					.object({
-						content: z.array(z.any()).optional(),
-					})
-					.optional(),
-				education: z
-					.object({
-						content: z.array(z.any()).optional(),
-					})
-					.optional(),
-				expertise: z
-					.object({
-						content: z.array(z.any()).optional(),
-					})
-					.optional(),
-				formation: z
-					.object({
-						content: z.array(z.any()).optional(),
-					})
-					.optional(),
-				language: z
-					.object({
-						content: z.array(z.any()).optional(),
-					})
-					.optional(),
-				passion: z
-					.object({
-						content: z.array(z.any()).optional(),
-					})
-					.optional(),
-				prize: z
-					.object({
-						content: z.array(z.any()).optional(),
-					})
-					.optional(),
-				project: z
-					.object({
-						content: z.array(z.any()).optional(),
-					})
-					.optional(),
-				publication: z
-					.object({
-						content: z.array(z.any()).optional(),
-					})
-					.optional(),
-				socialMedia: z
-					.object({
-						content: z.array(z.any()).optional(),
-					})
-					.optional(),
-				strength: z
-					.object({
-						content: z.array(z.any()).optional(),
-					})
-					.optional(),
-				volunteering: z
-					.object({
-						content: z.array(z.any()).optional(),
-					})
-					.optional(),
-				skillGroup: z
-					.object({
-						content: z.array(z.any()).optional(),
-					})
-					.optional(),
-				tagGroup: z
-					.object({
-						content: z.array(z.any()).optional(),
-					})
-					.optional(),
-				competenceGroup: z
-					.object({
-						content: z.array(z.any()).optional(),
-					})
-					.optional(),
+				description: sectionPassthrough.optional(),
+				philosophy: sectionPassthrough.optional(),
+				experience: sectionPassthrough.optional(),
+				achievement: sectionPassthrough.optional(),
+				certification: sectionPassthrough.optional(),
+				education: sectionPassthrough.optional(),
+				expertise: sectionPassthrough.optional(),
+				formation: sectionPassthrough.optional(),
+				language: sectionPassthrough.optional(),
+				passion: sectionPassthrough.optional(),
+				prize: sectionPassthrough.optional(),
+				project: sectionPassthrough.optional(),
+				publication: sectionPassthrough.optional(),
+				socialMedia: sectionPassthrough.optional(),
+				strength: sectionPassthrough.optional(),
+				volunteering: sectionPassthrough.optional(),
+				skillGroup: sectionPassthrough.optional(),
+				tagGroup: sectionPassthrough.optional(),
+				competenceGroup: sectionPassthrough.optional(),
 			})
 			.passthrough()
 			.optional(),

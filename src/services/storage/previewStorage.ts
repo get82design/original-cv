@@ -43,12 +43,16 @@ export class LocalPreviewStorage implements PreviewStorage {
 		const fullPath = path.join(this.rootDir, key);
 		await mkdir(path.dirname(fullPath), { recursive: true });
 		await writeFile(fullPath, input.body);
-		return { publicUrl: `${this.publicBase}/${key.replace(/\\/g, "/")}` };
+		return {
+			publicUrl: `${this.publicBase}/${key.replace(/\\/g, "/")}?v=${Date.now()}`,
+		};
 	}
 
 	async deleteIfManaged(publicUrl: string | null | undefined): Promise<void> {
 		if (!publicUrl?.startsWith(`${this.publicBase}/`)) return;
-		const key = publicUrl.slice(this.publicBase.length + 1);
+		const key = publicUrl
+			.slice(this.publicBase.length + 1)
+			.split("?")[0];
 		if (!key || key.includes("..")) return;
 		const fullPath = path.join(this.rootDir, key);
 		try {

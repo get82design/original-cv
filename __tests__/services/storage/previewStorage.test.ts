@@ -85,7 +85,9 @@ describe("LocalPreviewStorage", () => {
 			body: Buffer.from("img"),
 			contentType: "image/jpeg",
 		});
-		expect(result.publicUrl).toBe("/uploads/cv-previews/u1/cv1-with.jpg");
+		expect(result.publicUrl).toMatch(
+			/^\/uploads\/cv-previews\/u1\/cv1-with\.jpg\?v=\d+$/,
+		);
 		const disk = await readFile(path.join(dir, "u1", "cv1-with.jpg"));
 		expect(disk.toString()).toBe("img");
 	});
@@ -138,7 +140,7 @@ describe("LocalPreviewStorage", () => {
 			body: Buffer.from("png"),
 			contentType: "image/png",
 		});
-		expect(result.publicUrl).toBe("/custom-previews/env/test.png");
+		expect(result.publicUrl).toMatch(/^\/custom-previews\/env\/test\.png\?v=\d+$/);
 		const disk = await readFile(path.join(dir, "env", "test.png"));
 		expect(disk.toString()).toBe("png");
 	});

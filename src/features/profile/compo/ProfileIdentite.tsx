@@ -8,17 +8,20 @@ import { SpeedDial } from "primereact/speeddial";
 import type { CV } from "../CompoPage";
 import { DialogSelectCv } from "./common/DialogSelectCv";
 import { trpc } from "@utils/trpc";
+import { PhotoField } from "@/components/photo/PhotoField";
 
 export const ProfileIdentite = ({ cvs }: { cvs: CV[] }) => {
 	const { watch, setValue } = useFormContext();
 	const refProfil = useRef<SpeedDial>(null);
 	const [edit, setEdit] = useState(false);
-	const watchPhoto = watch("photo");
 	const watchNom = watch("firstName");
 	const watchPrenom = watch("lastName");
 	const [visibleMaj, setVisibleMaj] = useState(false);
 	const [idCv, setIdCv] = useState<string | null>(null);
-	const { data: cvSelected } = trpc.cv.byId.useQuery({ id: idCv ?? "" }, { enabled: !!idCv });
+	const { data: cvSelected } = trpc.cv.byId.useQuery(
+		{ id: idCv ?? "" },
+		{ enabled: !!idCv },
+	);
 
 	useEffect(() => {
 		if (cvSelected) {
@@ -27,6 +30,9 @@ export const ProfileIdentite = ({ cvs }: { cvs: CV[] }) => {
 			setValue("email", cvSelected?.headerCv?.email ?? "");
 			setValue("phone", cvSelected?.headerCv?.phone ?? "");
 			setValue("location", cvSelected?.headerCv?.location ?? "");
+			if (cvSelected.photo) {
+				setValue("photo", cvSelected.photo, { shouldDirty: true });
+			}
 		}
 	}, [cvSelected, setValue]);
 
@@ -49,9 +55,6 @@ export const ProfileIdentite = ({ cvs }: { cvs: CV[] }) => {
 		{
 			label: "Plus de données",
 			icon: "pi pi-plus",
-			// command: () => {
-			//     toast.current.show({ severity: 'error', summary: 'Delete', detail: 'Data Deleted' });
-			// }
 		},
 	];
 
@@ -67,21 +70,19 @@ export const ProfileIdentite = ({ cvs }: { cvs: CV[] }) => {
 			)}
 			<AppCard className="flex justify-between gap-4 relative group">
 				<div className="opacity-30 absolute top-2 left-3">
-					<TitleAppTwo firstPart={"Votre"} secondPart={"Profil"} size={"text-2xl"} withSpace />
+					<TitleAppTwo
+						firstPart={"Votre"}
+						secondPart={"Profil"}
+						size={"text-2xl"}
+						withSpace
+					/>
 				</div>
 				<div className="w-2/5 px-8 pt-8 pb-4 flex justify-center rounded-md">
-					<div
-						style={{
-							width: "130px",
-							height: "130px",
-							backgroundImage: `url(${
-								watchPhoto && watchPhoto !== "" ? watchPhoto : "/assets/img/User-avatar.svg.png"
-							})`,
-							backgroundPosition: "center",
-							backgroundSize: "cover",
-							cursor: "pointer",
-						}}
-						className={"rounded-full bg-white z-10 mt-2"}
+					<PhotoField
+						name="photo"
+						stylePhoto="circle"
+						size={130}
+						className="mt-2"
 					/>
 				</div>
 				<div className="w-3/5 text-left flex flex-col gap-6">

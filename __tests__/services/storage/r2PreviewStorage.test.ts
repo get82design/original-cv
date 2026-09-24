@@ -62,13 +62,16 @@ describe("R2PreviewStorage", () => {
 			contentType: "image/jpeg",
 		});
 
-		expect(result.publicUrl).toBe("https://cdn.example.com/cv-previews/u1/cv1-with.jpg");
+		expect(result.publicUrl).toMatch(
+			/^https:\/\/cdn\.example\.com\/cv-previews\/u1\/cv1-with\.jpg\?v=\d+$/,
+		);
 		expect(send).toHaveBeenCalledOnce();
 		const cmd = send.mock.calls[0]?.[0];
 		expect(cmd.input).toMatchObject({
 			Bucket: "my-bucket",
 			Key: "cv-previews/u1/cv1-with.jpg",
 			ContentType: "image/jpeg",
+			CacheControl: "public, max-age=0, must-revalidate",
 		});
 	});
 
@@ -89,7 +92,9 @@ describe("R2PreviewStorage", () => {
 		const send = vi.fn().mockResolvedValue({});
 		const storage = new R2PreviewStorage(config, { send } as never);
 
-		await storage.deleteIfManaged("https://cdn.example.com/cv-previews/u1/cv1-with.jpg");
+		await storage.deleteIfManaged(
+			"https://cdn.example.com/cv-previews/u1/cv1-with.jpg?v=123",
+		);
 
 		expect(send).toHaveBeenCalledOnce();
 		expect(send.mock.calls[0]?.[0].input).toMatchObject({
