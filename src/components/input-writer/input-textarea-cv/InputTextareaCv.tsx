@@ -47,6 +47,8 @@ export const TextareaCv = ({
 	textColor = "000000",
 	textAlign,
 	allowNewline = false,
+	onFocus,
+	onBlur,
 	...props
 }: TextareaRhfProps) => {
 	const ref = useRef<HTMLTextAreaElement>(null);
@@ -103,6 +105,7 @@ export const TextareaCv = ({
 					<>
 						<InputTextarea
 							{...field}
+							{...props}
 							id={name}
 							rows={1}
 							className={"w-full"}
@@ -126,11 +129,23 @@ export const TextareaCv = ({
 									return false;
 								}
 							}}
-							onFocus={(e) => op.current?.show(e, e.target)}
-							onBlur={() => op.current?.hide()}
+							onFocus={(e) => {
+								const y = window.scrollY;
+								const x = window.scrollX;
+								op.current?.show(e, e.target);
+								requestAnimationFrame(() => {
+									if (window.scrollY !== y || window.scrollX !== x) {
+										window.scrollTo({ top: y, left: x, behavior: "auto" });
+									}
+								});
+								onFocus?.(e);
+							}}
+							onBlur={(e) => {
+								op.current?.hide();
+								onBlur?.(e);
+							}}
 							autoResize
 							ref={ref}
-							{...props}
 						/>
 						{fieldState.error && (
 							<span className="text-red-500 text-xs -mt-1 mb-1">{fieldState.error.message}</span>

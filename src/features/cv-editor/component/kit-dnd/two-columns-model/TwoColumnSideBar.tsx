@@ -1,12 +1,11 @@
 import { ChangePaddingDocument } from "@/features/cv-editor/utils/utilsCv/marge";
 import type { ItemGeneralProps } from "@utils/type";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useCreateCvContext } from "../../context/CreateCvContext";
 import { useFormContext } from "react-hook-form";
 import { useCvSectionItems } from "../shared/useCvSectionItems";
 import { useCvPageDnd } from "../shared/useCvPageDnd";
 import { GetPrimaryColor } from "@/features/cv-editor/utils/utilsCv/color";
-import { CvSignature } from "../../brand/CvSignature";
 import { HeaderRegister } from "../../template/register/header/HeaderRegister";
 import { DndContext, DragOverlay } from "@dnd-kit/core";
 import { ColumnDropZone } from "../shared/ColumnDropZone";
@@ -14,20 +13,52 @@ import { resolveSidebarFg } from "../shared/ColumnFgContext";
 import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { SectionSortableContext } from "../shared/SectionSortableContext";
 import { FieldNameLayoutGeneral } from "@/features/cv-editor/utils/fields/fieldNameLayoutGeneral";
+import {
+	CV_PAGE_HEIGHT,
+	CV_PAGE_PAD_PX,
+	CV_SIGNATURE_RESERVE_PX,
+	mergeTwoColumnPages,
+	packSectionsIntoPages,
+	type CvMarge,
+} from "@/features/cv-editor/utils/cvPage";
+import { CvPageShell } from "../shared/CvPageShell";
+import { useElementHeights } from "../shared/useElementHeights";
+import {
+	useCvPageScrollLock,
+	useDebouncedHeights,
+	useFrozenPackingHeights,
+} from "../shared/useCvPageScrollLock";
+import type { SectionItem } from "../shared/SectionCatalog";
+
+const HEADER_TOP_ID = "__cv_header_top__";
+const HEADER_SIDEBAR_ID = "__cv_header_sidebar__";
 
 export interface TwoColumnSideBarProps {
 	deleteSection: (item: ItemGeneralProps) => void;
 }
+
 export function TwoColumnSideBar({ deleteSection }: TwoColumnSideBarProps) {
 	const paddingDoc = ChangePaddingDocument();
-	const refTaille = useRef<HTMLDivElement>(null);
-	const { setSectionSelected } = useCreateCvContext();
+	const { setSectionSelected, sectionSelected } = useCreateCvContext();
 	const { watch } = useFormContext();
 	const sidebarSide = watch(FieldNameLayoutGeneral.sidebarSide) ?? "left";
 	const headerPlacement = watch(FieldNameLayoutGeneral.headerPlacement) ?? "top";
 
 	const left = useCvSectionItems(0);
 	const right = useCvSectionItems(1);
+	const sidebarItems = useMemo(() => [...left].sort((a, b) => a.order - b.order), [left]);
+	const mainItems = useMemo(() => [...right].sort((a, b) => a.order - b.order), [right]);
+	const sidebarIds = useMemo(() => sidebarItems.map((i) => i.id), [sidebarItems]);
+	const mainIds = useMemo(() => mainItems.map((i) => i.id), [mainItems]);
+	const sidebarById = useMemo(
+		() => new Map<string, SectionItem>(sidebarItems.map((i) => [i.id, i])),
+		[sidebarItems],
+	);
+	const mainById = useMemo(
+		() => new Map<string, SectionItem>(mainItems.map((i) => [i.id, i])),
+		[mainItems],
+	);
+
 	const [activeSectionId, setActiveSectionId] = useState<string | null>(null);
 	const activeItem = [...left, ...right].find((i) => i.id === activeSectionId);
 	const { sensors, handleDragEnd, handleDragOver, collisionDetection } = useCvPageDnd(
@@ -42,22 +73,92 @@ export function TwoColumnSideBar({ deleteSection }: TwoColumnSideBarProps) {
 	const sidebarShadeBgColor = sidebarTheme?.shadeBgColor;
 	const sidebarFg = sidebarTheme?.fg;
 	const shade = accent?.shade;
-	const marge = (watch(FieldNameLayoutGeneral.marge) ?? "md") as "sm" | "md" | "lg";
+	const marge = (watch(FieldNameLayoutGeneral.marge) ?? "md") as CvMarge;
 	const pagePad = { sm: "2rem", md: "3rem", lg: "4rem" }[marge];
 	const [colorSelected, setColorSelected] = useState<string | null>(null);
 	const bandStop = "calc(var(--page-pad) + (100% - 2 * var(--page-pad)) * 0.2 + 0.5rem)";
 
-	const hue = sidebarBgColor === "primaryColor" ? primaryColor.split("-")[0] : sidebarBgColor; // "gray" | "black" | "white"
+	const hue = sidebarBgColor === "primaryColor" ? primaryColor.split("-")[0] : sidebarBgColor;
 	const cssToken =
 		sidebarBgColor && (hue === "black" || hue === "white")
 			? hue
 			: sidebarBgColor
-				? `${hue}${sidebarShadeBgColor ?? ""}` // "gray-700"
+				? `${hue}${sidebarShadeBgColor ?? ""}`
 				: undefined;
 	const columnFg = resolveSidebarFg(sidebarFg, sidebarShadeBgColor);
 
 	const headerKey = watch("layoutGeneral.defaultStyles")?.components?.sectionHeader ?? "HeaderOne";
 	const HeaderComponent = HeaderRegister[headerKey] ?? HeaderRegister.HeaderOne;
+
+	const measureIds = useMemo(() => {
+		const ids = [...sidebarIds, ...mainIds];
+		if (headerPlacement === "top") ids.unshift(HEADER_TOP_ID);
+		else ids.unshift(HEADER_SIDEBAR_ID);
+		return ids;
+	}, [sidebarIds, mainIds, headerPlacement]);
+
+	const { heights, setMeasureRef } = useElementHeights(measureIds);
+	const stableHeights = useDebouncedHeights(heights);
+	const packingHeights = useFrozenPackingHeights(stableHeights, sectionSelected);
+
+	const padPx = CV_PAGE_PAD_PX[marge] ?? CV_PAGE_PAD_PX.md;
+	const headerTopRaw =
+		headerPlacement === "top" ? (packingHeights.get(HEADER_TOP_ID) ?? 0) : 0;
+	// Tant que le header n’est pas mesuré, budget trop large → pas de page 2 alors que ça déborde.
+	const headerTopHeight =
+		headerPlacement === "top" ? (headerTopRaw > 0 ? headerTopRaw : 240) : 0;
+	const headerSidebarHeight =
+		headerPlacement === "sidebar" ? (packingHeights.get(HEADER_SIDEBAR_ID) ?? 0) : 0;
+
+	// Espace vertical dispo pour les sections d’une colonne (header top déjà hors flux).
+	const columnBodyHeight = Math.max(
+		1,
+		CV_PAGE_HEIGHT - headerTopHeight - 2 * padPx - CV_SIGNATURE_RESERVE_PX,
+	);
+
+	const heightsForPack = useMemo(() => {
+		const m = new Map(packingHeights);
+		// Tant qu’une section n’est pas mesurée, estimation basse pour déclencher la page 2
+		// (sinon h=0 → tout reste page 1 alors que ça déborde visuellement).
+		for (const id of [...sidebarIds, ...mainIds]) {
+			if ((m.get(id) ?? 0) <= 0) m.set(id, 140);
+		}
+		return m;
+	}, [packingHeights, sidebarIds, mainIds]);
+
+	const sidebarPages = useMemo(
+		() =>
+			packSectionsIntoPages({
+				sectionIds: sidebarIds,
+				heights: heightsForPack,
+				headerHeight: headerSidebarHeight,
+				contentHeight: columnBodyHeight,
+			}),
+		[sidebarIds, heightsForPack, headerSidebarHeight, columnBodyHeight],
+	);
+
+	const mainPages = useMemo(
+		() =>
+			packSectionsIntoPages({
+				sectionIds: mainIds,
+				heights: heightsForPack,
+				headerHeight: 0,
+				contentHeight: columnBodyHeight,
+			}),
+		[mainIds, heightsForPack, columnBodyHeight],
+	);
+
+	const pages = useMemo(
+		() => mergeTwoColumnPages(sidebarPages, mainPages),
+		[sidebarPages, mainPages],
+	);
+
+	const { lockScrollBeforeSelect } = useCvPageScrollLock();
+
+	const background =
+		accent?.type === "leftBand" && colorSelected
+			? `linear-gradient(to right, var(--${colorSelected}) ${bandStop}, #fff ${bandStop})`
+			: "#fff";
 
 	useEffect(() => {
 		if (shade) {
@@ -67,11 +168,35 @@ export function TwoColumnSideBar({ deleteSection }: TwoColumnSideBarProps) {
 			setColorSelected(primaryColor);
 		}
 	}, [shade, primaryColor]);
+
+	const selectSection = (id: string) => {
+		lockScrollBeforeSelect();
+		setSectionSelected(id);
+	};
+
+	const renderSection = (item: SectionItem, className: string) => (
+		// biome-ignore lint/a11y/noStaticElementInteractions: wrapper section
+		// biome-ignore lint/a11y/useKeyWithClickEvents: sélection section
+		<div
+			key={item.id}
+			ref={setMeasureRef(item.id)}
+			className={className}
+			onClick={() => selectSection(item.id)}
+		>
+			<SectionSortableContext
+				item={item}
+				deleteSection={deleteSection}
+				sectionMenu={item.sectionMenu}
+			/>
+		</div>
+	);
+
+	const allSortableIds = useMemo(() => [...sidebarIds, ...mainIds], [sidebarIds, mainIds]);
+
 	return (
 		<DndContext
 			sensors={sensors}
 			collisionDetection={collisionDetection}
-			// onDragEnd={handleDragEnd}
 			onDragOver={handleDragOver}
 			onDragStart={(e) => {
 				if (e.active.data.current?.type === "section") {
@@ -84,110 +209,89 @@ export function TwoColumnSideBar({ deleteSection }: TwoColumnSideBarProps) {
 			}}
 			onDragCancel={() => setActiveSectionId(null)}
 		>
-			<div
-				className={`cv-page-document shadow-lg relative bg-white`}
-				style={{
-					width: "940px",
-					height: "1300px",
-					["--page-pad" as string]: pagePad,
-					background:
-						accent?.type === "leftBand" && colorSelected
-							? `linear-gradient(to right, var(--${colorSelected}) ${bandStop}, #fff ${bandStop})`
-							: "#fff",
-				}}
-			>
-				<CvSignature />
-				<div ref={refTaille}>
-					{/* Header full-bleed (au-dessus des 2 colonnes) */}
-					{headerPlacement === "top" && (
-						<button
-							type="button"
-							onClick={() => setSectionSelected("header")}
-							className={`w-full ${paddingDoc} pb-0`}
-						>
-							{HeaderComponent && <HeaderComponent />}
-						</button>
-					)}
-
-					<div className="sections-container w-full grid grid-cols-8 gap-6">
-						{/* Colonne 0 — sidebar gauche */}
-						<ColumnDropZone
-							column={0}
-							className={`col-span-3 min-h-[4rem] ${
-								sidebarSide === "right" ? "order-2" : "order-1"
-							} ${paddingDoc}`}
-							fg={columnFg}
-							style={{
-								backgroundColor: cssToken ? `var(--${cssToken})` : undefined,
-							}}
-						>
-                            {headerPlacement === "sidebar" && (
-                                <button
-                                    type="button"
-                                    onClick={() => setSectionSelected("header")}
-                                    className="w-full"
-                                >
-                                    {HeaderComponent && <HeaderComponent />}
-                                </button>
-                            )}
-                            <SortableContext
-                                items={left.map((item) => item.id)}
-                                strategy={verticalListSortingStrategy}
-                            >
-                                {left.map((item) => (
-                                    // biome-ignore lint/a11y/noStaticElementInteractions: wrapper section
-                                    // biome-ignore lint/a11y/useKeyWithClickEvents: sélection section
-                                    <div
-                                        key={item.id}
-                                        className="sections-container-left"
-                                        onClick={() => setSectionSelected(item.id)}
-                                    >
-                                        <SectionSortableContext
-                                            item={item}
-                                            deleteSection={deleteSection}
-                                            sectionMenu={item.sectionMenu}
-                                        />
-                                    </div>
-                                ))}
-                            </SortableContext>
-						</ColumnDropZone>
-
-						{/* Colonne 1 — main */}
-						<ColumnDropZone
-							column={1}
-							className={`col-span-5 min-h-[4rem] ${
-								sidebarSide === "right" ? "order-1 pr-0" : "order-2 pl-0"
-							} ${paddingDoc}`}
-						>
-							<SortableContext
-								items={right.map((item) => item.id)}
-								strategy={verticalListSortingStrategy}
+			<SortableContext items={allSortableIds} strategy={verticalListSortingStrategy}>
+				<div className="flex flex-col gap-6">
+					{pages.map((page, pageIndex) => (
+						// biome-ignore lint/suspicious/noArrayIndexKey: index de page A4 stable
+						<div key={`cv-page-2col-${pageIndex}`} className="flex flex-col gap-2">
+							{pages.length > 1 && (
+								<p className="text-xs text-muted-color m-0 px-1">
+									Page {pageIndex + 1} / {pages.length}
+								</p>
+							)}
+							<CvPageShell
+								pageIndex={pageIndex}
+								paddingClass=""
+								pagePad={pagePad}
+								background={background}
 							>
-								{right.map((item) => (
-									// biome-ignore lint/a11y/noStaticElementInteractions: wrapper section
-									// biome-ignore lint/a11y/useKeyWithClickEvents: sélection section
-									<div
-										key={item.id}
-										className="sections-container-right"
-										onClick={() => setSectionSelected(item.id)}
-									>
-										<SectionSortableContext
-											item={item}
-											deleteSection={deleteSection}
-											sectionMenu={item.sectionMenu}
-										/>
+								<div className="flex h-full min-h-0 flex-col">
+									{pageIndex === 0 && headerPlacement === "top" && (
+										<button
+											type="button"
+											ref={setMeasureRef(HEADER_TOP_ID)}
+											onClick={() => selectSection("header")}
+											className={`w-full shrink-0 ${paddingDoc} pb-0`}
+										>
+											{HeaderComponent && <HeaderComponent />}
+										</button>
+									)}
+
+									<div className="sections-container grid min-h-0 w-full flex-1 grid-cols-8 gap-6">
+										<ColumnDropZone
+											column={0}
+											pageIndex={pageIndex}
+											className={`col-span-3 ${
+												sidebarSide === "right" ? "order-2" : "order-1"
+											} ${paddingDoc}`}
+											fg={columnFg}
+											style={{
+												backgroundColor: cssToken ? `var(--${cssToken})` : undefined,
+											}}
+										>
+											{pageIndex === 0 && headerPlacement === "sidebar" && (
+												<button
+													type="button"
+													ref={setMeasureRef(HEADER_SIDEBAR_ID)}
+													onClick={() => selectSection("header")}
+													className="w-full"
+												>
+													{HeaderComponent && <HeaderComponent />}
+												</button>
+											)}
+											{page.sidebarIds.map((id) => {
+												const item = sidebarById.get(id);
+												return item
+													? renderSection(item, "sections-container-left")
+													: null;
+											})}
+										</ColumnDropZone>
+
+										<ColumnDropZone
+											column={1}
+											pageIndex={pageIndex}
+											className={`col-span-5 ${
+												sidebarSide === "right" ? "order-1 pr-0" : "order-2 pl-0"
+											} ${paddingDoc}`}
+										>
+											{page.mainIds.map((id) => {
+												const item = mainById.get(id);
+												return item
+													? renderSection(item, "sections-container-right")
+													: null;
+											})}
+										</ColumnDropZone>
 									</div>
-								))}
-							</SortableContext>
-						</ColumnDropZone>
-					</div>
+								</div>
+							</CvPageShell>
+						</div>
+					))}
 				</div>
-			</div>
+			</SortableContext>
+
 			<DragOverlay>
 				{activeItem ? (
 					<div className="opacity-90 bg-white shadow-lg">
-						{/* titre ou mini preview — pas forcément tout le SectionXxx */}
-						{/* {activeItem.id.replace("section-", "")} */}
 						<activeItem.content />
 					</div>
 				) : null}

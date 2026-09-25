@@ -14,8 +14,11 @@ export async function captureCvPreview(options?: {
 	/** Exclut CvSignature de la capture via data-preview-ignore (pas de flash UI) */
 	excludeSignature?: boolean;
 }): Promise<string | null> {
-	const el = document.querySelector(".cv-page-document");
-	if (!(el instanceof HTMLElement)) return null;
+	// Phase 1 : preview dashboard = page 1 (pages suivantes visibles dans l’éditeur).
+	const el =
+		document.querySelector<HTMLElement>('.cv-page-document[data-cv-page="0"]') ??
+		document.querySelector<HTMLElement>(".cv-page-document");
+	if (!el) return null;
 
 	const excludeSignature = options?.excludeSignature === true;
 	if (excludeSignature) setSignaturePreviewIgnore(true);

@@ -96,6 +96,7 @@ export function SectionItemShell({
 					<div className="absolute w-auto right-0 -top-8 flex justify-center z-20">
 						<div className="rounded-md bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 shadow-sm flex items-center">
 							<button
+								type="button"
 								className={cvToolbarIconBtnClass}
 								title="Déplacer"
 								aria-label="Déplacer"

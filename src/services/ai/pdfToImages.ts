@@ -23,8 +23,27 @@ export type PdfToImagesOptions = {
 
 let pdfjsReady: Promise<void> | null = null;
 
+/**
+ * pdfjs-dist ≥ 4 utilise Promise.withResolvers (Node 22+ / navigateurs récents).
+ * Le build « legacy » ne le polyfill plus correctement → nécessaire sous Node 20.
+ */
+function polyfillPromiseWithResolvers() {
+	if (typeof Promise.withResolvers === "function") return;
+
+	Promise.withResolvers = function withResolvers<T = unknown>() {
+		let resolve!: (value: T | PromiseLike<T>) => void;
+		let reject!: (reason?: unknown) => void;
+		const promise = new Promise<T>((res, rej) => {
+			resolve = res;
+			reject = rej;
+		});
+		return { promise, resolve, reject };
+	};
+}
+
 async function ensurePdfjs() {
 	if (!pdfjsReady) {
+		polyfillPromiseWithResolvers();
 		// Legacy build : compatible Node (évite Uint8Array.toHex du build moderne)
 		pdfjsReady = definePDFJSModule(() => import("pdfjs-dist/legacy/build/pdf.mjs")).then(
 			() => undefined,

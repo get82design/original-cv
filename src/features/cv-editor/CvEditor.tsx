@@ -654,7 +654,7 @@ export const CvEditor = () => {
 									...getCvTypographyVars(typography),
 									fontFamily: "var(--cv-font-body)",
 								}}
-								className="cv-root ml-0 lg:ml-4 xl:ml-0 flex flex-col gap-4"
+								className="cv-root ml-0 lg:ml-4 xl:ml-0 flex flex-col gap-4 [overflow-anchor:none]"
 							>
 								<PageLayout deleteSection={deleteSection} />
 							</div>

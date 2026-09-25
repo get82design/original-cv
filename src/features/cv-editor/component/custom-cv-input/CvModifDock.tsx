@@ -5,6 +5,7 @@ import { SelectTemplate } from "@/features/cv-editor/component/custom-cv-input/S
 import { SectionNoUse } from "@/features/cv-editor/component/custom-cv-input/SectionNoUse";
 import { AiAdvicePanel } from "@/features/cv-editor/component/custom-cv-input/AiAdvicePanel";
 import { useAiAdvice } from "@/features/cv-editor/component/context/AiAdviceContext";
+import { useCvFormSave } from "@/features/cv-editor/component/form/CvFormSaveContext";
 import type { TemplateModule } from "@/services/schemas/cvTemplate.schema";
 import type { CvFormValues } from "@/services/schemas/cvSave.schema";
 import { saveGuestCvDraft } from "@/features/cv-editor/utils/guestCvDraft";
@@ -42,6 +43,7 @@ export function CvModifDock({
 	onDownloadClick,
 }: CvModifDockProps) {
 	const router = useRouter();
+	const { requestSave } = useCvFormSave();
 	const showPanel = open || !collapsible;
 	const { entries, iaTabNonce } = useAiAdvice();
 	const showIaTab = entries.length > 0;
@@ -154,7 +156,8 @@ export function CvModifDock({
 					{status === "authenticated" ? (
 						<Button
 							loading={isSubmitting}
-							type="submit"
+							type="button"
+							onClick={requestSave}
 							className="flex justify-center bg-primary hover:bg-primary-dark dark:bg-primary-dark dark:hover:bg-primary text-white dark:text-black font-semibold"
 						>
 							Sauver votre CV

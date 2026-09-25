@@ -35,13 +35,14 @@ export const InputTextCv = ({
 	textColor,
 	forceWidthFull = false,
 	ignoreColumnFg = false,
+	onFocus,
+	onBlur,
 	...props
 }: InputTextProps) => {
 	const ref = useRef<HTMLInputElement>(null);
 	const op = useRef<OverlayPanel>(null);
 	const { control } = useFormContext();
 	const { getSize, getWeight } = useChangeTextFormat(dataInput);
-	// const watchFont = watch(FieldNameCvModelGeneral.font)
 	const isLg = useMediaQuery("(min-width: 1024px)");
 
 	const color = useInputCvColor(textColor, { ignoreColumnFg });
@@ -67,6 +68,7 @@ export const InputTextCv = ({
 					<>
 						<PrimeInputText
 							{...field}
+							{...props}
 							style={{
 								padding: "0px",
 								border: "none",
@@ -85,10 +87,27 @@ export const InputTextCv = ({
 										? `${props.placeholder.length}ch`
 										: `${field.value?.length}ch`,
 							}}
-							onFocus={(e) => op.current?.show(e, e.target)}
-							onBlur={() => op.current?.hide()}
+							onKeyDown={(e) => {
+								// Évite le submit HTML implicite du <form> parent (Entrée).
+								if (e.key === "Enter") e.preventDefault();
+								props.onKeyDown?.(e);
+							}}
+							onFocus={(e) => {
+								const y = window.scrollY;
+								const x = window.scrollX;
+								op.current?.show(e, e.target);
+								requestAnimationFrame(() => {
+									if (window.scrollY !== y || window.scrollX !== x) {
+										window.scrollTo({ top: y, left: x, behavior: "auto" });
+									}
+								});
+								onFocus?.(e);
+							}}
+							onBlur={(e) => {
+								op.current?.hide();
+								onBlur?.(e);
+							}}
 							ref={ref}
-							{...props}
 						/>
 						{fieldState.error && (
 							<span className="text-red-500 text-xs -mt-1 mb-1">{fieldState.error.message}</span>
