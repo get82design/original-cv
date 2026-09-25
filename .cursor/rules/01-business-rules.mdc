@@ -1,0 +1,38 @@
+---
+description: Règles métiers monétisation, quotas DL/IA, templates, RGPD
+alwaysApply: true
+---
+
+# Règles métiers
+
+Détail live + cibles : `docs/business-rules.md` · pricing long : `readme.md`.
+
+**Toujours côté serveur.** Ne pas débiter crédits / quotas uniquement côté client.
+
+## Plans & rôles
+
+- `PlanRole` : FREE | STANDARD | PREMIUM | PREMIUM_PLUS_IA
+- `UserRole` : USER | ADMIN (≠ plan) → `adminProcedure`
+- V1 : pay-per-use (crédits) = chemin principal ; ne pas inventer « abo = DL illimités » sans le lire dans le service
+
+## CV / templates
+
+- Création : `user.maxCvs` via `userService.canCreateCv`
+- Premium : édition OK si template actif ; **download** exige `UnlockedTemplate` (`templateAccessService.assertCanDownloadTemplate`)
+
+## Téléchargements
+
+- `freeDownloadsRemaining` = avec logo ; `downloadCredits` = sans logo
+- Débit : `consumeFreeDownload` / `consumePaidDownload` + `DownloadEvent`
+- Cadeaux one-shot : `DownloadGrant` (`PROFILE_CREATED`, `TEMPLATE_PURCHASED`, `FIRST_CV_SAVED`)
+
+## IA
+
+- Import : quotas `cvImportQuota` (2/24h, 5/7j, 10/30j) — pas `AiFeaturePrice`
+- REVIEW / REWRITE / COVER_LETTER : `aiBillingService` — assert avant, `consumeAndLog` après succès
+- FREE → free DL ; PAID → downloadCredits ; log `AiEvent`
+
+## Public / RGPD
+
+- CV privé par défaut ; partage opt-in ; page publique `noindex`
+- Suppression compte en cascade ; stats via events agrégés

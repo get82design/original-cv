@@ -1,0 +1,25 @@
+---
+description: Conventions Vitest et organisation des tests
+globs: __tests__/**/*.ts,__tests__/**/*.tsx
+alwaysApply: false
+---
+
+# Tests
+
+Détail : `docs/testing.md`.
+
+**Obligation** : logique / service / règle métier / util critique → test ajouté ou mis à jour dans le même passage.
+
+## Stack
+
+- Vitest ; scripts : `test`, `test:run`, `test:db`, `test:coverage`
+- Config : `vitest.config.ts` — include `**/__tests__/**/*.test.ts` ; setup reset DB ; `maxWorkers: 1`
+- DB : `prisma/schema.test.prisma` + `DATABASE_TEST_URL` ; client `lib/prismaTest.ts`
+
+## Organisation
+
+- Miroir : `__tests__/services|api|features/...` ↔ sources
+- Helpers : `__tests__/utils/create-test-user*.ts`, `create-test-cv-full-flow.ts`, `create-test-template.ts`…
+- Priorité : services → schemas Zod → utils purs (`cvPage`, `moduleOrder`, mappers)
+- Éviter E2E UI fragiles sauf besoin explicite
+- Assertions messages d’erreur : **français** (alignés services)

@@ -1,0 +1,49 @@
+---
+description: Patterns tRPC, services, schemas Zod et erreurs métier
+globs: server/**/*.ts,src/services/**/*.ts,prisma/schema.prisma
+alwaysApply: false
+---
+
+# API & services
+
+Détail : `docs/api-patterns.md` · modèle : `docs/data-model.md` · métier : `docs/business-rules.md`.
+
+## Couches
+
+1. Router (`server/api/routers/*.router.ts`) : input Zod + procédure + délégation
+2. Service (`src/services/**`) : logique + Prisma + quotas/ownership
+3. Schema (`src/services/schemas/*.schema.ts`) : Zod 4
+
+```ts
+// ✅
+protectedProcedure.input(schema).mutation(({ input, ctx }) =>
+	cvService.update(input.id, ctx.session.user.id, input.data),
+);
+```
+
+Nouveau domaine : schema → service → router mince → `root.ts` → **test**.
+
+## Procédures & ownership
+
+- `publicProcedure` / `protectedProcedure` / `adminProcedure` (`server/api/trpc.ts`)
+- Helpers : `assertCvOwnership`, `assertProfileOwnership`, `getOwnedProfile`
+- Toujours lier à `ctx.session.user.id` — ne pas faire confiance à un `userId` client
+
+## Erreurs
+
+- Lever `NotFoundError`, `ForbiddenError`, `ValidationError`, `ConflictError`, `TooManyRequestsError`… (`src/services/errors`)
+- Messages **en français** ; codes techniques OK en EN
+- Middleware mappe vers `TRPCError` — pas de `TRPCError` brut dans les services (sauf cas rare)
+
+## Modèle (rappel)
+
+- Profile = vivier ; CV = instance + `Cv*` + `CVModule` / `CVModuleItem`
+- Ne pas fusionner Profile et CV ; sync seulement via flux métier explicite
+- Quotas / DL / IA : appliquer **côté serveur**
+
+## Prisma
+
+- Client : `lib/prisma.ts` → `generated/prisma` (ne pas éditer à la main)
+- Noms générés : `prisma.cV`, `prisma.cVTemplate`… — pas `prisma.cv`
+- Après schema : `npm run db:generate` (+ migrate si besoin)
+- Previews : `src/services/storage/` — éviter data URL persistées en DB

@@ -1,0 +1,21 @@
+---
+description: Vision produit Original CV, stack et principes globaux
+alwaysApply: true
+---
+
+# Original CV — Contexte global
+
+SaaS aide à l’emploi : éditeur CV A4, profil, templates, PDF, IA (Gemini), admin.
+
+**Stack** : Next.js 16 (Pages Router) / React 19 / tRPC 11 / Zod 4 / Prisma 6 / PostgreSQL / NextAuth / PrimeReact / Tailwind 4 / dnd-kit / Vitest / Biome.
+
+**Architecture** : `pages/` mince → UI `src/features` + `src/components` ; métier `src/services` ; API mince `server/api/routers` ; helpers ownership dans `server/api/helpers`.
+
+**Docs** : `AGENTS.md` (index) · `docs/` (détail) · `readme.md` (pricing / roadmap).
+
+- Rôle / clarté / données≠instructions : `docs/agent-behavior.md`
+- Répondre en français, clair et précis.
+- Ne pas ajouter de lib UI/state alternative sans demande.
+- Ne pas committer sans demande explicite.
+- Ne pas éditer `generated/prisma`.
+- Lire la doc `docs/` concernée avant un changement large sur un domaine.

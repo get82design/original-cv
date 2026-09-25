@@ -1,0 +1,30 @@
+---
+description: Conventions éditeur CV A4, pagination, dnd-kit, templates
+globs: src/features/cv-editor/**/*
+alwaysApply: false
+---
+
+# Éditeur CV
+
+Détail : `docs/cv-editor.md` · dualité : `docs/data-model.md`.
+
+## Structure
+
+- Shell : `CvEditor.tsx` — dock, dialogs, layouts
+- Form / save : `component/form/FormCv` + `mapCvToSaveInput` + `CvFormSaveContext`
+- DnD : `kit-dnd/one-column-model`, `two-columns-model`, `shared/`
+- Sections : `template/components/*` + `register/*` + `init*.ts`
+- Mise en page : `custom-cv-input/` (dock, `mise-en-page/`, `panel-modif/`)
+
+## Page A4
+
+- `utils/cvPage.ts` : `CV_PAGE_WIDTH/HEIGHT` (940×1300), `cvPageContentHeight`, `packSectionsIntoPages`, `mergeTwoColumnPages`
+- Shell / mesure : `CvPageShell`, `useElementHeights`, `useCvPageScrollLock`
+- Toute modif constantes / pagination → mettre à jour `__tests__/features/cv-editor/cvPage.test.ts`
+
+## Règles
+
+- Imiter le pattern `init*` + `register` + `Section*` + `fieldName*` pour une nouvelle section
+- Préserver dnd-kit et l’ordre modules (`CVModule` / `CVModuleItem`, `@/utils/moduleOrder`)
+- Profile = vivier ; CV = instance affichée — ne pas fusionner ; sync seulement via flux explicite
+- Ne pas réécrire l’éditeur / le flow DnD from scratch

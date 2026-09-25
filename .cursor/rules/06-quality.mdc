@@ -1,0 +1,21 @@
+---
+description: Format Biome (tabs, quotes, CRLF) et hygiène git
+alwaysApply: true
+---
+
+# Qualité & hygiène
+
+Détail : `docs/architecture.md` (dossiers + scripts + Biome) · stack : `docs/stack.md`.
+
+## Biome (`biome.json`)
+
+- Tabs, double quotes, semicolons, trailing commas
+- `lineWidth: 100`, line endings CRLF
+- CSS lint/format désactivés — ne pas reformater massivement le CSS
+- Commandes : `npm run check` / `lint` / `format` (`check:fix` pour écrire)
+
+## Git
+
+- Pas de commit / push / amend sauf demande utilisateur
+- Ne pas committer `.env`, secrets, `node_modules`, `generated/`, artefacts
+- Diffs focalisés : pas de refactor opportuniste hors scope

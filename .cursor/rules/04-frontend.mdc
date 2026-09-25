@@ -1,0 +1,29 @@
+---
+description: UI React, PrimeReact, forms RHF, admin et profile
+globs: src/features/**/*.tsx,src/components/**/*.tsx
+alwaysApply: false
+---
+
+# Frontend
+
+Détail : `docs/frontend.md` · éditeur A4 : `docs/cv-editor.md` · stack : `docs/stack.md`.
+
+## Structure
+
+- `pages/` mince → logique dans `src/features/*`
+- Partagé : `src/components/` (`input/*Rhf`, `input-writer/*Cv`, `dialog/`, layout/nav)
+
+## Data & forms
+
+- `trpc.<router>.<proc>.useQuery` / `useMutation` ; invalidate via `trpc.useUtils()`
+- Types : `@utils/trpc.types` quand dispo — **zéro Prisma** dans l’UI
+- RHF + Zod ; CV inline → `InputTextCv`… ; profile/admin/auth → `*Rhf`
+- Erreurs user : français + `getClientErrorMessage` (`src/utils/clientError.ts`)
+
+## Règles
+
+- PrimeReact + Tailwind seulement — réutiliser avant d’ajouter
+- UI propre ; pas de store global ad hoc ; context local / props OK
+- Admin : `features/admin` + `trpc.admin.*` + rôle ADMIN uniquement
+- Profile = vivier `Profile*` ; CV édité = instance séparée
+- Quotas / débits : serveur seulement (l’UI appelle tRPC)

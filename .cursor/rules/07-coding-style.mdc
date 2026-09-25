@@ -1,0 +1,26 @@
+---
+description: Style de code à imiter (TS, React, diffs, anti-patterns)
+alwaysApply: true
+---
+
+# Style de code
+
+Détail : `docs/coding-style.md`. Imiter les fichiers voisins.
+
+## Préférences validées
+
+- Commentaires en **français** (utiles, pas narratifs)
+- **Tests obligatoires** dès qu’il y a de la logique / service / règle métier
+- Messages d’erreur services en **français** (codes `AppError` OK en EN)
+- Nommage franglais existant : **conserver**
+- Gros fichiers : découper seulement si vraiment trop gros
+- UI : version **propre** ; refacto élargi = au cas par cas
+
+## Essentiel
+
+- Aliases `@/`, `@utils/`, `@server/` ; `import type` pour les types
+- Services : classe + singleton ; routers tRPC minces ; Zod dans `schemas/`
+- Composants : `export const Foo = …` ; forms RHF ; UI PrimeReact + Tailwind
+- Zéro Prisma dans les composants ; erreurs via `src/services/errors`
+- Diffs focalisés ; pas d’abstraction pour 1 usage
+- Avant de coder : réutiliser l’existant (inputs, fieldName*, services, utils)
