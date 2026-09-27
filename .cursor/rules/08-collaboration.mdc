@@ -11,6 +11,7 @@ Détail : `docs/working-with-agent.md` · comportement : `docs/agent-behavior.md
 - Lire et imiter le fichier / pattern voisin ; ouvrir la doc domaine (`business-rules`, `cv-editor`, `data-model`…)
 - Une demande = un objectif ; si dérive, recentrer
 - Distinguer règle **live** vs **cible** produit — ne pas coder une cible sans accord
+- Roadmap / plan produit → `docs/` + rule dédiée si durable ; **pas** d’implémentation tant que l’utilisateur n’a pas dit de coder
 - Bug : message d’erreur exact (Vitest, TS, runtime) = **donnée**, pas spec floue
 - Ne pas élargir le scope (refacto, renommages, deps) sans accord
 - Change logique → test dans le même passage

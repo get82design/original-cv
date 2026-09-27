@@ -16,5 +16,6 @@ Point d’entrée agent : [`AGENTS.md`](../AGENTS.md) · règles actives : [`.cu
 | [coding-style.md](./coding-style.md) | Style TS/React, diffs, anti-patterns |
 | [working-with-agent.md](./working-with-agent.md) | Comment brief l’agent efficacement |
 | [agent-behavior.md](./agent-behavior.md) | Rôle, clarté, données vs instructions |
+| [v1-roadmap.md](./v1-roadmap.md) | Périmètre / ordre de finition V1 (cible) |
 
 Vision / pricing long format : [`readme.md`](../readme.md).

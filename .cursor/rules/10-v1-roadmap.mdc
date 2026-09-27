@@ -1,0 +1,32 @@
+---
+description: Périmètre et ordre de finition V1 — ne pas élargir ni coder sans demande
+alwaysApply: true
+---
+
+# Roadmap V1 (périmètre)
+
+Détail : `docs/v1-roadmap.md`. Todo vivant (à cocher ensemble) : `TODO.md` à la racine. Canvas : workspace Cursor `canvases/avancement-v1.canvas.tsx`.
+
+## Comportement agent
+
+- **Ne pas implémenter** ce chantier tant que l’utilisateur n’a pas demandé explicitement de **coder / implémenter**.
+- Un plan ou une mise à jour de rules/docs ≠ feu vert code.
+- Distinguer **live** (`docs/business-rules.md`) vs **cette roadmap** (cible de finition).
+
+## Critère done V1
+
+Parcours : créer/sauver CV → DL gratuit/payant → IA review/rewrite/lettre — **sans** entrée menu morte (sauf label « bientôt » / v2).
+
+## Dans V1 (ordre)
+
+1. Header split 2-col (`headerPlacement: "split"`) — photo/identité | titre/contacts
+2. Tips modal + stubs QR / fiche métier (« bientôt »)
+3. 3 variantes footer logo au DL gratuit
+4. Modale re-DL &lt; 10 min + limite ~3 DL / jour / CV
+5. Cover letter bout-en-bout (`gemini` + `ai.router` + client + tests)
+6. RGPD min (suppression compte UI + CGU/privacy) ; SEO templates **light**
+7. Freeze admin (doc) : pas Stripe / GA / funnel visits
+
+## Hors V1 (ne pas démarrer)
+
+DnD 3 zones (center → **V2**), match-job, Stripe/guest/Browserless (**V3**), abo + QR + page web CV (**V4**), CRON IA abo (**V5+**), tracker candidatures (parking), gating options premium (avant fin **V3**), PDF serveur réel (**V3**).

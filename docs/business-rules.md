@@ -120,10 +120,14 @@ Ne pas implémenter / affirmer comme déjà vrai sans re-vérifier :
 | Cible | Statut typique |
 |-------|----------------|
 | Abo actif (`plan !== FREE` + `subscriptionEnd > now`) → DL **illimités** | Vision `readme` ; débit DL actuel = crédits |
-| Modale si re-DL &lt; 10 min | UX prévue ; pas de garde-fou trouvé |
-| ~3 DL / jour / CV anti-abus | Cible abus ; pas d’enforcement trouvé |
-| `PREMIUM_PLUS_IA` : plafond **30**/mois + CRON reset `iaRequestsUsed` | Compteur + reset manuel existent ; plafond/CRON à figer |
-| Webhooks Stripe (packs, abo) | Roadmap `readme` |
-| Différenciation bandeau / URL publique par plan | Vision produit page publique |
+| Modale si re-DL &lt; 10 min | **V1** — voir `TODO.md` |
+| ~3 DL / jour / CV anti-abus | **V1** — voir `TODO.md` |
+| `PREMIUM_PLUS_IA` : plafond **30**/mois + CRON reset `iaRequestsUsed` | **V5+** (min V4) — compteur existe ; plafond/CRON à figer |
+| Webhooks Stripe (packs, abo) | **V3** packs / unlock ; **V4** abos |
+| Différenciation bandeau / URL publique par plan | **V4** (package abo + CV en ligne) |
+| Finition V1 (header split, tips, footers logo, cover letter, freeze admin, RGPD min, 3 DL/j, modale 10 min) | Voir `docs/v1-roadmap.md` + `TODO.md` — hors scope tant que non demandé |
+| Options / layouts **exclusifs** aux templates premium (vs gratuits) | Cible **avant fin V3** — voir `TODO.md` ; V1 = split partagé, pas de gating options |
+| Guest / localStorage + paywall | **V3** avec Stripe |
+| Tracker candidatures | Parking — après que l’app vive |
 
 Quand une cible est codée : la monter dans les sections live et retirer / réduire ici.

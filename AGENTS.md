@@ -24,6 +24,7 @@ Détails : [`docs/`](./docs/README.md) · pricing / roadmap : [`readme.md`](./re
 | Style de code | [docs/coding-style.md](./docs/coding-style.md) |
 | Efficacité avec l’agent | [docs/working-with-agent.md](./docs/working-with-agent.md) |
 | Rôle / clarté / données | [docs/agent-behavior.md](./docs/agent-behavior.md) |
+| Finition V1 (périmètre) | [docs/v1-roadmap.md](./docs/v1-roadmap.md) · rule `10-v1-roadmap` · [`TODO.md`](./TODO.md) |
 
 ## Do / Don’t
 
