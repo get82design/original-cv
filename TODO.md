@@ -51,8 +51,13 @@ Critère done : créer/sauver CV → DL gratuit/payant → IA review/rewrite/let
 
 ### Téléchargement
 
-- [ ] 3 variantes footer / fond logo au DL **gratuit**
-- [ ] Choix de la variante dans le dialog DL avant capture preview
+- [x] 3 variantes footer / fond logo au DL **gratuit**
+	- `minimal` / `band` / `corners` — mention « Édité sur originalcv.fr » (texte noir) + logo teinté
+	- décor sous la signature, dans `[data-cv-signature]` (export payant retire tout)
+	- logique pure `cvSignatureVariants.ts` + tests ; contexte session (pas de save)
+	- `(?)` polish UI des variantes (hauteurs / triangles) — on y revient si besoin
+- [x] Choix de la variante dans le dialog DL avant capture preview
+	- vignettes CSS ; recapture aperçu avec logo après 2 rAF (`waitForNextPaint`)
 - [ ] Modale bienveillante si re-DL &lt; 10 min (avertir avant débit)
 - [ ] Limite **~3 téléchargements / jour / CV** (anti-spam / anti-scraping) — assert serveur + message FR
 

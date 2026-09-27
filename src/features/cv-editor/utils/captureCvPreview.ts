@@ -10,6 +10,13 @@ function setSignaturePreviewIgnore(ignore: boolean) {
 	});
 }
 
+/** Laisse le navigateur peindre avant capture — sinon on photographie l'état précédent. */
+export function waitForNextPaint(): Promise<void> {
+	return new Promise((resolve) => {
+		requestAnimationFrame(() => requestAnimationFrame(() => resolve()));
+	});
+}
+
 export async function captureCvPreview(options?: {
 	/** Exclut CvSignature de la capture via data-preview-ignore (pas de flash UI) */
 	excludeSignature?: boolean;

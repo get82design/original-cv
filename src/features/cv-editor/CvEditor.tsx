@@ -25,7 +25,13 @@ import { DialogRewriteSection } from "@/components/dialog/DialogRewriteSection";
 import { CV_MODIF_DOCK_WIDTH, CvModifDock } from "./component/custom-cv-input/CvModifDock";
 import { useCvFormHistory } from "./component/form/CvFormHistoryContext";
 import { DialogDownloadCv } from "@/components/dialog/DialogDownloadCv";
-import { captureDownloadPreviews } from "./utils/captureCvPreview";
+import {
+	captureCvPreview,
+	captureDownloadPreviews,
+	waitForNextPaint,
+} from "./utils/captureCvPreview";
+import { useCvSignatureVariant } from "./component/context/CvSignatureVariantContext";
+import type { CvSignatureVariantId } from "./utils/cvSignatureVariants";
 import type { CvReview } from "@/services/schemas/cvReview.schema";
 import type { CvRewriteSection as CvRewriteResult } from "@/services/schemas/cvRewriteSection.schema";
 import type { CvRewriteSectionType } from "@/services/schemas/cvRewriteSection.schema";
@@ -125,6 +131,7 @@ export const CvEditor = () => {
 			priceCents: model?.priceCents ?? null,
 		};
 	}, [watchTemplateId, modeles]);
+	const { variant: signatureVariant, setVariant: setSignatureVariant } = useCvSignatureVariant();
 	const { setSectionSelected, setSelectModifInput, setSelectInputForm } = useCreateCvContext();
 	const { undo, redo, canUndo, canRedo } = useCvFormHistory();
 	const typography = watch("layoutGeneral.layout.typography");
@@ -300,6 +307,21 @@ export const CvEditor = () => {
 		} catch {
 			setDownloadPreviewWithLogo(null);
 			setDownloadPreviewWithoutLogo(null);
+		} finally {
+			setDownloadPreviewLoading(false);
+		}
+	};
+
+	/** L'habillage est appliqué à la vraie page : attendre un rendu avant de recapturer. */
+	const changeSignatureVariant = async (variant: CvSignatureVariantId) => {
+		if (variant === signatureVariant) return;
+		setSignatureVariant(variant);
+		setDownloadPreviewLoading(true);
+		try {
+			await waitForNextPaint();
+			setDownloadPreviewWithLogo(await captureCvPreview());
+		} catch {
+			setDownloadPreviewWithLogo(null);
 		} finally {
 			setDownloadPreviewLoading(false);
 		}
@@ -630,6 +652,10 @@ export const CvEditor = () => {
 						void onUnlockWithCredits();
 					}}
 					onUnlockWithStripe={onUnlockWithStripe}
+					signatureVariant={signatureVariant}
+					onSignatureVariantChange={(variant) => {
+						void changeSignatureVariant(variant);
+					}}
 					onAdjust={() => setVisibleAssistantIa(true)}
 				/>
 				<DialogAssistantIa

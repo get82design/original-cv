@@ -1,9 +1,43 @@
-import { Dialog } from "primereact/dialog";
-import { Button } from "primereact/button";
-import { useState } from "react";
 import Image from "next/image";
+import { Button } from "primereact/button";
+import { Dialog } from "primereact/dialog";
+import { useState } from "react";
+import {
+	CV_SIGNATURE_VARIANTS,
+	type CvSignatureVariantId,
+} from "@/features/cv-editor/utils/cvSignatureVariants";
 
 export type DownloadCvMode = "free" | "paid";
+
+/** Vignette schématique d'une variante — dessinée, pas capturée (ouverture de modale rapide). */
+const SignatureVariantThumb = ({ id }: { id: CvSignatureVariantId }) => (
+	<span className="relative block h-14 w-10 overflow-hidden rounded-sm border border-zinc-300 bg-white dark:border-zinc-500">
+		<span className="absolute left-1.5 right-4 top-2 h-1 rounded-full bg-zinc-300" />
+		<span className="absolute left-1.5 right-2 top-4 h-0.5 rounded-full bg-zinc-200" />
+		<span className="absolute left-1.5 right-3 top-6 h-0.5 rounded-full bg-zinc-200" />
+		{id === "band" && <span className="absolute inset-x-0 bottom-0 h-3.5 bg-primary/30" />}
+		{id === "corners" && (
+			<svg
+				className="absolute inset-x-0 bottom-0 w-full"
+				height="10"
+				viewBox="0 0 100 32"
+				preserveAspectRatio="none"
+				aria-hidden="true"
+			>
+				<polygon points="0,32 0,0 34,32" style={{ fill: "var(--primary-color)" }} />
+				<polygon
+					points="100,32 100,0 62,32"
+					style={{ fill: "var(--primary-color)", fillOpacity: 0.4 }}
+				/>
+			</svg>
+		)}
+		<span
+			className={`absolute right-1 h-1.5 w-2.5 rounded-sm bg-primary ${
+				id === "corners" ? "bottom-3" : "bottom-1"
+			}`}
+		/>
+	</span>
+);
 
 export interface DialogDownloadCvProps {
 	visible: boolean;
@@ -26,6 +60,9 @@ export interface DialogDownloadCvProps {
 	onUnlockWithCredits?: () => void;
 	/** Placeholder Stripe — pas encore branché */
 	onUnlockWithStripe?: () => void;
+	/** Habillage de la signature (export gratuit) — sélecteur masqué si non fourni */
+	signatureVariant?: CvSignatureVariantId;
+	onSignatureVariantChange?: (variant: CvSignatureVariantId) => void;
 	/** Visuel only pour l’instant — callbacks stubs OK */
 	onDownloadFree?: () => void;
 	onDownloadPaid?: () => void;
@@ -56,12 +93,15 @@ export const DialogDownloadCv = ({
 	unlockPriceCents = null,
 	onUnlockWithCredits,
 	onUnlockWithStripe,
+	signatureVariant = "minimal",
+	onSignatureVariantChange,
 	onDownloadFree,
 	onDownloadPaid,
 	onBuyCredits,
 	onAdjust,
 }: DialogDownloadCvProps) => {
 	const [mode, setMode] = useState<DownloadCvMode | null>(null);
+	const selectedVariant = CV_SIGNATURE_VARIANTS.find((v) => v.id === signatureVariant);
 	const canFree = freeDownloadsRemaining > 0 && !premiumLocked;
 	const canPaid = downloadCredits > 0 && !premiumLocked;
 
@@ -176,12 +216,19 @@ export const DialogDownloadCv = ({
 							<Image
 								src={previewUrl}
 								alt={title}
-								width={794}   // ~A4 à 96dpi en largeur
+								width={794} // ~A4 à 96dpi en largeur
 								height={1123} // 794 × 1.414
 								className="block w-full aspect-[1/1.414] object-cover object-top"
 								unoptimized // si blob: / data URL
 							/>
-						) : (
+						) : null}
+						{previewUrl && previewLoading ? (
+							// Recapture après changement d'habillage : on garde l'aperçu sous le voile.
+							<div className="absolute inset-0 flex items-center justify-center bg-white/60 dark:bg-zinc-900/60">
+								<i className="pi pi-spin pi-spinner text-2xl text-primary dark:text-primary-dark" />
+							</div>
+						) : null}
+						{!previewUrl ? (
 							<div className="flex aspect-[1/1.414] w-full flex-col items-center justify-center gap-2 px-6 text-center">
 								{previewLoading ? (
 									<>
@@ -201,7 +248,7 @@ export const DialogDownloadCv = ({
 									</>
 								)}
 							</div>
-						)}
+						) : null}
 					</div>
 				</div>
 
@@ -344,6 +391,43 @@ export const DialogDownloadCv = ({
 									/>
 								</div>
 							</button>
+
+							{mode === "free" && onSignatureVariantChange && (
+								<div className="rounded-lg border border-zinc-200 bg-white px-3.5 py-3 dark:border-zinc-700 dark:bg-zinc-900">
+									<p className="m-0 text-xs font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
+										Habillage de la signature
+									</p>
+									<div className="mt-2.5 flex gap-2">
+										{CV_SIGNATURE_VARIANTS.map((variant) => {
+											const selected = variant.id === signatureVariant;
+											return (
+												<button
+													key={variant.id}
+													type="button"
+													disabled={loading}
+													onClick={() => onSignatureVariantChange(variant.id)}
+													aria-pressed={selected}
+													className={`rounded-lg border px-2.5 py-2 text-center transition-colors ${
+														selected
+															? "border-primary bg-primary/10 dark:border-primary-dark dark:bg-primary-dark/15"
+															: "border-zinc-200 hover:border-zinc-300 dark:border-zinc-700 dark:hover:border-zinc-500"
+													}`}
+												>
+													<SignatureVariantThumb id={variant.id} />
+													<span className="mt-1.5 block text-[11px] font-medium">
+														{variant.label}
+													</span>
+												</button>
+											);
+										})}
+									</div>
+									{selectedVariant && (
+										<p className="m-0 mt-2 text-[11px] leading-relaxed text-zinc-500 dark:text-zinc-400">
+											{selectedVariant.description}
+										</p>
+									)}
+								</div>
+							)}
 
 							{mode === "free" && !canFree && (
 								<p className="m-0 text-xs text-amber-700 dark:text-amber-300">

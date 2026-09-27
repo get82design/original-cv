@@ -33,7 +33,7 @@ Une seule composition partagée (tous templates). La variété / options réserv
 |-------|------|------------------|
 | 1 | ~~Header split 2-col~~ **livré** | `headerPlacement: "split"` dans `TwoColumnSideBar` ; slots sidebar + main ; placement figé par le seed (pas d’UI) ; schema `cvTemplate` ; tests `cvHeaderPlacement` |
 | 2 | ~~Tips + stubs v2~~ **livré** | `DialogCvTips` (contenu dans `cvTips.ts`, `media` prêt) ouvert depuis le SpeedDial ; QR / fiche métier → label « (bientôt) » + toast |
-| 3 | 3 footers logo | Variantes `CvSignature` ; choix dans `DialogDownloadCv` avant capture preview |
+| 3 | ~~3 footers logo~~ **livré** | `minimal` / `band` / `corners` via `cvSignatureVariants` + `CvSignatureVariantContext` ; choix dans `DialogDownloadCv` ; recapture avec `waitForNextPaint` ; polish UI éventuel plus tard |
 | 4 | Garde-fous DL | Modale re-DL &lt; 10 min ; limite ~3 DL / jour / CV (serveur) |
 | 5 | Cover letter E2E | `geminiService` + `ai.coverLetter` + billing existant + tests ; brancher le client |
 | 6 | RGPD min + SEO light | Delete compte UI ; CGU/privacy ; templates indexables sans migration App Router complète |

@@ -9,6 +9,7 @@ import { FormCv } from "../../src/features/cv-editor/component/form/FormCv";
 import { CvEditor } from "../../src/features/cv-editor/CvEditor";
 import { CreateCvProvider } from "../../src/features/cv-editor/component/context/CreateCvContext";
 import { AiAdviceProvider } from "../../src/features/cv-editor/component/context/AiAdviceContext";
+import { CvSignatureVariantProvider } from "../../src/features/cv-editor/component/context/CvSignatureVariantContext";
 
 export default function CvPage() {
 	const router = useRouter();
@@ -53,7 +54,9 @@ export default function CvPage() {
 					<FormCv idCv={id} template={template} color={color}>
 						<CreateCvProvider>
 							<AiAdviceProvider>
-								<CvEditor />
+								<CvSignatureVariantProvider>
+									<CvEditor />
+								</CvSignatureVariantProvider>
 							</AiAdviceProvider>
 						</CreateCvProvider>
 					</FormCv>
