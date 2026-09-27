@@ -953,6 +953,64 @@ export const torontoTokens: ThemeTokens = {
 	},
 };
 
+// Berlin : header split — photo + coordonnées en sidebar, nom / prénom + intitulé en colonne 1
+export const berlinTokens: ThemeTokens = {
+	...classiqueTokens,
+	headerNom: {
+		...classiqueTokens.headerNom,
+		textAlign: "left",
+		sizeModel: "26px",
+		weightModel: 700,
+		colorSelect: "black",
+	},
+	headerPrenom: {
+		...classiqueTokens.headerPrenom,
+		textAlign: "left",
+		sizeModel: "26px",
+		weightModel: 400,
+		colorSelect: "black",
+	},
+	headerTitle: {
+		...classiqueTokens.headerTitle,
+		sizeModel: "26px",
+		weightModel: 700,
+		colorSelect: "black",
+		textAlign: "left",
+	},
+	headerSubTitle: {
+		...classiqueTokens.headerSubTitle,
+		sizeModel: "18px",
+		weightModel: 600,
+		colorSelect: "primaryColor",
+		textAlign: "left",
+	},
+	headerContent: {
+		...classiqueTokens.headerContent,
+		sizeModel: "12px",
+		textAlign: "left",
+	},
+	sectionTitle: {
+		...classiqueTokens.sectionTitle,
+		sizeModel: "14px",
+		weightModel: 600,
+		colorSelect: "black",
+	},
+	itemTitle: {
+		...classiqueTokens.itemTitle,
+		sizeModel: "14px",
+		weightModel: 500,
+	},
+	meta: {
+		...classiqueTokens.meta,
+		sizeModel: "12px",
+		weightModel: 400,
+	},
+	body: {
+		...classiqueTokens.body,
+		sizeModel: "12px",
+	},
+};
+
 export const frankfurtTokens: ThemeTokens = {
 	...classiqueTokens,
 	headerNom: {

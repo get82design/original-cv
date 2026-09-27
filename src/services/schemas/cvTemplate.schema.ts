@@ -463,7 +463,7 @@ export const templateLayoutSchema = z.object({
 	withPhoto: z.boolean(),
 	photoSide: z.enum(["left", "right"]).default("left"),
 	sidebarSide: z.enum(["left", "right"]).default("left"),
-	headerPlacement: z.enum(["top", "sidebar"]).default("top"),
+	headerPlacement: z.enum(["top", "sidebar", "split"]).default("top"),
 	lockPhotoSide: z.boolean().default(false),
 	typography: z
 		.object({
@@ -720,6 +720,7 @@ export type UpdateCvTemplateInput = z.infer<typeof updateCvTemplateSchema>;
 export type TemplateModule = z.infer<typeof templateModuleSchema>;
 export type TemplateLayout = z.infer<typeof templateLayoutSchema>;
 export type StylePhoto = NonNullable<TemplateLayout["stylePhoto"]>;
+export type HeaderPlacement = NonNullable<TemplateLayout["headerPlacement"]>;
 export type ElmSize = z.infer<typeof elmSizeSchema>;
 export type BaseTextSettings = z.infer<typeof baseSettingsSchema>;
 export type TemplateDefaultStyles = z.infer<typeof templateDefaultStylesSchema>;

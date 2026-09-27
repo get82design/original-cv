@@ -19,7 +19,7 @@ Parcours : créer/sauver CV → DL gratuit/payant → IA review/rewrite/lettre �
 
 ## Dans V1 (ordre)
 
-1. Header split 2-col (`headerPlacement: "split"`) — photo/identité | titre/contacts
+1. ~~Header split 2-col~~ **livré** — sidebar photo/coordonnées | main nom-prénom/intitulé ; `headerPlacement` figé par le template (pas d’UI)
 2. Tips modal + stubs QR / fiche métier (« bientôt »)
 3. 3 variantes footer logo au DL gratuit
 4. Modale re-DL &lt; 10 min + limite ~3 DL / jour / CV

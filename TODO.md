@@ -35,9 +35,12 @@ Critère done : créer/sauver CV → DL gratuit/payant → IA review/rewrite/let
 
 ### Éditeur CV — mise en page
 
-- [ ] Header split 2-col (`headerPlacement: "split"`) — **1 composition** partagée
-- [ ] UI sélecteur placement header (top / sidebar / split)
-- [ ] Tests pagination impactés (`cvPage` / packing 2-col)
+- [x] Header split 2-col (`headerPlacement: "split"`) — **1 composition** partagée
+	- sidebar : photo + coordonnées · colonne principale : nom / prénom + intitulé
+	- `headers/HeaderSplit` + `utils/cvHeaderPlacement` (ids de mesure + hauteurs réservées)
+	- placement **figé par le template** : pas d’UI utilisateur (cf. décisions)
+	- template vitrine seedé : **Berlin** (`two-columns/berlin.ts`)
+- [x] Tests pagination impactés (`cvPage` / packing 2-col) — `cvHeaderPlacement.test.ts`
 
 ### Éditeur CV — dock / UX
 
@@ -205,6 +208,7 @@ Package abo = vraie plus-value (récurrence + présence en ligne).
 | Sujet | Décision |
 |-------|----------|
 | Header split V1 | **1 composition** partagée |
+| Placement header | **figé par le template** (seed) — pas de sélecteur utilisateur |
 | Options exclusives premium | **Avant fin V3** |
 | Cover letter | **API V1** |
 | DnD center | **V2** |

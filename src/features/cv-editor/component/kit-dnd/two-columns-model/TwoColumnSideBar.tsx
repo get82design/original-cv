@@ -1,37 +1,44 @@
-import { ChangePaddingDocument } from "@/features/cv-editor/utils/utilsCv/marge";
+import { DndContext, DragOverlay } from "@dnd-kit/core";
+import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import type { ItemGeneralProps } from "@utils/type";
 import { useEffect, useMemo, useState } from "react";
-import { useCreateCvContext } from "../../context/CreateCvContext";
 import { useFormContext } from "react-hook-form";
-import { useCvSectionItems } from "../shared/useCvSectionItems";
-import { useCvPageDnd } from "../shared/useCvPageDnd";
-import { GetPrimaryColor } from "@/features/cv-editor/utils/utilsCv/color";
-import { HeaderRegister } from "../../template/register/header/HeaderRegister";
-import { DndContext, DragOverlay } from "@dnd-kit/core";
-import { ColumnDropZone } from "../shared/ColumnDropZone";
-import { resolveSidebarFg } from "../shared/ColumnFgContext";
-import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
-import { SectionSortableContext } from "../shared/SectionSortableContext";
-import { FieldNameLayoutGeneral } from "@/features/cv-editor/utils/fields/fieldNameLayoutGeneral";
+import {
+	HEADER_SIDEBAR_ID,
+	HEADER_SPLIT_MAIN_ID,
+	HEADER_SPLIT_SIDEBAR_ID,
+	HEADER_TOP_ID,
+	headerMeasureIds,
+	resolveTwoColumnHeaderHeights,
+} from "@/features/cv-editor/utils/cvHeaderPlacement";
 import {
 	CV_PAGE_HEIGHT,
 	CV_PAGE_PAD_PX,
 	CV_SIGNATURE_RESERVE_PX,
+	type CvMarge,
 	mergeTwoColumnPages,
 	packSectionsIntoPages,
-	type CvMarge,
 } from "@/features/cv-editor/utils/cvPage";
+import { FieldNameLayoutGeneral } from "@/features/cv-editor/utils/fields/fieldNameLayoutGeneral";
+import { GetPrimaryColor } from "@/features/cv-editor/utils/utilsCv/color";
+import { ChangePaddingDocument } from "@/features/cv-editor/utils/utilsCv/marge";
+import type { HeaderPlacement } from "@/services/schemas/cvTemplate.schema";
+import { useCreateCvContext } from "../../context/CreateCvContext";
+import { HeaderSplitMain, HeaderSplitSidebar } from "../../template/components/headers/HeaderSplit";
+import { HeaderRegister } from "../../template/register/header/HeaderRegister";
+import { ColumnDropZone } from "../shared/ColumnDropZone";
+import { resolveSidebarFg } from "../shared/ColumnFgContext";
 import { CvPageShell } from "../shared/CvPageShell";
-import { useElementHeights } from "../shared/useElementHeights";
+import type { SectionItem } from "../shared/SectionCatalog";
+import { SectionSortableContext } from "../shared/SectionSortableContext";
+import { useCvPageDnd } from "../shared/useCvPageDnd";
 import {
 	useCvPageScrollLock,
 	useDebouncedHeights,
 	useFrozenPackingHeights,
 } from "../shared/useCvPageScrollLock";
-import type { SectionItem } from "../shared/SectionCatalog";
-
-const HEADER_TOP_ID = "__cv_header_top__";
-const HEADER_SIDEBAR_ID = "__cv_header_sidebar__";
+import { useCvSectionItems } from "../shared/useCvSectionItems";
+import { useElementHeights } from "../shared/useElementHeights";
 
 export interface TwoColumnSideBarProps {
 	deleteSection: (item: ItemGeneralProps) => void;
@@ -42,7 +49,8 @@ export function TwoColumnSideBar({ deleteSection }: TwoColumnSideBarProps) {
 	const { setSectionSelected, sectionSelected } = useCreateCvContext();
 	const { watch } = useFormContext();
 	const sidebarSide = watch(FieldNameLayoutGeneral.sidebarSide) ?? "left";
-	const headerPlacement = watch(FieldNameLayoutGeneral.headerPlacement) ?? "top";
+	const headerPlacement = (watch(FieldNameLayoutGeneral.headerPlacement) ??
+		"top") as HeaderPlacement;
 
 	const left = useCvSectionItems(0);
 	const right = useCvSectionItems(1);
@@ -62,9 +70,7 @@ export function TwoColumnSideBar({ deleteSection }: TwoColumnSideBarProps) {
 	const [activeSectionId, setActiveSectionId] = useState<string | null>(null);
 	const activeItem = [...left, ...right].find((i) => i.id === activeSectionId);
 	const { sensors, handleDragStart, handleDragEnd, handleDragOver, collisionDetection } =
-		useCvPageDnd(		[left, right],
-		{ sidebarColumn: 0 },
-	);
+		useCvPageDnd([left, right], { sidebarColumn: 0 });
 
 	const primaryColor = GetPrimaryColor() ?? "white";
 	const accent = watch(FieldNameLayoutGeneral.pageAccent);
@@ -90,30 +96,26 @@ export function TwoColumnSideBar({ deleteSection }: TwoColumnSideBarProps) {
 	const headerKey = watch("layoutGeneral.defaultStyles")?.components?.sectionHeader ?? "HeaderOne";
 	const HeaderComponent = HeaderRegister[headerKey] ?? HeaderRegister.HeaderOne;
 
-	const measureIds = useMemo(() => {
-		const ids = [...sidebarIds, ...mainIds];
-		if (headerPlacement === "top") ids.unshift(HEADER_TOP_ID);
-		else ids.unshift(HEADER_SIDEBAR_ID);
-		return ids;
-	}, [sidebarIds, mainIds, headerPlacement]);
+	const measureIds = useMemo(
+		() => [...headerMeasureIds(headerPlacement), ...sidebarIds, ...mainIds],
+		[sidebarIds, mainIds, headerPlacement],
+	);
 
 	const { heights, setMeasureRef } = useElementHeights(measureIds);
 	const stableHeights = useDebouncedHeights(heights);
 	const packingHeights = useFrozenPackingHeights(stableHeights, sectionSelected);
 
 	const padPx = CV_PAGE_PAD_PX[marge] ?? CV_PAGE_PAD_PX.md;
-	const headerTopRaw =
-		headerPlacement === "top" ? (packingHeights.get(HEADER_TOP_ID) ?? 0) : 0;
-	// Tant que le header n’est pas mesuré, budget trop large → pas de page 2 alors que ça déborde.
-	const headerTopHeight =
-		headerPlacement === "top" ? (headerTopRaw > 0 ? headerTopRaw : 240) : 0;
-	const headerSidebarHeight =
-		headerPlacement === "sidebar" ? (packingHeights.get(HEADER_SIDEBAR_ID) ?? 0) : 0;
+	// Tant qu’un header n’est pas mesuré, budget trop large → pas de page 2 alors que ça déborde.
+	const headerHeights = useMemo(
+		() => resolveTwoColumnHeaderHeights(headerPlacement, packingHeights),
+		[headerPlacement, packingHeights],
+	);
 
 	// Espace vertical dispo pour les sections d’une colonne (header top déjà hors flux).
 	const columnBodyHeight = Math.max(
 		1,
-		CV_PAGE_HEIGHT - headerTopHeight - 2 * padPx - CV_SIGNATURE_RESERVE_PX,
+		CV_PAGE_HEIGHT - headerHeights.top - 2 * padPx - CV_SIGNATURE_RESERVE_PX,
 	);
 
 	const heightsForPack = useMemo(() => {
@@ -131,10 +133,10 @@ export function TwoColumnSideBar({ deleteSection }: TwoColumnSideBarProps) {
 			packSectionsIntoPages({
 				sectionIds: sidebarIds,
 				heights: heightsForPack,
-				headerHeight: headerSidebarHeight,
+				headerHeight: headerHeights.sidebar,
 				contentHeight: columnBodyHeight,
 			}),
-		[sidebarIds, heightsForPack, headerSidebarHeight, columnBodyHeight],
+		[sidebarIds, heightsForPack, headerHeights.sidebar, columnBodyHeight],
 	);
 
 	const mainPages = useMemo(
@@ -142,10 +144,10 @@ export function TwoColumnSideBar({ deleteSection }: TwoColumnSideBarProps) {
 			packSectionsIntoPages({
 				sectionIds: mainIds,
 				heights: heightsForPack,
-				headerHeight: 0,
+				headerHeight: headerHeights.main,
 				contentHeight: columnBodyHeight,
 			}),
-		[mainIds, heightsForPack, columnBodyHeight],
+		[mainIds, heightsForPack, headerHeights.main, columnBodyHeight],
 	);
 
 	const pages = useMemo(
@@ -260,11 +262,19 @@ export function TwoColumnSideBar({ deleteSection }: TwoColumnSideBarProps) {
 													{HeaderComponent && <HeaderComponent />}
 												</button>
 											)}
+											{pageIndex === 0 && headerPlacement === "split" && (
+												<button
+													type="button"
+													ref={setMeasureRef(HEADER_SPLIT_SIDEBAR_ID)}
+													onClick={() => selectSection("header")}
+													className="w-full"
+												>
+													<HeaderSplitSidebar />
+												</button>
+											)}
 											{page.sidebarIds.map((id) => {
 												const item = sidebarById.get(id);
-												return item
-													? renderSection(item, "sections-container-left")
-													: null;
+												return item ? renderSection(item, "sections-container-left") : null;
 											})}
 										</ColumnDropZone>
 
@@ -275,11 +285,19 @@ export function TwoColumnSideBar({ deleteSection }: TwoColumnSideBarProps) {
 												sidebarSide === "right" ? "order-1 pr-0" : "order-2 pl-0"
 											} ${paddingDoc}`}
 										>
+											{pageIndex === 0 && headerPlacement === "split" && (
+												<button
+													type="button"
+													ref={setMeasureRef(HEADER_SPLIT_MAIN_ID)}
+													onClick={() => selectSection("header")}
+													className="w-full"
+												>
+													<HeaderSplitMain />
+												</button>
+											)}
 											{page.mainIds.map((id) => {
 												const item = mainById.get(id);
-												return item
-													? renderSection(item, "sections-container-right")
-													: null;
+												return item ? renderSection(item, "sections-container-right") : null;
 											})}
 										</ColumnDropZone>
 									</div>

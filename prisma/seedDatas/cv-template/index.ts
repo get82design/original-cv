@@ -16,14 +16,15 @@ import { shenzhen } from "./one-column/shenzhen";
 import { stockholm } from "./one-column/stockholm";
 import { tallinn } from "./one-column/tallinn";
 import { zurich } from "./one-column/zurich";
+import { berlin } from "./two-columns/berlin";
 import { chicago } from "./two-columns/chicago";
 import { florence } from "./two-columns/florence";
+import { frankfurt } from "./two-columns/frankfurt";
 import { krakow } from "./two-columns/krakow";
 import { lisbon } from "./two-columns/lisbon";
 import { singapore } from "./two-columns/singapore";
 import { tokyo } from "./two-columns/tokyo";
 import { toronto } from "./two-columns/toronto";
-import { frankfurt } from "./two-columns/frankfurt";
 
 export const seedTemplates = [
 	stockholm,
@@ -52,4 +53,5 @@ export const seedTemplates = [
 	singapore,
 	toronto,
 	frankfurt,
+	berlin,
 ];

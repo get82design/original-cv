@@ -25,11 +25,13 @@ Le cœur produit est déjà là (auth, éditeur 1/2 col, save, profil↔CV, mod�
 
 Une seule composition partagée (tous templates). La variété / options réservées au premium vient **plus tard** (V2 catalogue + V3 gating).
 
+`headerPlacement` est une propriété **figée du template** (seed) : on change de placement en changeant de modèle, pas via un input de l’éditeur. Livré : `headers/HeaderSplit` (sidebar photo + coordonnées, colonne principale nom/prénom + intitulé), `utils/cvHeaderPlacement`, template **Berlin**.
+
 ## Ordre d’implémentation (quand demandé)
 
 | Ordre | Item | Notes techniques |
 |-------|------|------------------|
-| 1 | Header split 2-col | `headerPlacement: "split"` dans `TwoColumnSideBar` ; slots sidebar + main ; UI dans `GeneralSidebar` ; schema `cvTemplate` ; tests pagination `cvPage` |
+| 1 | ~~Header split 2-col~~ **livré** | `headerPlacement: "split"` dans `TwoColumnSideBar` ; slots sidebar + main ; placement figé par le seed (pas d’UI) ; schema `cvTemplate` ; tests `cvHeaderPlacement` |
 | 2 | Tips + stubs v2 | Dialog tips depuis dock `CvEditor` ; QR / fiche métier → « Bientôt » |
 | 3 | 3 footers logo | Variantes `CvSignature` ; choix dans `DialogDownloadCv` avant capture preview |
 | 4 | Garde-fous DL | Modale re-DL &lt; 10 min ; limite ~3 DL / jour / CV (serveur) |
@@ -49,7 +51,7 @@ Une seule composition partagée (tous templates). La variété / options réserv
 | Story | Note |
 |-------|------|
 | Undo / historique | Livré (`CvFormHistory`) |
-| TwoColumnSideBar + reverse | Livré ; **manque** header split |
+| TwoColumnSideBar + reverse | Livré, header split inclus (`top` / `sidebar` / `split`) |
 | Aperçu CV profil | Livré (`PreviewImage`) |
 | Lettre motivation | UI + billing ; **pas** d’API Gemini |
 | Admin | Socle réel ; pas Stripe/GA |

@@ -65,6 +65,8 @@ Mesure & shell :
 
 - 1 colonne : `kit-dnd/one-column-model/OneColumnModel`
 - 2 colonnes : `kit-dnd/two-columns-model/TwoColumnSideBar` (+ main)
+- Placement header 2 cols (`layout.headerPlacement`) : `top` (pleine largeur, hors flux colonnes), `sidebar`, `split` (photo/identité en sidebar + intitulé/contacts en colonne principale, composition partagée `headers/HeaderSplit`) — ids de mesure et hauteurs réservées dans `utils/cvHeaderPlacement.ts`
+- `headerPlacement` est **figé par le template** (seed `defineTemplate`) : pas d’input utilisateur, on change de placement en changeant de template
 - Choix layout : `kit-dnd/register/PageLayoutRegister`
 - Shared : `ColumnDropZone`, `SectionSortableContext`, `useCvPageDnd`, `useCvSectionItems`, `SectionCatalog`
 - Ordre modules actifs : `@/utils/moduleOrder` (`compactActiveOrders`, `nextActiveOrderInColumn`…)
@@ -129,6 +131,7 @@ Dossier : `__tests__/features/cv-editor/`
 | Fichier | Couvre |
 |---------|--------|
 | `cvPage.test.ts` | Dimensions, pack, merge 2 cols |
+| `cvHeaderPlacement.test.ts` | Ids de mesure + hauteurs header top / sidebar / split |
 | `mapToCvSaveInput.test.ts` | Mapping save |
 | `mapImportDraftToCvDatas.test.ts` | Import → form |
 | `applyCvRewriteToForm.test.ts` | Application rewrite |
