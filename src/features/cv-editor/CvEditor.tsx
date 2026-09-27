@@ -17,6 +17,7 @@ import { SpeedDial } from "primereact/speeddial";
 import { Tooltip } from "primereact/tooltip";
 import { Button } from "primereact/button";
 import { DialogDataFromProfile } from "./component/dialog/dataFromProfile/DialogDataFromProfile";
+import { DialogCvTips } from "./component/dialog/DialogCvTips";
 import { DialogAssistantIa, type AiActionId } from "@/components/dialog/DialogAssistantIa";
 import { DialogAiPayment } from "@/components/dialog/DialogAiPayment";
 import { DialogCvReviewResult } from "@/components/dialog/DialogCvReviewResult";
@@ -51,6 +52,7 @@ export const CvEditor = () => {
 	const [itemNoUse, setItemNoUse] = useState<TemplateModule[]>([]);
 	const [visibleDialogDataFromProfile, setVisibleDialogDataFromProfile] = useState(false);
 	const [visibleAssistantIa, setVisibleAssistantIa] = useState(false);
+	const [visibleTips, setVisibleTips] = useState(false);
 	const [visibleCvReview, setVisibleCvReview] = useState(false);
 	const [cvReview, setCvReview] = useState<CvReview | null>(null);
 	const [visibleRewrite, setVisibleRewrite] = useState(false);
@@ -224,6 +226,16 @@ export const CvEditor = () => {
 	const key = watch("layoutGeneral.defaultStyles.components.pageLayout") ?? "OneColumnModel";
 	const PageLayout = PageLayoutRegister[key] ?? OneColumnModel;
 
+	// Entrées de menu pas encore implémentées : informer au lieu d'une action vide.
+	const showComingSoon = (detail: string) => {
+		toast.current?.show({
+			severity: "info",
+			summary: "Bientôt",
+			detail,
+			life: 4000,
+		});
+	};
+
 	const items = [
 		{
 			label: "Assistant IA",
@@ -233,27 +245,38 @@ export const CvEditor = () => {
 			},
 		},
 		{
-			label: "Générer mon QR Code",
+			label: "Générer mon QR Code (bientôt)",
 			icon: "pi pi-qrcode",
-			command: () => {},
+			command: () => {
+				showComingSoon("Le QR code arrivera avec la version en ligne de votre CV.");
+			},
 		},
 		{
-			label: "Fiche métier",
+			label: "Fiche métier (bientôt)",
 			icon: "pi pi-clipboard",
-			command: () => {},
+			command: () => {
+				showComingSoon("Les fiches métier seront disponibles dans une prochaine version.");
+			},
 		},
 		{
 			label: "Quelques tips",
 			icon: "pi pi-info-circle",
-			command: () => {},
-		},
-		{
-			label: "Données du profil",
-			icon: "pi pi-refresh",
 			command: () => {
-				setVisibleDialogDataFromProfile(true);
+				setVisibleTips(true);
 			},
 		},
+		// Sans profil il n'y a rien à réinjecter : on masque l'entrée plutôt que de l'ouvrir vide.
+		...(profile
+			? [
+					{
+						label: "Données du profil",
+						icon: "pi pi-refresh",
+						command: () => {
+							setVisibleDialogDataFromProfile(true);
+						},
+					},
+				]
+			: []),
 	];
 
 	const dockVisible = isLg && (isXl || dockOpen);
@@ -614,6 +637,7 @@ export const CvEditor = () => {
 					onHide={() => setVisibleAssistantIa(false)}
 					onSelectAction={onSelectAiAction}
 				/>
+				<DialogCvTips visible={visibleTips} onHide={() => setVisibleTips(false)} />
 				<DialogAiPayment
 					visible={!!paymentDialog}
 					onHide={() => {
@@ -657,28 +681,23 @@ export const CvEditor = () => {
 					}}
 				/>
 				{profile && (
-					<>
-						<DialogDataFromProfile
-							visible={visibleDialogDataFromProfile}
-							onHide={() => setVisibleDialogDataFromProfile(false)}
-							profile={profile}
-						/>
-						<Tooltip target=".speeddial-bottom-right .p-speeddial-action" position="left" />
-						<SpeedDial
-							className="speeddial-bottom-right z-50"
-							model={items}
-							radius={180}
-							type="quarter-circle"
-							direction="down-left"
-							style={{ position: "fixed", right: 10, top: 72, zIndex: 50 }}
-						/>
-					</>
+					<DialogDataFromProfile
+						visible={visibleDialogDataFromProfile}
+						onHide={() => setVisibleDialogDataFromProfile(false)}
+						profile={profile}
+					/>
 				)}
-				{/* Historique structurel — flottant à droite, sous le SpeedDial si présent */}
-				<div
-					className="fixed z-50 flex flex-col gap-1"
-					style={{ right: 10, top: profile ? 132 : 72 }}
-				>
+				<Tooltip target=".speeddial-bottom-right .p-speeddial-action" position="left" />
+				<SpeedDial
+					className="speeddial-bottom-right z-50"
+					model={items}
+					radius={180}
+					type="quarter-circle"
+					direction="down-left"
+					style={{ position: "fixed", right: 10, top: 72, zIndex: 50 }}
+				/>
+				{/* Historique structurel — flottant à droite, sous le SpeedDial */}
+				<div className="fixed z-50 flex flex-col gap-1" style={{ right: 10, top: 132 }}>
 					<Button
 						type="button"
 						rounded

@@ -32,7 +32,7 @@ Une seule composition partagée (tous templates). La variété / options réserv
 | Ordre | Item | Notes techniques |
 |-------|------|------------------|
 | 1 | ~~Header split 2-col~~ **livré** | `headerPlacement: "split"` dans `TwoColumnSideBar` ; slots sidebar + main ; placement figé par le seed (pas d’UI) ; schema `cvTemplate` ; tests `cvHeaderPlacement` |
-| 2 | Tips + stubs v2 | Dialog tips depuis dock `CvEditor` ; QR / fiche métier → « Bientôt » |
+| 2 | ~~Tips + stubs v2~~ **livré** | `DialogCvTips` (contenu dans `cvTips.ts`, `media` prêt) ouvert depuis le SpeedDial ; QR / fiche métier → label « (bientôt) » + toast |
 | 3 | 3 footers logo | Variantes `CvSignature` ; choix dans `DialogDownloadCv` avant capture preview |
 | 4 | Garde-fous DL | Modale re-DL &lt; 10 min ; limite ~3 DL / jour / CV (serveur) |
 | 5 | Cover letter E2E | `geminiService` + `ai.coverLetter` + billing existant + tests ; brancher le client |

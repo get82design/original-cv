@@ -44,9 +44,10 @@ Critère done : créer/sauver CV → DL gratuit/payant → IA review/rewrite/let
 
 ### Éditeur CV — dock / UX
 
-- [ ] Modal « Tips » (entrée menu déjà là)
-- [ ] QR code → label « Bientôt » (pas d’action vide) — vraie feature en **V4**
-- [ ] Fiche métier → label « Bientôt » (pas d’action vide)
+- [x] Modal « Tips » — `DialogCvTips` + contenu extrait dans `cvTips.ts` (`media` prêt pour les captures)
+	- SpeedDial sorti du garde `profile` : seule l’entrée « Données du profil » reste conditionnelle
+- [x] QR code → label « (bientôt) » + toast d’info (pas d’action vide) — vraie feature en **V4**
+- [x] Fiche métier → label « (bientôt) » + toast d’info (pas d’action vide)
 
 ### Téléchargement
 
@@ -94,6 +95,8 @@ Critère done : créer/sauver CV → DL gratuit/payant → IA review/rewrite/let
 - [ ] Volume templates (cible ~25 classiques + premium catalogue)
 - [ ] Premiers templates **premium** basés sur header split / layouts riches
 - [ ] Logos / variantes couleurs manquantes (polish brand)
+- [ ] `(?)` Onboarding guidé « première utilisation » (stepper) — distinct du modal Tips (`DialogCvTips`)
+- [ ] Tips illustrés : captures dans `public/tips/` (+ `srcDark` si besoin) — `media` déjà prévu dans `cvTips.ts`, contenu à écrire ensemble
 - [ ] `(?)` App Router SEO catalogue si non fait en V1 light
 
 ### Profil
