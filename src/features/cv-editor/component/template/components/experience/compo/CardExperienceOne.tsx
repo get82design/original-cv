@@ -3,7 +3,7 @@ import { FieldNameExperience } from "@/features/cv-editor/utils/fields/fieldName
 import { FieldNameLayoutGeneral } from "@/features/cv-editor/utils/fields/fieldNameLayoutGeneral";
 import { dataFieldContent } from "@/features/cv-editor/utils/fields/moduleField";
 import type { ExperienceItemContentInput } from "@/services/schemas/cvSave.schema";
-import type { ListItem, WithMissions } from "@utils/type";
+import type { ListItem } from "@utils/type";
 import { Menu } from "primereact/menu";
 import { useCallback, useRef, type JSX } from "react";
 import { useFormContext } from "react-hook-form";
@@ -17,6 +17,7 @@ import { ListInSection } from "../../input-cv/section/ListInSection";
 import type { TemplateLayout } from "@/services/schemas/cvTemplate.schema";
 import { CommonPointList } from "../../common-compo/list/CommonPointList";
 import { ToolbarOptionsButton } from "@/features/cv-editor/component/template/components/common-compo/section/ToolbarOptionsButton";
+import { commitCvFormHistory } from "@/features/cv-editor/utils/cvFormHistoryCommit";
 
 export interface CardExperienceOneProps {
 	index: number;
@@ -29,7 +30,11 @@ export interface CardExperienceOneProps {
 			template: JSX.Element;
 		}[];
 	}[];
-	addElmList: (e: ListItem<WithMissions>, elm: string, index: number) => void;
+	addElmList: (
+		e: ListItem<ExperienceItemContentInput>,
+		elm: string,
+		index: number,
+	) => void;
 	deleteMission: (index: number, idx: number) => void;
 }
 
@@ -66,6 +71,7 @@ export const CardExperienceOne = ({
 			.filter((entry) => entry.clientKey !== itemToDelete.clientKey)
 			.map((entry, i) => ({ ...entry, order: i + 1 }));
 
+		commitCvFormHistory();
 		setValue(FieldNameExperience.content, newList, {
 			shouldDirty: true,
 			shouldTouch: true,
@@ -222,10 +228,10 @@ export const CardExperienceOne = ({
 				//   //! Faire attention aux règles withList et missions => mission
 				//   */}
 				listCompo={
-					<ListInSection
+					<ListInSection<ExperienceItemContentInput>
 						pathContent={pathContent}
 						watchIfListAffiche={watch(`${pathContent}.settings.withListMissions`)}
-						item={item as ListItem<WithMissions>}
+						item={item}
 						index={index}
 						itemSelected={itemSelected}
 						elmList={elmList}

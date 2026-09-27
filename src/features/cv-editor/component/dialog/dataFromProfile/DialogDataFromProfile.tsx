@@ -8,6 +8,7 @@ import { Button } from "primereact/button";
 import { useFormContext } from "react-hook-form";
 import { useModelAndColorContext } from "../../context/ModelAndColorContext";
 import { mapProfileToCvDatas } from "../../form/mapProfileToCvDatas";
+import { commitCvFormHistory } from "../../../utils/cvFormHistoryCommit";
 
 interface DialogDataFromProfileProps extends DialogProps {
 	profile: ProfileComplete;
@@ -32,6 +33,7 @@ export const DialogDataFromProfile = ({ visible, onHide, profile }: DialogDataFr
 				return;
 			}
 			const fromProfile = mapProfileToCvDatas(profile, model);
+			commitCvFormHistory();
 			reset({
 				...current,
 				photo: profile.photo ?? current.photo,

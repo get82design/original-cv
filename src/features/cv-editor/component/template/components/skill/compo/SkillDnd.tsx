@@ -1,12 +1,13 @@
-import { v4 as uuid } from "uuid";
-import { useCreateCvContext } from "@/features/cv-editor/component/context/CreateCvContext";
 import { horizontalListSortingStrategy, SortableContext } from "@dnd-kit/sortable";
+import type { ListItem } from "@utils/type";
 import { Button } from "primereact/button";
 import { useFormContext } from "react-hook-form";
-import type { ListItem } from "@utils/type";
-import type { SkillCardProps } from "../../../register/skill/SkillCardRegister";
-import { clampItemColumns, COL_CLASS } from "@/features/cv-editor/utils/utilsCv/cols";
+import { v4 as uuid } from "uuid";
+import { useCreateCvContext } from "@/features/cv-editor/component/context/CreateCvContext";
+import { commitCvFormHistory } from "@/features/cv-editor/utils/cvFormHistoryCommit";
 import { moduleField } from "@/features/cv-editor/utils/fields/moduleField";
+import { COL_CLASS, clampItemColumns } from "@/features/cv-editor/utils/utilsCv/cols";
+import type { SkillCardProps } from "../../../register/skill/SkillCardRegister";
 
 interface SkillDndProps {
 	skills: ListItem<unknown>[];
@@ -131,6 +132,7 @@ export const CompoSkillDnd = ({
 					onClick={(e) => {
 						e.stopPropagation();
 						const fresh = createNewItem();
+						commitCvFormHistory();
 						setValue(
 							`datas.skillGroup.content.${groupIndex}.content.skills`,
 							[...skills, { ...fresh, order: skills.length + 1 }],

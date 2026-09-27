@@ -5,6 +5,7 @@ import { Button } from "primereact/button";
 import { useFormContext } from "react-hook-form";
 import { v4 as uuid } from "uuid";
 import type { TagCardProps } from "../../../register/tag/TagCardRegister";
+import { commitCvFormHistory } from "@/features/cv-editor/utils/cvFormHistoryCommit";
 
 interface TagDndProps {
 	tags: ListItem<unknown>[];
@@ -74,6 +75,7 @@ export const TagDnd = ({
 						onClick={(e) => {
 							e.stopPropagation();
 							const fresh = createNewItem();
+							commitCvFormHistory();
 							setValue(
 								`datas.tagGroup.content.${groupIndex}.content.tags`,
 								[...tags, { ...fresh, order: tags.length + 1 }],

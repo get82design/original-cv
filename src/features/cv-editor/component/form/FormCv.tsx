@@ -33,6 +33,8 @@ import type { CvImportDraft } from "@/services/schemas/cvImportDraft.schema";
 import { applyImportDraftToForm } from "./mapImportDraftToCvDatas";
 import { getClientErrorMessage, isTooManyRequestsError } from "@/utils/clientError";
 import { CvFormSaveProvider } from "./CvFormSaveContext";
+import { CvFormHistoryProvider } from "./CvFormHistoryContext";
+import { clearCvFormHistory, commitCvFormHistory } from "../../utils/cvFormHistoryCommit";
 
 type RouterOutputs = inferRouterOutputs<AppRouter>;
 export type ProfileComplete = NonNullable<RouterOutputs["profile"]["completeMe"]>;
@@ -191,6 +193,7 @@ export const FormCv = ({ children, idCv, template, color }: FormCvProviderProps)
 		}
 		// Profil / import : plus d’auto-apply — stub DialogStartContent à la place
 		reset(next);
+		clearCvFormHistory();
 		setVisibleStartContent(true);
 	}, [idCv, template, modeles, reset, color, colors]);
 
@@ -202,6 +205,7 @@ export const FormCv = ({ children, idCv, template, color }: FormCvProviderProps)
 		loadedStampRef.current = stamp;
 		const base = mapCvToSaveInput(dataCv);
 		reset(needsTemplate && dataTemplate ? applyTemplateToForm(base, dataTemplate) : base);
+		clearCvFormHistory();
 	}, [dataCv, dataTemplate, needsTemplate, reset]);
 
 	const onSelectModel = (withProfile: boolean) => {
@@ -320,6 +324,7 @@ export const FormCv = ({ children, idCv, template, color }: FormCvProviderProps)
 			showError("Modèle introuvable — impossible d’appliquer l’import.");
 			return;
 		}
+		commitCvFormHistory();
 		const next = applyImportDraftToForm(current, importDraft, model);
 		reset(next);
 		setImportDraft(null);
@@ -348,6 +353,7 @@ export const FormCv = ({ children, idCv, template, color }: FormCvProviderProps)
 		}
 		reset(mapCvToSaveInput(saved));
 		loadedStampRef.current = `${saved.id}:${new Date(saved.updatedAt).toISOString()}`;
+		clearCvFormHistory();
 		utils.cv.byId.setData({ id: saved.id }, saved);
 		await Promise.all([
 			utils.cv.byId.invalidate({ id: saved.id }),
@@ -442,54 +448,60 @@ export const FormCv = ({ children, idCv, template, color }: FormCvProviderProps)
 
 	return (
 		<FormProvider {...methods}>
-			<CvFormSaveProvider value={{ requestSave }}>
-				{/* preventDefault : bloque Entrée / boutons type=submit parasites */}
-				<form onSubmit={(e) => e.preventDefault()}>
-					{children}
-					<Toast ref={toast} position="top-center" />
-					<DialogSelectModel
-						visible={visibleSelectModel}
-						onHide={() => !importBusy && setVisibleSelectModel(false)}
-						modelSelect={modelSelect}
-						setModelSelect={setModelSelect}
-						onSelectModel={onSelectModel}
-						onResumeDraft={onResumeDraft}
-						draft={draft}
-						withProfileValue={withProfileValue}
-						setWithProfileValue={setWithProfileValue}
-						optionsProfile={optionsProfile}
-						profile={profile ?? undefined}
-						importing={importBusy}
-						onImportPdf={onImportPdfFromSelectModel}
-						onImportWithoutModel={() => showError("Choisissez un modèle avant d’importer un CV.")}
-					/>
-					{/* /cv/0?template=… — choix source. Import PDF → API. */}
-					<DialogStartContent
-						visible={visibleStartContent}
-						onHide={() => !importBusy && setVisibleStartContent(false)}
-						hasProfile={!!profile}
-						importing={importBusy}
-						onChoose={onStartContentChoose}
-						onImportPdf={onImportPdf}
-					/>
-					{/* Revue du draft puis apply. */}
-					<DialogImportReview
-						visible={!!importDraft}
-						draft={importDraft}
-						onHide={onCancelImportReview}
-						onConfirm={onConfirmImportReview}
-					/>
-					<DialogCvLimitReached
-						visible={visibleLimitDialog}
-						onHide={() => setVisibleLimitDialog(false)}
-						cvs={userCvs ?? []}
-						loading={loadingUserCvs}
-						replacing={replacingCv}
-						onReplace={onReplaceExistingCv}
-						onBuySlot={() => showInfo("L'achat d'emplacement de CV sera bientôt disponible.")}
-					/>
-				</form>
-			</CvFormSaveProvider>
+			<CvFormHistoryProvider>
+				<CvFormSaveProvider value={{ requestSave }}>
+					{/* preventDefault : bloque Entrée / boutons type=submit parasites */}
+					<form onSubmit={(e) => e.preventDefault()}>
+						{children}
+						<Toast ref={toast} position="top-center" />
+						<DialogSelectModel
+							visible={visibleSelectModel}
+							onHide={() => !importBusy && setVisibleSelectModel(false)}
+							modelSelect={modelSelect}
+							setModelSelect={setModelSelect}
+							onSelectModel={onSelectModel}
+							onResumeDraft={onResumeDraft}
+							draft={draft}
+							withProfileValue={withProfileValue}
+							setWithProfileValue={setWithProfileValue}
+							optionsProfile={optionsProfile}
+							profile={profile ?? undefined}
+							importing={importBusy}
+							onImportPdf={onImportPdfFromSelectModel}
+							onImportWithoutModel={() =>
+								showError("Choisissez un modèle avant d’importer un CV.")
+							}
+						/>
+						{/* /cv/0?template=… — choix source. Import PDF → API. */}
+						<DialogStartContent
+							visible={visibleStartContent}
+							onHide={() => !importBusy && setVisibleStartContent(false)}
+							hasProfile={!!profile}
+							importing={importBusy}
+							onChoose={onStartContentChoose}
+							onImportPdf={onImportPdf}
+						/>
+						{/* Revue du draft puis apply. */}
+						<DialogImportReview
+							visible={!!importDraft}
+							draft={importDraft}
+							onHide={onCancelImportReview}
+							onConfirm={onConfirmImportReview}
+						/>
+						<DialogCvLimitReached
+							visible={visibleLimitDialog}
+							onHide={() => setVisibleLimitDialog(false)}
+							cvs={userCvs ?? []}
+							loading={loadingUserCvs}
+							replacing={replacingCv}
+							onReplace={onReplaceExistingCv}
+							onBuySlot={() =>
+								showInfo("L'achat d'emplacement de CV sera bientôt disponible.")
+							}
+						/>
+					</form>
+				</CvFormSaveProvider>
+			</CvFormHistoryProvider>
 		</FormProvider>
 	);
 };

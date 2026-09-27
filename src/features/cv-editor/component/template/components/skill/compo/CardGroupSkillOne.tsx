@@ -16,6 +16,7 @@ import { SkillDnd } from "./SkillDnd";
 import { CommonPointList } from "../../common-compo/list/CommonPointList";
 import type { TemplateLayout } from "@/services/schemas/cvTemplate.schema";
 import { ToolbarOptionsButton } from "@/features/cv-editor/component/template/components/common-compo/section/ToolbarOptionsButton";
+import { commitCvFormHistory } from "@/features/cv-editor/utils/cvFormHistoryCommit";
 
 export type CardGroupSkillOneProps = {
 	index: number;
@@ -57,6 +58,7 @@ export const CardGroupSkillOne = ({
 			.filter((entry) => entry.clientKey !== itemToDelete.clientKey)
 			.map((entry, i) => ({ ...entry, order: i + 1 }));
 
+		commitCvFormHistory();
 		setValue(FieldNameSkill.content, newList, {
 			shouldDirty: true,
 			shouldTouch: true,

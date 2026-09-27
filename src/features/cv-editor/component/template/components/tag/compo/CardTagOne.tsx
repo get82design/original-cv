@@ -7,6 +7,7 @@ import { SectionItemShell } from "../../common-compo/section/SectionItemShell";
 import { TagCv } from "../../input-cv/tag-cv/TagCv";
 import { InputTextCv } from "@/components/input-writer/input-text-cv/InputTextCv";
 import type { JSX } from "react";
+import { commitCvFormHistory } from "@/features/cv-editor/utils/cvFormHistoryCommit";
 
 export type CardTagOneProps = {
 	index: number;
@@ -68,6 +69,7 @@ export const CardTagOne = ({
 		const newList = list
 			.filter((_, i) => i !== idx)
 			.map((entry, i) => ({ ...entry, order: i + 1 }));
+		commitCvFormHistory();
 		setValue(path, newList, { shouldDirty: true, shouldTouch: true });
 		if (removed && itemSelected === (removed as { clientKey: string }).clientKey) {
 			setItemSelected(newList[0]?.clientKey ?? clientKeyGroup);

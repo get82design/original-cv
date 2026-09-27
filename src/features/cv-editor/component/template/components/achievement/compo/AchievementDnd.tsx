@@ -9,6 +9,7 @@ import { Button } from "primereact/button";
 import { useFormContext } from "react-hook-form";
 import { MdAdd } from "react-icons/md";
 import type { AchievementCardProps } from "../../../register/achievement/AchievementCardRegister";
+import { commitCvFormHistory } from "@/features/cv-editor/utils/cvFormHistoryCommit";
 
 interface AchievementDndProps {
 	watchAchievements: ListItem<AchievementItemContentInput>[];
@@ -107,6 +108,7 @@ export const AchievementDnd = ({
 						onClick={(e) => {
 							e.stopPropagation();
 							const fresh = createNewItem();
+							commitCvFormHistory();
 							setValue(
 								FieldNameAchievement.content,
 								[...watchAchievements, { ...fresh, order: watchAchievements.length + 1 }],

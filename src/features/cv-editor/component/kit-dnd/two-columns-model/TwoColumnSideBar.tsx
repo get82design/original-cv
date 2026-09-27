@@ -61,8 +61,8 @@ export function TwoColumnSideBar({ deleteSection }: TwoColumnSideBarProps) {
 
 	const [activeSectionId, setActiveSectionId] = useState<string | null>(null);
 	const activeItem = [...left, ...right].find((i) => i.id === activeSectionId);
-	const { sensors, handleDragEnd, handleDragOver, collisionDetection } = useCvPageDnd(
-		[left, right],
+	const { sensors, handleDragStart, handleDragEnd, handleDragOver, collisionDetection } =
+		useCvPageDnd(		[left, right],
 		{ sidebarColumn: 0 },
 	);
 
@@ -199,6 +199,7 @@ export function TwoColumnSideBar({ deleteSection }: TwoColumnSideBarProps) {
 			collisionDetection={collisionDetection}
 			onDragOver={handleDragOver}
 			onDragStart={(e) => {
+				handleDragStart(e);
 				if (e.active.data.current?.type === "section") {
 					setActiveSectionId(String(e.active.id));
 				}

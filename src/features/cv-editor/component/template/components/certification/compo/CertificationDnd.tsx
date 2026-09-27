@@ -14,6 +14,7 @@ import { useFormContext } from "react-hook-form";
 import { MdAdd } from "react-icons/md";
 import type { CertificationCardProps } from "../../../register/certification/CertificationCardRegister";
 import { COL_CLASS } from "@/features/cv-editor/utils/utilsCv/cols";
+import { commitCvFormHistory } from "@/features/cv-editor/utils/cvFormHistoryCommit";
 
 interface CertificationDndProps {
 	watchCertifications: ListItem<CertificationItemContentInput>[];
@@ -102,6 +103,7 @@ export const CertificationDnd = ({
 						onClick={(e) => {
 							e.stopPropagation();
 							const fresh = createNewItem();
+							commitCvFormHistory();
 							setValue(
 								FieldNameCertification.content,
 								[...watchCertifications, { ...fresh, order: watchCertifications.length + 1 }],

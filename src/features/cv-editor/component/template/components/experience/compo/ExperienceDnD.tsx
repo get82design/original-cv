@@ -10,6 +10,7 @@ import { MdAdd } from "react-icons/md";
 import { Button } from "primereact/button";
 import type { ListItem } from "@utils/type";
 import type { CardExperienceOneProps } from "./CardExperienceOne";
+import { commitCvFormHistory } from "@/features/cv-editor/utils/cvFormHistoryCommit";
 
 interface ExperiencesDndProps {
 	watchExperiences: ListItem<ExperienceItemContentInput>[];
@@ -38,6 +39,7 @@ export const ExperiencesDnd = ({
 			order: (item.content.missions?.length ?? 0) + 1,
 		};
 
+		commitCvFormHistory();
 		setValue(pathContent, [...(item.content.missions ?? []), newMission], {
 			shouldDirty: true,
 			shouldTouch: true,
@@ -50,6 +52,7 @@ export const ExperiencesDnd = ({
 		const nextMissions = currentMissions
 			.filter((_, i) => i !== idx)
 			.map((mission, i) => ({ ...mission, order: i + 1 }));
+		commitCvFormHistory();
 		setValue(pathContent, nextMissions, {
 			shouldDirty: true,
 			shouldTouch: true,
@@ -154,6 +157,7 @@ export const ExperiencesDnd = ({
 						onClick={(e) => {
 							e.stopPropagation();
 							const fresh = createNewItem();
+							commitCvFormHistory();
 							setValue(
 								FieldNameExperience.content,
 								[...watchExperiences, { ...fresh, order: watchExperiences.length + 1 }],

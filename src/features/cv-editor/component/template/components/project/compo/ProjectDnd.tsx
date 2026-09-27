@@ -10,6 +10,7 @@ import { MdAdd } from "react-icons/md";
 import { v4 as uuid } from "uuid";
 import { ToggleAfficherCacher } from "@/components/input/toggle-button/AfficherCacher";
 import type { ProjectCardProps } from "../../../register/project/ProjectCardRegister";
+import { commitCvFormHistory } from "@/features/cv-editor/utils/cvFormHistoryCommit";
 
 interface ProjectDndProps {
 	watchProjects: ListItem<ProjectItemContentInput>[];
@@ -37,6 +38,7 @@ export const ProjectDnd = ({
 			order: (item.content.missions?.length ?? 0) + 1,
 		};
 
+		commitCvFormHistory();
 		setValue(pathContent, [...(item.content.missions ?? []), newMission], {
 			shouldDirty: true,
 			shouldTouch: true,
@@ -49,6 +51,7 @@ export const ProjectDnd = ({
 		const nextMissions = currentMissions
 			.filter((_, i) => i !== idx)
 			.map((mission, i) => ({ ...mission, order: i + 1 }));
+		commitCvFormHistory();
 		setValue(pathContent, nextMissions, {
 			shouldDirty: true,
 			shouldTouch: true,
@@ -153,6 +156,7 @@ export const ProjectDnd = ({
 						onClick={(e) => {
 							e.stopPropagation();
 							const fresh = createNewItem();
+							commitCvFormHistory();
 							setValue(
 								FieldNameProject.content,
 								[...watchProjects, { ...fresh, order: watchProjects.length + 1 }],

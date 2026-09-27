@@ -11,6 +11,7 @@ import { Button } from "primereact/button";
 import { useFormContext } from "react-hook-form";
 import { MdAdd } from "react-icons/md";
 import type { GroupCompetenceCardProps } from "../../../register/competence/GroupCompetenceCardRegister";
+import { commitCvFormHistory } from "@/features/cv-editor/utils/cvFormHistoryCommit";
 
 interface CompetenceGroupDndProps {
 	watchCompetences: ListItem<CompetenceGroupItemContentInput>[];
@@ -90,6 +91,7 @@ export const CompetenceGroupDnd = ({
 						onClick={(e) => {
 							e.stopPropagation();
 							const fresh = createNewItem();
+							commitCvFormHistory();
 							setValue(
 								FieldNameCompetence.content,
 								[...watchCompetences, { ...fresh, order: watchCompetences.length + 1 }],

@@ -46,7 +46,8 @@ export const OneColumnModel = ({ deleteSection }: OneColumnModelProps) => {
 		[sortedItems],
 	);
 
-	const { sensors, handleDragEnd, handleDragOver, collisionDetection } = useCvPageDnd([itemUse]);
+	const { sensors, handleDragStart, handleDragEnd, handleDragOver, collisionDetection } =
+		useCvPageDnd([itemUse]);
 
 	const primaryColor = GetPrimaryColor() ?? "white";
 	const accent = watch("layoutGeneral.layout.pageAccent");
@@ -120,6 +121,7 @@ export const OneColumnModel = ({ deleteSection }: OneColumnModelProps) => {
 		<DndContext
 			sensors={sensors}
 			collisionDetection={collisionDetection}
+			onDragStart={handleDragStart}
 			onDragEnd={handleDragEnd}
 			onDragOver={handleDragOver}
 		>

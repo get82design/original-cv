@@ -14,6 +14,7 @@ import { InputTextCv } from "@/components/input-writer/input-text-cv/InputTextCv
 import type { TemplateLayout } from "@/services/schemas/cvTemplate.schema";
 import { CommonPointList } from "../../common-compo/list/CommonPointList";
 import { ToolbarOptionsButton } from "@/features/cv-editor/component/template/components/common-compo/section/ToolbarOptionsButton";
+import { commitCvFormHistory } from "@/features/cv-editor/utils/cvFormHistoryCommit";
 
 export interface CardEducationOneProps {
 	index: number;
@@ -57,6 +58,7 @@ export const CardEducationOne = ({
 			.filter((entry) => entry.clientKey !== itemToDelete.clientKey)
 			.map((entry, i) => ({ ...entry, order: i + 1 }));
 
+		commitCvFormHistory();
 		setValue(FieldNameEducation.content, newList, {
 			shouldDirty: true,
 			shouldTouch: true,

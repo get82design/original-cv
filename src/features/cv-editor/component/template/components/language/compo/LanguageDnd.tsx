@@ -1,12 +1,13 @@
-import { useCreateCvContext } from "@/features/cv-editor/component/context/CreateCvContext";
-import { FieldNameLanguage } from "@/features/cv-editor/utils/fields/fieldNameLanguage";
 import { horizontalListSortingStrategy, SortableContext } from "@dnd-kit/sortable";
+import type { ListItem } from "@utils/type";
 import { Button } from "primereact/button";
 import { useFormContext } from "react-hook-form";
-import type { ListItem } from "@utils/type";
+import { useCreateCvContext } from "@/features/cv-editor/component/context/CreateCvContext";
+import { commitCvFormHistory } from "@/features/cv-editor/utils/cvFormHistoryCommit";
+import { FieldNameLanguage } from "@/features/cv-editor/utils/fields/fieldNameLanguage";
+import { COL_CLASS } from "@/features/cv-editor/utils/utilsCv/cols";
 import type { LanguageItemContentInput } from "@/services/schemas/cvSave.schema";
 import type { LanguageCardProps } from "../../../register/language/LanguageCardRegister";
-import { COL_CLASS } from "@/features/cv-editor/utils/utilsCv/cols";
 
 interface LanguageDndProps {
 	watchLanguages: ListItem<LanguageItemContentInput>[];
@@ -99,6 +100,7 @@ export const CompoLanguageDnd = ({
 					onClick={(e) => {
 						e.stopPropagation();
 						const fresh = createNewItem();
+						commitCvFormHistory();
 						setValue(
 							FieldNameLanguage.content,
 							[...languages, { ...fresh, order: languages.length + 1 }],

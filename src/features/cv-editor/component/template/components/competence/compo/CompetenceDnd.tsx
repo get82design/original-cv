@@ -8,6 +8,7 @@ import {
 	verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import type { CompetenceCardProps } from "../../../register/competence/CompetenceCardRegister";
+import { commitCvFormHistory } from "@/features/cv-editor/utils/cvFormHistoryCommit";
 
 interface CompetenceDndProps {
 	competences: ListItem<unknown>[];
@@ -78,6 +79,7 @@ export const CompetenceDnd = ({
 						onClick={(e) => {
 							e.stopPropagation();
 							const fresh = createNewItem();
+							commitCvFormHistory();
 							setValue(
 								`datas.competenceGroup.content.${groupIndex}.content.competences`,
 								[...competences, { ...fresh, order: competences.length + 1 }],

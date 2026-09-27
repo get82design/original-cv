@@ -10,6 +10,7 @@ import { useFormContext } from "react-hook-form";
 import { MdAdd } from "react-icons/md";
 import { v4 as uuid } from "uuid";
 import type { VolunteeringCardProps } from "../../../register/volunteering/VolunteeringCardOne";
+import { commitCvFormHistory } from "@/features/cv-editor/utils/cvFormHistoryCommit";
 
 interface VolunteeringsDndProps {
 	watchVolunteerings: ListItem<VolunteeringItemContentInput>[];
@@ -38,6 +39,7 @@ export const VolunteeringsDnd = ({
 			order: (item.content.missions?.length ?? 0) + 1,
 		};
 
+		commitCvFormHistory();
 		setValue(pathContent, [...(item.content.missions ?? []), newMission], {
 			shouldDirty: true,
 			shouldTouch: true,
@@ -50,6 +52,7 @@ export const VolunteeringsDnd = ({
 		const nextMissions = currentMissions
 			.filter((_, i) => i !== idx)
 			.map((mission, i) => ({ ...mission, order: i + 1 }));
+		commitCvFormHistory();
 		setValue(pathContent, nextMissions, {
 			shouldDirty: true,
 			shouldTouch: true,
@@ -154,6 +157,7 @@ export const VolunteeringsDnd = ({
 						onClick={(e) => {
 							e.stopPropagation();
 							const fresh = createNewItem();
+							commitCvFormHistory();
 							setValue(
 								FieldNameVolunteering.content,
 								[...watchVolunteerings, { ...fresh, order: watchVolunteerings.length + 1 }],

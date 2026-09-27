@@ -14,6 +14,7 @@ import { useFormContext } from "react-hook-form";
 import { MdAdd } from "react-icons/md";
 import type { FormationCardProps } from "../../../register/formation/FormationCardRegister";
 import { COL_CLASS } from "@/features/cv-editor/utils/utilsCv/cols";
+import { commitCvFormHistory } from "@/features/cv-editor/utils/cvFormHistoryCommit";
 
 interface FormationDndProps {
 	watchFormations: ListItem<FormationItemContentInput>[];
@@ -118,6 +119,7 @@ export const FormationDnd = ({
 						onClick={(e) => {
 							e.stopPropagation();
 							const fresh = createNewItem();
+							commitCvFormHistory();
 							setValue(
 								FieldNameFormation.content,
 								[...watchFormations, { ...fresh, order: watchFormations.length + 1 }],

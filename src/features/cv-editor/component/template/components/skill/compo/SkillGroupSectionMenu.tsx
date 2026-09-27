@@ -5,6 +5,7 @@ import { Menu } from "primereact/menu";
 import { useRef } from "react";
 import { useFormContext } from "react-hook-form";
 import { ToolbarOptionsButton } from "@/features/cv-editor/component/template/components/common-compo/section/ToolbarOptionsButton";
+import { commitCvFormHistory } from "@/features/cv-editor/utils/cvFormHistoryCommit";
 
 export const SkillGroupSectionMenu = () => {
 	const menuRef = useRef<Menu>(null);
@@ -13,6 +14,7 @@ export const SkillGroupSectionMenu = () => {
 	const pathDesign = moduleField(modules, "skill", "settings", "content");
 
 	const applyGroupColumns = (next: 1 | 2 | 3) => {
+		commitCvFormHistory();
 		setValue(columnsPath, next, { shouldDirty: true });
 		const groups = getValues("datas.skillGroup.content") ?? [];
 		groups.forEach((_: unknown, idx: number) => {

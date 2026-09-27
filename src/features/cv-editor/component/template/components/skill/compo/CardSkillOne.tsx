@@ -5,6 +5,7 @@ import { SectionItemShell } from "../../common-compo/section/SectionItemShell";
 import { InputTextCv } from "@/components/input-writer/input-text-cv/InputTextCv";
 import { RatingCvInput } from "../../input-cv/rating-cv/RatingCvInput";
 import type { JSX } from "react";
+import { commitCvFormHistory } from "@/features/cv-editor/utils/cvFormHistoryCommit";
 
 export type CardSkillOneProps = {
 	index: number;
@@ -39,6 +40,7 @@ export const CardSkillOne = ({
 			.filter((entry) => entry.clientKey !== itemToDelete.clientKey)
 			.map((entry, i) => ({ ...entry, order: i + 1 }));
 
+		commitCvFormHistory();
 		setValue(itemName, newList, { shouldDirty: true, shouldTouch: true });
 
 		// si on supprime l'élément sélectionné → basculer sur un autre / le groupe

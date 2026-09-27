@@ -10,6 +10,7 @@ import { FieldNameTag } from "@/features/cv-editor/utils/fields/fieldNameTag";
 import { MdAdd } from "react-icons/md";
 import type { GroupTagCardProps } from "../../../register/tag/GroupTagCardRegister";
 import { RadioRhf } from "@/components/input/radio/RadioRhf";
+import { commitCvFormHistory } from "@/features/cv-editor/utils/cvFormHistoryCommit";
 
 interface TagGroupDndProps {
 	watchTags: ListItem<TagGroupItemContentInput>[];
@@ -42,6 +43,7 @@ export const TagGroupDnd = ({
 
 	const applyDesign = (idx: number, design: TagDesign) => {
 		const settingsBase = `datas.tagGroup.content.${idx}.content.settings`;
+		commitCvFormHistory();
 		setValue(`${settingsBase}.design`, design, { shouldDirty: true });
 		setValue(`${settingsBase}.tags.colorSelect`, colorForTagDesign(design), { shouldDirty: true });
 	};
@@ -130,6 +132,7 @@ export const TagGroupDnd = ({
 						onClick={(e) => {
 							e.stopPropagation();
 							const fresh = createNewItem();
+							commitCvFormHistory();
 							setValue(
 								FieldNameTag.content,
 								[...watchTags, { ...fresh, order: watchTags.length + 1 }],

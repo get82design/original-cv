@@ -9,6 +9,7 @@ import { SectionItemShell } from "../../common-compo/section/SectionItemShell";
 import { SelectSocialIcon } from "@/components/icon/SelectIcon";
 import { InputTextCv } from "@/components/input-writer/input-text-cv/InputTextCv";
 import { ToolbarOptionsButton } from "@/features/cv-editor/component/template/components/common-compo/section/ToolbarOptionsButton";
+import { commitCvFormHistory } from "@/features/cv-editor/utils/cvFormHistoryCommit";
 
 export interface CardSocialMediaOneProps {
 	item: ListItem<SocialMediaItemContentInput>;
@@ -46,6 +47,7 @@ export const CardSocialMediaOne = ({
 			.filter((entry) => entry.clientKey !== itemToDelete.clientKey)
 			.map((entry, i) => ({ ...entry, order: i + 1 }));
 
+		commitCvFormHistory();
 		setValue(FieldNameSocialMedia.content, newList, {
 			shouldDirty: true,
 			shouldTouch: true,

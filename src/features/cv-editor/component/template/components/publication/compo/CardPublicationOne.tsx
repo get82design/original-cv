@@ -15,6 +15,7 @@ import { PeriodeCv } from "@/components/input-writer/calendar/periode-cv";
 import { CommonPointList } from "../../common-compo/list/CommonPointList";
 import type { TemplateLayout } from "@/services/schemas/cvTemplate.schema";
 import { ToolbarOptionsButton } from "@/features/cv-editor/component/template/components/common-compo/section/ToolbarOptionsButton";
+import { commitCvFormHistory } from "@/features/cv-editor/utils/cvFormHistoryCommit";
 
 export interface CardPublicationOneProps {
 	index: number;
@@ -58,6 +59,7 @@ export const CardPublicationOne = ({
 			.filter((entry) => entry.clientKey !== itemToDelete.clientKey)
 			.map((entry, i) => ({ ...entry, order: i + 1 }));
 
+		commitCvFormHistory();
 		setValue(FieldNamePublication.content, newList, {
 			shouldDirty: true,
 			shouldTouch: true,

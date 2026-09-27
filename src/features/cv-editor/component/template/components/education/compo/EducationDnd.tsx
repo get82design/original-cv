@@ -10,6 +10,7 @@ import { useFormContext } from "react-hook-form";
 import type { ListItem } from "@utils/type";
 import type { EducationCardProps } from "../../../register/education/EducationCardRegister";
 import { COL_CLASS } from "@/features/cv-editor/utils/utilsCv/cols";
+import { commitCvFormHistory } from "@/features/cv-editor/utils/cvFormHistoryCommit";
 
 interface EducationDndProps {
 	watchEducations: ListItem<EducationItemContentInput>[];
@@ -104,6 +105,7 @@ export const EducationDnd = ({
 						onClick={(e) => {
 							e.stopPropagation();
 							const fresh = createNewItem();
+							commitCvFormHistory();
 							setValue(
 								FieldNameEducation.content,
 								[...watchEducations, { ...fresh, order: watchEducations.length + 1 }],

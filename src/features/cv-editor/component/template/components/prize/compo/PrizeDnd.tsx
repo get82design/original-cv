@@ -10,6 +10,7 @@ import { useFormContext } from "react-hook-form";
 import { MdAdd } from "react-icons/md";
 import type { PrizeCardProps } from "../../../register/prize/PrizeCardRegister";
 import { COL_CLASS } from "@/features/cv-editor/utils/utilsCv/cols";
+import { commitCvFormHistory } from "@/features/cv-editor/utils/cvFormHistoryCommit";
 
 interface PrizeDndProps {
 	watchPrizes: ListItem<PrizeItemContentInput>[];
@@ -105,6 +106,7 @@ export const PrizeDnd = ({
 						onClick={(e) => {
 							e.stopPropagation();
 							const fresh = createNewItem();
+							commitCvFormHistory();
 							setValue(
 								FieldNamePrize.content,
 								[...watchPrizes, { ...fresh, order: watchPrizes.length + 1 }],

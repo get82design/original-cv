@@ -9,6 +9,7 @@ import { Button } from "primereact/button";
 import { useFormContext } from "react-hook-form";
 import { MdAdd } from "react-icons/md";
 import type { PublicationCardProps } from "../../../register/publication/PublicationCardRegister";
+import { commitCvFormHistory } from "@/features/cv-editor/utils/cvFormHistoryCommit";
 
 interface PublicationDndProps {
 	watchPublications: ListItem<PublicationItemContentInput>[];
@@ -115,6 +116,7 @@ export const PublicationDnd = ({
 						onClick={(e) => {
 							e.stopPropagation();
 							const fresh = createNewItem();
+							commitCvFormHistory();
 							setValue(
 								FieldNamePublication.content,
 								[...watchPublications, { ...fresh, order: watchPublications.length + 1 }],

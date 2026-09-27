@@ -7,10 +7,12 @@ export interface ItemGeneralProps {
 
 export interface ListItem<T> {
 	clientKey: string;
-	order?: number;
+	/** Zod / Prisma : optionnel + éventuellement `undefined` explicite */
+	order?: number | undefined;
+	id?: string | undefined;
 	content: T;
 }
 
 export type WithMissions = {
-	missions?: Array<ListItem<{ content: unknown }>>;
+	missions?: Array<ListItem<{ content: unknown }>> | undefined;
 };

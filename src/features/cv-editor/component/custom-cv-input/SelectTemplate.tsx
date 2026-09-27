@@ -7,6 +7,7 @@ import { trpc } from "@utils/trpc";
 import { useMemo } from "react";
 import { isTemplateLocked } from "../../utils/isTemplateLocked";
 import { TemplateCatalogBadges } from "@/components/badge/TemplateCatalogBadges";
+import { commitCvFormHistory } from "../../utils/cvFormHistoryCommit";
 
 export const SelectTemplate = () => {
 	const { status } = useSession();
@@ -43,6 +44,7 @@ export const SelectTemplate = () => {
 							const next = switchTemplate(getValues() as CvFormValues, model, {
 								updateModules: true,
 							});
+							commitCvFormHistory();
 							reset(next);
 						}}
 					>

@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { useFormContext } from "react-hook-form";
 import { MdArrowForwardIos } from "react-icons/md";
 import type { ProfileComplete } from "../../form/FormCv";
+import { commitCvFormHistory } from "../../../utils/cvFormHistoryCommit";
 import type {
 	AchievementContentSettings,
 	CertificationContentSettings,
@@ -257,7 +258,12 @@ function mapProfilePrizesToCvItems(
 	return prizes.map((p) => ({
 		clientKey: p.id,
 		order: p.order,
-		content: { title: p.title, domaine: p.domaine, icon: p.icon, settings: contentSettings },
+		content: {
+			title: p.title,
+			domaine: p.domaine,
+			icon: p.icon,
+			settings: contentSettings,
+		},
 	}));
 }
 
@@ -397,7 +403,10 @@ export const DialogDataSectionFromProfile = ({
 	}, [visible, cvSection]);
 
 	const onValidate = () => {
-		if (draft) setValue(`datas.${datasKey}`, draft, { shouldDirty: true });
+		if (draft) {
+			commitCvFormHistory();
+			setValue(`datas.${datasKey}`, draft, { shouldDirty: true });
+		}
 		onHide();
 	};
 
@@ -436,9 +445,17 @@ export const DialogDataSectionFromProfile = ({
 			{sectionName === "description" && (
 				<ScalarTransfer
 					profileText={profile?.description?.description ?? ""}
-					cvText={(draft?.content as { description?: string })?.description ?? ""}
+					cvText={
+						(draft?.content as { description?: string })?.description ?? ""
+					}
 					onApply={(text) =>
-						setDraft((d) => d && { ...d, content: { ...(d.content as object), description: text } })
+						setDraft(
+							(d) =>
+								d && {
+									...d,
+									content: { ...(d.content as object), description: text },
+								},
+						)
 					}
 					labels={{ left: "Tableau de bord", right: "CV" }}
 				/>
@@ -470,24 +487,34 @@ export const DialogDataSectionFromProfile = ({
 				<ListTransfer
 					source={mapProfileExperiencesToCvItems(
 						profile?.experiences ?? [],
-						cvSection?.content?.[0]?.content?.settings ?? createInitExperience().content.settings,
+						cvSection?.content?.[0]?.content?.settings ??
+							createInitExperience().content.settings,
 					)}
 					target={Array.isArray(draft?.content) ? draft.content : []}
 					onChange={(next) => setDraft((d) => d && { ...d, content: next })}
-					getKey={(item) => `${item.content.title}|${item.content.company ?? ""}`}
-					itemTemplate={(item) => <p className="font-semibold">{item.content.title}</p>}
+					getKey={(item) =>
+						`${item.content.title}|${item.content.company ?? ""}`
+					}
+					itemTemplate={(item) => (
+						<p className="font-semibold">{item.content.title}</p>
+					)}
 				/>
 			)}
 			{sectionName === "achievement" && (
 				<ListTransfer
 					source={mapProfileAchievementsToCvItems(
 						profile?.achievements ?? [],
-						cvSection?.content?.[0]?.content?.settings ?? createInitAchievement().content.settings,
+						cvSection?.content?.[0]?.content?.settings ??
+							createInitAchievement().content.settings,
 					)}
 					target={Array.isArray(draft?.content) ? draft.content : []}
 					onChange={(next) => setDraft((d) => d && { ...d, content: next })}
-					getKey={(item) => `${item.content.title}|${item.content.technology ?? ""}`}
-					itemTemplate={(item) => <p className="font-semibold">{item.content.title}</p>}
+					getKey={(item) =>
+						`${item.content.title}|${item.content.technology ?? ""}`
+					}
+					itemTemplate={(item) => (
+						<p className="font-semibold">{item.content.title}</p>
+					)}
 				/>
 			)}
 			{sectionName === "certification" && (
@@ -499,147 +526,199 @@ export const DialogDataSectionFromProfile = ({
 					)}
 					target={Array.isArray(draft?.content) ? draft.content : []}
 					onChange={(next) => setDraft((d) => d && { ...d, content: next })}
-					getKey={(item) => `${item.content.title}|${item.content.organismeCertification ?? ""}`}
-					itemTemplate={(item) => <p className="font-semibold">{item.content.title}</p>}
+					getKey={(item) =>
+						`${item.content.title}|${item.content.organismeCertification ?? ""}`
+					}
+					itemTemplate={(item) => (
+						<p className="font-semibold">{item.content.title}</p>
+					)}
 				/>
 			)}
 			{sectionName === "education" && (
 				<ListTransfer
 					source={mapProfileEducationsToCvItems(
 						profile?.educations ?? [],
-						cvSection?.content?.[0]?.content?.settings ?? createInitEducation().content.settings,
+						cvSection?.content?.[0]?.content?.settings ??
+							createInitEducation().content.settings,
 					)}
 					target={Array.isArray(draft?.content) ? draft.content : []}
 					onChange={(next) => setDraft((d) => d && { ...d, content: next })}
-					getKey={(item) => `${item.content.title}|${item.content.school ?? ""}`}
-					itemTemplate={(item) => <p className="font-semibold">{item.content.title}</p>}
+					getKey={(item) =>
+						`${item.content.title}|${item.content.school ?? ""}`
+					}
+					itemTemplate={(item) => (
+						<p className="font-semibold">{item.content.title}</p>
+					)}
 				/>
 			)}
 			{sectionName === "expertise" && (
 				<ListTransfer
 					source={mapProfileExpertisesToCvItems(
 						profile?.expertises ?? [],
-						cvSection?.content?.[0]?.content?.settings ?? createInitExpertise().content.settings,
+						cvSection?.content?.[0]?.content?.settings ??
+							createInitExpertise().content.settings,
 					)}
 					target={Array.isArray(draft?.content) ? draft.content : []}
 					onChange={(next) => setDraft((d) => d && { ...d, content: next })}
 					getKey={(item) => `${item.content.title}|${item.content.level ?? ""}`}
-					itemTemplate={(item) => <p className="font-semibold">{item.content.title}</p>}
+					itemTemplate={(item) => (
+						<p className="font-semibold">{item.content.title}</p>
+					)}
 				/>
 			)}
 			{sectionName === "formation" && (
 				<ListTransfer
 					source={mapProfileFormationsToCvItems(
 						profile?.formations ?? [],
-						cvSection?.content?.[0]?.content?.settings ?? createInitFormation().content.settings,
+						cvSection?.content?.[0]?.content?.settings ??
+							createInitFormation().content.settings,
 					)}
 					target={Array.isArray(draft?.content) ? draft.content : []}
 					onChange={(next) => setDraft((d) => d && { ...d, content: next })}
-					getKey={(item) => `${item.content.title}|${item.content.organismeFormation ?? ""}`}
-					itemTemplate={(item) => <p className="font-semibold">{item.content.title}</p>}
+					getKey={(item) =>
+						`${item.content.title}|${item.content.organismeFormation ?? ""}`
+					}
+					itemTemplate={(item) => (
+						<p className="font-semibold">{item.content.title}</p>
+					)}
 				/>
 			)}
 			{sectionName === "language" && (
 				<ListTransfer
 					source={mapProfileLanguagesToCvItems(
 						profile?.languages ?? [],
-						cvSection?.content?.[0]?.content?.settings ?? createInitLanguage().content.settings,
+						cvSection?.content?.[0]?.content?.settings ??
+							createInitLanguage().content.settings,
 					)}
 					target={Array.isArray(draft?.content) ? draft.content : []}
 					onChange={(next) => setDraft((d) => d && { ...d, content: next })}
 					getKey={(item) => `${item.content.name}|${item.content.level ?? ""}`}
-					itemTemplate={(item) => <p className="font-semibold">{item.content.name}</p>}
+					itemTemplate={(item) => (
+						<p className="font-semibold">{item.content.name}</p>
+					)}
 				/>
 			)}
 			{sectionName === "passion" && (
 				<ListTransfer
 					source={mapProfilePassionsToCvItems(
 						profile?.passions ?? [],
-						cvSection?.content?.[0]?.content?.settings ?? createInitPassion().content.settings,
+						cvSection?.content?.[0]?.content?.settings ??
+							createInitPassion().content.settings,
 					)}
 					target={Array.isArray(draft?.content) ? draft.content : []}
 					onChange={(next) => setDraft((d) => d && { ...d, content: next })}
 					getKey={(item) => `${item.content.title}|${item.content.icon ?? ""}`}
-					itemTemplate={(item) => <p className="font-semibold">{item.content.title}</p>}
+					itemTemplate={(item) => (
+						<p className="font-semibold">{item.content.title}</p>
+					)}
 				/>
 			)}
 			{sectionName === "prize" && (
 				<ListTransfer
 					source={mapProfilePrizesToCvItems(
 						profile?.prizes ?? [],
-						cvSection?.content?.[0]?.content?.settings ?? createInitPrize().content.settings,
+						cvSection?.content?.[0]?.content?.settings ??
+							createInitPrize().content.settings,
 					)}
 					target={Array.isArray(draft?.content) ? draft.content : []}
 					onChange={(next) => setDraft((d) => d && { ...d, content: next })}
-					getKey={(item) => `${item.content.title}|${item.content.domaine ?? ""}`}
-					itemTemplate={(item) => <p className="font-semibold">{item.content.title}</p>}
+					getKey={(item) =>
+						`${item.content.title}|${item.content.domaine ?? ""}`
+					}
+					itemTemplate={(item) => (
+						<p className="font-semibold">{item.content.title}</p>
+					)}
 				/>
 			)}
 			{sectionName === "project" && (
 				<ListTransfer
 					source={mapProfileProjectsToCvItems(
 						profile?.projects ?? [],
-						cvSection?.content?.[0]?.content?.settings ?? createInitProject().content.settings,
+						cvSection?.content?.[0]?.content?.settings ??
+							createInitProject().content.settings,
 					)}
 					target={Array.isArray(draft?.content) ? draft.content : []}
 					onChange={(next) => setDraft((d) => d && { ...d, content: next })}
-					getKey={(item) => `${item.content.title}|${item.content.technology ?? ""}`}
-					itemTemplate={(item) => <p className="font-semibold">{item.content.title}</p>}
+					getKey={(item) =>
+						`${item.content.title}|${item.content.technology ?? ""}`
+					}
+					itemTemplate={(item) => (
+						<p className="font-semibold">{item.content.title}</p>
+					)}
 				/>
 			)}
 			{sectionName === "publication" && (
 				<ListTransfer
 					source={mapProfilePublicationsToCvItems(
 						profile?.publications ?? [],
-						cvSection?.content?.[0]?.content?.settings ?? createInitPublication().content.settings,
+						cvSection?.content?.[0]?.content?.settings ??
+							createInitPublication().content.settings,
 					)}
 					target={Array.isArray(draft?.content) ? draft.content : []}
 					onChange={(next) => setDraft((d) => d && { ...d, content: next })}
-					getKey={(item) => `${item.content.title}|${item.content.journalName ?? ""}`}
-					itemTemplate={(item) => <p className="font-semibold">{item.content.title}</p>}
+					getKey={(item) =>
+						`${item.content.title}|${item.content.journalName ?? ""}`
+					}
+					itemTemplate={(item) => (
+						<p className="font-semibold">{item.content.title}</p>
+					)}
 				/>
 			)}
 			{sectionName === "socialMedia" && (
 				<ListTransfer
 					source={mapProfileSocialMediaToCvItems(
 						profile?.socialMedias ?? [],
-						cvSection?.content?.[0]?.content?.settings ?? createInitSocialMedia().content.settings,
+						cvSection?.content?.[0]?.content?.settings ??
+							createInitSocialMedia().content.settings,
 					)}
 					target={Array.isArray(draft?.content) ? draft.content : []}
 					onChange={(next) => setDraft((d) => d && { ...d, content: next })}
-					getKey={(item) => `${item.content.socialNetwork}|${item.content.username ?? ""}`}
-					itemTemplate={(item) => <p className="font-semibold">{item.content.socialNetwork}</p>}
+					getKey={(item) =>
+						`${item.content.socialNetwork}|${item.content.username ?? ""}`
+					}
+					itemTemplate={(item) => (
+						<p className="font-semibold">{item.content.socialNetwork}</p>
+					)}
 				/>
 			)}
 			{sectionName === "strength" && (
 				<ListTransfer
 					source={mapProfileStrengthsToCvItems(
 						profile?.strengths ?? [],
-						cvSection?.content?.[0]?.content?.settings ?? createInitStrength().content.settings,
+						cvSection?.content?.[0]?.content?.settings ??
+							createInitStrength().content.settings,
 					)}
 					target={Array.isArray(draft?.content) ? draft.content : []}
 					onChange={(next) => setDraft((d) => d && { ...d, content: next })}
 					getKey={(item) => `${item.content.title}|${item.content.icon ?? ""}`}
-					itemTemplate={(item) => <p className="font-semibold">{item.content.title}</p>}
+					itemTemplate={(item) => (
+						<p className="font-semibold">{item.content.title}</p>
+					)}
 				/>
 			)}
 			{sectionName === "volunteering" && (
 				<ListTransfer
 					source={mapProfileVolunteeringToCvItems(
 						profile?.volunteerings ?? [],
-						cvSection?.content?.[0]?.content?.settings ?? createInitVolunteering().content.settings,
+						cvSection?.content?.[0]?.content?.settings ??
+							createInitVolunteering().content.settings,
 					)}
 					target={Array.isArray(draft?.content) ? draft.content : []}
 					onChange={(next) => setDraft((d) => d && { ...d, content: next })}
-					getKey={(item) => `${item.content.title}|${item.content.organisation ?? ""}`}
-					itemTemplate={(item) => <p className="font-semibold">{item.content.title}</p>}
+					getKey={(item) =>
+						`${item.content.title}|${item.content.organisation ?? ""}`
+					}
+					itemTemplate={(item) => (
+						<p className="font-semibold">{item.content.title}</p>
+					)}
 				/>
 			)}
 			{sectionName === "tag" && (
 				<GroupTransfer
 					source={mapProfileTagsToCvGroups(
 						profile?.tags ?? [],
-						cvSection?.content?.[0]?.content?.settings ?? createInitTag().content.settings,
+						cvSection?.content?.[0]?.content?.settings ??
+							createInitTag().content.settings,
 					)}
 					target={Array.isArray(draft?.content) ? draft.content : []}
 					onChange={(next) => setDraft((d) => d && { ...d, content: next })}
@@ -655,7 +734,8 @@ export const DialogDataSectionFromProfile = ({
 				<GroupTransfer
 					source={mapProfileSkillsToCvGroups(
 						profile?.skills ?? [],
-						cvSection?.content?.[0]?.content?.settings ?? createInitSkill().content.settings,
+						cvSection?.content?.[0]?.content?.settings ??
+							createInitSkill().content.settings,
 					)}
 					target={Array.isArray(draft?.content) ? draft.content : []}
 					onChange={(next) => setDraft((d) => d && { ...d, content: next })}
@@ -671,7 +751,8 @@ export const DialogDataSectionFromProfile = ({
 				<GroupTransfer
 					source={mapProfileCompetencesToCvGroups(
 						profile?.competences ?? [],
-						cvSection?.content?.[0]?.content?.settings ?? createInitCompetence().content.settings,
+						cvSection?.content?.[0]?.content?.settings ??
+							createInitCompetence().content.settings,
 					)}
 					target={Array.isArray(draft?.content) ? draft.content : []}
 					onChange={(next) => setDraft((d) => d && { ...d, content: next })}
@@ -694,7 +775,12 @@ type ScalarTransferProps = {
 	labels: { left: string; right: string };
 };
 
-export function ScalarTransfer({ profileText, cvText, onApply, labels }: ScalarTransferProps) {
+export function ScalarTransfer({
+	profileText,
+	cvText,
+	onApply,
+	labels,
+}: ScalarTransferProps) {
 	return (
 		<div className="w-full grid grid-cols-11 gap-8 text-zinc-900 dark:text-zinc-100">
 			<div className="col-span-5 flex flex-col gap-2">
@@ -761,7 +847,9 @@ export function ListTransfer<T extends { clientKey: string }>({
 	);
 }
 
-export function GroupTransfer<T extends { clientKey: string }>(props: ListTransferProps<T>) {
+export function GroupTransfer<T extends { clientKey: string }>(
+	props: ListTransferProps<T>,
+) {
 	return (
 		<ListTransfer
 			{...props}

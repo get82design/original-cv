@@ -14,6 +14,7 @@ import { MdAdd } from "react-icons/md";
 import { ToggleAfficherCacher } from "@/components/input/toggle-button/AfficherCacher";
 import type { StrengthCardProps } from "../../../register/strength/StrengthCardRegister";
 import { COL_CLASS } from "@/features/cv-editor/utils/utilsCv/cols";
+import { commitCvFormHistory } from "@/features/cv-editor/utils/cvFormHistoryCommit";
 
 interface StrengthDndProps {
 	watchStrengths: ListItem<StrengthItemContentInput>[];
@@ -99,6 +100,7 @@ export const StrengthDnd = ({
 						onClick={(e) => {
 							e.stopPropagation();
 							const fresh = createNewItem();
+							commitCvFormHistory();
 							setValue(
 								FieldNameStrength.content,
 								[...watchStrengths, { ...fresh, order: watchStrengths.length + 1 }],

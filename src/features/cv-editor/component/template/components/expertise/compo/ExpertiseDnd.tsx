@@ -1,6 +1,3 @@
-import { useCreateCvContext } from "@/features/cv-editor/component/context/CreateCvContext";
-import { FieldNameExpertise } from "@/features/cv-editor/utils/fields/fieldNameExpertise";
-import type { ExpertiseItemContentInput } from "@/services/schemas/cvSave.schema";
 import {
 	horizontalListSortingStrategy,
 	SortableContext,
@@ -9,8 +6,12 @@ import {
 import type { ListItem } from "@utils/type";
 import { Button } from "primereact/button";
 import { useFormContext } from "react-hook-form";
-import type { ExpertiseCardProps } from "../../../register/expertise/ExpertiseCardRegister";
+import { useCreateCvContext } from "@/features/cv-editor/component/context/CreateCvContext";
+import { commitCvFormHistory } from "@/features/cv-editor/utils/cvFormHistoryCommit";
+import { FieldNameExpertise } from "@/features/cv-editor/utils/fields/fieldNameExpertise";
 import { COL_CLASS } from "@/features/cv-editor/utils/utilsCv/cols";
+import type { ExpertiseItemContentInput } from "@/services/schemas/cvSave.schema";
+import type { ExpertiseCardProps } from "../../../register/expertise/ExpertiseCardRegister";
 
 interface ExpertiseDndProps {
 	watchExpertises: ListItem<ExpertiseItemContentInput>[];
@@ -103,6 +104,7 @@ export const CompoExpertiseDnd = ({
 					onClick={(e) => {
 						e.stopPropagation();
 						const fresh = createNewItem();
+						commitCvFormHistory();
 						setValue(
 							FieldNameExpertise.content,
 							[...expertises, { ...fresh, order: expertises.length + 1 }],

@@ -17,6 +17,7 @@ import { ListInSection } from "../../input-cv/section/ListInSection";
 import type { TemplateLayout } from "@/services/schemas/cvTemplate.schema";
 import { CommonPointList } from "../../common-compo/list/CommonPointList";
 import { ToolbarOptionsButton } from "@/features/cv-editor/component/template/components/common-compo/section/ToolbarOptionsButton";
+import { commitCvFormHistory } from "@/features/cv-editor/utils/cvFormHistoryCommit";
 
 export interface CardVolunteeringOneProps {
 	index: number;
@@ -66,6 +67,7 @@ export const CardVolunteeringOne = ({
 			.filter((entry) => entry.clientKey !== itemToDelete.clientKey)
 			.map((entry, i) => ({ ...entry, order: i + 1 }));
 
+		commitCvFormHistory();
 		setValue(FieldNameVolunteering.content, newList, {
 			shouldDirty: true,
 			shouldTouch: true,
@@ -217,7 +219,7 @@ export const CardVolunteeringOne = ({
 					/>
 				}
 				listCompo={
-					<ListInSection
+					<ListInSection<VolunteeringItemContentInput>
 						pathContent={pathContent}
 						watchIfListAffiche={watch(`${pathContent}.settings.withMissions`)}
 						item={item}

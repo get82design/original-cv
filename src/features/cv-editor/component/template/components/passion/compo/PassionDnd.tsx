@@ -1,16 +1,17 @@
-import { ToggleAfficherCacher } from "@/components/input/toggle-button/AfficherCacher";
-import { useCreateCvContext } from "@/features/cv-editor/component/context/CreateCvContext";
-import { FieldNamePassion } from "@/features/cv-editor/utils/fields/fieldNamePassion";
-import { dataFieldContent } from "@/features/cv-editor/utils/fields/moduleField";
-import type { PassionItemContentInput } from "@/services/schemas/cvSave.schema";
 import { horizontalListSortingStrategy, SortableContext } from "@dnd-kit/sortable";
 import type { ListItem } from "@utils/type";
 import { Button } from "primereact/button";
+import type { JSX } from "react";
 import { useFormContext } from "react-hook-form";
 import { MdAdd } from "react-icons/md";
-import type { JSX } from "react";
-import type { PassionCardProps } from "../../../register/passion/PassionCardRegister";
+import { ToggleAfficherCacher } from "@/components/input/toggle-button/AfficherCacher";
+import { useCreateCvContext } from "@/features/cv-editor/component/context/CreateCvContext";
+import { commitCvFormHistory } from "@/features/cv-editor/utils/cvFormHistoryCommit";
+import { FieldNamePassion } from "@/features/cv-editor/utils/fields/fieldNamePassion";
+import { dataFieldContent } from "@/features/cv-editor/utils/fields/moduleField";
 import { COL_CLASS } from "@/features/cv-editor/utils/utilsCv/cols";
+import type { PassionItemContentInput } from "@/services/schemas/cvSave.schema";
+import type { PassionCardProps } from "../../../register/passion/PassionCardRegister";
 
 interface PassionDndProps {
 	watchPassions: ListItem<PassionItemContentInput>[];
@@ -129,6 +130,7 @@ export const CompoPassionDnd = ({
 					onClick={(e) => {
 						e.stopPropagation();
 						const fresh = createNewItem();
+						commitCvFormHistory();
 						setValue(
 							FieldNamePassion.content,
 							[...passions, { ...fresh, order: passions.length + 1 }],

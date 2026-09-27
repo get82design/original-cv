@@ -8,18 +8,21 @@ import { OneColumnModel } from "./component/kit-dnd/one-column-model/OneColumnMo
 import { clearEditorSelection, useCreateCvContext } from "./component/context/CreateCvContext";
 import type { ItemGeneralProps } from "@utils/type";
 import { compactActiveOrders, nextActiveOrderInColumn } from "@/utils/moduleOrder";
+import { commitCvFormHistory } from "./utils/cvFormHistoryCommit";
 import { PageLayoutRegister } from "./component/kit-dnd/register/PageLayoutRegister";
 import { getCvTypographyVars } from "./utils/utilsCv/font";
 import type { CvFormValues } from "@/services/schemas/cvSave.schema";
 import { trpc } from "@utils/trpc";
 import { SpeedDial } from "primereact/speeddial";
 import { Tooltip } from "primereact/tooltip";
+import { Button } from "primereact/button";
 import { DialogDataFromProfile } from "./component/dialog/dataFromProfile/DialogDataFromProfile";
 import { DialogAssistantIa, type AiActionId } from "@/components/dialog/DialogAssistantIa";
 import { DialogAiPayment } from "@/components/dialog/DialogAiPayment";
 import { DialogCvReviewResult } from "@/components/dialog/DialogCvReviewResult";
 import { DialogRewriteSection } from "@/components/dialog/DialogRewriteSection";
 import { CV_MODIF_DOCK_WIDTH, CvModifDock } from "./component/custom-cv-input/CvModifDock";
+import { useCvFormHistory } from "./component/form/CvFormHistoryContext";
 import { DialogDownloadCv } from "@/components/dialog/DialogDownloadCv";
 import { captureDownloadPreviews } from "./utils/captureCvPreview";
 import type { CvReview } from "@/services/schemas/cvReview.schema";
@@ -121,6 +124,7 @@ export const CvEditor = () => {
 		};
 	}, [watchTemplateId, modeles]);
 	const { setSectionSelected, setSelectModifInput, setSelectInputForm } = useCreateCvContext();
+	const { undo, redo, canUndo, canRedo } = useCvFormHistory();
 	const typography = watch("layoutGeneral.layout.typography");
 
 	// XL : dock toujours ouvert. LG : repliable, fermé par défaut.
@@ -163,6 +167,31 @@ export const CvEditor = () => {
 		return () => document.removeEventListener("pointerdown", onPointerDown);
 	}, [setSelectModifInput, setSelectInputForm, setSectionSelected]);
 
+	// Undo/redo structurel — laisse Ctrl+Z natif dans les champs texte.
+	useEffect(() => {
+		const onKeyDown = (e: KeyboardEvent) => {
+			const mod = e.ctrlKey || e.metaKey;
+			if (!mod) return;
+			const target = e.target as HTMLElement | null;
+			if (target?.closest("input, textarea, [contenteditable='true']")) return;
+
+			const key = e.key.toLowerCase();
+			if (key === "z" && !e.shiftKey) {
+				if (!canUndo) return;
+				e.preventDefault();
+				undo();
+				return;
+			}
+			if (key === "y" || (key === "z" && e.shiftKey)) {
+				if (!canRedo) return;
+				e.preventDefault();
+				redo();
+			}
+		};
+		document.addEventListener("keydown", onKeyDown);
+		return () => document.removeEventListener("keydown", onKeyDown);
+	}, [undo, redo, canUndo, canRedo]);
+
 	const addItem = (item: TemplateModule) => {
 		if (!modules) return;
 		if (modules.some((m) => m.type === item.type && m.isActive)) return;
@@ -172,6 +201,7 @@ export const CvEditor = () => {
 		const updated = modules.map((mod) =>
 			mod.type === item.type ? { ...mod, isActive: true, order: newOrder } : mod,
 		);
+		commitCvFormHistory();
 		setValue("modules", compactActiveOrders(updated), { shouldDirty: true });
 	};
 
@@ -184,6 +214,7 @@ export const CvEditor = () => {
 		);
 		const compacted = compactActiveOrders(deactivated);
 
+		commitCvFormHistory();
 		setValue("modules", compacted, { shouldDirty: true });
 		setSectionSelected("");
 		setSelectInputForm?.("");
@@ -500,6 +531,7 @@ export const CvEditor = () => {
 		if (!rewriteResult || !rewriteSectionType) return;
 		const cv = getValues() as CvFormValues;
 		const next = applyCvRewriteToForm(cv, rewriteSectionType, rewriteResult);
+		commitCvFormHistory();
 		reset(next);
 		const sectionLabel =
 			listRewriteableSections(cv).find((s) => s.sectionType === rewriteSectionType)?.label ??
@@ -642,6 +674,36 @@ export const CvEditor = () => {
 						/>
 					</>
 				)}
+				{/* Historique structurel — flottant à droite, sous le SpeedDial si présent */}
+				<div
+					className="fixed z-50 flex flex-col gap-1"
+					style={{ right: 10, top: profile ? 132 : 72 }}
+				>
+					<Button
+						type="button"
+						rounded
+						text
+						disabled={!canUndo}
+						icon="pi pi-arrow-left"
+						aria-label="Annuler"
+						tooltip="Annuler (Ctrl+Z)"
+						tooltipOptions={{ position: "left" }}
+						onClick={undo}
+						className="w-10 h-10 shadow-md bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700"
+					/>
+					<Button
+						type="button"
+						rounded
+						text
+						disabled={!canRedo}
+						icon="pi pi-arrow-right"
+						aria-label="Rétablir"
+						tooltip="Rétablir (Ctrl+Y)"
+						tooltipOptions={{ position: "left" }}
+						onClick={redo}
+						className="w-10 h-10 shadow-md bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700"
+					/>
+				</div>
 				<div className="w-full">
 					<div className="w-full flex gap-8 my-4">
 						<div className="flex flex-col items-center gap-12 relative" style={{ width: cvWidth }}>

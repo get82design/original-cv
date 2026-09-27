@@ -1,4 +1,5 @@
 import { useFormContext } from "react-hook-form";
+import { useRef } from "react";
 import type { SectionItem } from "./SectionCatalog";
 import {
 	closestCenter,
@@ -9,9 +10,11 @@ import {
 	type CollisionDetection,
 	type DragEndEvent,
 	type DragOverEvent,
+	type DragStartEvent,
 } from "@dnd-kit/core";
 import { arrayMove } from "@dnd-kit/sortable";
 import type { CvModulesInput } from "@/services/schemas/cvSave.schema";
+import { commitCvFormHistory } from "@/features/cv-editor/utils/cvFormHistoryCommit";
 
 const SIDEBAR_ALLOWED = new Set([
 	"language",
@@ -66,6 +69,14 @@ export function useCvPageDnd(
 ) {
 	const { watch, setValue, getValues } = useFormContext();
 	const watchModules = watch("modules") as CvModulesInput[];
+	/** Un seul commit par geste, uniquement si une mutation a lieu. */
+	const dragCommittedRef = useRef(false);
+
+	const ensureDragCommit = () => {
+		if (dragCommittedRef.current) return;
+		commitCvFormHistory();
+		dragCommittedRef.current = true;
+	};
 
 	const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 6 } }));
 
@@ -98,6 +109,7 @@ export function useCvPageDnd(
 		const oldIndex = list.findIndex((i) => i.clientKey === String(activeId));
 		const newIndex = list.findIndex((i) => i.clientKey === String(overId));
 		if (oldIndex === -1 || newIndex === -1 || oldIndex === newIndex) return;
+		ensureDragCommit();
 		setValue(
 			path,
 			arrayMove(list, oldIndex, newIndex).map((item, index) => ({
@@ -145,6 +157,7 @@ export function useCvPageDnd(
 				next = forceSidebarInnerColumns(next, movedType);
 			}
 
+			ensureDragCommit();
 			setValue("modules", next, { shouldDirty: true });
 			return;
 		}
@@ -165,6 +178,7 @@ export function useCvPageDnd(
 			const reorderedTypes = arrayMove(list, oldIndex, newIndex).map((item) =>
 				sectionIdToType(item.id),
 			);
+			ensureDragCommit();
 			setValue("modules", applyOrdersForColumn(watchModules, activeCol, reorderedTypes), {
 				shouldDirty: true,
 			});
@@ -193,7 +207,13 @@ export function useCvPageDnd(
 			next = forceSidebarInnerColumns(next, movedType);
 		}
 
+		ensureDragCommit();
 		setValue("modules", next, { shouldDirty: true });
+	};
+
+	/** Reset le flag ; le commit a lieu à la 1re mutation du geste. */
+	const handleDragStart = (_event: DragStartEvent) => {
+		dragCommittedRef.current = false;
 	};
 
 	const handleDragEnd = (event: DragEndEvent) => {
@@ -231,6 +251,7 @@ export function useCvPageDnd(
 			const newIndex = list.findIndex((i) => i.clientKey === String(over.id));
 			if (oldIndex === -1 || newIndex === -1) return;
 
+			ensureDragCommit();
 			setValue(
 				path,
 				arrayMove(list, oldIndex, newIndex).map((item, index) => ({
@@ -296,6 +317,7 @@ export function useCvPageDnd(
 			if (overCol === 0) {
 				next = forceSidebarInnerColumns(next, movedType);
 			}
+			ensureDragCommit();
 			setValue("modules", next, { shouldDirty: true });
 			return;
 		}
@@ -346,6 +368,7 @@ export function useCvPageDnd(
 		if (!moved) return;
 		overList.splice(insertIndex, 0, moved);
 
+		ensureDragCommit();
 		setValue(
 			activePath,
 			activeList.map((item, i) => ({ ...item, order: i + 1 })),
@@ -399,5 +422,5 @@ export function useCvPageDnd(
 		return list;
 	};
 
-	return { sensors, handleDragEnd, handleDragOver, collisionDetection };
+	return { sensors, handleDragStart, handleDragEnd, handleDragOver, collisionDetection };
 }

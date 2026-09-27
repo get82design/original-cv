@@ -1,15 +1,16 @@
-import { useCreateCvContext } from "@/features/cv-editor/component/context/CreateCvContext";
-import { FieldNameSocialMedia } from "@/features/cv-editor/utils/fields/fieldNameSocialMedia";
-import type { SocialMediaItemContentInput } from "@/services/schemas/cvSave.schema";
 import { horizontalListSortingStrategy, SortableContext } from "@dnd-kit/sortable";
 import type { ListItem } from "@utils/type";
 import { Button } from "primereact/button";
 import { useFormContext } from "react-hook-form";
-import { dataFieldContent } from "@/features/cv-editor/utils/fields/moduleField";
 import { ToggleAfficherCacher } from "@/components/input/toggle-button/AfficherCacher";
-import type { SocialMediaCardProps } from "../../../register/social-media/SocialMediaCardRegister";
+import { useCreateCvContext } from "@/features/cv-editor/component/context/CreateCvContext";
+import { commitCvFormHistory } from "@/features/cv-editor/utils/cvFormHistoryCommit";
+import { FieldNameSocialMedia } from "@/features/cv-editor/utils/fields/fieldNameSocialMedia";
+import { dataFieldContent } from "@/features/cv-editor/utils/fields/moduleField";
 import { COL_CLASS } from "@/features/cv-editor/utils/utilsCv/cols";
+import type { SocialMediaItemContentInput } from "@/services/schemas/cvSave.schema";
 import type { SocialMediaContentSettings } from "@/services/schemas/cvTemplate.schema";
+import type { SocialMediaCardProps } from "../../../register/social-media/SocialMediaCardRegister";
 
 interface SocialMediaDndProps {
 	watchSocialMedias: ListItem<SocialMediaItemContentInput>[];
@@ -135,6 +136,7 @@ export const CompoSocialMediaDnd = ({
 					onClick={(e) => {
 						e.stopPropagation();
 						const fresh = createNewItem();
+						commitCvFormHistory();
 						setValue(
 							FieldNameSocialMedia.content,
 							[...socialMedias, { ...fresh, order: socialMedias.length + 1 }],

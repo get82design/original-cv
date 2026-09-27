@@ -8,6 +8,7 @@ import { SectionItemShell } from "../../common-compo/section/SectionItemShell";
 import { InputTextCv } from "@/components/input-writer/input-text-cv/InputTextCv";
 import { RatingCvInput } from "../../input-cv/rating-cv/RatingCvInput";
 import type { JSX } from "react";
+import { commitCvFormHistory } from "@/features/cv-editor/utils/cvFormHistoryCommit";
 
 export interface CardExpertiseOneProps {
 	index: number;
@@ -38,6 +39,7 @@ export const CardExpertiseOne = ({
 			.filter((entry) => entry.clientKey !== itemToDelete.clientKey)
 			.map((entry, i) => ({ ...entry, order: i + 1 }));
 
+		commitCvFormHistory();
 		setValue(FieldNameExpertise.content, newList, {
 			shouldDirty: true,
 			shouldTouch: true,

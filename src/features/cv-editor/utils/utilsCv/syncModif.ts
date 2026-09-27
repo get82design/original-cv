@@ -1,5 +1,6 @@
 import type { CvFormValues } from "@/services/schemas/cvSave.schema";
 import type { Path, UseFormGetValues, UseFormSetValue } from "react-hook-form";
+import { commitCvFormHistory } from "@/features/cv-editor/utils/cvFormHistoryCommit";
 
 const SECTION_TITLE_PATHS = [
 	"datas.description.settings.title",
@@ -36,6 +37,7 @@ export function syncSectionTitleProp(
 	prop: StyleProp,
 	value: unknown,
 ) {
+	commitCvFormHistory();
 	for (const path of SECTION_TITLE_PATHS) {
 		setValue(`${path}.${prop}` as Path<CvFormValues>, value as never, {
 			shouldDirty: true,
@@ -62,6 +64,7 @@ export function syncItemSettingsProp(
 		| { content?: { settings?: Record<string, unknown> } }[]
 		| undefined;
 	if (!Array.isArray(list)) return;
+	commitCvFormHistory();
 	list.forEach((_, i) => {
 		const path = `datas.${parsed.section}.content.${i}.content.settings.${parsed.leaf}`;
 		setValue(`${path}.${prop}` as Path<CvFormValues>, value as never, {

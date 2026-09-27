@@ -11,6 +11,7 @@ import type { ListItem } from "@utils/type";
 import type { GroupSkillCardProps } from "../../../register/skill/GroupSkillCardRegister";
 import { moduleField } from "@/features/cv-editor/utils/fields/moduleField";
 import { COL_CLASS, ITEM_OPTIONS } from "@/features/cv-editor/utils/utilsCv/cols";
+import { commitCvFormHistory } from "@/features/cv-editor/utils/cvFormHistoryCommit";
 
 interface SkillGroupDndProps {
 	watchSkills: ListItem<SkillGroupItemContentInput>[];
@@ -153,6 +154,7 @@ export const SkillGroupDnd = ({
 						onClick={(e) => {
 							e.stopPropagation();
 							const fresh = createNewItem();
+							commitCvFormHistory();
 							setValue(
 								FieldNameSkill.content,
 								[...watchSkills, { ...fresh, order: watchSkills.length + 1 }],
