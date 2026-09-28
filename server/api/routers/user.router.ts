@@ -78,6 +78,20 @@ export const userRouter = router({
 		.mutation(({ input }) =>
 			userService.resetPassword({ token: input.token, password: input.password }),
 		),
+
+	/**
+	 * Suppression définitive du compte (RGPD).
+	 * Confirmation serveur : saisir exactement « SUPPRIMER ».
+	 */
+	deleteAccount: protectedProcedure
+		.input(
+			z.object({
+				confirmation: z.string().trim().min(1).max(32),
+			}),
+		)
+		.mutation(({ ctx, input }) =>
+			userService.deleteAccount(ctx.session.user.id, input.confirmation),
+		),
 });
 
 //! Retiré volontairement (à faire plus tard avec un adminProcedure / webhook) :

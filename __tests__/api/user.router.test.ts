@@ -265,4 +265,39 @@ describe("userRouter", () => {
 		});
 		expect(await compare("brand-new-99", refreshed.password!)).toBe(true);
 	});
+
+	describe("deleteAccount", () => {
+		it("deletes the current user account", async () => {
+			const user = await createTestUser();
+			const caller = await createTestCaller(createTestSession(user));
+
+			await expect(
+				caller.user.deleteAccount({ confirmation: "SUPPRIMER" }),
+			).resolves.toEqual({ ok: true });
+
+			expect(await prismaTest.user.findUnique({ where: { id: user.id } })).toBeNull();
+		});
+
+		it("rejects wrong confirmation", async () => {
+			const user = await createTestUser();
+			const caller = await createTestCaller(createTestSession(user));
+
+			await expect(
+				caller.user.deleteAccount({ confirmation: "oui" }),
+			).rejects.toMatchObject({
+				code: "BAD_REQUEST",
+				message: expect.stringContaining("SUPPRIMER"),
+			});
+
+			expect(await prismaTest.user.findUnique({ where: { id: user.id } })).not.toBeNull();
+		});
+
+		it("rejects unauthenticated callers", async () => {
+			const caller = await createTestCaller(null);
+
+			await expect(
+				caller.user.deleteAccount({ confirmation: "SUPPRIMER" }),
+			).rejects.toMatchObject({ code: "UNAUTHORIZED" });
+		});
+	});
 });

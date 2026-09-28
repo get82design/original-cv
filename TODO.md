@@ -70,7 +70,7 @@ Critère done : créer/sauver CV → DL gratuit/payant → IA review/rewrite/let
 
 ### RGPD min (obligatoire V1)
 
-- [ ] Suppression de compte exposée en UI + cascade réelle (Profile, CV, unlocks, grants…)
+- [x] Suppression de compte exposée en UI + cascade réelle (Profile, CV, unlocks, grants…)
 - [ ] CGU + politique de confidentialité accessibles (même v1 basique)
 - [ ] Audit rapide : CV public privé par défaut + `noindex` si page publique existe
 - [ ] Stats admin : pas de PII inutile dans les agrégats (revue ; durcissement anonymisation si besoin)
@@ -145,6 +145,11 @@ Critère done : créer/sauver CV → DL gratuit/payant → IA review/rewrite/let
 ### IA (optionnel V3)
 
 - [ ] `(?)` Persistance BDD des sorties IA (review / lettre / rewrite) pour comptes connectés — sinon reporter **V4** (abo)
+
+### RGPD (V3)
+
+- [ ] Export / portabilité : bouton « Télécharger mes données » (JSON/ZIP profil + CV)
+- [ ] Soft-delete compte + délai de grâce **30 j** (réactivation / purge CRON)
 
 ### Différenciation templates premium (avant fin V3)
 
@@ -228,6 +233,8 @@ Package abo = vraie plus-value (récurrence + présence en ligne).
 | Options exclusives premium | **Avant fin V3** |
 | Cover letter | **API V1** |
 | Historique IA en BDD | **V3 (?)** ou **V4** (abo) — session only en V1 |
+| Export données (portabilité) | **V3** |
+| Soft-delete compte + grâce 30 j | **V3** |
 | DnD center | **V2** |
 | Guest / localStorage | **V3** (avec Stripe) |
 | Modale re-DL &lt; 10 min | **Live** |

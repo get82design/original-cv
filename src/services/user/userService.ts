@@ -11,6 +11,8 @@ import {
 	assertCvDailyDownloadLimit,
 	getCvDownloadGuardStatus,
 } from "./downloadGuards";
+import { getPreviewStorage } from "../storage/previewStorage";
+import { DELETE_ACCOUNT_CONFIRMATION } from "./deleteAccount.constants";
 
 /** Raisons de cadeau free download — one-shot par user */
 export const FREE_DOWNLOAD_GRANT_REASONS = [
@@ -20,6 +22,8 @@ export const FREE_DOWNLOAD_GRANT_REASONS = [
 ] as const;
 
 export type FreeDownloadGrantReason = (typeof FREE_DOWNLOAD_GRANT_REASONS)[number];
+
+export { DELETE_ACCOUNT_CONFIRMATION } from "./deleteAccount.constants";
 
 export class UserService {
 	async findAll() {
@@ -410,6 +414,38 @@ export class UserService {
 		await prisma.passwordResetToken.deleteMany({
 			where: { email: reset.email },
 		});
+		return { ok: true as const };
+	}
+
+	/**
+	 * Suppression définitive du compte (RGPD).
+	 * Cascades Prisma : Profile, CV, grants, unlocks, sessions…
+	 * Events (Download / AI / ApiError) : userId → null.
+	 */
+	async deleteAccount(userId: string, confirmation: string) {
+		if (confirmation.trim() !== DELETE_ACCOUNT_CONFIRMATION) {
+			throw new ValidationError('Pour confirmer, saisissez exactement « SUPPRIMER ».');
+		}
+
+		const user = await this.findById(userId);
+
+		const cvs = await prisma.cV.findMany({
+			where: { userId },
+			select: { previewUrl: true, previewUrlClean: true },
+		});
+		const storage = getPreviewStorage();
+		await Promise.all(
+			cvs.flatMap((cv) => [
+				storage.deleteIfManaged(cv.previewUrl),
+				storage.deleteIfManaged(cv.previewUrlClean),
+			]),
+		);
+
+		await prisma.passwordResetToken.deleteMany({
+			where: { email: user.email },
+		});
+
+		await prisma.user.delete({ where: { id: userId } });
 		return { ok: true as const };
 	}
 }
