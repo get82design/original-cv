@@ -16,6 +16,11 @@ import {
 	type CvRewriteSection,
 	type CvRewriteSectionType,
 } from "../schemas/cvRewriteSection.schema";
+import {
+	buildCoverLetterSystemPrompt,
+	cvCoverLetterSchema,
+	type CvCoverLetter,
+} from "../schemas/cvCoverLetter.schema";
 import { ValidationError, TooManyRequestsError } from "../errors";
 
 const DEFAULT_MODEL = "gemini-3.6-flash";
@@ -268,6 +273,50 @@ export class GeminiService {
 		}
 
 		throw new ValidationError(`CV rewrite validation failed after retry: ${lastReason}`);
+	}
+
+	/**
+	 * Lettre de motivation à partir du CV (+ ciblage optionnel).
+	 * safeParse → retry 1× avec les erreurs de validation dans le prompt.
+	 */
+	async coverLetter(
+		input: {
+			cvText: string;
+			companyName?: string;
+			jobTitle?: string;
+			jobOffer?: string;
+		},
+		options: { model?: string } = {},
+	): Promise<CvCoverLetter> {
+		const cvText = input.cvText.trim();
+		if (!cvText) {
+			throw new ValidationError("CV text is empty");
+		}
+
+		const companyName = input.companyName?.trim() || undefined;
+		const jobTitle = input.jobTitle?.trim() || undefined;
+		const jobOffer = input.jobOffer?.trim() || undefined;
+
+		const generativeModel = this.jsonModel(options.model ?? DEFAULT_MODEL, 0.4);
+		let lastReason = "Unknown validation error";
+
+		for (let attempt = 0; attempt < MAX_ATTEMPTS; attempt++) {
+			const prompt = buildCoverLetterSystemPrompt({
+				cvText,
+				...(companyName ? { companyName } : {}),
+				...(jobTitle ? { jobTitle } : {}),
+				...(jobOffer ? { jobOffer } : {}),
+				...(attempt === 0 ? {} : { validationErrors: lastReason }),
+			});
+
+			const result = await withTransientRetry(() => generativeModel.generateContent(prompt));
+			const outcome = parseJsonWithSchema(result.response.text(), cvCoverLetterSchema);
+
+			if (outcome.ok) return outcome.data;
+			lastReason = outcome.reason;
+		}
+
+		throw new ValidationError(`Cover letter validation failed after retry: ${lastReason}`);
 	}
 }
 

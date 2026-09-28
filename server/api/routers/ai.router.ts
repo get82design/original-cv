@@ -103,4 +103,36 @@ export const aiRouter = router({
 			});
 			return { rewrite };
 		}),
+
+	/**
+	 * Lettre de motivation IA — CV aplati + ciblage optionnel (entreprise / poste / annonce).
+	 */
+	coverLetter: protectedProcedure
+		.input(
+			z.object({
+				cvText: z.string().trim().min(1).max(50_000),
+				paymentMethod: aiPaymentChoiceSchema,
+				companyName: z.string().trim().max(120).optional(),
+				jobTitle: z.string().trim().max(120).optional(),
+				jobOffer: z.string().trim().max(10_000).optional(),
+			}),
+		)
+		.mutation(async ({ ctx, input }) => {
+			const userId = ctx.session.user.id;
+			await aiBillingService.assertCanPay(userId, "COVER_LETTER", input.paymentMethod);
+			const coverLetter = await geminiService.coverLetter({
+				cvText: input.cvText,
+				...(input.companyName ? { companyName: input.companyName } : {}),
+				...(input.jobTitle ? { jobTitle: input.jobTitle } : {}),
+				...(input.jobOffer ? { jobOffer: input.jobOffer } : {}),
+			});
+			const detailParts = [input.jobTitle, input.companyName].filter(Boolean);
+			await aiBillingService.consumeAndLog({
+				userId,
+				feature: "COVER_LETTER",
+				choice: input.paymentMethod,
+				...(detailParts.length > 0 ? { detail: detailParts.join(" · ") } : {}),
+			});
+			return { coverLetter };
+		}),
 });

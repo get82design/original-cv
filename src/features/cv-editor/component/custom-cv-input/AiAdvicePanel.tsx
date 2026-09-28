@@ -3,6 +3,7 @@ import {
 	useAiAdvice,
 	type AiAdviceEntry,
 } from "@/features/cv-editor/component/context/AiAdviceContext";
+import type { CvCoverLetter } from "@/services/schemas/cvCoverLetter.schema";
 
 function formatTime(ts: number) {
 	return new Date(ts).toLocaleTimeString("fr-FR", {
@@ -11,8 +12,17 @@ function formatTime(ts: number) {
 	});
 }
 
-function AdviceCard({ entry, onRemove }: { entry: AiAdviceEntry; onRemove: () => void }) {
+function AdviceCard({
+	entry,
+	onRemove,
+	onReopenCoverLetter,
+}: {
+	entry: AiAdviceEntry;
+	onRemove: () => void;
+	onReopenCoverLetter?: (coverLetter: CvCoverLetter) => void;
+}) {
 	const { review } = entry;
+
 	return (
 		<article className="rounded-lg border border-zinc-200 bg-zinc-50 p-3 dark:border-zinc-700 dark:bg-zinc-900/60">
 			<div className="mb-2 flex items-start justify-between gap-2">
@@ -57,15 +67,35 @@ function AdviceCard({ entry, onRemove }: { entry: AiAdviceEntry; onRemove: () =>
 					{review.quickWins.slice(0, 3).join(" · ")}
 				</p>
 			) : null}
+			{entry.coverLetter && onReopenCoverLetter ? (
+				<div className="mt-2 flex justify-end">
+					<Button
+						type="button"
+						text
+						size="small"
+						icon="pi pi-external-link"
+						label="Voir la lettre"
+						aria-label="Rouvrir la lettre de motivation"
+						onClick={() => {
+							if (entry.coverLetter) onReopenCoverLetter(entry.coverLetter);
+						}}
+						className="!p-0 !text-xs !text-zinc-600 dark:!text-zinc-300"
+					/>
+				</div>
+			) : null}
 		</article>
 	);
+}
+
+interface AiAdvicePanelProps {
+	onReopenCoverLetter?: (coverLetter: CvCoverLetter) => void;
 }
 
 /**
  * Contenu de l’onglet IA — pile de conseils (session).
  * Visible uniquement s’il y a au moins une entrée.
  */
-export function AiAdvicePanel() {
+export function AiAdvicePanel({ onReopenCoverLetter }: AiAdvicePanelProps) {
 	const { entries, removeAdvice, clearAdvice } = useAiAdvice();
 
 	if (entries.length === 0) return null;
@@ -86,9 +116,18 @@ export function AiAdvicePanel() {
 				/>
 			</div>
 			<div className="flex max-h-[min(52vh,28rem)] flex-col gap-2 overflow-y-auto pr-1">
-				{entries.map((entry) => (
-					<AdviceCard key={entry.id} entry={entry} onRemove={() => removeAdvice(entry.id)} />
-				))}
+				{entries.map((entry) =>
+					onReopenCoverLetter ? (
+						<AdviceCard
+							key={entry.id}
+							entry={entry}
+							onRemove={() => removeAdvice(entry.id)}
+							onReopenCoverLetter={onReopenCoverLetter}
+						/>
+					) : (
+						<AdviceCard key={entry.id} entry={entry} onRemove={() => removeAdvice(entry.id)} />
+					),
+				)}
 			</div>
 		</div>
 	);

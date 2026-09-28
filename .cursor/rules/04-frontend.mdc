@@ -23,6 +23,7 @@ Détail : `docs/frontend.md` · éditeur A4 : `docs/cv-editor.md` · stack : `do
 ## Règles
 
 - PrimeReact + Tailwind seulement — réutiliser avant d’ajouter
+- **Modales** : `className` dédiée + entrée dans `pages/styles/globals.css` (bloc `.p-dialog…` light **et** `html.dark`) — sinon shell hors thème ; inputs Prime (`InputText`…) = CSS scoped supplémentaire
 - UI propre ; pas de store global ad hoc ; context local / props OK
 - Admin : `features/admin` + `trpc.admin.*` + rôle ADMIN uniquement
 - Profile = vivier `Profile*` ; CV édité = instance séparée

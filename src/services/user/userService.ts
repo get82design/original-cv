@@ -7,6 +7,10 @@ import type { UpdateUserInput } from "../schemas/user.schema";
 import { createHash, randomBytes } from "node:crypto";
 import { sendPasswordResetEmail } from "../mail/mailService";
 import { templateAccessService } from "../commons/templateAccessService";
+import {
+	assertCvDailyDownloadLimit,
+	getCvDownloadGuardStatus,
+} from "./downloadGuards";
 
 /** Raisons de cadeau free download — one-shot par user */
 export const FREE_DOWNLOAD_GRANT_REASONS = [
@@ -76,15 +80,29 @@ export class UserService {
 		return user.downloadCredits > 0;
 	}
 
-	/** Statut pour la modal de téléchargement */
-	async getDownloadStatus(id: string) {
+	/** Statut pour la modal de téléchargement (+ garde-fous si cvId fourni) */
+	async getDownloadStatus(id: string, options?: { cvId?: string }) {
 		const user = await this.findById(id);
-		return {
+		const base = {
 			freeDownloadsRemaining: user.freeDownloadsRemaining,
 			downloadCredits: user.downloadCredits,
 			canDownloadFree: user.freeDownloadsRemaining > 0,
 			canDownloadPaid: user.downloadCredits > 0,
 		};
+
+		const cvId = options?.cvId?.trim();
+		if (!cvId) {
+			return {
+				...base,
+				lastDownloadAt: null as Date | null,
+				recentDownloadWarn: false,
+				downloadsLast24h: 0,
+				dailyLimitReached: false,
+			};
+		}
+
+		const guards = await getCvDownloadGuardStatus(id, cvId);
+		return { ...base, ...guards };
 	}
 
 	/** Consomme 1 téléchargement gratuit (avec logo) + log stats */
@@ -102,6 +120,9 @@ export class UserService {
 		}
 
 		await this.assertPremiumDownloadAllowed(id, meta);
+		if (meta?.cvId) {
+			await assertCvDailyDownloadLimit(id, meta.cvId);
+		}
 
 		const color = meta?.primaryColorName?.trim() || null;
 
@@ -139,6 +160,9 @@ export class UserService {
 		}
 
 		await this.assertPremiumDownloadAllowed(id, meta);
+		if (meta?.cvId) {
+			await assertCvDailyDownloadLimit(id, meta.cvId);
+		}
 
 		const color = meta?.primaryColorName?.trim() || null;
 

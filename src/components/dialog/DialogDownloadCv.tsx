@@ -57,6 +57,8 @@ export interface DialogDownloadCvProps {
 	unlockPriceCredits?: number | null;
 	/** Prix unlock en centimes (catalogue) — Stripe plus tard */
 	unlockPriceCents?: number | null;
+	/** Plafond 3 DL / 24 h atteint pour ce CV */
+	dailyLimitReached?: boolean;
 	onUnlockWithCredits?: () => void;
 	/** Placeholder Stripe — pas encore branché */
 	onUnlockWithStripe?: () => void;
@@ -91,6 +93,7 @@ export const DialogDownloadCv = ({
 	premiumLocked = false,
 	unlockPriceCredits = null,
 	unlockPriceCents = null,
+	dailyLimitReached = false,
 	onUnlockWithCredits,
 	onUnlockWithStripe,
 	signatureVariant = "minimal",
@@ -102,8 +105,8 @@ export const DialogDownloadCv = ({
 }: DialogDownloadCvProps) => {
 	const [mode, setMode] = useState<DownloadCvMode | null>(null);
 	const selectedVariant = CV_SIGNATURE_VARIANTS.find((v) => v.id === signatureVariant);
-	const canFree = freeDownloadsRemaining > 0 && !premiumLocked;
-	const canPaid = downloadCredits > 0 && !premiumLocked;
+	const canFree = freeDownloadsRemaining > 0 && !premiumLocked && !dailyLimitReached;
+	const canPaid = downloadCredits > 0 && !premiumLocked && !dailyLimitReached;
 
 	const canUnlockCredits =
 		unlockPriceCredits != null && unlockPriceCredits > 0 && downloadCredits >= unlockPriceCredits;
@@ -325,14 +328,26 @@ export const DialogDownloadCv = ({
 								consommant un crédit.
 							</p>
 
+							{dailyLimitReached ? (
+								<div className="rounded-lg border border-amber-500/40 bg-amber-500/10 px-3.5 py-3 text-sm text-amber-800 dark:text-amber-200">
+									<p className="m-0 font-semibold">Limite atteinte pour ce CV</p>
+									<p className="m-0 mt-1 text-xs leading-relaxed opacity-90">
+										Vous avez déjà exporté ce CV 3 fois au cours des dernières 24 h. Réessayez plus
+										tard.
+									</p>
+								</div>
+							) : null}
+
 							<button
 								type="button"
-								disabled={loading}
+								disabled={loading || dailyLimitReached}
 								onClick={() => setMode("free")}
 								className={`w-full rounded-lg border px-3.5 py-3 text-left transition-colors ${
-									mode === "free"
-										? "border-primary bg-primary/10 dark:border-primary-dark dark:bg-primary-dark/15"
-										: "border-zinc-200 bg-white hover:border-zinc-300 dark:border-zinc-700 dark:bg-zinc-900 dark:hover:border-zinc-500"
+									dailyLimitReached
+										? "cursor-not-allowed border-zinc-200 opacity-60 dark:border-zinc-700"
+										: mode === "free"
+											? "border-primary bg-primary/10 dark:border-primary-dark dark:bg-primary-dark/15"
+											: "border-zinc-200 bg-white hover:border-zinc-300 dark:border-zinc-700 dark:bg-zinc-900 dark:hover:border-zinc-500"
 								}`}
 							>
 								<div className="flex items-start justify-between gap-3">
@@ -343,9 +358,11 @@ export const DialogDownloadCv = ({
 											ou partager rapidement.
 										</p>
 										<p className="m-0 mt-2 text-xs font-medium text-zinc-600 dark:text-zinc-300">
-											{canFree
-												? `${freeDownloadsRemaining} téléchargement${freeDownloadsRemaining > 1 ? "s" : ""} gratuit${freeDownloadsRemaining > 1 ? "s" : ""} restant${freeDownloadsRemaining > 1 ? "s" : ""}`
-												: "Aucun téléchargement gratuit disponible"}
+											{dailyLimitReached
+												? "Limite 3 exports / 24 h atteinte"
+												: canFree
+													? `${freeDownloadsRemaining} téléchargement${freeDownloadsRemaining > 1 ? "s" : ""} gratuit${freeDownloadsRemaining > 1 ? "s" : ""} restant${freeDownloadsRemaining > 1 ? "s" : ""}`
+													: "Aucun téléchargement gratuit disponible"}
 										</p>
 									</div>
 									<span
@@ -361,12 +378,14 @@ export const DialogDownloadCv = ({
 
 							<button
 								type="button"
-								disabled={loading}
+								disabled={loading || dailyLimitReached}
 								onClick={() => setMode("paid")}
 								className={`w-full rounded-lg border px-3.5 py-3 text-left transition-colors ${
-									mode === "paid"
-										? "border-primary bg-primary/10 dark:border-primary-dark dark:bg-primary-dark/15"
-										: "border-zinc-200 bg-white hover:border-zinc-300 dark:border-zinc-700 dark:bg-zinc-900 dark:hover:border-zinc-500"
+									dailyLimitReached
+										? "cursor-not-allowed border-zinc-200 opacity-60 dark:border-zinc-700"
+										: mode === "paid"
+											? "border-primary bg-primary/10 dark:border-primary-dark dark:bg-primary-dark/15"
+											: "border-zinc-200 bg-white hover:border-zinc-300 dark:border-zinc-700 dark:bg-zinc-900 dark:hover:border-zinc-500"
 								}`}
 							>
 								<div className="flex items-start justify-between gap-3">
@@ -376,9 +395,11 @@ export const DialogDownloadCv = ({
 											Version propre, sans signature, prête pour un envoi recruteur.
 										</p>
 										<p className="m-0 mt-2 text-xs font-medium text-zinc-600 dark:text-zinc-300">
-											{canPaid
-												? `${downloadCredits} crédit${downloadCredits > 1 ? "s" : ""} disponible${downloadCredits > 1 ? "s" : ""}`
-												: "Aucun crédit disponible"}
+											{dailyLimitReached
+												? "Limite 3 exports / 24 h atteinte"
+												: canPaid
+													? `${downloadCredits} crédit${downloadCredits > 1 ? "s" : ""} disponible${downloadCredits > 1 ? "s" : ""}`
+													: "Aucun crédit disponible"}
 										</p>
 									</div>
 									<span

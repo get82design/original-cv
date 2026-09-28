@@ -35,10 +35,13 @@ Deux stocks distincts sur `User` :
 
 Flux serveur (`userService`) :
 
-- Statut UI : `getDownloadStatus`
+- Statut UI : `getDownloadStatus` (optionnel `cvId` → garde-fous)
 - Débit free : `consumeFreeDownload` → `-1 freeDownloadsRemaining` + `DownloadEvent` (`WITH_LOGO`)
 - Débit paid : `consumePaidDownload` → `-1 downloadCredits` + `DownloadEvent` (`WITHOUT_LOGO`)
 - Avant débit : `templateAccessService.assertCanDownloadTemplate` si template premium
+- Garde-fous (`downloadGuards.ts`, si `cvId`) :
+  - Modale client si dernier DL du CV &lt; 10 min (`recentDownloadWarn`)
+  - Plafond serveur **3 DL / 24 h / CV** (`assertCvDailyDownloadLimit`)
 
 ### Cadeaux (`DownloadGrant`)
 
@@ -120,8 +123,8 @@ Ne pas implémenter / affirmer comme déjà vrai sans re-vérifier :
 | Cible | Statut typique |
 |-------|----------------|
 | Abo actif (`plan !== FREE` + `subscriptionEnd > now`) → DL **illimités** | Vision `readme` ; débit DL actuel = crédits |
-| Modale si re-DL &lt; 10 min | **V1** — voir `TODO.md` |
-| ~3 DL / jour / CV anti-abus | **V1** — voir `TODO.md` |
+| Modale si re-DL &lt; 10 min | **Live** — `DialogRecentDownloadWarn` + `recentDownloadWarn` |
+| ~3 DL / jour / CV anti-abus | **Live** — 3 / 24 h glissantes (`downloadGuards`) |
 | `PREMIUM_PLUS_IA` : plafond **30**/mois + CRON reset `iaRequestsUsed` | **V5+** (min V4) — compteur existe ; plafond/CRON à figer |
 | Webhooks Stripe (packs, abo) | **V3** packs / unlock ; **V4** abos |
 | Différenciation bandeau / URL publique par plan | **V4** (package abo + CV en ligne) |

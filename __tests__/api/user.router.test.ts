@@ -86,6 +86,10 @@ describe("userRouter", () => {
 			downloadCredits: 2,
 			canDownloadFree: true,
 			canDownloadPaid: true,
+			lastDownloadAt: null,
+			recentDownloadWarn: false,
+			downloadsLast24h: 0,
+			dailyLimitReached: false,
 		});
 	});
 

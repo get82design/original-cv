@@ -433,6 +433,7 @@ html.dark #panel-modif-cv.cv-modif-tabview {
 .p-dialog.dialog-cv-limit,
 .p-dialog.dialog-select-model,
 .p-dialog.dialog-download-cv,
+.p-dialog.dialog-recent-download,
 .p-dialog.dialog-assistant-ia,
 .p-dialog.dialog-cv-tips,
 .p-dialog.dialog-ai-payment,
@@ -440,6 +441,7 @@ html.dark #panel-modif-cv.cv-modif-tabview {
 .p-dialog.dialog-import-review,
 .p-dialog.dialog-cv-review-result,
 .p-dialog.dialog-rewrite-section,
+.p-dialog.dialog-cover-letter,
 .p-dialog.dialog-admin-template,
 .p-dialog.dialog-admin-credit-pack,
 .p-dialog.dialog-profile-from-cv {
@@ -481,6 +483,7 @@ html.dark .p-dialog.dialog-data-from-profile,
 html.dark .p-dialog.dialog-cv-limit,
 html.dark .p-dialog.dialog-select-model,
 html.dark .p-dialog.dialog-download-cv,
+html.dark .p-dialog.dialog-recent-download,
 html.dark .p-dialog.dialog-assistant-ia,
 html.dark .p-dialog.dialog-cv-tips,
 html.dark .p-dialog.dialog-ai-payment,
@@ -488,6 +491,7 @@ html.dark .p-dialog.dialog-start-content,
 html.dark .p-dialog.dialog-import-review,
 html.dark .p-dialog.dialog-cv-review-result,
 html.dark .p-dialog.dialog-rewrite-section,
+html.dark .p-dialog.dialog-cover-letter,
 html.dark .p-dialog.dialog-admin-template,
 html.dark .p-dialog.dialog-admin-credit-pack,
 html.dark .p-dialog.dialog-profile-from-cv {
@@ -523,6 +527,53 @@ html.dark .p-dialog.dialog-profile-from-cv {
         border-top-color: #3f3f46;
         padding: 0.625rem 1rem;
     }
+}
+
+/* Inputs dans modal lettre de motivation — light/dark */
+.p-dialog.dialog-cover-letter .p-inputtext,
+.p-dialog.dialog-cover-letter .p-inputtextarea {
+    background: #ffffff;
+    color: #18181b;
+    border-color: #d4d4d8;
+}
+
+.p-dialog.dialog-cover-letter .p-inputtext:enabled:hover,
+.p-dialog.dialog-cover-letter .p-inputtextarea:enabled:hover {
+    border-color: #a1a1aa;
+}
+
+.p-dialog.dialog-cover-letter .p-inputtext:enabled:focus,
+.p-dialog.dialog-cover-letter .p-inputtextarea:enabled:focus {
+    border-color: #71717a;
+    box-shadow: none;
+}
+
+.p-dialog.dialog-cover-letter .p-inputtext::placeholder,
+.p-dialog.dialog-cover-letter .p-inputtextarea::placeholder {
+    color: #a1a1aa;
+}
+
+html.dark .p-dialog.dialog-cover-letter .p-inputtext,
+html.dark .p-dialog.dialog-cover-letter .p-inputtextarea {
+    background: #18181b;
+    color: #f4f4f5;
+    border-color: #3f3f46;
+}
+
+html.dark .p-dialog.dialog-cover-letter .p-inputtext:enabled:hover,
+html.dark .p-dialog.dialog-cover-letter .p-inputtextarea:enabled:hover {
+    border-color: #52525b;
+}
+
+html.dark .p-dialog.dialog-cover-letter .p-inputtext:enabled:focus,
+html.dark .p-dialog.dialog-cover-letter .p-inputtextarea:enabled:focus {
+    border-color: #71717a;
+    box-shadow: none;
+}
+
+html.dark .p-dialog.dialog-cover-letter .p-inputtext::placeholder,
+html.dark .p-dialog.dialog-cover-letter .p-inputtextarea::placeholder {
+    color: #71717a;
 }
 
 /* PickList dans modals profil ← CV / CV ← profil */

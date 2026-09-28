@@ -11,6 +11,7 @@ import {
 } from "../../../src/services/errors";
 import { userService } from "../../../src/services/user/userService";
 import { createCV } from "../../utils/create-test-cv-full-flow";
+import { createTestCV } from "../../utils/create-test-cv";
 import { createTestTemplate } from "../../utils/create-test-template";
 import { createTestUser } from "../../utils/create-test-user";
 
@@ -133,6 +134,10 @@ describe("UserService.getDownloadStatus / canDownload*", () => {
 			downloadCredits: 0,
 			canDownloadFree: false,
 			canDownloadPaid: false,
+			lastDownloadAt: null,
+			recentDownloadWarn: false,
+			downloadsLast24h: 0,
+			dailyLimitReached: false,
 		});
 		await expect(userService.canDownloadFree(user.id)).resolves.toBe(false);
 		await expect(userService.canDownloadPaid(user.id)).resolves.toBe(false);
@@ -202,6 +207,29 @@ describe("UserService.consumeFreeDownload", () => {
 
 	it("throws if the user is not found", async () => {
 		await expect(userService.consumeFreeDownload("123")).rejects.toThrow(NotFoundError);
+	});
+
+	it("refuses when daily limit for cv is reached", async () => {
+		const { user, cv } = await createTestCV();
+		await prisma.user.update({
+			where: { id: user.id },
+			data: { freeDownloadsRemaining: 5 },
+		});
+		const now = Date.now();
+		for (let i = 0; i < 3; i++) {
+			await prisma.downloadEvent.create({
+				data: {
+					variant: "WITH_LOGO",
+					userId: user.id,
+					cvId: cv.id,
+					createdAt: new Date(now - i * 60 * 60 * 1000),
+				},
+			});
+		}
+
+		await expect(
+			userService.consumeFreeDownload(user.id, { cvId: cv.id }),
+		).rejects.toThrow(ValidationError);
 	});
 });
 

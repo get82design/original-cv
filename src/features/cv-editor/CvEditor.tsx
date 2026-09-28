@@ -22,9 +22,17 @@ import { DialogAssistantIa, type AiActionId } from "@/components/dialog/DialogAs
 import { DialogAiPayment } from "@/components/dialog/DialogAiPayment";
 import { DialogCvReviewResult } from "@/components/dialog/DialogCvReviewResult";
 import { DialogRewriteSection } from "@/components/dialog/DialogRewriteSection";
+import {
+	DialogCoverLetter,
+	type CoverLetterFormValues,
+} from "@/components/dialog/DialogCoverLetter";
 import { CV_MODIF_DOCK_WIDTH, CvModifDock } from "./component/custom-cv-input/CvModifDock";
 import { useCvFormHistory } from "./component/form/CvFormHistoryContext";
 import { DialogDownloadCv } from "@/components/dialog/DialogDownloadCv";
+import {
+	DialogRecentDownloadWarn,
+	type PendingDownloadKind,
+} from "@/components/dialog/DialogRecentDownloadWarn";
 import {
 	captureCvPreview,
 	captureDownloadPreviews,
@@ -35,6 +43,7 @@ import type { CvSignatureVariantId } from "./utils/cvSignatureVariants";
 import type { CvReview } from "@/services/schemas/cvReview.schema";
 import type { CvRewriteSection as CvRewriteResult } from "@/services/schemas/cvRewriteSection.schema";
 import type { CvRewriteSectionType } from "@/services/schemas/cvRewriteSection.schema";
+import type { CvCoverLetter } from "@/services/schemas/cvCoverLetter.schema";
 import { Toast } from "primereact/toast";
 import { flattenCvFormToText } from "./utils/flattenCvFormToText";
 import { extractPrimaryColorName } from "@/services/cv/extractPrimaryColorName";
@@ -64,10 +73,15 @@ export const CvEditor = () => {
 	const [visibleRewrite, setVisibleRewrite] = useState(false);
 	const [rewriteResult, setRewriteResult] = useState<CvRewriteResult | null>(null);
 	const [rewriteSectionType, setRewriteSectionType] = useState<CvRewriteSectionType | null>(null);
+	const [visibleCoverLetter, setVisibleCoverLetter] = useState(false);
+	const [coverLetterResult, setCoverLetterResult] = useState<CvCoverLetter | null>(null);
 	const [visibleDownloadDialog, setVisibleDownloadDialog] = useState(false);
 	const [downloadPreviewWithLogo, setDownloadPreviewWithLogo] = useState<string | null>(null);
 	const [downloadPreviewWithoutLogo, setDownloadPreviewWithoutLogo] = useState<string | null>(null);
 	const [downloadPreviewLoading, setDownloadPreviewLoading] = useState(false);
+	const [pendingRecentDownload, setPendingRecentDownload] = useState<PendingDownloadKind | null>(
+		null,
+	);
 	const [dockOpen, setDockOpen] = useState(false);
 	const [paymentDialog, setPaymentDialog] = useState<{
 		feature: BillableAiFeature;
@@ -79,17 +93,22 @@ export const CvEditor = () => {
 					sectionType: CvRewriteSectionType;
 					sectionLabel: string;
 					sourceText: string;
+			  }
+			| {
+					kind: "cover-letter";
+					cvText: string;
+					companyName?: string;
+					jobTitle?: string;
+					jobOffer?: string;
 			  };
 	} | null>(null);
-	const { data: downloadStatus } = trpc.user.getDownloadStatus.useQuery(undefined, {
-		enabled: visibleDownloadDialog && status === "authenticated",
-	});
 	const billingOptionsQuery = trpc.ai.getBillingOptions.useQuery(
 		{ feature: paymentDialog?.feature ?? "REVIEW_CV" },
 		{ enabled: !!paymentDialog && status === "authenticated" },
 	);
 	const reviewCvMutation = trpc.ai.reviewCv.useMutation();
 	const rewriteSectionMutation = trpc.ai.rewriteSection.useMutation();
+	const coverLetterMutation = trpc.ai.coverLetter.useMutation();
 	const utils = trpc.useUtils();
 	const toast = useRef<Toast>(null);
 	const consumeFreeDownloadMutation = trpc.user.consumeFreeDownload.useMutation();
@@ -107,6 +126,15 @@ export const CvEditor = () => {
 	const isXl = useMediaQuery("(min-width: 1440px)");
 	const modules = watch("modules") as TemplateModule[];
 	const watchTemplateId = watch("templateId") as string | undefined;
+	const watchCvId = watch("cvId") as string | undefined;
+	const downloadStatusCvId =
+		watchCvId && watchCvId.trim() && watchCvId !== "0" ? watchCvId.trim() : undefined;
+	const { data: downloadStatus } = trpc.user.getDownloadStatus.useQuery(
+		downloadStatusCvId ? { cvId: downloadStatusCvId } : undefined,
+		{
+			enabled: visibleDownloadDialog && status === "authenticated",
+		},
+	);
 	const { modeles } = useModelAndColorContext();
 	const unlockedQuery = trpc.unlockedTemplate.findAll.useQuery(undefined, {
 		enabled: status === "authenticated",
@@ -332,6 +360,7 @@ export const CvEditor = () => {
 		setDownloadPreviewWithLogo(null);
 		setDownloadPreviewWithoutLogo(null);
 		setDownloadPreviewLoading(false);
+		setPendingRecentDownload(null);
 	};
 
 	const downloadMeta = () => {
@@ -370,7 +399,7 @@ export const CvEditor = () => {
 			toast.current?.show({
 				severity: "error",
 				summary: "Export impossible",
-				detail: err instanceof Error ? err.message : "Une erreur est survenue.",
+				detail: getClientErrorMessage(err, "Une erreur est survenue."),
 				life: 5000,
 			});
 		}
@@ -400,10 +429,28 @@ export const CvEditor = () => {
 			toast.current?.show({
 				severity: "error",
 				summary: "Export impossible",
-				detail: err instanceof Error ? err.message : "Une erreur est survenue.",
+				detail: getClientErrorMessage(err, "Une erreur est survenue."),
 				life: 5000,
 			});
 		}
+	};
+
+	/** Avant débit : avertir si re-DL &lt; 10 min (le plafond 3/j est déjà bloqué dans la modale). */
+	const requestDownload = (kind: PendingDownloadKind) => {
+		if (downloadStatus?.dailyLimitReached) return;
+		if (downloadStatus?.recentDownloadWarn) {
+			setPendingRecentDownload(kind);
+			return;
+		}
+		if (kind === "free") void onDownloadFree();
+		else void onDownloadPaid();
+	};
+
+	const confirmRecentDownload = () => {
+		const kind = pendingRecentDownload;
+		setPendingRecentDownload(null);
+		if (kind === "free") void onDownloadFree();
+		else if (kind === "paid") void onDownloadPaid();
 	};
 
 	const onUnlockWithCredits = async () => {
@@ -491,6 +538,38 @@ export const CvEditor = () => {
 				return;
 			}
 
+			if (pending.kind === "cover-letter") {
+				setPaymentDialog(null);
+				setCoverLetterResult(null);
+				setVisibleCoverLetter(true);
+				const { coverLetter } = await coverLetterMutation.mutateAsync({
+					cvText: pending.cvText,
+					paymentMethod: choice,
+					...(pending.companyName ? { companyName: pending.companyName } : {}),
+					...(pending.jobTitle ? { jobTitle: pending.jobTitle } : {}),
+					...(pending.jobOffer ? { jobOffer: pending.jobOffer } : {}),
+				});
+				setCoverLetterResult(coverLetter);
+				const adviceTitle = pending.companyName
+					? `Lettre · ${pending.companyName}`
+					: pending.jobTitle
+						? `Lettre · ${pending.jobTitle}`
+						: "Lettre de motivation";
+				pushAdvice({
+					kind: "cover-letter",
+					title: adviceTitle,
+					review: {
+						summary: coverLetter.letter.slice(0, 400),
+						strengths: [],
+						improvements: [],
+						quickWins: coverLetter.subject ? [coverLetter.subject] : [],
+						score: null,
+					},
+					coverLetter,
+				});
+				return;
+			}
+
 			setPaymentDialog(null);
 			setRewriteSectionType(pending.sectionType);
 			setRewriteResult(null);
@@ -504,7 +583,10 @@ export const CvEditor = () => {
 			setRewriteResult(rewrite);
 		} catch (err) {
 			if (pending.kind === "review") setVisibleCvReview(false);
-			else {
+			else if (pending.kind === "cover-letter") {
+				setCoverLetterResult(null);
+				setVisibleCoverLetter(false);
+			} else {
 				setRewriteSectionType(null);
 				setVisibleRewrite(false);
 			}
@@ -515,7 +597,9 @@ export const CvEditor = () => {
 					? "Assistant saturé"
 					: pending.kind === "review"
 						? "Relecture impossible"
-						: "Reformulation impossible",
+						: pending.kind === "cover-letter"
+							? "Lettre impossible"
+							: "Reformulation impossible",
 				detail: getClientErrorMessage(err, "Une erreur est survenue."),
 				life: rateLimited ? 7000 : 5000,
 			});
@@ -610,11 +694,68 @@ export const CvEditor = () => {
 			openRewriteDialog();
 			return;
 		}
+		if (action === "cover-letter") {
+			openCoverLetterDialog();
+			return;
+		}
 		toast.current?.show({
 			severity: "info",
 			summary: "Bientôt",
 			detail: "Cette action IA sera disponible prochainement.",
 			life: 3500,
+		});
+	};
+
+	const closeCoverLetterDialog = () => {
+		if (coverLetterMutation.isPending) return;
+		setVisibleCoverLetter(false);
+		setCoverLetterResult(null);
+	};
+
+	const openCoverLetterDialog = () => {
+		setCoverLetterResult(null);
+		setVisibleCoverLetter(true);
+	};
+
+	const reopenCoverLetterResult = (coverLetter: CvCoverLetter) => {
+		setCoverLetterResult(coverLetter);
+		setVisibleCoverLetter(true);
+	};
+
+	const onGenerateCoverLetter = (values: CoverLetterFormValues) => {
+		if (status !== "authenticated") {
+			toast.current?.show({
+				severity: "error",
+				summary: "Connexion requise",
+				detail: "Connectez-vous pour générer une lettre de motivation.",
+				life: 4000,
+			});
+			return;
+		}
+		const cvText = flattenCvFormToText(getValues() as CvFormValues);
+		if (!cvText.trim()) {
+			toast.current?.show({
+				severity: "warn",
+				summary: "CV vide",
+				detail: "Ajoutez du contenu avant de générer une lettre.",
+				life: 4000,
+			});
+			return;
+		}
+		const companyName = values.companyName.trim() || undefined;
+		const jobTitle = values.jobTitle.trim() || undefined;
+		const jobOffer = values.jobOffer.trim() || undefined;
+		setVisibleCoverLetter(false);
+		setPaymentDialog({
+			feature: "COVER_LETTER",
+			title: "Payer la lettre de motivation",
+			pending: {
+				kind: "cover-letter",
+				cvText,
+				...(companyName ? { companyName } : {}),
+				...(jobTitle ? { jobTitle } : {}),
+				...(jobOffer ? { jobOffer } : {}),
+			},
 		});
 	};
 
@@ -634,6 +775,7 @@ export const CvEditor = () => {
 					title={(getValues("title") as string) || "Votre CV"}
 					freeDownloadsRemaining={downloadStatus?.freeDownloadsRemaining ?? 0}
 					downloadCredits={downloadStatus?.downloadCredits ?? 0}
+					dailyLimitReached={downloadStatus?.dailyLimitReached ?? false}
 					premiumLocked={premiumLocked}
 					unlockPriceCredits={unlockPricing.priceCredits}
 					unlockPriceCents={unlockPricing.priceCents}
@@ -643,10 +785,10 @@ export const CvEditor = () => {
 						unlockTemplateMutation.isPending
 					}
 					onDownloadFree={() => {
-						void onDownloadFree();
+						requestDownload("free");
 					}}
 					onDownloadPaid={() => {
-						void onDownloadPaid();
+						requestDownload("paid");
 					}}
 					onUnlockWithCredits={() => {
 						void onUnlockWithCredits();
@@ -658,6 +800,13 @@ export const CvEditor = () => {
 					}}
 					onAdjust={() => setVisibleAssistantIa(true)}
 				/>
+				<DialogRecentDownloadWarn
+					visible={pendingRecentDownload != null}
+					kind={pendingRecentDownload}
+					loading={consumeFreeDownloadMutation.isPending || consumePaidDownloadMutation.isPending}
+					onHide={() => setPendingRecentDownload(null)}
+					onConfirm={confirmRecentDownload}
+				/>
 				<DialogAssistantIa
 					visible={visibleAssistantIa}
 					onHide={() => setVisibleAssistantIa(false)}
@@ -667,7 +816,11 @@ export const CvEditor = () => {
 				<DialogAiPayment
 					visible={!!paymentDialog}
 					onHide={() => {
-						if (reviewCvMutation.isPending || rewriteSectionMutation.isPending) {
+						if (
+							reviewCvMutation.isPending ||
+							rewriteSectionMutation.isPending ||
+							coverLetterMutation.isPending
+						) {
 							return;
 						}
 						setPaymentDialog(null);
@@ -675,7 +828,11 @@ export const CvEditor = () => {
 					title={paymentDialog?.title ?? "Payer l’action IA"}
 					options={billingOptionsQuery.data}
 					loading={billingOptionsQuery.isFetching}
-					confirming={reviewCvMutation.isPending || rewriteSectionMutation.isPending}
+					confirming={
+						reviewCvMutation.isPending ||
+						rewriteSectionMutation.isPending ||
+						coverLetterMutation.isPending
+					}
 					onConfirm={(choice) => {
 						void executePaidAiAction(choice);
 					}}
@@ -704,6 +861,16 @@ export const CvEditor = () => {
 					onBackToPick={() => {
 						setRewriteResult(null);
 						setRewriteSectionType(null);
+					}}
+				/>
+				<DialogCoverLetter
+					visible={visibleCoverLetter}
+					loading={coverLetterMutation.isPending}
+					result={coverLetterResult}
+					onHide={closeCoverLetterDialog}
+					onGenerate={onGenerateCoverLetter}
+					onBackToForm={() => {
+						setCoverLetterResult(null);
 					}}
 				/>
 				{profile && (
@@ -778,6 +945,7 @@ export const CvEditor = () => {
 								isSubmitting={isSubmitting}
 								getValues={() => getValues() as CvFormValues}
 								onDownloadClick={openDownloadDialog}
+								onReopenCoverLetter={reopenCoverLetterResult}
 							/>
 						)}
 					</div>

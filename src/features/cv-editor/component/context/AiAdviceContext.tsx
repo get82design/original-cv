@@ -1,6 +1,7 @@
 import { createContext, type PropsWithChildren, useContext, useState } from "react";
 import { v4 as uuid } from "uuid";
 import type { CvReview } from "@/services/schemas/cvReview.schema";
+import type { CvCoverLetter } from "@/services/schemas/cvCoverLetter.schema";
 import type { AiActionId } from "@/components/dialog/DialogAssistantIa";
 
 /** Kinds de conseils empilables (session) — prêts pour persistance BDD plus tard. */
@@ -16,11 +17,20 @@ export type AiAdviceEntry = {
 	title: string;
 	createdAt: number;
 	review: CvReview;
+	/** Lettre complète — pour rouvrir la modale sans changer le résumé affiché */
+	coverLetter?: CvCoverLetter;
+};
+
+type AiAdvicePushInput = {
+	kind: AiAdviceKind;
+	title: string;
+	review: CvReview;
+	coverLetter?: CvCoverLetter;
 };
 
 type AiAdviceContextValue = {
 	entries: AiAdviceEntry[];
-	pushAdvice: (input: { kind: AiAdviceKind; title: string; review: CvReview }) => void;
+	pushAdvice: (input: AiAdvicePushInput) => void;
 	removeAdvice: (id: string) => void;
 	clearAdvice: () => void;
 	/** Incrémenté à chaque nouveau conseil — le dock ouvre l’onglet IA */
@@ -41,13 +51,14 @@ export const AiAdviceProvider = ({ children }: PropsWithChildren) => {
 	const [entries, setEntries] = useState<AiAdviceEntry[]>([]);
 	const [iaTabNonce, setIaTabNonce] = useState(0);
 
-	const pushAdvice = (input: { kind: AiAdviceKind; title: string; review: CvReview }) => {
+	const pushAdvice = (input: AiAdvicePushInput) => {
 		const entry: AiAdviceEntry = {
 			id: uuid(),
 			kind: input.kind,
 			title: input.title,
 			createdAt: Date.now(),
 			review: input.review,
+			...(input.coverLetter ? { coverLetter: input.coverLetter } : {}),
 		};
 		setEntries((prev) => [entry, ...prev]);
 		setIaTabNonce((n) => n + 1);

@@ -31,7 +31,8 @@ const AI_ACTIONS: AiAction[] = [
 	{
 		id: "cover-letter",
 		title: "Lettre de motivation",
-		description: "Génère une lettre alignée sur le contenu de ton CV.",
+		description:
+			"Génère une lettre à partir de ton CV ; tu peux cibler entreprise, poste ou annonce (optionnel).",
 		feature: "COVER_LETTER",
 	},
 	{

@@ -16,6 +16,12 @@ const consumeDownloadMetaSchema = z
 	})
 	.optional();
 
+const getDownloadStatusSchema = z
+	.object({
+		cvId: z.string().min(1).optional(),
+	})
+	.optional();
+
 export const userRouter = router({
 	me: protectedProcedure.query(({ ctx }) => userService.findById(ctx.session.user.id)),
 
@@ -23,9 +29,9 @@ export const userRouter = router({
 		.input(updateUserSchema)
 		.mutation(({ input, ctx }) => userService.updateProfile(ctx.session.user.id, input)),
 
-	/** Statut free/paid pour la modal de téléchargement */
-	getDownloadStatus: protectedProcedure.query(({ ctx }) =>
-		userService.getDownloadStatus(ctx.session.user.id),
+	/** Statut free/paid pour la modal de téléchargement (+ garde-fous CV) */
+	getDownloadStatus: protectedProcedure.input(getDownloadStatusSchema).query(({ ctx, input }) =>
+		userService.getDownloadStatus(ctx.session.user.id, input),
 	),
 
 	/** Export gratuit (avec logo) */

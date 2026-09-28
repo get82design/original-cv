@@ -6,11 +6,16 @@ import { ProfileProvider } from "./contexte/ProfileContext";
 import { trpc } from "@utils/trpc";
 import { useMemo, useRef, useState } from "react";
 import { DialogDownloadCv } from "@/components/dialog/DialogDownloadCv";
+import {
+	DialogRecentDownloadWarn,
+	type PendingDownloadKind,
+} from "@/components/dialog/DialogRecentDownloadWarn";
 import { DialogAssistantIa } from "@/components/dialog/DialogAssistantIa";
 import { Toast } from "primereact/toast";
 import { isTemplateLocked } from "../cv-editor/utils/isTemplateLocked";
 import { useSession } from "next-auth/react";
 import { ProfileCvsCard } from "./compo/ProfileCvsCard";
+import { getClientErrorMessage } from "@/utils/clientError";
 
 export const ProfilePage = () => {
 	const { data: cvs, isLoading } = trpc.cv.allByUser.useQuery();
@@ -20,11 +25,15 @@ export const ProfilePage = () => {
 	const isSm = useMediaQuery("(min-width: 640px)");
 	const [downloadCv, setDownloadCv] = useState<CV | null>(null);
 	const [visibleAssistantIa, setVisibleAssistantIa] = useState(false);
+	const [pendingRecentDownload, setPendingRecentDownload] = useState<PendingDownloadKind | null>(
+		null,
+	);
 	const toast = useRef<Toast>(null);
 	const utils = trpc.useUtils();
-	const { data: downloadStatus } = trpc.user.getDownloadStatus.useQuery(undefined, {
-		enabled: downloadCv != null,
-	});
+	const { data: downloadStatus } = trpc.user.getDownloadStatus.useQuery(
+		downloadCv ? { cvId: downloadCv.id } : undefined,
+		{ enabled: downloadCv != null },
+	);
 	const unlockedQuery = trpc.unlockedTemplate.findAll.useQuery(undefined, {
 		enabled: status === "authenticated" && downloadCv != null,
 	});
@@ -73,12 +82,13 @@ export const ProfilePage = () => {
 				detail: "1 export avec logo consommé (PDF bientôt).",
 				life: 3500,
 			});
+			setPendingRecentDownload(null);
 			setDownloadCv(null);
 		} catch (err) {
 			toast.current?.show({
 				severity: "error",
 				summary: "Export impossible",
-				detail: err instanceof Error ? err.message : "Une erreur est survenue.",
+				detail: getClientErrorMessage(err, "Une erreur est survenue."),
 				life: 5000,
 			});
 		}
@@ -94,15 +104,33 @@ export const ProfilePage = () => {
 				detail: "1 crédit sans logo consommé (PDF bientôt).",
 				life: 3500,
 			});
+			setPendingRecentDownload(null);
 			setDownloadCv(null);
 		} catch (err) {
 			toast.current?.show({
 				severity: "error",
 				summary: "Export impossible",
-				detail: err instanceof Error ? err.message : "Une erreur est survenue.",
+				detail: getClientErrorMessage(err, "Une erreur est survenue."),
 				life: 5000,
 			});
 		}
+	};
+
+	const requestDownload = (kind: PendingDownloadKind) => {
+		if (downloadStatus?.dailyLimitReached) return;
+		if (downloadStatus?.recentDownloadWarn) {
+			setPendingRecentDownload(kind);
+			return;
+		}
+		if (kind === "free") void onDownloadFree();
+		else void onDownloadPaid();
+	};
+
+	const confirmRecentDownload = () => {
+		const kind = pendingRecentDownload;
+		setPendingRecentDownload(null);
+		if (kind === "free") void onDownloadFree();
+		else if (kind === "paid") void onDownloadPaid();
 	};
 
 	const onUnlockWithCredits = async () => {
@@ -147,12 +175,16 @@ export const ProfilePage = () => {
 			<Toast ref={toast} position="top-center" />
 			<DialogDownloadCv
 				visible={downloadCv != null}
-				onHide={() => setDownloadCv(null)}
+				onHide={() => {
+					setPendingRecentDownload(null);
+					setDownloadCv(null);
+				}}
 				title={downloadCv?.title || "Votre CV"}
 				previewUrlWithLogo={downloadPreviewWithLogo}
 				previewUrlWithoutLogo={downloadPreviewWithoutLogo}
 				freeDownloadsRemaining={downloadStatus?.freeDownloadsRemaining ?? 0}
 				downloadCredits={downloadStatus?.downloadCredits ?? 0}
+				dailyLimitReached={downloadStatus?.dailyLimitReached ?? false}
 				premiumLocked={premiumLocked}
 				unlockPriceCredits={downloadCv?.template?.priceCredits ?? null}
 				unlockPriceCents={downloadCv?.template?.priceCents ?? null}
@@ -162,16 +194,23 @@ export const ProfilePage = () => {
 					unlockTemplateMutation.isPending
 				}
 				onDownloadFree={() => {
-					void onDownloadFree();
+					requestDownload("free");
 				}}
 				onDownloadPaid={() => {
-					void onDownloadPaid();
+					requestDownload("paid");
 				}}
 				onUnlockWithCredits={() => {
 					void onUnlockWithCredits();
 				}}
 				onUnlockWithStripe={onUnlockWithStripe}
 				onAdjust={() => setVisibleAssistantIa(true)}
+			/>
+			<DialogRecentDownloadWarn
+				visible={pendingRecentDownload != null}
+				kind={pendingRecentDownload}
+				loading={consumeFreeDownloadMutation.isPending || consumePaidDownloadMutation.isPending}
+				onHide={() => setPendingRecentDownload(null)}
+				onConfirm={confirmRecentDownload}
 			/>
 			<DialogAssistantIa visible={visibleAssistantIa} onHide={() => setVisibleAssistantIa(false)} />
 			<div className={"w-full p-4 md:p-8 relative"} style={{ minHeight: "calc(100vh - 70px)" }}>

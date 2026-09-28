@@ -58,13 +58,15 @@ Critère done : créer/sauver CV → DL gratuit/payant → IA review/rewrite/let
 	- `(?)` polish UI des variantes (hauteurs / triangles) — on y revient si besoin
 - [x] Choix de la variante dans le dialog DL avant capture preview
 	- vignettes CSS ; recapture aperçu avec logo après 2 rAF (`waitForNextPaint`)
-- [ ] Modale bienveillante si re-DL &lt; 10 min (avertir avant débit)
-- [ ] Limite **~3 téléchargements / jour / CV** (anti-spam / anti-scraping) — assert serveur + message FR
+- [x] Modale bienveillante si re-DL &lt; 10 min (avertir avant débit)
+	- `DialogRecentDownloadWarn` ; flag `recentDownloadWarn` via `getDownloadStatus({ cvId })`
+- [x] Limite **~3 téléchargements / jour / CV** (anti-spam / anti-scraping) — assert serveur + message FR
+	- fenêtre glissante 24 h ; `assertCvDailyDownloadLimit` + UI `dailyLimitReached`
 
 ### IA
 
-- [ ] Lettre de motivation bout-en-bout (Gemini + `ai.router` + client + tests)
-- [ ] Smoke : review + rewrite + lettre avec débit crédits
+- [x] Lettre de motivation bout-en-bout (Gemini + `ai.router` + client + tests)
+- [x] Smoke : review + rewrite + lettre avec débit crédits
 
 ### RGPD min (obligatoire V1)
 
@@ -88,7 +90,8 @@ Critère done : créer/sauver CV → DL gratuit/payant → IA review/rewrite/let
 
 - [ ] Smoke parcours complet (voir critère done)
 - [ ] Checklist légal fin de version
-- [ ] Sync canvas + ce fichier
+- [x] Sync canvas + ce fichier
+	- carte `avancement-v1.canvas.tsx` recalée sur ce TODO (2026-09-28)
 
 ---
 
@@ -139,6 +142,10 @@ Critère done : créer/sauver CV → DL gratuit/payant → IA review/rewrite/let
 - [ ] Browserless (ou équivalent) : HTML → PDF pixel-perfect, **texte sélectionnable ATS**
 - [ ] Jobs / timeouts / garde-fous charge
 
+### IA (optionnel V3)
+
+- [ ] `(?)` Persistance BDD des sorties IA (review / lettre / rewrite) pour comptes connectés — sinon reporter **V4** (abo)
+
 ### Différenciation templates premium (avant fin V3)
 
 Les templates payants pourront exposer des **options** que les gratuits n’ont pas.  
@@ -171,6 +178,7 @@ Package abo = vraie plus-value (récurrence + présence en ligne).
 - [ ] Stripe Billing (Standard / Premium / …) + `subscriptionEnd`
 - [ ] Abo actif → **téléchargements illimités** (règle produit à figer dans les services)
 - [ ] Portail client Stripe / gestion abo
+- [ ] `(?)` Historique IA persisté (si non fait en V3) — réservé éventuellement aux abonnés
 
 ### CV en ligne & QR
 
@@ -219,10 +227,11 @@ Package abo = vraie plus-value (récurrence + présence en ligne).
 | Placement header | **figé par le template** (seed) — pas de sélecteur utilisateur |
 | Options exclusives premium | **Avant fin V3** |
 | Cover letter | **API V1** |
+| Historique IA en BDD | **V3 (?)** ou **V4** (abo) — session only en V1 |
 | DnD center | **V2** |
 | Guest / localStorage | **V3** (avec Stripe) |
-| Modale re-DL &lt; 10 min | **V1** |
-| Limite ~3 DL / jour / CV | **V1** |
+| Modale re-DL &lt; 10 min | **Live** |
+| Limite ~3 DL / jour / CV | **Live** (3 / 24 h) |
 | Micro-achat slot CV | **V3** (avec Stripe) |
 | Browserless / PDF ATS | **V3** |
 | Abo + QR + page web CV | **V4** |

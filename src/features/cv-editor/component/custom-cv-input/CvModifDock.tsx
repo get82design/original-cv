@@ -8,6 +8,7 @@ import { useAiAdvice } from "@/features/cv-editor/component/context/AiAdviceCont
 import { useCvFormSave } from "@/features/cv-editor/component/form/CvFormSaveContext";
 import type { TemplateModule } from "@/services/schemas/cvTemplate.schema";
 import type { CvFormValues } from "@/services/schemas/cvSave.schema";
+import type { CvCoverLetter } from "@/services/schemas/cvCoverLetter.schema";
 import { saveGuestCvDraft } from "@/features/cv-editor/utils/guestCvDraft";
 import { Button } from "primereact/button";
 import { TabPanel, TabView } from "primereact/tabview";
@@ -29,6 +30,7 @@ interface CvModifDockProps {
 	isSubmitting: boolean;
 	getValues: () => CvFormValues;
 	onDownloadClick?: () => void;
+	onReopenCoverLetter?: (coverLetter: CvCoverLetter) => void;
 }
 
 export function CvModifDock({
@@ -41,6 +43,7 @@ export function CvModifDock({
 	isSubmitting,
 	getValues,
 	onDownloadClick,
+	onReopenCoverLetter,
 }: CvModifDockProps) {
 	const router = useRouter();
 	const { requestSave } = useCvFormSave();
@@ -146,7 +149,11 @@ export function CvModifDock({
 								headerClassName="text-sm flex justify-center text-center whitespace-nowrap"
 								contentClassName="py-2 px-1"
 							>
-								<AiAdvicePanel />
+								{onReopenCoverLetter ? (
+									<AiAdvicePanel onReopenCoverLetter={onReopenCoverLetter} />
+								) : (
+									<AiAdvicePanel />
+								)}
 							</TabPanel>
 						) : null}
 					</TabView>

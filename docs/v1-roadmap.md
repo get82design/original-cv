@@ -34,8 +34,8 @@ Une seule composition partagée (tous templates). La variété / options réserv
 | 1 | ~~Header split 2-col~~ **livré** | `headerPlacement: "split"` dans `TwoColumnSideBar` ; slots sidebar + main ; placement figé par le seed (pas d’UI) ; schema `cvTemplate` ; tests `cvHeaderPlacement` |
 | 2 | ~~Tips + stubs v2~~ **livré** | `DialogCvTips` (contenu dans `cvTips.ts`, `media` prêt) ouvert depuis le SpeedDial ; QR / fiche métier → label « (bientôt) » + toast |
 | 3 | ~~3 footers logo~~ **livré** | `minimal` / `band` / `corners` via `cvSignatureVariants` + `CvSignatureVariantContext` ; choix dans `DialogDownloadCv` ; recapture avec `waitForNextPaint` ; polish UI éventuel plus tard |
-| 4 | Garde-fous DL | Modale re-DL &lt; 10 min ; limite ~3 DL / jour / CV (serveur) |
-| 5 | Cover letter E2E | `geminiService` + `ai.coverLetter` + billing existant + tests ; brancher le client |
+| 4 | ~~Garde-fous DL~~ **livré** | Modale re-DL &lt; 10 min (`DialogRecentDownloadWarn`) ; plafond 3 DL / 24 h / CV (`downloadGuards` + assert serveur) |
+| 5 | ~~Cover letter E2E~~ **livré** | `geminiService.coverLetter` + `ai.coverLetter` + billing + `DialogCoverLetter` (ciblage optionnel) + tests |
 | 6 | RGPD min + SEO light | Delete compte UI ; CGU/privacy ; templates indexables sans migration App Router complète |
 | 7 | Freeze admin + smoke | Doc in/out admin ; smoke parcours ; sync canvas / backlog |
 
@@ -53,7 +53,7 @@ Une seule composition partagée (tous templates). La variété / options réserv
 | Undo / historique | Livré (`CvFormHistory`) |
 | TwoColumnSideBar + reverse | Livré, header split inclus (`top` / `sidebar` / `split`) |
 | Aperçu CV profil | Livré (`PreviewImage`) |
-| Lettre motivation | UI + billing ; **pas** d’API Gemini |
+| Lettre motivation | **Livré** — `coverLetter` Gemini + router + `DialogCoverLetter` (CV + ciblage optionnel) |
 | Admin | Socle réel ; pas Stripe/GA |
 
 ## Critère de done

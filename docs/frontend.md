@@ -47,6 +47,9 @@ Réutiliser un input existant avant d’en créer un nouveau.
 
 - **PrimeReact** + **PrimeIcons** + **Tailwind 4** — pas de MUI / shadcn / autre kit
 - Dark mode : classe `dark` sur `<html>` (script FOUC dans `_document.tsx`)
+- **Dialogs / modales** : chaque `Dialog` doit avoir une `className` dédiée (ex. `dialog-cover-letter`) **et** être listée dans le bloc light/dark de [`pages/styles/globals.css`](../pages/styles/globals.css) (sélecteurs `.p-dialog.…` + `html.dark .p-dialog.…`). Sans ça, header/footer/fond restent au thème Prime par défaut.
+- Contenu interne : classes Tailwind `dark:` sur textes / borders / surfaces (comme les dialogs existants)
+- **Inputs Prime dans une modale** (`InputText`, `InputTextarea`, etc.) : ajouter aussi un bloc CSS scoped light/dark sous la classe du dialog (ex. `.p-dialog.dialog-cover-letter .p-inputtext`) — Tailwind seul ne suffit pas sur le chrome Prime
 - SCSS ponctuel OK ; Biome **ne formate / ne lint pas** le CSS — pas de reformat massif
 - Composants layout : `AppLayout`, `AppBar`, `NavBar`, `SideBarMenu`
 - Toasts : PrimeReact `Toast` (souvent `position="top-center"`)

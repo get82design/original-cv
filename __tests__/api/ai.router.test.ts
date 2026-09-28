@@ -419,4 +419,100 @@ describe("ai.router", () => {
 			).rejects.toMatchObject({ code: "UNAUTHORIZED" });
 		});
 	});
+
+	describe("coverLetter", () => {
+		it("returns the cover letter from geminiService and logs AI usage", async () => {
+			const user = await createTestUser();
+			await prismaTest.aiFeaturePrice.upsert({
+				where: { feature: "COVER_LETTER" },
+				create: {
+					feature: "COVER_LETTER",
+					costFree: null,
+					costPaid: 4,
+				},
+				update: { costFree: null, costPaid: 4 },
+			});
+			await prismaTest.user.update({
+				where: { id: user.id },
+				data: { downloadCredits: 6, freeDownloadsRemaining: 0 },
+			});
+
+			vi.spyOn(geminiService, "coverLetter").mockResolvedValue({
+				letter: "Madame, Monsieur,\n\nJe candidate…\n\nCordialement",
+				subject: "Candidature — Data Analyst",
+			});
+
+			const caller = await createTestCaller(createTestSession(user));
+			const result = await caller.ai.coverLetter({
+				cvText: "Ada Lovelace — Analyste",
+				paymentMethod: "paid",
+				companyName: "Acme",
+				jobTitle: "Data Analyst",
+			});
+
+			expect(result.coverLetter.subject).toContain("Candidature");
+			expect(geminiService.coverLetter).toHaveBeenCalledWith({
+				cvText: "Ada Lovelace — Analyste",
+				companyName: "Acme",
+				jobTitle: "Data Analyst",
+			});
+
+			const events = await prismaTest.aiEvent.findMany({
+				where: { userId: user.id },
+			});
+			expect(events).toHaveLength(1);
+			expect(events[0]?.feature).toBe("COVER_LETTER");
+			expect(events[0]?.detail).toBe("Data Analyst · Acme");
+			expect(events[0]?.paymentMethod).toBe("PAID");
+			expect(events[0]?.creditsSpent).toBe(4);
+
+			const refreshed = await prismaTest.user.findUniqueOrThrow({
+				where: { id: user.id },
+			});
+			expect(refreshed.downloadCredits).toBe(2);
+			expect(refreshed.iaRequestsUsed).toBe(1);
+		});
+
+		it("rejects when credits are insufficient", async () => {
+			const user = await createTestUser();
+			await prismaTest.aiFeaturePrice.upsert({
+				where: { feature: "COVER_LETTER" },
+				create: {
+					feature: "COVER_LETTER",
+					costFree: null,
+					costPaid: 4,
+				},
+				update: { costFree: null, costPaid: 4 },
+			});
+			await prismaTest.user.update({
+				where: { id: user.id },
+				data: { downloadCredits: 0, freeDownloadsRemaining: 0 },
+			});
+			const spy = vi.spyOn(geminiService, "coverLetter");
+
+			const caller = await createTestCaller(createTestSession(user));
+
+			await expect(
+				caller.ai.coverLetter({
+					cvText: "CV minimal",
+					paymentMethod: "paid",
+				}),
+			).rejects.toMatchObject({
+				code: "BAD_REQUEST",
+				message: expect.stringContaining("insuffisants"),
+			});
+			expect(spy).not.toHaveBeenCalled();
+		});
+
+		it("rejects unauthenticated callers", async () => {
+			const caller = await createTestCaller(null);
+
+			await expect(
+				caller.ai.coverLetter({
+					cvText: "CV",
+					paymentMethod: "paid",
+				}),
+			).rejects.toMatchObject({ code: "UNAUTHORIZED" });
+		});
+	});
 });
