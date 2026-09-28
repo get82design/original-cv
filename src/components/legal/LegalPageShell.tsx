@@ -16,7 +16,6 @@ export const LegalPageShell = ({ title, description, children }: LegalPageShellP
 			<Head>
 				<title>{title} — OriginalCV</title>
 				<meta name="description" content={description} />
-				<meta name="robots" content="index,follow" />
 			</Head>
 			<main className="mx-auto w-full max-w-3xl px-4 py-8 sm:px-6 sm:py-12 text-zinc-900 dark:text-zinc-100">
 				<p className="m-0 mb-4 text-xs text-zinc-500 dark:text-zinc-400">

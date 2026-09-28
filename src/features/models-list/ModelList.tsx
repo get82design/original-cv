@@ -159,9 +159,19 @@ function GalleryMiniCv({
 					<PageLayout deleteSection={() => {}} />
 				</div>
 				<p className="absolute bottom-0 inset-x-0 z-10 text-center text-sm font-semibold px-2 py-1 bg-black/40 text-white">
-					{template.name}
+					<Link href={`/modeles/${template.slug}`} className="text-white hover:underline">
+						{template.name}
+					</Link>
 				</p>
-				<div className="absolute inset-0 z-20 h-full flex items-center justify-center opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 bg-black/40 transition">
+				<div className="absolute inset-0 z-20 h-full flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 bg-black/40 transition">
+					<Link href={`/modeles/${template.slug}`}>
+						<Button
+							type="button"
+							label="Voir"
+							className="bg-transparent hover:bg-gray-100/40 text-white font-bold"
+							outlined
+						/>
+					</Link>
 					<Link
 						href={`/cv/0?template=${encodeURIComponent(template.name)}${
 							color ? `&color=${encodeURIComponent(color.name)}` : ""
@@ -169,7 +179,7 @@ function GalleryMiniCv({
 					>
 						<Button
 							type="button"
-							label="Utiliser ce modèle"
+							label="Utiliser"
 							className="bg-transparent hover:bg-gray-100/40 text-white font-bold"
 							outlined
 						/>
@@ -259,9 +269,23 @@ function GalleryCard({
 			{!live && (
 				<>
 					<p className="absolute bottom-0 inset-x-0 z-10 text-center text-sm font-semibold px-2 py-1 bg-black/40 text-white">
-						{template.name}
+						<Link
+							href={`/modeles/${template.slug}`}
+							className="text-white hover:underline"
+							onClick={(e) => e.stopPropagation()}
+						>
+							{template.name}
+						</Link>
 					</p>
-					<div className="absolute inset-0 z-20 flex items-center justify-center opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 bg-black/40 transition">
+					<div className="absolute inset-0 z-20 flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 bg-black/40 transition">
+						<Link href={`/modeles/${template.slug}`}>
+							<Button
+								type="button"
+								label="Voir"
+								className="bg-transparent hover:bg-gray-100/40 text-white font-bold"
+								outlined
+							/>
+						</Link>
 						<Link
 							href={`/cv/0?template=${encodeURIComponent(template.name)}${
 								color ? `&color=${encodeURIComponent(color.name)}` : ""
@@ -269,7 +293,7 @@ function GalleryCard({
 						>
 							<Button
 								type="button"
-								label="Utiliser ce modèle"
+								label="Utiliser"
 								className="bg-transparent hover:bg-gray-100/40 text-white font-bold"
 								outlined
 							/>

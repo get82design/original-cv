@@ -18,7 +18,7 @@ describe("CvTemplate model", () => {
 		it("should create a CVTemplate", async () => {
 			const template = await prismaTest.cVTemplate.create({
 				data: {
-					name: "Modern",
+					name: "Modern", slug: `t-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
 					structure: { sections: ["header", "skills"] },
 					defaultStyles: { fontSize: 12, color: "black" },
 				},
@@ -51,7 +51,7 @@ describe("CvTemplate model", () => {
 				prismaTest.cVTemplate.create({
 					// @ts-expect-error
 					data: {
-						name: "Template 1",
+						name: "Template 1", slug: `t-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
 						defaultStyles: { create: [] },
 					},
 				}),
@@ -64,7 +64,7 @@ describe("CvTemplate model", () => {
 				prismaTest.cVTemplate.create({
 					// @ts-expect-error
 					data: {
-						name: "Template 1",
+						name: "Template 1", slug: `t-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
 						structure: { create: [] },
 					},
 				}),
@@ -78,7 +78,7 @@ describe("CvTemplate model", () => {
 		it("should update a CVTemplate", async () => {
 			const template = await prismaTest.cVTemplate.create({
 				data: {
-					name: "Modern",
+					name: "Modern", slug: `t-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
 					structure: { sections: ["header", "skills"] },
 					defaultStyles: { fontSize: 12, color: "black" },
 				},
@@ -96,7 +96,7 @@ describe("CvTemplate model", () => {
 		it("should update a CVTemplate with a partial structure", async () => {
 			const template = await prismaTest.cVTemplate.create({
 				data: {
-					name: "Modern",
+					name: "Modern", slug: `t-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
 					structure: { sections: ["header", "skills"] },
 					defaultStyles: { fontSize: 12, color: "black" },
 				},
@@ -113,7 +113,7 @@ describe("CvTemplate model", () => {
 		it("should update a CVTemplate with a partial defaultStyles", async () => {
 			const template = await prismaTest.cVTemplate.create({
 				data: {
-					name: "Modern",
+					name: "Modern", slug: `t-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
 					structure: { sections: ["header", "skills"] },
 					defaultStyles: { fontSize: 12, color: "black" },
 				},
@@ -134,7 +134,7 @@ describe("CvTemplate model", () => {
 			const user = await createTestUser();
 			const template = await prismaTest.cVTemplate.create({
 				data: {
-					name: "Modern",
+					name: "Modern", slug: `t-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
 					structure: {},
 					defaultStyles: {},
 				},
@@ -162,7 +162,7 @@ describe("CvTemplate model", () => {
 		it("should link template to correct cvs", async () => {
 			const template = await prismaTest.cVTemplate.create({
 				data: {
-					name: "Modern",
+					name: "Modern", slug: `t-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
 					structure: {},
 					defaultStyles: {},
 				},

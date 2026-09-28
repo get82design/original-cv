@@ -24,6 +24,7 @@ export async function createTestUserWithCvs(options?: TestUserWithCvsOptions) {
 							const template = await prismaTest.cVTemplate.create({
 								data: {
 									name: `${cv.templateId}-${index}-${Date.now()}`,
+									slug: `t-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
 									structure: { sections: ["header", "skills"] },
 									defaultStyles: { fontSize: 12, color: "black" },
 									// structure: {

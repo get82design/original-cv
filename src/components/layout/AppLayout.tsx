@@ -3,6 +3,7 @@ import { AppBar } from "../appBar/AppBar";
 import { useMediaQuery } from "../../../utils/useWindowWidth";
 import { NavBar } from "../navBar/NavBar";
 import { SiteFooter } from "./SiteFooter";
+import { SeoRobotsMeta } from "../seo/SeoRobotsMeta";
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
 	const session = useSession();
@@ -11,6 +12,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
 
 	return (
 		<div className="flex min-h-screen flex-col">
+			<SeoRobotsMeta />
 			<div className="flex w-full flex-1">
 				{session.status === "authenticated" && isSm && <NavBar />}
 				<div

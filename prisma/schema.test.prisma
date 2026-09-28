@@ -1169,6 +1169,8 @@ enum CVStatus {
 model CVTemplate {
   id        String @id @default(cuid())
   name      String @unique                          // nom du template
+  /** URL publique catalogue `/modeles/[slug]` (dérivé du name) */
+  slug      String @unique
   structure    Json                            // structure du template (zones, sections)
   defaultStyles Json                           // styles par défaut (fontSize, color, align, show, etc.)
   /** Visible dans le sélecteur produit */

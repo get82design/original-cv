@@ -36,15 +36,16 @@ Une seule composition partagée (tous templates). La variété / options réserv
 | 3 | ~~3 footers logo~~ **livré** | `minimal` / `band` / `corners` via `cvSignatureVariants` + `CvSignatureVariantContext` ; choix dans `DialogDownloadCv` ; recapture avec `waitForNextPaint` ; polish UI éventuel plus tard |
 | 4 | ~~Garde-fous DL~~ **livré** | Modale re-DL &lt; 10 min (`DialogRecentDownloadWarn`) ; plafond 3 DL / 24 h / CV (`downloadGuards` + assert serveur) |
 | 5 | ~~Cover letter E2E~~ **livré** | `geminiService.coverLetter` + `ai.coverLetter` + billing + `DialogCoverLetter` (ciblage optionnel) + tests |
-| 6 | RGPD min + SEO light | ~~Delete compte~~ + ~~CGU/privacy/mentions~~ livrés ; reste SEO templates light |
+| 6 | ~~RGPD min~~ **livré** + SEO light | Delete compte, CGU/privacy/mentions, audit public/PII admin — **reste** SEO templates light |
 | 7 | Freeze admin + smoke | Doc in/out admin ; smoke parcours ; sync canvas / backlog |
 
 **Durée cible** : ~4–6 j de focus une fois le code lancé.
 
 ## Admin V1 — freeze
 
-**In** : dashboard, users, downloads, templates, AI events, errors, credit logs, billing *prix*.  
-**Out** : ventes Stripe, acquisition GA, funnel visits, IA « query mes data » (RGPD).
+**In** : dashboard (agrégats **sans** emails), users / downloads / AI / errors / unlocks / credit logs (listes nominatives ops), templates, billing *prix*.  
+**Out** : ventes Stripe, acquisition GA, funnel visits, IA « query mes data » (RGPD).  
+**Revue PII V1** : OK — agrégats propres ; emails seulement dans listes `ADMIN` ; pas de durcissement anonymisation listes en V1.
 
 ## Écarts backlog ↔ code (rappel)
 

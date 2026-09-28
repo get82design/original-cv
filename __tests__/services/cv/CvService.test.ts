@@ -54,6 +54,7 @@ describe("CvService.create", () => {
 		const template = await prismaTest.cVTemplate.create({
 			data: {
 				name: `Template_color_${Date.now()}`,
+				slug: `t-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
 				structure: { sections: ["header"] },
 				defaultStyles: {
 					primaryColor: { name: "violet", primary: "-600" },

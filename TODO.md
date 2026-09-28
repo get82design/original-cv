@@ -74,13 +74,26 @@ Critère done : créer/sauver CV → DL gratuit/payant → IA review/rewrite/let
 - [x] CGU + politique de confidentialité accessibles (même v1 basique)
 	- pages `/cgu`, `/politique-de-confidentialite`, `/mentions-legales` ; footer ; case à cocher register (email/password)
 	- **À faire** quand OAuth Google/GitHub sera vraiment activé : faire accepter CGU/privacy **avant** `signIn` (aujourd’hui les boutons OAuth bypassent la case)
-- [ ] Audit rapide : CV public privé par défaut + `noindex` si page publique existe
-- [ ] Stats admin : pas de PII inutile dans les agrégats (revue ; durcissement anonymisation si besoin)
+- [x] Audit rapide : CV public privé par défaut + `noindex` si page publique existe
+	- **OK** `isPublic Boolean @default(false)` (Prisma) + tests `__tests__/test-prisma/cv.test.ts`
+	- **OK** aucune page publique CV en V1 (`pages/cv/[id]` = éditeur auth) → `noindex` N/A pour l’instant
+	- **V4** (page `/cv/[slug]` ou équiv.) : **obligatoire** `<meta name="robots" content="noindex, nofollow">` + partage opt-in seulement
+- [x] Stats admin : pas de PII inutile dans les agrégats (revue ; durcissement anonymisation si besoin)
+	- **Dashboard** (`adminDashboardService`) : compteurs / `groupBy` (users, DL, IA, templates, couleurs…) — **pas d’emails**
+	- **Listes ops** (users, DL, AI events, errors, unlocks, credit logs) : email visible — **volontaire**, réservé `ADMIN` (`adminProcedure`)
+	- **V1** : pas d’anonymisation des listes (sinon support inutilisable) ; pas d’IA « query mes data » (freeze admin **out**)
+	- Post-delete : events déjà en `SetNull` sur `userId` (lignes « Anonyme » côté UI)
 
 ### SEO catalogue (V1 light)
 
-- [ ] Pages templates **indexables** / SEO-friendly — **sans** migration complète App Router
-- [ ] `(?)` Migration App Router complète → plutôt V2 si trop gros pour V1
+- [x] SEO liste `/modeles` — title / description / OG / Twitter / JSON-LD `CollectionPage` (Pages Router)
+- [x] Champ `slug` unique sur `CVTemplate` (+ seed + backfill migration)
+- [x] Pages détail `/modeles/[slug]` marketing légère (texte + vignette + CTA) — SSR Pages Router
+- [x] `robots.txt` + `sitemap.xml` dynamiques ; `noindex` pages privées + **gate** `SEARCH_INDEXING_ENABLED`
+	- défaut = **fermé** (`Disallow: /` + meta `noindex`) jusqu’au feu vert prod
+	- ouvrir : `SEARCH_INDEXING_ENABLED=true` (sitemap catalogue + `index,follow` pages marketing)
+- [x] **Décision** : pas de migration App Router en V1 — SEO light suffisant en Pages Router
+	- cible éventuelle : **V2 hybride** (marketing `app/` d’abord) si besoin DX/RSC — pas un prérequis SEO
 
 ### Admin (freeze V1)
 
@@ -93,7 +106,7 @@ Critère done : créer/sauver CV → DL gratuit/payant → IA review/rewrite/let
 - [ ] Smoke parcours complet (voir critère done)
 - [ ] Checklist légal fin de version
 - [x] Sync canvas + ce fichier
-	- carte `avancement-v1.canvas.tsx` recalée sur ce TODO (2026-09-28)
+	- carte `avancement-v1.canvas.tsx` recalée après SEO catalogue light + décision App Router (2026-09-28 soir)
 
 ---
 
@@ -107,7 +120,7 @@ Critère done : créer/sauver CV → DL gratuit/payant → IA review/rewrite/let
 - [ ] Logos / variantes couleurs manquantes (polish brand)
 - [ ] `(?)` Onboarding guidé « première utilisation » (stepper) — distinct du modal Tips (`DialogCvTips`)
 - [ ] Tips illustrés : captures dans `public/tips/` (+ `srcDark` si besoin) — `media` déjà prévu dans `cvTips.ts`, contenu à écrire ensemble
-- [ ] `(?)` App Router SEO catalogue si non fait en V1 light
+- [ ] `(?)` App Router **hybride** (surfaces marketing `app/` d’abord) — optionnel ; SEO catalogue déjà OK en Pages
 
 ### Profil
 
@@ -153,6 +166,13 @@ Critère done : créer/sauver CV → DL gratuit/payant → IA review/rewrite/let
 - [ ] Export / portabilité : bouton « Télécharger mes données » (JSON/ZIP profil + CV)
 - [ ] Soft-delete compte + délai de grâce **30 j** (réactivation / purge CRON)
 
+### Catalogue / assets
+
+- [ ] Regénérer **toutes** les vignettes templates en PNG propres (`public/assets/img/{Name}.png`)
+	- aujourd’hui = screenshots à l’arrache (catalogue + fiches `/modeles/[slug]`)
+	- cible : rendu A4 cohérent (même jeu de données démo, fond neutre, pas de chrome UI)
+	- `(?)` script / export automatisé depuis l’éditeur (html-to-image / Browserless) vs batch manuel soigné
+
 ### Différenciation templates premium (avant fin V3)
 
 Les templates payants pourront exposer des **options** que les gratuits n’ont pas.  
@@ -190,6 +210,7 @@ Package abo = vraie plus-value (récurrence + présence en ligne).
 ### CV en ligne & QR
 
 - [ ] Page publique **mobile-first** (`/cv/[slug]`), pas un PDF A4 sur mobile
+- [ ] **RGPD** : meta `noindex, nofollow` sur toute page CV publique (anti-scraping / index Google) — non négociable
 - [ ] Packaging FREE vs abo (bandeau « Créé avec… », URL, actions)
 - [ ] QR code (génération client) + intégration parcours
 - [ ] Masquage optionnel contacts sur version en ligne (premium / abo) `(?)`
@@ -248,5 +269,5 @@ Package abo = vraie plus-value (récurrence + présence en ligne).
 | Tracker candidatures | **Parking** (après V3) |
 | RGPD min (delete + CGU) | **V1** |
 | OAuth Google/GitHub + acceptation CGU | **Avant activation réelle des providers** (case actuelle = register email only) |
-| SEO templates | **V1 light** ; App Router complet si besoin en V2 |
+| SEO templates | **V1 light livré** (Pages) ; App Router **pas maintenant** — éventuel V2 hybride |
 | Légal | Checklist **fin de chaque version** |

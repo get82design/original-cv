@@ -8,7 +8,7 @@ export async function createUserAndTemplate(email = "test@fullflow.com") {
 		data: { email, name: "Fullflow User", password: "123" },
 	});
 	const template = await prismaTest.cVTemplate.create({
-		data: { name: "Modern", structure: {}, defaultStyles: {} },
+		data: { name: "Modern", slug: `t-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`, structure: {}, defaultStyles: {} },
 	});
 	return { user, template };
 }

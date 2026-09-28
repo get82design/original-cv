@@ -58,7 +58,7 @@ describe("CV model", () => {
 			const user = await createTestUser();
 			const template = await prismaTest.cVTemplate.create({
 				data: {
-					name: "Template 1",
+					name: "Template 1", slug: `t-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
 					structure: { create: [] },
 					defaultStyles: { create: [] },
 				},
@@ -86,7 +86,7 @@ describe("CV model", () => {
 			const user = await createTestUser();
 			const template = await prismaTest.cVTemplate.create({
 				data: {
-					name: "Template 1",
+					name: "Template 1", slug: `t-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
 					structure: { create: [] },
 					defaultStyles: { create: [] },
 				},
@@ -117,7 +117,7 @@ describe("CV model", () => {
 			const user = await createTestUser();
 			const template = await prismaTest.cVTemplate.create({
 				data: {
-					name: "Template 1",
+					name: "Template 1", slug: `t-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
 					structure: { create: [] },
 					defaultStyles: { create: [] },
 				},
@@ -149,7 +149,7 @@ describe("CV model", () => {
 			const user = await createTestUser();
 			const template = await prismaTest.cVTemplate.create({
 				data: {
-					name: "Template 2",
+					name: "Template 2", slug: `t-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
 					structure: { create: [] },
 					defaultStyles: { create: [] },
 				},
@@ -191,7 +191,7 @@ describe("CV model", () => {
 		it("should not create a CV without a user", async () => {
 			const template = await prismaTest.cVTemplate.create({
 				data: {
-					name: "Template 1",
+					name: "Template 1", slug: `t-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
 					structure: { create: [] },
 					defaultStyles: { create: [] },
 				},
@@ -226,7 +226,7 @@ describe("CV model", () => {
 			const user = await createTestUser();
 			const template = await prismaTest.cVTemplate.create({
 				data: {
-					name: "Template 1",
+					name: "Template 1", slug: `t-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
 					structure: { create: [] },
 					defaultStyles: { create: [] },
 				},
@@ -248,7 +248,7 @@ describe("CV model", () => {
 			const user = await createTestUser();
 			const template = await prismaTest.cVTemplate.create({
 				data: {
-					name: "Template 1",
+					name: "Template 1", slug: `t-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
 					structure: { create: [] },
 					defaultStyles: { create: [] },
 				},
@@ -283,7 +283,7 @@ describe("CV model", () => {
 			const user = await createTestUser();
 			const template = await prismaTest.cVTemplate.create({
 				data: {
-					name: "Template 1",
+					name: "Template 1", slug: `t-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
 					structure: { create: [] },
 					defaultStyles: { create: [] },
 				},
@@ -315,7 +315,7 @@ describe("CV model", () => {
 			const user = await createTestUser();
 			const template = await prismaTest.cVTemplate.create({
 				data: {
-					name: "Template 1",
+					name: "Template 1", slug: `t-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
 					structure: { create: [] },
 					defaultStyles: { create: [] },
 				},
@@ -354,7 +354,7 @@ describe("CV model", () => {
 			const user = await createTestUser();
 			const template = await prismaTest.cVTemplate.create({
 				data: {
-					name: "Template 1",
+					name: "Template 1", slug: `t-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
 					structure: { create: [] },
 					defaultStyles: { create: [] },
 				},
@@ -379,7 +379,7 @@ describe("CV model", () => {
 			const user = await createTestUser();
 			const template = await prismaTest.cVTemplate.create({
 				data: {
-					name: "Template 1",
+					name: "Template 1", slug: `t-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
 					structure: { create: [] },
 					defaultStyles: { create: [] },
 				},
@@ -403,7 +403,7 @@ describe("CV model", () => {
 			const user = await createTestUser();
 			const template = await prismaTest.cVTemplate.create({
 				data: {
-					name: "Template 1",
+					name: "Template 1", slug: `t-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
 					structure: { create: [] },
 					defaultStyles: { create: [] },
 				},

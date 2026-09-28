@@ -34,5 +34,6 @@ Détail live + cibles : `docs/business-rules.md` · pricing long : `readme.md`.
 
 ## Public / RGPD
 
-- CV privé par défaut ; partage opt-in ; page publique `noindex`
-- Suppression compte en cascade ; stats via events agrégés
+- CV privé par défaut ; partage opt-in ; page publique (**V4**) → `noindex, nofollow` obligatoire
+- Suppression compte en cascade
+- Stats admin : agrégats dashboard sans emails ; listes PII réservées `ADMIN` (pas d’anonymisation V1)

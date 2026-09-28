@@ -24,7 +24,7 @@ Parcours : créer/sauver CV → DL gratuit/payant → IA review/rewrite/lettre �
 3. ~~3 variantes footer logo au DL gratuit~~ **livré** — `minimal` / `band` / `corners` ; choix dans `DialogDownloadCv` + recapture aperçu
 4. ~~Modale re-DL &lt; 10 min + limite ~3 DL / jour / CV~~ **livré** — `DialogRecentDownloadWarn` + `downloadGuards` (3 / 24 h)
 5. ~~Cover letter bout-en-bout~~ **livré** — `geminiService.coverLetter` + `ai.coverLetter` + `DialogCoverLetter` (ciblage optionnel)
-6. RGPD min (suppression compte UI + CGU/privacy) ; SEO templates **light**
+6. ~~RGPD min~~ **livré** — delete compte, CGU/privacy/mentions, audit public/`noindex`, revue PII admin ; **reste** SEO templates light
 7. Freeze admin (doc) : pas Stripe / GA / funnel visits
 
 ## Hors V1 (ne pas démarrer)

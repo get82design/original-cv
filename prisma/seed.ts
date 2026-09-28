@@ -5,8 +5,11 @@ import colors from "./seedDatas/seed.colors.json";
 import { seedTemplates } from "./seedDatas/cv-template";
 import { buildCvClaraDelorme } from "./seedDatas/seed.cvs";
 import { seedBilling } from "./seedDatas/seed.billing";
+import { slugifyTemplateName } from "../src/services/cv/templateSlug";
+import { UserRole } from "../generated/prisma/enums";
 import "dotenv/config";
 import { hash } from "bcrypt";
+import type { Prisma } from "../generated/prisma/client";
 
 async function main() {
 	console.log("🌱 Démarrage des seeds...");
@@ -56,6 +59,12 @@ async function deleteBilling() {
 	await prisma.aiFeaturePrice.deleteMany();
 }
 
+function seedUserRole(role: string | undefined): UserRole | undefined {
+	if (role === UserRole.ADMIN) return UserRole.ADMIN;
+	if (role === UserRole.USER) return UserRole.USER;
+	return undefined;
+}
+
 /**
  * buildUsers
  *
@@ -63,13 +72,19 @@ async function deleteBilling() {
 async function buildUsers() {
 	const userPromises = users.map(async (el) => {
 		const hashedPassword = await hash(el.password, 12);
-		return prisma.user.create({
-			data: {
-				...el,
-				password: hashedPassword,
-				emailVerified: el.emailVerified ? new Date(el.emailVerified) : null,
-			},
-		});
+		const role = seedUserRole("role" in el ? el.role : undefined);
+		const data: Prisma.UserCreateInput = {
+			name: el.name,
+			email: el.email,
+			image: el.image,
+			password: hashedPassword,
+			emailVerified: el.emailVerified ? new Date(el.emailVerified) : null,
+			...("freeDownloadsRemaining" in el
+				? { freeDownloadsRemaining: el.freeDownloadsRemaining }
+				: {}),
+			...(role ? { role } : {}),
+		};
+		return prisma.user.create({ data });
 	});
 	return await Promise.all(userPromises);
 }
@@ -84,6 +99,7 @@ async function buildTemplates() {
 			prisma.cVTemplate.create({
 				data: {
 					name: el.name,
+					slug: slugifyTemplateName(el.name),
 					structure: el.structure,
 					defaultStyles: el.defaultStyles,
 				},

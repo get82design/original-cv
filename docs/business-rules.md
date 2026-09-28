@@ -100,12 +100,12 @@ Noms produit (Kyoto, Berlin…) : vision / catalogue — voir `readme.md`, pas d
 
 ## CV public / QR / RGPD (live)
 
-- Défaut : `isPublic: false` ; partage opt-in (`publicSlug`)
-- Page publique : viser `noindex`
+- Défaut : `isPublic: false` ; partage opt-in (`publicSlug`) — **audit V1 OK** (schema + tests Prisma)
+- Page publique : **pas encore en V1** ; dès qu’elle existe (**V4**) → `noindex, nofollow` obligatoire (voir `TODO.md` V4)
 - QR : côté client (pas d’API payante dédiée)
 - Suppression compte : UI profil (`ProfileDangerZone` + confirmation « SUPPRIMER ») → `user.deleteAccount` ; cascades Prisma (Profile, CV, grants, unlocks…) ; events en `SetNull` où prévu ; tokens reset + previews fichiers nettoyés
 - Pages légales V1 : `/cgu`, `/politique-de-confidentialite`, `/mentions-legales` + footer ; acceptation CGU/privacy obligatoire à l’inscription email (`acceptTerms`). **OAuth Google/GitHub** : pas encore branché sur cette case — à traiter avant d’activer vraiment ces providers (voir `TODO.md`).
-- Stats admin : agréger `DownloadEvent` / `AiEvent` (pas de PII fantôme)
+- Stats admin : agrégats dashboard **sans** PII (emails) ; listes nominatives = outil ops `ADMIN` uniquement — pas d’anonymisation V1 ; IA « query mes data » hors scope (freeze admin)
 
 ## Services / fichiers clés
 
