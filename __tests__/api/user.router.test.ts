@@ -189,6 +189,7 @@ describe("userRouter", () => {
 			email: "api@test.com",
 			password: "password123",
 			name: "Bob",
+			acceptTerms: true,
 		});
 
 		expect(created.email).toBe("api@test.com");
@@ -202,12 +203,14 @@ describe("userRouter", () => {
 		await caller.user.register({
 			email: "same@test.com",
 			password: "password123",
+			acceptTerms: true,
 		});
 
 		await expect(
 			caller.user.register({
 				email: "same@test.com",
 				password: "password123",
+				acceptTerms: true,
 			}),
 		).rejects.toMatchObject({ code: "CONFLICT" });
 	});
@@ -219,6 +222,20 @@ describe("userRouter", () => {
 			caller.user.register({
 				email: "not-an-email",
 				password: "short", // < 8
+				acceptTerms: true,
+			}),
+		).rejects.toBeInstanceOf(TRPCError);
+	});
+
+	it("register rejects when acceptTerms is missing or false", async () => {
+		const caller = await createTestCaller();
+
+		await expect(
+			caller.user.register({
+				email: "terms@test.com",
+				password: "password123",
+				// @ts-expect-error — acceptTerms obligatoire
+				acceptTerms: false,
 			}),
 		).rejects.toBeInstanceOf(TRPCError);
 	});

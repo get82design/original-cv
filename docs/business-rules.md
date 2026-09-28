@@ -104,6 +104,7 @@ Noms produit (Kyoto, Berlin…) : vision / catalogue — voir `readme.md`, pas d
 - Page publique : viser `noindex`
 - QR : côté client (pas d’API payante dédiée)
 - Suppression compte : UI profil (`ProfileDangerZone` + confirmation « SUPPRIMER ») → `user.deleteAccount` ; cascades Prisma (Profile, CV, grants, unlocks…) ; events en `SetNull` où prévu ; tokens reset + previews fichiers nettoyés
+- Pages légales V1 : `/cgu`, `/politique-de-confidentialite`, `/mentions-legales` + footer ; acceptation CGU/privacy obligatoire à l’inscription email (`acceptTerms`). **OAuth Google/GitHub** : pas encore branché sur cette case — à traiter avant d’activer vraiment ces providers (voir `TODO.md`).
 - Stats admin : agréger `DownloadEvent` / `AiEvent` (pas de PII fantôme)
 
 ## Services / fichiers clés

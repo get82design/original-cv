@@ -2,6 +2,7 @@ import { useSession } from "next-auth/react";
 import { AppBar } from "../appBar/AppBar";
 import { useMediaQuery } from "../../../utils/useWindowWidth";
 import { NavBar } from "../navBar/NavBar";
+import { SiteFooter } from "./SiteFooter";
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
 	const session = useSession();
@@ -9,11 +10,11 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
 	const isSm = useMediaQuery("(min-width: 640px)");
 
 	return (
-		<div>
-			<div className="w-full flex ">
+		<div className="flex min-h-screen flex-col">
+			<div className="flex w-full flex-1">
 				{session.status === "authenticated" && isSm && <NavBar />}
 				<div
-					className="w-full"
+					className="flex w-full min-w-0 flex-col"
 					style={{
 						marginLeft:
 							session.status === "authenticated" && isXl
@@ -24,7 +25,8 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
 					}}
 				>
 					<AppBar />
-					{children}
+					<div className="flex-1">{children}</div>
+					<SiteFooter />
 				</div>
 			</div>
 		</div>

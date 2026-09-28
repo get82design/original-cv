@@ -4,6 +4,8 @@ export const registerSchema = z.object({
 	email: z.string().email(),
 	password: z.string().min(8),
 	name: z.string().min(1).optional(),
+	/** Acceptation CGU + politique de confidentialité (obligatoire à l’inscription). */
+	acceptTerms: z.literal(true),
 });
 
 export const forgotPasswordSchema = z.object({

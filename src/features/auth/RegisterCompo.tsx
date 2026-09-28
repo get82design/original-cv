@@ -4,6 +4,7 @@ import { Divider } from "primereact/divider";
 import { FaGithub, FaGoogle } from "react-icons/fa";
 import { FloatLabel } from "primereact/floatlabel";
 import { InputText } from "primereact/inputtext";
+import { Checkbox } from "primereact/checkbox";
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -20,11 +21,17 @@ export const RegisterCompo = () => {
 		email: "",
 		password: "",
 		confirmPassword: "",
+		acceptTerms: false,
 	});
 	const [error, setError] = useState<string | null>(null);
 
 	const handleRegister = async () => {
 		setError(null);
+
+		if (!form.acceptTerms) {
+			setError("Vous devez accepter les CGU et la politique de confidentialité");
+			return;
+		}
 
 		if (form.password !== form.confirmPassword) {
 			setError("Les mots de passe ne correspondent pas");
@@ -40,6 +47,7 @@ export const RegisterCompo = () => {
 			await register.mutateAsync({
 				email: form.email,
 				password: form.password,
+				acceptTerms: true,
 				...(form.name ? { name: form.name } : {}),
 			});
 
@@ -74,7 +82,7 @@ export const RegisterCompo = () => {
 					Créer un compte
 				</p>
 				<div className="flex justify-around gap-4 my-4">
-					{/* //! pas encore mis en place */}
+					{/* OAuth : pas encore d’acceptation CGU avant signIn — voir TODO.md / business-rules */}
 					<Button
 						onClick={() =>
 							signIn("google", {
@@ -88,14 +96,6 @@ export const RegisterCompo = () => {
 						<FaGoogle />
 						Google
 					</Button>
-					{/* <Button
-						outlined
-						color="light"
-						className="w-full text-black dark:text-white flex justify-center items-center gap-2"
-					>
-						<FaFacebook />
-						Facebook
-					</Button> */}
 					<Button
 						onClick={() =>
 							signIn("github", {
@@ -131,7 +131,6 @@ export const RegisterCompo = () => {
 								required
 							/>
 							<label htmlFor="name">Nom</label>
-							{/* {error && <p className="text-red-500">{error}</p>} */}
 						</FloatLabel>
 						<FloatLabel>
 							<InputText
@@ -144,7 +143,6 @@ export const RegisterCompo = () => {
 								required
 							/>
 							<label htmlFor="email">Email</label>
-							{/* {error && <p className="text-red-500">{error}</p>} */}
 						</FloatLabel>
 						<FloatLabel>
 							<InputText
@@ -169,13 +167,41 @@ export const RegisterCompo = () => {
 								required
 							/>
 							<label htmlFor="confirmPassword">Confirmation du mot de passe</label>
-							{/* {error && <p className="text-red-500">{error}</p>} */}
 						</FloatLabel>
+
+						<div className="flex items-start gap-2 py-1">
+							<Checkbox
+								inputId="acceptTerms"
+								checked={form.acceptTerms}
+								onChange={(e) => setForm({ ...form, acceptTerms: !!e.checked })}
+							/>
+							<label
+								htmlFor="acceptTerms"
+								className="m-0 cursor-pointer text-sm leading-snug text-zinc-600 dark:text-zinc-400"
+							>
+								J’accepte les{" "}
+								<Link
+									href="/cgu"
+									target="_blank"
+									className="text-primary hover:underline dark:text-primary-dark"
+								>
+									CGU
+								</Link>{" "}
+								et la{" "}
+								<Link
+									href="/politique-de-confidentialite"
+									target="_blank"
+									className="text-primary hover:underline dark:text-primary-dark"
+								>
+									politique de confidentialité
+								</Link>
+							</label>
+						</div>
 
 						{error && <p className="text-red-500">{error}</p>}
 						<Button
 							type="submit"
-							disabled={register.isPending}
+							disabled={register.isPending || !form.acceptTerms}
 							className="w-full bg-primary hover:bg-primary-dark font-semibold uppercase flex justify-center dark:bg-primary-dark hover:dark:bg-primary text-white dark:text-black rounded-md"
 						>
 							Créer un compte

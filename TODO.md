@@ -71,7 +71,9 @@ Critère done : créer/sauver CV → DL gratuit/payant → IA review/rewrite/let
 ### RGPD min (obligatoire V1)
 
 - [x] Suppression de compte exposée en UI + cascade réelle (Profile, CV, unlocks, grants…)
-- [ ] CGU + politique de confidentialité accessibles (même v1 basique)
+- [x] CGU + politique de confidentialité accessibles (même v1 basique)
+	- pages `/cgu`, `/politique-de-confidentialite`, `/mentions-legales` ; footer ; case à cocher register (email/password)
+	- **À faire** quand OAuth Google/GitHub sera vraiment activé : faire accepter CGU/privacy **avant** `signIn` (aujourd’hui les boutons OAuth bypassent la case)
 - [ ] Audit rapide : CV public privé par défaut + `noindex` si page publique existe
 - [ ] Stats admin : pas de PII inutile dans les agrégats (revue ; durcissement anonymisation si besoin)
 
@@ -245,5 +247,6 @@ Package abo = vraie plus-value (récurrence + présence en ligne).
 | CRON / plafond IA abo | **V5+** (min V4) |
 | Tracker candidatures | **Parking** (après V3) |
 | RGPD min (delete + CGU) | **V1** |
+| OAuth Google/GitHub + acceptation CGU | **Avant activation réelle des providers** (case actuelle = register email only) |
 | SEO templates | **V1 light** ; App Router complet si besoin en V2 |
 | Légal | Checklist **fin de chaque version** |
