@@ -13,7 +13,7 @@ Convention : `[ ]` à faire · `[x]` validé (code + accord produit) · `(?)` à
 2. Une ligne = un résultat user-visible (ou une décision doc).
 3. Si une ligne bouge de version → on la déplace, on ne la laisse pas en double.
 4. L’agent **ne code pas** une section tant qu’on n’a pas dit d’implémenter.
-5. **Fin de chaque version** : passer la checklist légal (section dédiée).
+5. **Fin de chaque version** : passer la checklist légal (section dédiée) — light en preprod ; **complète à l’ouverture prod (fin V3)**.
 
 ---
 
@@ -97,14 +97,17 @@ Critère done : créer/sauver CV → DL gratuit/payant → IA review/rewrite/let
 
 ### Admin (freeze V1)
 
-- [ ] Doc / accord : **in** = dashboard, users, DL, templates, AI events, errors, credit logs, prix
-- [ ] Doc / accord : **out** = Stripe, GA, funnel visits, IA « query mes data »
-- [ ] Smoke admin sans ouvrir de nouveau chantier
+- [x] Doc / accord : **in** = dashboard, users, DL, templates, AI events, errors, credit logs, prix
+- [x] Doc / accord : **out** = Stripe, GA, funnel visits, IA « query mes data »
+- [x] Smoke admin sans ouvrir de nouveau chantier
 
 ### Clôture V1
 
 - [ ] Smoke parcours complet (voir critère done)
-- [ ] Checklist légal fin de version
+- [ ] Checklist légal fin de version — **light** (preprod, pas d’ouverture commerciale)
+	- relire CGU / privacy vs produit live ; smoke suppression compte
+	- mentions (SIRET / hébergeur), URSSAF, Stripe, cookies analytics → **reportés ouverture prod (fin V3)**
+	- placeholders mentions + bandeau amber OK jusqu’à la prod
 - [x] Sync canvas + ce fichier
 	- carte `avancement-v1.canvas.tsx` recalée après SEO catalogue light + décision App Router (2026-09-28 soir)
 
@@ -138,7 +141,7 @@ Critère done : créer/sauver CV → DL gratuit/payant → IA review/rewrite/let
 
 ### Clôture V2
 
-- [ ] Checklist légal fin de version
+- [ ] Checklist légal fin de version — **light** (même logique preprod que V1 ; ouverture prod = V3)
 
 ---
 
@@ -165,6 +168,9 @@ Critère done : créer/sauver CV → DL gratuit/payant → IA review/rewrite/let
 
 - [ ] Export / portabilité : bouton « Télécharger mes données » (JSON/ZIP profil + CV)
 - [ ] Soft-delete compte + délai de grâce **30 j** (réactivation / purge CRON)
+- [ ] Admin : compteur **agrégé** de suppressions de compte dans le temps (dashboard)
+	- volumes / séries (ex. 7 j, 30 j, total) — **pas** d’identité, email, ni liste nominative
+	- peut s’appuyer sur `deletedAt` du soft-delete (ou event anonymisé si besoin)
 
 ### Catalogue / assets
 
@@ -192,7 +198,7 @@ V1 = split partagé ; **gating options avant fin V3**.
 
 ### Clôture V3
 
-- [ ] Checklist légal fin de version (URSSAF, CGU à jour, compte Stripe pro, etc.)
+- [ ] Checklist légal **ouverture prod** (mentions remplies, URSSAF, CGU / privacy à jour, Stripe pro, cookies si GA)
 
 ---
 
@@ -231,11 +237,15 @@ Package abo = vraie plus-value (récurrence + présence en ligne).
 
 ## Checklist légal (chaque fin de version)
 
-- [ ] Statut / URSSAF (si monétisation active sur cette version)
-- [ ] CGU à jour
-- [ ] Politique de confidentialité à jour
+Contexte : **pas de prod publique avant fin V3**. Preprod sert à figer / faire tester (bugs → v1.1 ou V2).  
+**V1–V2 (preprod)** = revue light + smoke delete. **Ouverture prod = clôture V3** = checklist complète.
+
+- [ ] Statut / URSSAF (si monétisation active — **N/A preprod** ; obligatoire à l’ouverture prod)
+- [ ] CGU à jour (relire chaque fin de version ; durcir avant prod)
+- [ ] Politique de confidentialité à jour (idem)
+- [ ] Mentions légales remplies (SIRET, adresse, contact, hébergeur) — **avant ouverture prod**
 - [ ] Mentions cookies / traceurs si analytics branchés
-- [ ] Compte Stripe pro + CB dédiée (à partir de V3)
+- [ ] Compte Stripe pro + CB dédiée (à partir de V3 / ouverture)
 - [ ] Parcours suppression compte toujours OK
 
 ---
@@ -258,6 +268,7 @@ Package abo = vraie plus-value (récurrence + présence en ligne).
 | Historique IA en BDD | **V3 (?)** ou **V4** (abo) — session only en V1 |
 | Export données (portabilité) | **V3** |
 | Soft-delete compte + grâce 30 j | **V3** |
+| Stats suppressions compte | **V3** — compteurs agrégés dans le temps (dashboard) ; **pas** de qui / PII |
 | DnD center | **V2** |
 | Guest / localStorage | **V3** (avec Stripe) |
 | Modale re-DL &lt; 10 min | **Live** |
@@ -270,4 +281,5 @@ Package abo = vraie plus-value (récurrence + présence en ligne).
 | RGPD min (delete + CGU) | **V1** |
 | OAuth Google/GitHub + acceptation CGU | **Avant activation réelle des providers** (case actuelle = register email only) |
 | SEO templates | **V1 light livré** (Pages) ; App Router **pas maintenant** — éventuel V2 hybride |
-| Légal | Checklist **fin de chaque version** |
+| Prod publique | **Pas avant fin V3** ; preprod pour tests / bugs (corrections en **v1.1** ou au passage **V2**) |
+| Légal | Checklist **fin de chaque version** ; ouverture prod = checklist **complète** à la clôture **V3** |
