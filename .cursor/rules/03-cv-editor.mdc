@@ -12,7 +12,7 @@ Détail : `docs/cv-editor.md` · dualité : `docs/data-model.md`.
 
 - Shell : `CvEditor.tsx` — dock, dialogs, layouts
 - Form / save : `component/form/FormCv` + `mapCvToSaveInput` + `CvFormSaveContext`
-- DnD : `kit-dnd/one-column-model`, `two-columns-model`, `shared/`
+- DnD : `kit-dnd/one-column-model`, `two-columns-model` (`TwoColumnSideBar`, `TwoColumnCenter`), `shared/`
 - Sections : `template/components/*` + `register/*` + `init*.ts`
 - Mise en page : `custom-cv-input/` (dock, `mise-en-page/`, `panel-modif/`)
 

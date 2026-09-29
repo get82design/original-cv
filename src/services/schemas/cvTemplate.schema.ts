@@ -568,7 +568,14 @@ export const templateDefaultStylesSchema = z.object({
 				.enum(["OneColumnModel", "OneColumnWithLeftBar", "TwoColumnCenter", "TwoColumnSideBar"])
 				.default("OneColumnModel"),
 			sidebarSide: z.enum(["left", "right"]).default("left"),
-			sectionHeader: z.enum(["HeaderOne", "HeaderTwo", "HeaderThree", "HeaderFour", "HeaderFive"]),
+			sectionHeader: z.enum([
+				"HeaderOne",
+				"HeaderTwo",
+				"HeaderThree",
+				"HeaderFour",
+				"HeaderFive",
+				"HeaderSplitOne",
+			]),
 			sectionExperience: z.object({
 				component: z.enum(["SectionExperienceOne", "SectionExperienceTwo"]),
 				miniature: z.enum(["MiniExperienceOne"]),

@@ -14,8 +14,10 @@ import { CvSignatureVariantProvider } from "../../src/features/cv-editor/compone
 export default function CvPage() {
 	const router = useRouter();
 	const id = typeof router.query.id === "string" ? router.query.id : null;
-	const template = typeof router.query.template === "string" ? router.query.template : null;
-	const color = typeof router.query.color === "string" ? router.query.color : null;
+	const template =
+		typeof router.query.template === "string" ? router.query.template : null;
+	const color =
+		typeof router.query.color === "string" ? router.query.color : null;
 
 	// optionnel : attendre que le router soit prêt
 	if (!router.isReady) return <div>Loading...</div>;
@@ -45,11 +47,8 @@ export default function CvPage() {
 	// if (!cv) return <div>CV introuvable</div>;
 
 	return (
-		<main id="content" style={{ height: "calc(100vh - 62px)" }}>
-			<div
-				className={"w-full py-8 px-4 lg:px-3 xl:px-4"}
-				style={{ /*...ClassikAppColor(),*/ minHeight: "calc(100vh - 62px)" }}
-			>
+		<main id="content" className="min-h-[calc(100vh-62px)]">
+			<div className="w-full min-h-[calc(100vh-62px)] py-8 px-4 lg:px-3 xl:px-4">
 				<ModelAndColorProvider>
 					<FormCv idCv={id} template={template} color={color}>
 						<CreateCvProvider>

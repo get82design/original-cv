@@ -25,6 +25,15 @@ const SIDEBAR_ALLOWED = new Set([
 	"expertise",
 ]);
 
+function resolveSidebarColumns(opts: {
+	sidebarColumn?: number;
+	sidebarColumns?: number[];
+}): number[] {
+	if (opts.sidebarColumns?.length) return opts.sidebarColumns;
+	if (opts.sidebarColumn != null) return [opts.sidebarColumn];
+	return [];
+}
+
 function forceSidebarInnerColumns(modules: CvModulesInput[], movedType: string): CvModulesInput[] {
 	return modules.map((mod) => {
 		if (mod.type !== movedType) return mod;
@@ -57,20 +66,28 @@ function sectionIdToType(id: string | number) {
 	return String(id).replace(/^section-/, "");
 }
 
+type UseCvPageDndOptions = {
+	/** Colonne étroite unique (2 cols) — alias de `sidebarColumns: [n]`. */
+	sidebarColumn?: number;
+	/** Colonnes étroites (ex. 3 zones : left=0 + right=2). */
+	sidebarColumns?: number[];
+};
+
 /**
  * DnD page CV.
- * - `columns[0]` = sidebar / unique, `columns[1]` = main, etc.
+ * - `columns[0]` = sidebar / left, `columns[1]` = main…
  * - OneColumn : `useCvPageDnd([itemUse])`
- * - TwoColumn : `useCvPageDnd([left, right])`
+ * - TwoColumnSideBar : `useCvPageDnd([left, right], { sidebarColumn: 0 })` — types restreints en col 0
+ * - TwoColumnCenter : `useCvPageDnd([left, right])` — libre entre les 2 colonnes
  */
-export function useCvPageDnd(
-	columns: Array<SectionItem[]>,
-	{ sidebarColumn }: { sidebarColumn?: 0 | 1 } = {},
-) {
+export function useCvPageDnd(columns: Array<SectionItem[]>, options: UseCvPageDndOptions = {}) {
+	const sidebarColumns = resolveSidebarColumns(options);
 	const { watch, setValue, getValues } = useFormContext();
 	const watchModules = watch("modules") as CvModulesInput[];
 	/** Un seul commit par geste, uniquement si une mutation a lieu. */
 	const dragCommittedRef = useRef(false);
+
+	const isSidebarColumn = (col: number) => sidebarColumns.includes(col);
 
 	const ensureDragCommit = () => {
 		if (dragCommittedRef.current) return;
@@ -139,8 +156,7 @@ export function useCvPageDnd(
 
 			// Même colonne + drop sur le conteneur → rien à faire
 			if (activeCol === overCol) return;
-			if (sidebarColumn != null && overCol === sidebarColumn && !SIDEBAR_ALLOWED.has(movedType))
-				return;
+			if (isSidebarColumn(overCol) && !SIDEBAR_ALLOWED.has(movedType)) return;
 
 			const sourceTypes = sourceList
 				.filter((item) => item.id !== activeId)
@@ -153,7 +169,7 @@ export function useCvPageDnd(
 			let next = applyOrdersForColumn(watchModules, activeCol, sourceTypes);
 			next = applyOrdersForColumn(next, overCol, targetTypes);
 
-			if (overCol === 0) {
+			if (isSidebarColumn(overCol)) {
 				next = forceSidebarInnerColumns(next, movedType);
 			}
 
@@ -184,9 +200,8 @@ export function useCvPageDnd(
 			});
 			return;
 		}
-		if (sidebarColumn != null && overCol === sidebarColumn && !SIDEBAR_ALLOWED.has(movedType))
-			return;
-		// —— Autre colonne : change column + recalcule les 2 orders ——
+		if (isSidebarColumn(overCol) && !SIDEBAR_ALLOWED.has(movedType)) return;
+		// —— Autre colonne : change column + recalcule les orders ——
 		const sourceTypes = sourceList
 			.filter((item) => item.id !== activeId)
 			.map((item) => sectionIdToType(item.id));
@@ -203,7 +218,7 @@ export function useCvPageDnd(
 		let next = applyOrdersForColumn(watchModules, activeCol, sourceTypes);
 		next = applyOrdersForColumn(next, overCol, targetTypes);
 
-		if (overCol === 0) {
+		if (isSidebarColumn(overCol)) {
 			next = forceSidebarInnerColumns(next, movedType);
 		}
 
@@ -300,8 +315,7 @@ export function useCvPageDnd(
 			// déjà dans la colonne cible → laisse le sortable / dragEnd gérer
 			if (activeCol === overCol) return;
 			const movedType = sectionIdToType(active.id);
-			if (sidebarColumn != null && overCol === sidebarColumn && !SIDEBAR_ALLOWED.has(movedType))
-				return;
+			if (isSidebarColumn(overCol) && !SIDEBAR_ALLOWED.has(movedType)) return;
 			const sourceTypes = (columns[activeCol] ?? [])
 				.filter((i) => i.id !== active.id)
 				.map((i) => sectionIdToType(i.id));
@@ -314,7 +328,7 @@ export function useCvPageDnd(
 			const modules = getValues("modules") as CvModulesInput[];
 			let next = applyOrdersForColumn(modules, activeCol, sourceTypes);
 			next = applyOrdersForColumn(next, overCol, targetTypes);
-			if (overCol === 0) {
+			if (isSidebarColumn(overCol)) {
 				next = forceSidebarInnerColumns(next, movedType);
 			}
 			ensureDragCommit();

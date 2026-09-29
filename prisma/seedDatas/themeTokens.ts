@@ -1060,3 +1060,8 @@ export const frankfurtTokens: ThemeTokens = {
 		sizeModel: "12px",
 	},
 };
+
+/** Vienna — vitrine TwoColumnCenter (2×50 %). */
+export const viennaTokens: ThemeTokens = {
+	...berlinTokens,
+};

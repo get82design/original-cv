@@ -10,23 +10,22 @@ import { LocationInput } from "../input-cv/location-input/LocationCvInput";
 import { NomPrenomInput } from "../input-cv/nom-input/NomPrenomInput";
 import { PhoneInput } from "../input-cv/phone-input/PhoneCvInput";
 import {
-	HeaderSplitMainContainer,
-	HeaderSplitSidebarContainer,
-} from "./content/HeaderSplitContainer";
+	HeaderSplitOneMainContainer,
+	HeaderSplitOneSidebarContainer,
+} from "@/features/cv-editor/component/template/components/headers/content/HeaderSplitOneContainer";
 
 /**
- * Header réparti sur les deux colonnes (`headerPlacement: "split"`).
- * Composition unique partagée par tous les templates (V1) : les deux slots
- * sont rendus en tête de colonne, page 1.
+ * Header split variante One (`sectionHeader: "HeaderSplitOne"` + `headerPlacement: "split"`).
+ * Sidebar : photo + contacts · Main : nom/prénom + intitulé.
  */
-export const HeaderSplitSidebar = () => {
+export const HeaderSplitOneSidebar = () => {
 	const { watch } = useFormContext();
 	const watchGeneral = watch(FieldNameLayoutGeneral.layout);
 	const watchDataHeaderContentSettings: BaseTextSettings = watch(FieldNameHeader.settingsContent);
 	const contactAlign = watchDataHeaderContentSettings?.textAlign === "right" ? "right" : "left";
 
 	return (
-		<HeaderSplitSidebarContainer
+		<HeaderSplitOneSidebarContainer
 			modelGeneral={watchGeneral}
 			photo={
 				<PhotoField name={FieldNameCv.photo} stylePhoto={watchGeneral?.stylePhoto} size={140} />
@@ -38,14 +37,14 @@ export const HeaderSplitSidebar = () => {
 	);
 };
 
-export const HeaderSplitMain = () => {
+export const HeaderSplitOneMain = () => {
 	const { watch } = useFormContext();
 	const watchGeneral = watch(FieldNameLayoutGeneral.layout);
 	const watchDataHeaderTitleSettings: BaseTextSettings = watch(FieldNameHeader.settingsTitle);
 	const watchDataHeaderSubTitleSettings: BaseTextSettings = watch(FieldNameHeader.settingsSubTitle);
 
 	return (
-		<HeaderSplitMainContainer
+		<HeaderSplitOneMainContainer
 			modelGeneral={watchGeneral}
 			titleCompo={
 				<NomPrenomInput

@@ -82,7 +82,7 @@ export function CvModifDock({
 				id="modele-cv-modif"
 				aria-hidden={!showPanel}
 				style={{ width: DOCK_WIDTH }}
-				className={`fixed right-4 top-[88px] bottom-4 z-30 custom-bar flex flex-col gap-4 transition-transform duration-200 ease-out ${
+				className={`fixed right-4 top-[88px] bottom-20 z-30 custom-bar flex flex-col gap-4 transition-transform duration-200 ease-out ${
 					showPanel
 						? "translate-x-0 pointer-events-auto"
 						: "translate-x-[calc(100%+2rem)] pointer-events-none"

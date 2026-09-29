@@ -1,24 +1,26 @@
-import { berlinTokens } from "../../themeTokens";
+import { viennaTokens } from "../../themeTokens";
 import { defineTemplate } from "../_shared/defineTemplate";
 import { sharedLayout } from "../_shared/layouts";
 
-/** Berlin : vitrine HeaderSplitOne — photo + contacts en sidebar, nom/intitulé en colonne 1. */
-export const berlin = defineTemplate({
-	name: "Berlin",
-	slug: "berlin-line-x",
-	tokens: berlinTokens,
-	primaryColor: { name: "teal", primary: "-600" },
-	sectionHeader: "HeaderSplitOne",
-	pageLayout: "TwoColumnSideBar",
+/**
+ * Vienna : preuve de vie `TwoColumnCenter` (2 colonnes 50 % / 50 %).
+ * HeaderOne en `top` — pas de fond coloré sur la colonne 0.
+ */
+export const vienna = defineTemplate({
+	name: "Vienna",
+	slug: "vienna-line-x",
+	tokens: viennaTokens,
+	primaryColor: { name: "indigo", primary: "-700" },
+	sectionHeader: "HeaderOne",
+	pageLayout: "TwoColumnCenter",
 	variant: 1,
 	layout: {
 		...sharedLayout,
 		columns: 2,
 		lockPhotoSide: true,
-		headerPlacement: "split",
+		headerPlacement: "top",
 		withPhoto: true,
 		stylePhoto: "circle",
-		sidebarTheme: { bgColor: "primaryColor", shadeBgColor: "-100", fg: "black" },
 		listStyle: "none",
 		titleSection: {
 			...sharedLayout.titleSection,
@@ -43,8 +45,14 @@ export const berlin = defineTemplate({
 			column: 1,
 			columns: 2,
 		},
-		project: { isActive: true, column: 1 },
-		// sidebar (colonne 0)
+		project: { isActive: false, column: 1 },
+		volunteering: { isActive: false, column: 1 },
+		philosophy: { isActive: false, column: 1 },
+		certification: { isActive: false, column: 1 },
+		formation: { isActive: false, column: 1 },
+		achievement: { isActive: false, column: 1 },
+		publication: { isActive: false, column: 1 },
+		// sidebar (colonne 0) — types sidebar-compatibles
 		language: {
 			design: "bars",
 			isActive: true,
@@ -53,14 +61,8 @@ export const berlin = defineTemplate({
 			columns: 1,
 		},
 		tag: { title: "Skills", design: "border", isActive: true, order: 2, column: 0 },
-		socialMedia: { title: "Réseaux", isActive: true, order: 4, column: 0, columns: 1 },
+		socialMedia: { title: "Réseaux", isActive: true, order: 3, column: 0, columns: 1 },
 		passion: { isActive: false, column: 0, columns: 1 },
-		volunteering: { isActive: false, column: 1 },
-		philosophy: { isActive: false, column: 1 },
-		certification: { isActive: false, column: 1 },
-		formation: { isActive: false, column: 1 },
-		achievement: { isActive: false, column: 1 },
-		publication: { isActive: false, column: 1 },
 		prize: { isActive: false, column: 0, columns: 1 },
 		expertise: { isActive: false, column: 0, columns: 1 },
 	},

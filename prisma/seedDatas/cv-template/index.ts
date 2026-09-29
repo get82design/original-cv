@@ -25,6 +25,7 @@ import { lisbon } from "./two-columns/lisbon";
 import { singapore } from "./two-columns/singapore";
 import { tokyo } from "./two-columns/tokyo";
 import { toronto } from "./two-columns/toronto";
+import { vienna } from "./two-columns/vienna";
 
 export const seedTemplates = [
 	stockholm,
@@ -54,4 +55,5 @@ export const seedTemplates = [
 	toronto,
 	frankfurt,
 	berlin,
+	vienna,
 ];

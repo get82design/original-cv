@@ -16,7 +16,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
 			<div className="flex w-full flex-1">
 				{session.status === "authenticated" && isSm && <NavBar />}
 				<div
-					className="flex w-full min-w-0 flex-col"
+					className="flex w-full min-w-0 flex-1 flex-col"
 					style={{
 						marginLeft:
 							session.status === "authenticated" && isXl

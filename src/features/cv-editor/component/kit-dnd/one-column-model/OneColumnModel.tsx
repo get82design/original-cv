@@ -3,7 +3,7 @@ import { DndContext } from "@dnd-kit/core";
 import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { useEffect, useMemo, useState } from "react";
 import { useFormContext } from "react-hook-form";
-import { HeaderRegister } from "../../template/register/header/HeaderRegister";
+import { resolveMonoHeaderEntry } from "../../template/register/header/HeaderRegister";
 import { useCreateCvContext } from "../../context/CreateCvContext";
 import { SectionSortableContext } from "../shared/SectionSortableContext";
 import type { ItemGeneralProps } from "@utils/type";
@@ -58,7 +58,7 @@ export const OneColumnModel = ({ deleteSection }: OneColumnModelProps) => {
 	const bandStop = "calc(var(--page-pad) + (100% - 2 * var(--page-pad)) * 0.2 + 0.5rem)";
 
 	const headerKey = watch("layoutGeneral.defaultStyles")?.components?.sectionHeader ?? "HeaderOne";
-	const HeaderComponent = HeaderRegister[headerKey] ?? HeaderRegister.HeaderOne;
+	const HeaderComponent = resolveMonoHeaderEntry(headerKey).Component;
 
 	const measureIds = useMemo(() => [HEADER_MEASURE_ID, ...sectionIds], [sectionIds]);
 	const { heights, setMeasureRef } = useElementHeights(measureIds);

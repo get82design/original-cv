@@ -35,11 +35,11 @@ Critère done : créer/sauver CV → DL gratuit/payant → IA review/rewrite/let
 
 ### Éditeur CV — mise en page
 
-- [x] Header split 2-col (`headerPlacement: "split"`) — **1 composition** partagée
-	- sidebar : photo + coordonnées · colonne principale : nom / prénom + intitulé
-	- `headers/HeaderSplit` + `utils/cvHeaderPlacement` (ids de mesure + hauteurs réservées)
-	- placement **figé par le template** : pas d’UI utilisateur (cf. décisions)
-	- template vitrine seedé : **Berlin** (`two-columns/berlin.ts`)
+- [x] Header split 2-col (`headerPlacement: "split"`) — variantes via `sectionHeader`
+	- `HeaderSplitOne` (registre `{ kind: "split", Sidebar, Main }`) ; Berlin seed corrigé
+	- `headers/HeaderSplitOne` + `utils/cvHeaderPlacement` (ids de mesure + hauteurs réservées)
+	- `headerPlacement` figé par le template : pas d’UI utilisateur (cf. décisions)
+	- doc : [`docs/cv-layout-config.md`](./docs/cv-layout-config.md)
 - [x] Tests pagination impactés (`cvPage` / packing 2-col) — `cvHeaderPlacement.test.ts`
 
 ### Éditeur CV — dock / UX
@@ -103,31 +103,50 @@ Critère done : créer/sauver CV → DL gratuit/payant → IA review/rewrite/let
 
 ### Clôture V1
 
-- [ ] Smoke parcours complet (voir critère done)
-- [ ] Checklist légal fin de version — **light** (preprod, pas d’ouverture commerciale)
+- [x] Smoke parcours complet (voir critère done)
+- [x] Checklist légal fin de version — **light** (preprod, pas d’ouverture commerciale)
 	- relire CGU / privacy vs produit live ; smoke suppression compte
 	- mentions (SIRET / hébergeur), URSSAF, Stripe, cookies analytics → **reportés ouverture prod (fin V3)**
 	- placeholders mentions + bandeau amber OK jusqu’à la prod
 - [x] Sync canvas + ce fichier
-	- carte `avancement-v1.canvas.tsx` recalée après SEO catalogue light + décision App Router (2026-09-28 soir)
+	- carte `avancement-v1.canvas.tsx` recalée 2026-09-29 : V1 freeze (tag v1.0.0) · focus V2
 
 ---
 
 ## V2 — Enrichissement produit
 
+**Ordre de travail** (validé 2026-09-29) :
+
+1. DnD / layouts 2 cols (`TwoColumnCenter` 50/50 + preuve Vienna) → smoke
+2. CRUD couleurs / catalogue admin *(// possible avec 1)*
+3. Templates premium puis volume ~25 + logos / couleurs brand
+4. Onboarding stepper + opt-out compte · Tips persistants + illustrations (`public/tips/`)
+5. `match-job` → fiche métier France Travail
+6. Smoke + checklist légal light
+7. **Fin V2** : App Router hybride + évolution `/modeles/[slug]` *(mini CV ? — à cadrer)*
+
 ### Éditeur CV
 
-- [ ] DnD 3 zones (left / **center** / right)
+- [x] `TwoColumnCenter` — 2 colonnes **50 % / 50 %** (≠ SideBar 3/8+5/8)
+	- même modèle de colonnes `0` / `1` que `TwoColumnSideBar`
+	- template preuve **Vienna** (`HeaderOne` + `headerPlacement: "top"`, sans `sidebarTheme`)
+	- doc config : [`docs/cv-layout-config.md`](./docs/cv-layout-config.md)
+- [x] Headers split branchés sur `sectionHeader` (`HeaderSplitOne` + registre mono|split) — Berlin corrigé
 - [ ] Volume templates (cible ~25 classiques + premium catalogue)
 - [ ] Premiers templates **premium** basés sur header split / layouts riches
 - [ ] Logos / variantes couleurs manquantes (polish brand)
-- [ ] `(?)` Onboarding guidé « première utilisation » (stepper) — distinct du modal Tips (`DialogCvTips`)
-- [ ] Tips illustrés : captures dans `public/tips/` (+ `srcDark` si besoin) — `media` déjà prévu dans `cvTips.ts`, contenu à écrire ensemble
-- [ ] `(?)` App Router **hybride** (surfaces marketing `app/` d’abord) — optionnel ; SEO catalogue déjà OK en Pages
+- [ ] Onboarding guidé « première utilisation » (stepper) — **≠** modal Tips
+	- comptes connectés : checkbox « ne plus afficher » (préférence persistée)
+- [ ] Tips : accès **persistant** hors modale (retrouver l’aide après fermeture de `DialogCvTips`)
+	- illustrations : `public/tips/` (+ `srcDark` si besoin) — `media` déjà dans `cvTips.ts`
+	- contenu texte / captures : V2 ; enrichissement éventuel **V3** si on reporte
+- [ ] App Router **hybride** (surfaces marketing `app/` d’abord) — **fin V2**
+	- lien probable avec `/modeles/[slug]` (ex. mini CV à la place de la vignette) — à trancher au moment du chantier
 
 ### Profil
 
-- [ ] Polish recover CV → profil (all CV / header si encore manquant) `(?)`
+- [x] Recover CV → profil — **socle déjà livré** (`mapCvToProfileFormValues` + action par CV dans `ProfileCvsCard`, header inclus)
+- [ ] Smoke recover en clôture V2 (régression uniquement si bug remonté)
 
 ### IA / emploi
 
@@ -137,10 +156,10 @@ Critère done : créer/sauver CV → DL gratuit/payant → IA review/rewrite/let
 ### Admin / ops
 
 - [ ] CRUD couleurs / catalogue admin
-- [ ] Funnel produit sans GA complet `(?)`
 
 ### Clôture V2
 
+- [ ] Smoke parcours (3-col si livré, DL, IA dont match-job, recover profil)
 - [ ] Checklist légal fin de version — **light** (même logique preprod que V1 ; ouverture prod = V3)
 
 ---
@@ -179,10 +198,10 @@ Critère done : créer/sauver CV → DL gratuit/payant → IA review/rewrite/let
 	- cible : rendu A4 cohérent (même jeu de données démo, fond neutre, pas de chrome UI)
 	- `(?)` script / export automatisé depuis l’éditeur (html-to-image / Browserless) vs batch manuel soigné
 
-### Différenciation templates premium (avant fin V3)
+### Différenciation templates premium (V3)
 
 Les templates payants pourront exposer des **options** que les gratuits n’ont pas.  
-V1 = split partagé ; **gating options avant fin V3**.
+V1 = split partagé ; **gating options = chantier V3** (catalogue / layouts riches en V2 sans assert capabilities).
 
 - [ ] Modèle produit : options `free` vs `premium` (liste figée)
 - [ ] Données catalogue : flags / capabilities par template
@@ -193,6 +212,7 @@ V1 = split partagé ; **gating options avant fin V3**.
 
 ### Acquisition (optionnel V3)
 
+- [ ] Funnel produit sans GA complet *(reporté depuis V2)*
 - [ ] GA4 / Search Console `(?)`
 - [ ] Croisement trafic ↔ signups / downloads `(?)`
 
@@ -261,15 +281,21 @@ Contexte : **pas de prod publique avant fin V3**. Preprod sert à figer / faire 
 
 | Sujet | Décision |
 |-------|----------|
-| Header split V1 | **1 composition** partagée |
+| Header split | Variantes `HeaderSplitOne`… via `sectionHeader` + `headerPlacement: "split"` (plus 1 composition hardcodée) |
+| Nommage headers | Cible `Header[Placement]N` ; **pas** de rename massif `HeaderOne`…`Five` ; nouveaux = convention ; migration legacy plus tard si besoin — [`cv-layout-config.md`](./docs/cv-layout-config.md) §3 |
 | Placement header | **figé par le template** (seed) — pas de sélecteur utilisateur |
-| Options exclusives premium | **Avant fin V3** |
+| Options exclusives premium / gating | **V3** (catalogue riche V2 sans gating serveur) |
+| Onboarding stepper V2 | **In** + opt-out checkbox compte |
+| Tips vs onboarding | **Complémentaires** — stepper 1ère fois ; Tips persistants + modale |
+| Recover CV → profil | **Socle livré V1** — smoke clôture V2 si besoin |
+| Funnel sans GA | **Reporté V3** |
+| App Router hybride + `/modeles/[slug]` | **Fin V2** — mini CV `(?)` à cadrer sur le chantier |
 | Cover letter | **API V1** |
 | Historique IA en BDD | **V3 (?)** ou **V4** (abo) — session only en V1 |
 | Export données (portabilité) | **V3** |
 | Soft-delete compte + grâce 30 j | **V3** |
 | Stats suppressions compte | **V3** — compteurs agrégés dans le temps (dashboard) ; **pas** de qui / PII |
-| DnD center | **V2** |
+| DnD / `TwoColumnCenter` | **V2** — 2 cols 50/50 (pas 3 zones) ; doc [`cv-layout-config.md`](./docs/cv-layout-config.md) |
 | Guest / localStorage | **V3** (avec Stripe) |
 | Modale re-DL &lt; 10 min | **Live** |
 | Limite ~3 DL / jour / CV | **Live** (3 / 24 h) |

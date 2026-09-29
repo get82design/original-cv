@@ -5,7 +5,8 @@ import { useFormContext } from "react-hook-form";
 export const GeneralSidebar = () => {
 	const { watch } = useFormContext();
 	const pageLayout = watch(FieldNameLayoutGeneral.pageLayout);
-	const isTwoCol = pageLayout === "TwoColumnSideBar";
+	const isTwoCol =
+		pageLayout === "TwoColumnSideBar" || pageLayout === "TwoColumnCenter";
 	const sidebarSideOptions = [
 		{ value: "left", name: "Sidebar gauche" },
 		{ value: "right", name: "Sidebar droite" },

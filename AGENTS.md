@@ -19,6 +19,7 @@ Détails : [`docs/`](./docs/README.md) · pricing / roadmap : [`readme.md`](./re
 | Profile / CV / Prisma | [docs/data-model.md](./docs/data-model.md) |
 | tRPC / services | [docs/api-patterns.md](./docs/api-patterns.md) |
 | Éditeur A4 / DnD | [docs/cv-editor.md](./docs/cv-editor.md) |
+| Layout / headers (config) | [docs/cv-layout-config.md](./docs/cv-layout-config.md) |
 | UI / forms | [docs/frontend.md](./docs/frontend.md) |
 | Vitest | [docs/testing.md](./docs/testing.md) |
 | Style de code | [docs/coding-style.md](./docs/coding-style.md) |

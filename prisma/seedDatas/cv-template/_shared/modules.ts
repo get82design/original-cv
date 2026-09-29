@@ -50,8 +50,8 @@ type BaseOverride = {
 	title?: string;
 	isActive?: boolean;
 	order?: number;
-	/** Colonne de page : 0 = gauche/sidebar, 1 = main */
-	column?: 0 | 1;
+	/** Colonne de page : 0 = left/sidebar, 1 = main/center, 2 = right */
+	column?: 0 | 1 | 2;
 };
 
 type LevelDesign = "stars" | "dots" | "bars";

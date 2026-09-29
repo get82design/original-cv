@@ -39,11 +39,16 @@ import {
 import { useCvSectionItems } from "../shared/useCvSectionItems";
 import { useElementHeights } from "../shared/useElementHeights";
 
-export interface TwoColumnSideBarProps {
+export interface TwoColumnCenterProps {
 	deleteSection: (item: ItemGeneralProps) => void;
 }
 
-export function TwoColumnSideBar({ deleteSection }: TwoColumnSideBarProps) {
+/**
+ * Layout 2 colonnes égales (50 % / 50 %).
+ * `pageLayout: "TwoColumnCenter"` — colonnes 0 / 1, DnD libre (pas de `sidebarColumn`).
+ * Diffère de `TwoColumnSideBar` (3/8 + 5/8 + types sidebar restreints) par la largeur et le DnD.
+ */
+export function TwoColumnCenter({ deleteSection }: TwoColumnCenterProps) {
 	const paddingDoc = ChangePaddingDocument();
 	const { setSectionSelected, sectionSelected } = useCreateCvContext();
 	const { watch } = useFormContext();
@@ -69,7 +74,7 @@ export function TwoColumnSideBar({ deleteSection }: TwoColumnSideBarProps) {
 	const [activeSectionId, setActiveSectionId] = useState<string | null>(null);
 	const activeItem = [...left, ...right].find((i) => i.id === activeSectionId);
 	const { sensors, handleDragStart, handleDragEnd, handleDragOver, collisionDetection } =
-		useCvPageDnd([left, right], { sidebarColumn: 0 });
+		useCvPageDnd([left, right]);
 
 	const primaryColor = GetPrimaryColor() ?? "white";
 	const accent = watch(FieldNameLayoutGeneral.pageAccent);
@@ -108,13 +113,11 @@ export function TwoColumnSideBar({ deleteSection }: TwoColumnSideBarProps) {
 	const packingHeights = useFrozenPackingHeights(stableHeights, sectionSelected);
 
 	const padPx = CV_PAGE_PAD_PX[marge] ?? CV_PAGE_PAD_PX.md;
-	// Tant qu’un header n’est pas mesuré, budget trop large → pas de page 2 alors que ça déborde.
 	const headerHeights = useMemo(
 		() => resolveTwoColumnHeaderHeights(headerPlacement, packingHeights),
 		[headerPlacement, packingHeights],
 	);
 
-	// Espace vertical dispo pour les sections d’une colonne (header top déjà hors flux).
 	const columnBodyHeight = Math.max(
 		1,
 		CV_PAGE_HEIGHT - headerHeights.top - 2 * padPx - CV_SIGNATURE_RESERVE_PX,
@@ -122,8 +125,6 @@ export function TwoColumnSideBar({ deleteSection }: TwoColumnSideBarProps) {
 
 	const heightsForPack = useMemo(() => {
 		const m = new Map(packingHeights);
-		// Tant qu’une section n’est pas mesurée, estimation basse pour déclencher la page 2
-		// (sinon h=0 → tout reste page 1 alors que ça déborde visuellement).
 		for (const id of [...sidebarIds, ...mainIds]) {
 			if ((m.get(id) ?? 0) <= 0) m.set(id, 140);
 		}
@@ -218,7 +219,7 @@ export function TwoColumnSideBar({ deleteSection }: TwoColumnSideBarProps) {
 				<div className="flex flex-col gap-6">
 					{pages.map((page, pageIndex) => (
 						// biome-ignore lint/suspicious/noArrayIndexKey: index de page A4 stable
-						<div key={`cv-page-2col-${pageIndex}`} className="flex flex-col gap-2">
+						<div key={`cv-page-2col-center-${pageIndex}`} className="flex flex-col gap-2">
 							{pages.length > 1 && (
 								<p className="text-xs text-muted-color m-0 px-1">
 									Page {pageIndex + 1} / {pages.length}
@@ -246,7 +247,7 @@ export function TwoColumnSideBar({ deleteSection }: TwoColumnSideBarProps) {
 										<ColumnDropZone
 											column={0}
 											pageIndex={pageIndex}
-											className={`col-span-3 ${
+											className={`col-span-4 ${
 												sidebarSide === "right" ? "order-2" : "order-1"
 											} ${paddingDoc}`}
 											fg={columnFg}
@@ -283,8 +284,8 @@ export function TwoColumnSideBar({ deleteSection }: TwoColumnSideBarProps) {
 										<ColumnDropZone
 											column={1}
 											pageIndex={pageIndex}
-											className={`col-span-5 ${
-												sidebarSide === "right" ? "order-1 pr-0" : "order-2 pl-0"
+											className={`col-span-4 ${
+												sidebarSide === "right" ? "order-1" : "order-2"
 											} ${paddingDoc}`}
 										>
 											{pageIndex === 0 && headerPlacement === "split" && (

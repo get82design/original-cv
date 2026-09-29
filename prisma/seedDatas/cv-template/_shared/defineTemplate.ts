@@ -19,7 +19,13 @@ export function defineTemplate(opts: {
 	slug: string;
 	tokens: ThemeTokens;
 	primaryColor: { name: string; primary: string };
-	sectionHeader: "HeaderOne" | "HeaderTwo" | "HeaderThree" | "HeaderFour" | "HeaderFive";
+	sectionHeader:
+		| "HeaderOne"
+		| "HeaderTwo"
+		| "HeaderThree"
+		| "HeaderFour"
+		| "HeaderFive"
+		| "HeaderSplitOne";
 	variant: 1 | 2;
 	pageLayout?: PageLayout;
 	layout?: Omit<Partial<TemplateLayout>, "titleSection" | "typography"> & {

@@ -64,12 +64,14 @@ Mesure & shell :
 ## Layouts DnD
 
 - 1 colonne : `kit-dnd/one-column-model/OneColumnModel`
-- 2 colonnes : `kit-dnd/two-columns-model/TwoColumnSideBar` (+ main)
-- Placement header 2 cols (`layout.headerPlacement`) : `top` (pleine largeur, hors flux colonnes), `sidebar`, `split` (photo/identité en sidebar + intitulé/contacts en colonne principale, composition partagée `headers/HeaderSplit`) — ids de mesure et hauteurs réservées dans `utils/cvHeaderPlacement.ts`
-- `headerPlacement` est **figé par le template** (seed `defineTemplate`) : pas d’input utilisateur, on change de placement en changeant de template
+- 2 colonnes étroit/large : `TwoColumnSideBar` — colonnes `0` sidebar / `1` main (**3/8 + 5/8**)
+- 2 colonnes égales : `TwoColumnCenter` — mêmes colonnes `0` / `1` (**4/8 + 4/8**, 50 % / 50 %)
+- Placement header (`layout.headerPlacement`) : `top` | `sidebar` | `split` — détail et effets : [`cv-layout-config.md`](./cv-layout-config.md)
+- `headerPlacement` est **figé par le template** (seed `defineTemplate`) : pas d’input utilisateur
 - Choix layout : `kit-dnd/register/PageLayoutRegister`
 - Shared : `ColumnDropZone`, `SectionSortableContext`, `useCvPageDnd`, `useCvSectionItems`, `SectionCatalog`
 - Ordre modules actifs : `@/utils/moduleOrder` (`compactActiveOrders`, `nextActiveOrderInColumn`…)
+- Packing : `packSectionsIntoPages` + `mergeTwoColumnPages`
 
 Règle : **préserver** dnd-kit et l’ordre `CVModule` / `CVModuleItem` — ne pas réécrire le flow from scratch.
 
