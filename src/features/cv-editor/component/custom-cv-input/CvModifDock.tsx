@@ -9,6 +9,7 @@ import { useCvFormSave } from "@/features/cv-editor/component/form/CvFormSaveCon
 import type { TemplateModule } from "@/services/schemas/cvTemplate.schema";
 import type { CvFormValues } from "@/services/schemas/cvSave.schema";
 import type { CvCoverLetter } from "@/services/schemas/cvCoverLetter.schema";
+import type { CvMatchJob } from "@/services/schemas/cvMatchJob.schema";
 import { saveGuestCvDraft } from "@/features/cv-editor/utils/guestCvDraft";
 import { Button } from "primereact/button";
 import { TabPanel, TabView } from "primereact/tabview";
@@ -30,7 +31,8 @@ interface CvModifDockProps {
 	isSubmitting: boolean;
 	getValues: () => CvFormValues;
 	onDownloadClick?: () => void;
-	onReopenCoverLetter?: (coverLetter: CvCoverLetter) => void;
+	onReopenCoverLetter?: ((coverLetter: CvCoverLetter) => void) | undefined;
+	onReopenMatchJob?: ((match: CvMatchJob) => void) | undefined;
 }
 
 export function CvModifDock({
@@ -44,6 +46,7 @@ export function CvModifDock({
 	getValues,
 	onDownloadClick,
 	onReopenCoverLetter,
+	onReopenMatchJob,
 }: CvModifDockProps) {
 	const router = useRouter();
 	const { requestSave } = useCvFormSave();
@@ -143,17 +146,16 @@ export function CvModifDock({
 						>
 							<SelectTemplate />
 						</TabPanel>
-						{showIaTab ? (
+							{showIaTab ? (
 							<TabPanel
 								header={`IA (${entries.length})`}
 								headerClassName="text-sm flex justify-center text-center whitespace-nowrap"
 								contentClassName="py-2 px-1"
 							>
-								{onReopenCoverLetter ? (
-									<AiAdvicePanel onReopenCoverLetter={onReopenCoverLetter} />
-								) : (
-									<AiAdvicePanel />
-								)}
+								<AiAdvicePanel
+									onReopenCoverLetter={onReopenCoverLetter}
+									onReopenMatchJob={onReopenMatchJob}
+								/>
 							</TabPanel>
 						) : null}
 					</TabView>

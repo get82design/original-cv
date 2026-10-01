@@ -27,6 +27,7 @@ const FEATURE_OPTIONS: { label: string; value: AiFeature | null }[] = [
 	{ label: "Relecture", value: AiFeature.REVIEW_CV },
 	{ label: "Reformulation", value: AiFeature.REWRITE_SECTION },
 	{ label: "Lettre de motivation", value: AiFeature.COVER_LETTER },
+	{ label: "Comparaison annonce", value: AiFeature.MATCH_JOB },
 ];
 
 function formatDate(d: Date | string | null | undefined) {
@@ -51,6 +52,8 @@ function aiFeatureLabel(feature: AiFeature) {
 			return "Reformulation";
 		case "COVER_LETTER":
 			return "Lettre de motivation";
+		case "MATCH_JOB":
+			return "Comparaison annonce";
 	}
 }
 

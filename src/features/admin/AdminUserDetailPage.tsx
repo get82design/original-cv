@@ -37,7 +37,9 @@ function formatDate(d: Date | string | null | undefined) {
 	});
 }
 
-function aiFeatureLabel(feature: "IMPORT_CV" | "REVIEW_CV" | "REWRITE_SECTION") {
+function aiFeatureLabel(
+	feature: "IMPORT_CV" | "REVIEW_CV" | "REWRITE_SECTION" | "COVER_LETTER" | "MATCH_JOB",
+) {
 	switch (feature) {
 		case "IMPORT_CV":
 			return "Import PDF";
@@ -45,6 +47,10 @@ function aiFeatureLabel(feature: "IMPORT_CV" | "REVIEW_CV" | "REWRITE_SECTION") 
 			return "Relecture";
 		case "REWRITE_SECTION":
 			return "Reformulation";
+		case "COVER_LETTER":
+			return "Lettre de motivation";
+		case "MATCH_JOB":
+			return "Comparaison annonce";
 	}
 }
 

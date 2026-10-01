@@ -7,6 +7,7 @@ export const BILLABLE_AI_FEATURES = [
 	"REVIEW_CV",
 	"REWRITE_SECTION",
 	"COVER_LETTER",
+	"MATCH_JOB",
 ] as const satisfies readonly AiFeature[];
 
 export type BillableAiFeature = (typeof BILLABLE_AI_FEATURES)[number];

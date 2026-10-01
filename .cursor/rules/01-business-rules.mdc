@@ -29,7 +29,7 @@ Détail live + cibles : `docs/business-rules.md` · pricing long : `readme.md`.
 ## IA
 
 - Import : quotas `cvImportQuota` (2/24h, 5/7j, 10/30j) — pas `AiFeaturePrice`
-- REVIEW / REWRITE / COVER_LETTER : `aiBillingService` — assert avant, `consumeAndLog` après succès
+- REVIEW / REWRITE / COVER_LETTER / MATCH_JOB : `aiBillingService` — assert avant, `consumeAndLog` après succès
 - FREE → free DL ; PAID → downloadCredits ; log `AiEvent`
 
 ## Public / RGPD

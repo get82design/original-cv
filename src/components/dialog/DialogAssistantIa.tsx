@@ -39,8 +39,7 @@ const AI_ACTIONS: AiAction[] = [
 		id: "match-job",
 		title: "Comparer à une annonce",
 		description: "Évalue l’adéquation de ton CV avec une offre d’emploi.",
-		hint: "Bientôt disponible",
-		comingSoon: true,
+		feature: "MATCH_JOB",
 	},
 ];
 

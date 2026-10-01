@@ -4,6 +4,7 @@ import {
 	type AiAdviceEntry,
 } from "@/features/cv-editor/component/context/AiAdviceContext";
 import type { CvCoverLetter } from "@/services/schemas/cvCoverLetter.schema";
+import type { CvMatchJob } from "@/services/schemas/cvMatchJob.schema";
 
 function formatTime(ts: number) {
 	return new Date(ts).toLocaleTimeString("fr-FR", {
@@ -16,10 +17,12 @@ function AdviceCard({
 	entry,
 	onRemove,
 	onReopenCoverLetter,
+	onReopenMatchJob,
 }: {
 	entry: AiAdviceEntry;
 	onRemove: () => void;
-	onReopenCoverLetter?: (coverLetter: CvCoverLetter) => void;
+	onReopenCoverLetter?: ((coverLetter: CvCoverLetter) => void) | undefined;
+	onReopenMatchJob?: ((match: CvMatchJob) => void) | undefined;
 }) {
 	const { review } = entry;
 
@@ -83,19 +86,36 @@ function AdviceCard({
 					/>
 				</div>
 			) : null}
+			{entry.matchJob && onReopenMatchJob ? (
+				<div className="mt-2 flex justify-end">
+					<Button
+						type="button"
+						text
+						size="small"
+						icon="pi pi-external-link"
+						label="Voir le match"
+						aria-label="Rouvrir la comparaison à l’annonce"
+						onClick={() => {
+							if (entry.matchJob) onReopenMatchJob(entry.matchJob);
+						}}
+						className="!p-0 !text-xs !text-zinc-600 dark:!text-zinc-300"
+					/>
+				</div>
+			) : null}
 		</article>
 	);
 }
 
 interface AiAdvicePanelProps {
-	onReopenCoverLetter?: (coverLetter: CvCoverLetter) => void;
+	onReopenCoverLetter?: ((coverLetter: CvCoverLetter) => void) | undefined;
+	onReopenMatchJob?: ((match: CvMatchJob) => void) | undefined;
 }
 
 /**
  * Contenu de l’onglet IA — pile de conseils (session).
  * Visible uniquement s’il y a au moins une entrée.
  */
-export function AiAdvicePanel({ onReopenCoverLetter }: AiAdvicePanelProps) {
+export function AiAdvicePanel({ onReopenCoverLetter, onReopenMatchJob }: AiAdvicePanelProps) {
 	const { entries, removeAdvice, clearAdvice } = useAiAdvice();
 
 	if (entries.length === 0) return null;
@@ -116,18 +136,15 @@ export function AiAdvicePanel({ onReopenCoverLetter }: AiAdvicePanelProps) {
 				/>
 			</div>
 			<div className="flex max-h-[min(52vh,28rem)] flex-col gap-2 overflow-y-auto pr-1">
-				{entries.map((entry) =>
-					onReopenCoverLetter ? (
-						<AdviceCard
-							key={entry.id}
-							entry={entry}
-							onRemove={() => removeAdvice(entry.id)}
-							onReopenCoverLetter={onReopenCoverLetter}
-						/>
-					) : (
-						<AdviceCard key={entry.id} entry={entry} onRemove={() => removeAdvice(entry.id)} />
-					),
-				)}
+				{entries.map((entry) => (
+					<AdviceCard
+						key={entry.id}
+						entry={entry}
+						onRemove={() => removeAdvice(entry.id)}
+						onReopenCoverLetter={onReopenCoverLetter}
+						onReopenMatchJob={onReopenMatchJob}
+					/>
+				))}
 			</div>
 		</div>
 	);

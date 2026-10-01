@@ -155,7 +155,8 @@ Critère done : créer/sauver CV → DL gratuit/payant → IA review/rewrite/let
 
 ### IA / emploi
 
-- [ ] Comparer à une annonce (`match-job`) — sortir du `comingSoon`
+- [x] Comparer à une annonce (`match-job`) — sortir du `comingSoon`
+	- `AiFeature.MATCH_JOB` + seed `costPaid: 2` ; `DialogMatchJob` ; `ai.matchJob` / `geminiService.matchJob`
 - [ ] Fiche métier France Travail (vraie intégration)
 
 ### Admin / ops

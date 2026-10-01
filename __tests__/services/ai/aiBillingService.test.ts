@@ -19,6 +19,11 @@ async function ensurePrices() {
 		create: { feature: "COVER_LETTER", costFree: null, costPaid: 4 },
 		update: { costFree: null, costPaid: 4 },
 	});
+	await prismaTest.aiFeaturePrice.upsert({
+		where: { feature: "MATCH_JOB" },
+		create: { feature: "MATCH_JOB", costFree: null, costPaid: 2 },
+		update: { costFree: null, costPaid: 2 },
+	});
 }
 
 describe("aiBillingService", () => {
@@ -33,7 +38,12 @@ describe("aiBillingService", () => {
 
 	it("listPrices returns all billable features", async () => {
 		const prices = await aiBillingService.listPrices();
-		expect(prices.map((p) => p.feature)).toEqual(["REVIEW_CV", "REWRITE_SECTION", "COVER_LETTER"]);
+		expect(prices.map((p) => p.feature)).toEqual([
+			"REVIEW_CV",
+			"REWRITE_SECTION",
+			"COVER_LETTER",
+			"MATCH_JOB",
+		]);
 		expect(prices.find((p) => p.feature === "REVIEW_CV")).toMatchObject({
 			costFree: null,
 			costPaid: 2,

@@ -458,6 +458,7 @@ html.dark #panel-modif-cv.cv-modif-tabview {
 .p-dialog.dialog-cv-review-result,
 .p-dialog.dialog-rewrite-section,
 .p-dialog.dialog-cover-letter,
+.p-dialog.dialog-match-job,
 .p-dialog.dialog-delete-account,
 .p-dialog.dialog-admin-template,
 .p-dialog.dialog-admin-color,
@@ -511,6 +512,7 @@ html.dark .p-dialog.dialog-import-review,
 html.dark .p-dialog.dialog-cv-review-result,
 html.dark .p-dialog.dialog-rewrite-section,
 html.dark .p-dialog.dialog-cover-letter,
+html.dark .p-dialog.dialog-match-job,
 html.dark .p-dialog.dialog-delete-account,
 html.dark .p-dialog.dialog-admin-template,
 html.dark .p-dialog.dialog-admin-color,
@@ -786,6 +788,8 @@ html.dark .p-dialog.dialog-cv-tips .cv-tips-accordion.p-accordion {
 /* Inputs dans modals lettre / suppression compte / admin couleurs — light/dark */
 .p-dialog.dialog-cover-letter .p-inputtext,
 .p-dialog.dialog-cover-letter .p-inputtextarea,
+.p-dialog.dialog-match-job .p-inputtext,
+.p-dialog.dialog-match-job .p-inputtextarea,
 .p-dialog.dialog-delete-account .p-inputtext,
 .p-dialog.dialog-admin-color .p-inputtext,
 .p-dialog.dialog-admin-color .p-dropdown {
@@ -796,6 +800,8 @@ html.dark .p-dialog.dialog-cv-tips .cv-tips-accordion.p-accordion {
 
 .p-dialog.dialog-cover-letter .p-inputtext:enabled:hover,
 .p-dialog.dialog-cover-letter .p-inputtextarea:enabled:hover,
+.p-dialog.dialog-match-job .p-inputtext:enabled:hover,
+.p-dialog.dialog-match-job .p-inputtextarea:enabled:hover,
 .p-dialog.dialog-delete-account .p-inputtext:enabled:hover,
 .p-dialog.dialog-admin-color .p-inputtext:enabled:hover,
 .p-dialog.dialog-admin-color .p-dropdown:not(.p-disabled):hover {
@@ -804,6 +810,8 @@ html.dark .p-dialog.dialog-cv-tips .cv-tips-accordion.p-accordion {
 
 .p-dialog.dialog-cover-letter .p-inputtext:enabled:focus,
 .p-dialog.dialog-cover-letter .p-inputtextarea:enabled:focus,
+.p-dialog.dialog-match-job .p-inputtext:enabled:focus,
+.p-dialog.dialog-match-job .p-inputtextarea:enabled:focus,
 .p-dialog.dialog-delete-account .p-inputtext:enabled:focus,
 .p-dialog.dialog-admin-color .p-inputtext:enabled:focus,
 .p-dialog.dialog-admin-color .p-dropdown.p-focus {
@@ -813,6 +821,8 @@ html.dark .p-dialog.dialog-cv-tips .cv-tips-accordion.p-accordion {
 
 .p-dialog.dialog-cover-letter .p-inputtext::placeholder,
 .p-dialog.dialog-cover-letter .p-inputtextarea::placeholder,
+.p-dialog.dialog-match-job .p-inputtext::placeholder,
+.p-dialog.dialog-match-job .p-inputtextarea::placeholder,
 .p-dialog.dialog-delete-account .p-inputtext::placeholder,
 .p-dialog.dialog-admin-color .p-inputtext::placeholder {
     color: #a1a1aa;
@@ -824,6 +834,8 @@ html.dark .p-dialog.dialog-cv-tips .cv-tips-accordion.p-accordion {
 
 html.dark .p-dialog.dialog-cover-letter .p-inputtext,
 html.dark .p-dialog.dialog-cover-letter .p-inputtextarea,
+html.dark .p-dialog.dialog-match-job .p-inputtext,
+html.dark .p-dialog.dialog-match-job .p-inputtextarea,
 html.dark .p-dialog.dialog-delete-account .p-inputtext,
 html.dark .p-dialog.dialog-admin-color .p-inputtext,
 html.dark .p-dialog.dialog-admin-color .p-dropdown {
@@ -834,6 +846,8 @@ html.dark .p-dialog.dialog-admin-color .p-dropdown {
 
 html.dark .p-dialog.dialog-cover-letter .p-inputtext:enabled:hover,
 html.dark .p-dialog.dialog-cover-letter .p-inputtextarea:enabled:hover,
+html.dark .p-dialog.dialog-match-job .p-inputtext:enabled:hover,
+html.dark .p-dialog.dialog-match-job .p-inputtextarea:enabled:hover,
 html.dark .p-dialog.dialog-delete-account .p-inputtext:enabled:hover,
 html.dark .p-dialog.dialog-admin-color .p-inputtext:enabled:hover,
 html.dark .p-dialog.dialog-admin-color .p-dropdown:not(.p-disabled):hover {
@@ -842,6 +856,8 @@ html.dark .p-dialog.dialog-admin-color .p-dropdown:not(.p-disabled):hover {
 
 html.dark .p-dialog.dialog-cover-letter .p-inputtext:enabled:focus,
 html.dark .p-dialog.dialog-cover-letter .p-inputtextarea:enabled:focus,
+html.dark .p-dialog.dialog-match-job .p-inputtext:enabled:focus,
+html.dark .p-dialog.dialog-match-job .p-inputtextarea:enabled:focus,
 html.dark .p-dialog.dialog-delete-account .p-inputtext:enabled:focus,
 html.dark .p-dialog.dialog-admin-color .p-inputtext:enabled:focus,
 html.dark .p-dialog.dialog-admin-color .p-dropdown.p-focus {
@@ -851,6 +867,8 @@ html.dark .p-dialog.dialog-admin-color .p-dropdown.p-focus {
 
 html.dark .p-dialog.dialog-cover-letter .p-inputtext::placeholder,
 html.dark .p-dialog.dialog-cover-letter .p-inputtextarea::placeholder,
+html.dark .p-dialog.dialog-match-job .p-inputtext::placeholder,
+html.dark .p-dialog.dialog-match-job .p-inputtextarea::placeholder,
 html.dark .p-dialog.dialog-delete-account .p-inputtext::placeholder,
 html.dark .p-dialog.dialog-admin-color .p-inputtext::placeholder {
     color: #71717a;

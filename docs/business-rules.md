@@ -57,7 +57,7 @@ Flux serveur (`userService`) :
 
 ## IA (live)
 
-Features (`AiFeature`) : `IMPORT_CV` \| `REVIEW_CV` \| `REWRITE_SECTION` \| `COVER_LETTER`
+Features (`AiFeature`) : `IMPORT_CV` \| `REVIEW_CV` \| `REWRITE_SECTION` \| `COVER_LETTER` \| `MATCH_JOB`
 
 ### Import CV (`IMPORT_CV`)
 
@@ -73,7 +73,7 @@ Features (`AiFeature`) : `IMPORT_CV` \| `REVIEW_CV` \| `REWRITE_SECTION` \| `COV
 
 ### Features facturées (crédits)
 
-- `REVIEW_CV`, `REWRITE_SECTION`, `COVER_LETTER` via `aiBillingService`
+- `REVIEW_CV`, `REWRITE_SECTION`, `COVER_LETTER`, `MATCH_JOB` via `aiBillingService`
 - Tarifs DB : `AiFeaturePrice` (`costFree` / `costPaid`, null = option absente)
 - Paiement : `AiPaymentMethod` `FREE` → consomme `freeDownloadsRemaining` ; `PAID` → `downloadCredits`
 - Pattern : `assertCanPay` **avant** l’appel ; `consumeAndLog` **après** succès (re-check solde + `AiEvent` + incrément `iaRequestsUsed`)

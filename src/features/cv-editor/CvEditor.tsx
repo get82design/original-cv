@@ -27,6 +27,10 @@ import {
 	DialogCoverLetter,
 	type CoverLetterFormValues,
 } from "@/components/dialog/DialogCoverLetter";
+import {
+	DialogMatchJob,
+	type MatchJobFormValues,
+} from "@/components/dialog/DialogMatchJob";
 import { CV_MODIF_DOCK_WIDTH, CvModifDock } from "./component/custom-cv-input/CvModifDock";
 import { useCvFormHistory } from "./component/form/CvFormHistoryContext";
 import { DialogDownloadCv } from "@/components/dialog/DialogDownloadCv";
@@ -45,6 +49,7 @@ import type { CvReview } from "@/services/schemas/cvReview.schema";
 import type { CvRewriteSection as CvRewriteResult } from "@/services/schemas/cvRewriteSection.schema";
 import type { CvRewriteSectionType } from "@/services/schemas/cvRewriteSection.schema";
 import type { CvCoverLetter } from "@/services/schemas/cvCoverLetter.schema";
+import type { CvMatchJob } from "@/services/schemas/cvMatchJob.schema";
 import { Toast } from "primereact/toast";
 import { flattenCvFormToText } from "./utils/flattenCvFormToText";
 import { extractPrimaryColorName } from "@/services/cv/extractPrimaryColorName";
@@ -81,6 +86,8 @@ export const CvEditor = () => {
 	const [rewriteSectionType, setRewriteSectionType] = useState<CvRewriteSectionType | null>(null);
 	const [visibleCoverLetter, setVisibleCoverLetter] = useState(false);
 	const [coverLetterResult, setCoverLetterResult] = useState<CvCoverLetter | null>(null);
+	const [visibleMatchJob, setVisibleMatchJob] = useState(false);
+	const [matchJobResult, setMatchJobResult] = useState<CvMatchJob | null>(null);
 	const [visibleDownloadDialog, setVisibleDownloadDialog] = useState(false);
 	const [downloadPreviewWithLogo, setDownloadPreviewWithLogo] = useState<string | null>(null);
 	const [downloadPreviewWithoutLogo, setDownloadPreviewWithoutLogo] = useState<string | null>(null);
@@ -106,6 +113,13 @@ export const CvEditor = () => {
 					companyName?: string;
 					jobTitle?: string;
 					jobOffer?: string;
+			  }
+			| {
+					kind: "match-job";
+					cvText: string;
+					jobOffer: string;
+					companyName?: string;
+					jobTitle?: string;
 			  };
 	} | null>(null);
 	const billingOptionsQuery = trpc.ai.getBillingOptions.useQuery(
@@ -115,6 +129,7 @@ export const CvEditor = () => {
 	const reviewCvMutation = trpc.ai.reviewCv.useMutation();
 	const rewriteSectionMutation = trpc.ai.rewriteSection.useMutation();
 	const coverLetterMutation = trpc.ai.coverLetter.useMutation();
+	const matchJobMutation = trpc.ai.matchJob.useMutation();
 	const utils = trpc.useUtils();
 	const updateUserProfileMutation = trpc.user.updateProfile.useMutation({
 		onSuccess: () => {
@@ -598,6 +613,38 @@ export const CvEditor = () => {
 				return;
 			}
 
+			if (pending.kind === "match-job") {
+				setPaymentDialog(null);
+				setMatchJobResult(null);
+				setVisibleMatchJob(true);
+				const { match } = await matchJobMutation.mutateAsync({
+					cvText: pending.cvText,
+					jobOffer: pending.jobOffer,
+					paymentMethod: choice,
+					...(pending.companyName ? { companyName: pending.companyName } : {}),
+					...(pending.jobTitle ? { jobTitle: pending.jobTitle } : {}),
+				});
+				setMatchJobResult(match);
+				const adviceTitle = pending.companyName
+					? `Match · ${pending.companyName}`
+					: pending.jobTitle
+						? `Match · ${pending.jobTitle}`
+						: "Comparaison annonce";
+				pushAdvice({
+					kind: "match-job",
+					title: adviceTitle,
+					review: {
+						summary: match.summary,
+						score: match.score,
+						strengths: match.matched,
+						improvements: match.gaps,
+						quickWins: match.keywordsToAdd,
+					},
+					matchJob: match,
+				});
+				return;
+			}
+
 			setPaymentDialog(null);
 			setRewriteSectionType(pending.sectionType);
 			setRewriteResult(null);
@@ -614,6 +661,9 @@ export const CvEditor = () => {
 			else if (pending.kind === "cover-letter") {
 				setCoverLetterResult(null);
 				setVisibleCoverLetter(false);
+			} else if (pending.kind === "match-job") {
+				setMatchJobResult(null);
+				setVisibleMatchJob(false);
 			} else {
 				setRewriteSectionType(null);
 				setVisibleRewrite(false);
@@ -627,7 +677,9 @@ export const CvEditor = () => {
 						? "Relecture impossible"
 						: pending.kind === "cover-letter"
 							? "Lettre impossible"
-							: "Reformulation impossible",
+							: pending.kind === "match-job"
+								? "Comparaison impossible"
+								: "Reformulation impossible",
 				detail: getClientErrorMessage(err, "Une erreur est survenue."),
 				life: rateLimited ? 7000 : 5000,
 			});
@@ -726,12 +778,10 @@ export const CvEditor = () => {
 			openCoverLetterDialog();
 			return;
 		}
-		toast.current?.show({
-			severity: "info",
-			summary: "Bientôt",
-			detail: "Cette action IA sera disponible prochainement.",
-			life: 3500,
-		});
+		if (action === "match-job") {
+			openMatchJobDialog();
+			return;
+		}
 	};
 
 	const closeCoverLetterDialog = () => {
@@ -748,6 +798,22 @@ export const CvEditor = () => {
 	const reopenCoverLetterResult = (coverLetter: CvCoverLetter) => {
 		setCoverLetterResult(coverLetter);
 		setVisibleCoverLetter(true);
+	};
+
+	const closeMatchJobDialog = () => {
+		if (matchJobMutation.isPending) return;
+		setVisibleMatchJob(false);
+		setMatchJobResult(null);
+	};
+
+	const openMatchJobDialog = () => {
+		setMatchJobResult(null);
+		setVisibleMatchJob(true);
+	};
+
+	const reopenMatchJobResult = (match: CvMatchJob) => {
+		setMatchJobResult(match);
+		setVisibleMatchJob(true);
 	};
 
 	const onGenerateCoverLetter = (values: CoverLetterFormValues) => {
@@ -783,6 +849,52 @@ export const CvEditor = () => {
 				...(companyName ? { companyName } : {}),
 				...(jobTitle ? { jobTitle } : {}),
 				...(jobOffer ? { jobOffer } : {}),
+			},
+		});
+	};
+
+	const onGenerateMatchJob = (values: MatchJobFormValues) => {
+		if (status !== "authenticated") {
+			toast.current?.show({
+				severity: "error",
+				summary: "Connexion requise",
+				detail: "Connectez-vous pour comparer votre CV à une annonce.",
+				life: 4000,
+			});
+			return;
+		}
+		const jobOffer = values.jobOffer.trim();
+		if (!jobOffer) {
+			toast.current?.show({
+				severity: "warn",
+				summary: "Annonce manquante",
+				detail: "Colle le texte de l’annonce pour lancer la comparaison.",
+				life: 4000,
+			});
+			return;
+		}
+		const cvText = flattenCvFormToText(getValues() as CvFormValues);
+		if (!cvText.trim()) {
+			toast.current?.show({
+				severity: "warn",
+				summary: "CV vide",
+				detail: "Ajoutez du contenu avant de comparer à une annonce.",
+				life: 4000,
+			});
+			return;
+		}
+		const companyName = values.companyName.trim() || undefined;
+		const jobTitle = values.jobTitle.trim() || undefined;
+		setVisibleMatchJob(false);
+		setPaymentDialog({
+			feature: "MATCH_JOB",
+			title: "Payer la comparaison",
+			pending: {
+				kind: "match-job",
+				cvText,
+				jobOffer,
+				...(companyName ? { companyName } : {}),
+				...(jobTitle ? { jobTitle } : {}),
 			},
 		});
 	};
@@ -854,7 +966,8 @@ export const CvEditor = () => {
 						if (
 							reviewCvMutation.isPending ||
 							rewriteSectionMutation.isPending ||
-							coverLetterMutation.isPending
+							coverLetterMutation.isPending ||
+							matchJobMutation.isPending
 						) {
 							return;
 						}
@@ -866,7 +979,8 @@ export const CvEditor = () => {
 					confirming={
 						reviewCvMutation.isPending ||
 						rewriteSectionMutation.isPending ||
-						coverLetterMutation.isPending
+						coverLetterMutation.isPending ||
+						matchJobMutation.isPending
 					}
 					onConfirm={(choice) => {
 						void executePaidAiAction(choice);
@@ -906,6 +1020,16 @@ export const CvEditor = () => {
 					onGenerate={onGenerateCoverLetter}
 					onBackToForm={() => {
 						setCoverLetterResult(null);
+					}}
+				/>
+				<DialogMatchJob
+					visible={visibleMatchJob}
+					loading={matchJobMutation.isPending}
+					result={matchJobResult}
+					onHide={closeMatchJobDialog}
+					onGenerate={onGenerateMatchJob}
+					onBackToForm={() => {
+						setMatchJobResult(null);
 					}}
 				/>
 				{profile && (
@@ -981,6 +1105,7 @@ export const CvEditor = () => {
 								getValues={() => getValues() as CvFormValues}
 								onDownloadClick={openDownloadDialog}
 								onReopenCoverLetter={reopenCoverLetterResult}
+								onReopenMatchJob={reopenMatchJobResult}
 							/>
 						)}
 					</div>

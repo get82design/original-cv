@@ -12,7 +12,12 @@ import { protectedProcedure, router } from "../trpc";
 
 const aiPaymentChoiceSchema = z.enum(["free", "paid"]);
 
-const billableFeatureSchema = z.enum(["REVIEW_CV", "REWRITE_SECTION", "COVER_LETTER"]);
+const billableFeatureSchema = z.enum([
+	"REVIEW_CV",
+	"REWRITE_SECTION",
+	"COVER_LETTER",
+	"MATCH_JOB",
+]);
 
 /**
  * Import PDF : gratuit plafonné (assertCvImportQuota).
@@ -134,5 +139,37 @@ export const aiRouter = router({
 				...(detailParts.length > 0 ? { detail: detailParts.join(" · ") } : {}),
 			});
 			return { coverLetter };
+		}),
+
+	/**
+	 * Comparaison CV ↔ annonce — CV aplati + texte d’offre obligatoire.
+	 */
+	matchJob: protectedProcedure
+		.input(
+			z.object({
+				cvText: z.string().trim().min(1).max(50_000),
+				paymentMethod: aiPaymentChoiceSchema,
+				jobOffer: z.string().trim().min(1).max(10_000),
+				companyName: z.string().trim().max(120).optional(),
+				jobTitle: z.string().trim().max(120).optional(),
+			}),
+		)
+		.mutation(async ({ ctx, input }) => {
+			const userId = ctx.session.user.id;
+			await aiBillingService.assertCanPay(userId, "MATCH_JOB", input.paymentMethod);
+			const match = await geminiService.matchJob({
+				cvText: input.cvText,
+				jobOffer: input.jobOffer,
+				...(input.companyName ? { companyName: input.companyName } : {}),
+				...(input.jobTitle ? { jobTitle: input.jobTitle } : {}),
+			});
+			const detailParts = [input.jobTitle, input.companyName].filter(Boolean);
+			await aiBillingService.consumeAndLog({
+				userId,
+				feature: "MATCH_JOB",
+				choice: input.paymentMethod,
+				...(detailParts.length > 0 ? { detail: detailParts.join(" · ") } : {}),
+			});
+			return { match };
 		}),
 });

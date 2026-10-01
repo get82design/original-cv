@@ -2,6 +2,7 @@ import { createContext, type PropsWithChildren, useContext, useState } from "rea
 import { v4 as uuid } from "uuid";
 import type { CvReview } from "@/services/schemas/cvReview.schema";
 import type { CvCoverLetter } from "@/services/schemas/cvCoverLetter.schema";
+import type { CvMatchJob } from "@/services/schemas/cvMatchJob.schema";
 import type { AiActionId } from "@/components/dialog/DialogAssistantIa";
 
 /** Kinds de conseils empilables (session) — prêts pour persistance BDD plus tard. */
@@ -19,6 +20,8 @@ export type AiAdviceEntry = {
 	review: CvReview;
 	/** Lettre complète — pour rouvrir la modale sans changer le résumé affiché */
 	coverLetter?: CvCoverLetter;
+	/** Résultat match-job — pour rouvrir la modale dédiée */
+	matchJob?: CvMatchJob;
 };
 
 type AiAdvicePushInput = {
@@ -26,6 +29,7 @@ type AiAdvicePushInput = {
 	title: string;
 	review: CvReview;
 	coverLetter?: CvCoverLetter;
+	matchJob?: CvMatchJob;
 };
 
 type AiAdviceContextValue = {
@@ -59,6 +63,7 @@ export const AiAdviceProvider = ({ children }: PropsWithChildren) => {
 			createdAt: Date.now(),
 			review: input.review,
 			...(input.coverLetter ? { coverLetter: input.coverLetter } : {}),
+			...(input.matchJob ? { matchJob: input.matchJob } : {}),
 		};
 		setEntries((prev) => [entry, ...prev]);
 		setIaTabNonce((n) => n + 1);

@@ -163,6 +163,7 @@ enum AiFeature {
   REVIEW_CV
   REWRITE_SECTION
   COVER_LETTER
+  MATCH_JOB
 }
 
 /** Mode de paiement crédits pour une action IA (hors import) */

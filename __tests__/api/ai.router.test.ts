@@ -198,6 +198,15 @@ describe("ai.router", () => {
 				},
 				update: { costFree: null, costPaid: 4 },
 			});
+			await prismaTest.aiFeaturePrice.upsert({
+				where: { feature: "MATCH_JOB" },
+				create: {
+					feature: "MATCH_JOB",
+					costFree: null,
+					costPaid: 2,
+				},
+				update: { costFree: null, costPaid: 2 },
+			});
 
 			const caller = await createTestCaller(createTestSession(user));
 			const prices = await caller.ai.listFeaturePrices();
@@ -206,6 +215,7 @@ describe("ai.router", () => {
 				"REVIEW_CV",
 				"REWRITE_SECTION",
 				"COVER_LETTER",
+				"MATCH_JOB",
 			]);
 			expect(prices.find((p) => p.feature === "REVIEW_CV")).toMatchObject({
 				costFree: null,
@@ -511,6 +521,109 @@ describe("ai.router", () => {
 				caller.ai.coverLetter({
 					cvText: "CV",
 					paymentMethod: "paid",
+				}),
+			).rejects.toMatchObject({ code: "UNAUTHORIZED" });
+		});
+	});
+
+	describe("matchJob", () => {
+		it("returns the match from geminiService and logs AI usage", async () => {
+			const user = await createTestUser();
+			await prismaTest.aiFeaturePrice.upsert({
+				where: { feature: "MATCH_JOB" },
+				create: {
+					feature: "MATCH_JOB",
+					costFree: null,
+					costPaid: 2,
+				},
+				update: { costFree: null, costPaid: 2 },
+			});
+			await prismaTest.user.update({
+				where: { id: user.id },
+				data: { downloadCredits: 5, freeDownloadsRemaining: 0 },
+			});
+
+			vi.spyOn(geminiService, "matchJob").mockResolvedValue({
+				summary: "Bon alignement global.",
+				score: 8,
+				matched: ["SQL"],
+				gaps: [{ area: "Cloud", suggestion: "Ajouter AWS si pertinent." }],
+				keywordsToAdd: ["dashboard"],
+			});
+
+			const caller = await createTestCaller(createTestSession(user));
+			const result = await caller.ai.matchJob({
+				cvText: "Ada Lovelace — Analyste",
+				paymentMethod: "paid",
+				jobOffer: "Data Analyst SQL cloud",
+				companyName: "Acme",
+				jobTitle: "Data Analyst",
+			});
+
+			expect(result.match.score).toBe(8);
+			expect(geminiService.matchJob).toHaveBeenCalledWith({
+				cvText: "Ada Lovelace — Analyste",
+				jobOffer: "Data Analyst SQL cloud",
+				companyName: "Acme",
+				jobTitle: "Data Analyst",
+			});
+
+			const events = await prismaTest.aiEvent.findMany({
+				where: { userId: user.id },
+			});
+			expect(events).toHaveLength(1);
+			expect(events[0]?.feature).toBe("MATCH_JOB");
+			expect(events[0]?.detail).toBe("Data Analyst · Acme");
+			expect(events[0]?.paymentMethod).toBe("PAID");
+			expect(events[0]?.creditsSpent).toBe(2);
+
+			const refreshed = await prismaTest.user.findUniqueOrThrow({
+				where: { id: user.id },
+			});
+			expect(refreshed.downloadCredits).toBe(3);
+			expect(refreshed.iaRequestsUsed).toBe(1);
+		});
+
+		it("rejects when credits are insufficient", async () => {
+			const user = await createTestUser();
+			await prismaTest.aiFeaturePrice.upsert({
+				where: { feature: "MATCH_JOB" },
+				create: {
+					feature: "MATCH_JOB",
+					costFree: null,
+					costPaid: 2,
+				},
+				update: { costFree: null, costPaid: 2 },
+			});
+			await prismaTest.user.update({
+				where: { id: user.id },
+				data: { downloadCredits: 0, freeDownloadsRemaining: 0 },
+			});
+			const spy = vi.spyOn(geminiService, "matchJob");
+
+			const caller = await createTestCaller(createTestSession(user));
+
+			await expect(
+				caller.ai.matchJob({
+					cvText: "CV minimal",
+					paymentMethod: "paid",
+					jobOffer: "Offre",
+				}),
+			).rejects.toMatchObject({
+				code: "BAD_REQUEST",
+				message: expect.stringContaining("insuffisants"),
+			});
+			expect(spy).not.toHaveBeenCalled();
+		});
+
+		it("rejects unauthenticated callers", async () => {
+			const caller = await createTestCaller(null);
+
+			await expect(
+				caller.ai.matchJob({
+					cvText: "CV",
+					paymentMethod: "paid",
+					jobOffer: "Offre",
 				}),
 			).rejects.toMatchObject({ code: "UNAUTHORIZED" });
 		});

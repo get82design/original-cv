@@ -21,6 +21,11 @@ import {
 	cvCoverLetterSchema,
 	type CvCoverLetter,
 } from "../schemas/cvCoverLetter.schema";
+import {
+	buildMatchJobSystemPrompt,
+	cvMatchJobSchema,
+	type CvMatchJob,
+} from "../schemas/cvMatchJob.schema";
 import { ValidationError, TooManyRequestsError } from "../errors";
 
 const DEFAULT_MODEL = "gemini-3.6-flash";
@@ -317,6 +322,53 @@ export class GeminiService {
 		}
 
 		throw new ValidationError(`Cover letter validation failed after retry: ${lastReason}`);
+	}
+
+	/**
+	 * Comparaison CV ↔ annonce (match-job).
+	 * safeParse → retry 1× avec les erreurs de validation dans le prompt.
+	 */
+	async matchJob(
+		input: {
+			cvText: string;
+			jobOffer: string;
+			companyName?: string;
+			jobTitle?: string;
+		},
+		options: { model?: string } = {},
+	): Promise<CvMatchJob> {
+		const cvText = input.cvText.trim();
+		if (!cvText) {
+			throw new ValidationError("CV text is empty");
+		}
+		const jobOffer = input.jobOffer.trim();
+		if (!jobOffer) {
+			throw new ValidationError("Job offer text is empty");
+		}
+
+		const companyName = input.companyName?.trim() || undefined;
+		const jobTitle = input.jobTitle?.trim() || undefined;
+
+		const generativeModel = this.jsonModel(options.model ?? DEFAULT_MODEL);
+		let lastReason = "Unknown validation error";
+
+		for (let attempt = 0; attempt < MAX_ATTEMPTS; attempt++) {
+			const prompt = buildMatchJobSystemPrompt({
+				cvText,
+				jobOffer,
+				...(companyName ? { companyName } : {}),
+				...(jobTitle ? { jobTitle } : {}),
+				...(attempt === 0 ? {} : { validationErrors: lastReason }),
+			});
+
+			const result = await withTransientRetry(() => generativeModel.generateContent(prompt));
+			const outcome = parseJsonWithSchema(result.response.text(), cvMatchJobSchema);
+
+			if (outcome.ok) return outcome.data;
+			lastReason = outcome.reason;
+		}
+
+		throw new ValidationError(`Match job validation failed after retry: ${lastReason}`);
 	}
 }
 
