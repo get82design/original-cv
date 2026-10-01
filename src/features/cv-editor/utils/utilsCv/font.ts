@@ -67,9 +67,25 @@ export function getCvTypographyVars(typography?: {
 
 export const FONT_CATALOG = {
 	inter: { label: "Inter", cssVar: "--font-inter" },
-	playfair: { label: "Playfair Display", cssVar: "--font-playfair" },
+	sourceSans: { label: "Source Sans 3", cssVar: "--font-sourceSans" },
+	openSans: { label: "Open Sans", cssVar: "--font-openSans" },
+	lato: { label: "Lato", cssVar: "--font-lato" },
+	montserrat: { label: "Montserrat", cssVar: "--font-montserrat" },
+	roboto: { label: "Roboto", cssVar: "--font-roboto" },
+	nunitoSans: { label: "Nunito Sans", cssVar: "--font-nunitoSans" },
+	workSans: { label: "Work Sans", cssVar: "--font-workSans" },
+	raleway: { label: "Raleway", cssVar: "--font-raleway" },
+	dmSans: { label: "DM Sans", cssVar: "--font-dmSans" },
+	poppins: { label: "Poppins", cssVar: "--font-poppins" },
+	ibmPlexSans: { label: "IBM Plex Sans", cssVar: "--font-ibmPlexSans" },
+	mulish: { label: "Mulish", cssVar: "--font-mulish" },
 	lora: { label: "Lora", cssVar: "--font-lora" },
-	sourceSans: { label: "Source Sans Pro", cssVar: "--font-sourceSans" },
+	playfair: { label: "Playfair Display", cssVar: "--font-playfair" },
+	merriweather: { label: "Merriweather", cssVar: "--font-merriweather" },
+	libreBaskerville: { label: "Libre Baskerville", cssVar: "--font-libreBaskerville" },
+	ebGaramond: { label: "EB Garamond", cssVar: "--font-ebGaramond" },
+	sourceSerif: { label: "Source Serif 4", cssVar: "--font-sourceSerif" },
+	cormorantGaramond: { label: "Cormorant Garamond", cssVar: "--font-cormorantGaramond" },
 } as const;
 
 export type FontSlug = keyof typeof FONT_CATALOG;

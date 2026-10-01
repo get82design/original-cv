@@ -11,7 +11,12 @@ const options: FontOption[] = (Object.keys(FONT_CATALOG) as FontSlug[]).map((val
 
 const fontOptionTemplate = (option: FontOption) =>
 	option ? (
-		<span style={{ fontFamily: `var(${FONT_CATALOG[option.value].cssVar})` }}>{option.name}</span>
+		<span
+			className="block w-full pl-1"
+			style={{ fontFamily: `var(${FONT_CATALOG[option.value].cssVar})` }}
+		>
+			{option.name}
+		</span>
 	) : (
 		<span>Police</span>
 	);
@@ -29,7 +34,10 @@ export const GeneralFont = () => {
 				appendTo="self"
 				itemTemplate={fontOptionTemplate}
 				valueTemplate={fontOptionTemplate}
-				pt={{ root: { className: "text-xs" } }}
+				pt={{
+					root: { className: "text-xs" },
+					item: { className: "cv-font-select-item" },
+				}}
 			/>
 		</div>
 	);

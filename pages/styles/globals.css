@@ -410,13 +410,13 @@ html.dark #panel-modif-cv.cv-modif-tabview {
     }
 }
 
-/* Police select — compact, scoped to this control only */
+/* Police select — compact trigger, options lisibles */
 .p-dropdown.cv-font-select {
     height: 1.75rem;
     min-height: 1.75rem;
 
     .p-dropdown-label {
-        padding: 0.15rem 0.4rem;
+        padding: 0.15rem 0.55rem 0.15rem 0.65rem;
         font-size: 0.75rem;
         line-height: 1.45rem;
         display: flex;
@@ -425,6 +425,21 @@ html.dark #panel-modif-cv.cv-modif-tabview {
 
     .p-dropdown-trigger {
         width: 1.75rem;
+    }
+
+    .p-dropdown-panel {
+        .p-dropdown-items {
+            padding: 0.25rem 0;
+        }
+
+        .p-dropdown-item {
+            padding: 0.55rem 0.75rem 0.55rem 0.85rem;
+            margin: 0;
+            line-height: 1.35;
+            min-height: 2.25rem;
+            display: flex;
+            align-items: center;
+        }
     }
 }
 

@@ -454,7 +454,28 @@ export const templateModulesSchema = z.array(templateModuleSchema);
 
 const elmSizeSchema = z.enum(["sm", "md", "lg"]);
 
-const fontSlugSchema = z.enum(["inter", "lora", "sourceSans", "playfair"]);
+const fontSlugSchema = z.enum([
+	"inter",
+	"sourceSans",
+	"openSans",
+	"lato",
+	"montserrat",
+	"roboto",
+	"nunitoSans",
+	"workSans",
+	"raleway",
+	"dmSans",
+	"poppins",
+	"ibmPlexSans",
+	"mulish",
+	"lora",
+	"playfair",
+	"merriweather",
+	"libreBaskerville",
+	"ebGaramond",
+	"sourceSerif",
+	"cormorantGaramond",
+]);
 
 export const templateLayoutSchema = z.object({
 	columns: z.number().min(1),
