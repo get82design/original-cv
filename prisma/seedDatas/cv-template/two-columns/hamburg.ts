@@ -1,28 +1,32 @@
-import { minimalTokens } from "../../themeTokens";
+import { hamburgTokens } from "../../themeTokens";
 import { defineTemplate } from "../_shared/defineTemplate";
 import { sharedLayout } from "../_shared/layouts";
 
-export const minimal = defineTemplate({
-	name: "Minimal",
-	slug: "minimal-line-x",
-	tokens: minimalTokens,
-	primaryColor: { name: "lime", primary: "-500" },
-	sectionHeader: "HeaderFive",
+/**
+ * Hamburg — HeaderSplitOne + TwoColumnSideBar, col 0 fond sombre (style Toronto).
+ * Nom libre (pas encore au catalogue).
+ */
+export const hamburg = defineTemplate({
+	name: "Hamburg",
+	slug: "hamburg-split-dark-x",
+	tokens: hamburgTokens,
+	primaryColor: { name: "rose", primary: "-600" },
+	sectionHeader: "HeaderSplitOne",
 	pageLayout: "TwoColumnSideBar",
 	variant: 1,
 	layout: {
 		...sharedLayout,
 		columns: 2,
 		lockPhotoSide: true,
-		headerPlacement: "sidebar",
+		headerPlacement: "split",
 		withPhoto: true,
 		stylePhoto: "circle",
+		sidebarTheme: { bgColor: "gray", shadeBgColor: "-700", fg: "white" },
 		listStyle: "none",
 		titleSection: {
 			...sharedLayout.titleSection,
-			withIcon: true,
-			iconStyle: "flat",
-			iconColor: "primaryColor",
+			withIcon: false,
+			withLigneDessous: true,
 			textTransform: "uppercase",
 		},
 	},
@@ -47,13 +51,13 @@ export const minimal = defineTemplate({
 		project: { isActive: true, column: 1 },
 		// sidebar (colonne 0)
 		language: {
-			design: "bars",
+			design: "stars",
 			isActive: true,
 			order: 1,
 			column: 0,
 			columns: 1,
 		},
-		tag: { title: "Skills", design: "border", isActive: true, order: 2, column: 0 },
+		tag: { title: "Skills", design: "tag", isActive: true, order: 2, column: 0 },
 		socialMedia: { title: "Réseaux", isActive: true, order: 4, column: 0, columns: 1 },
 		passion: { isActive: false, column: 0, columns: 1 },
 		volunteering: { isActive: false, column: 1 },

@@ -1,13 +1,14 @@
 import z from "zod";
 import { colorService } from "../../../src/services/commons/colorService";
-import { colorSchema, updateColorSchema } from "../../../src/services/schemas/color.schema";
-import { protectedProcedure, publicProcedure, router } from "../trpc";
+import {
+	colorSchema,
+	moveColorSchema,
+	updateColorSchema,
+} from "../../../src/services/schemas/color.schema";
+import { adminProcedure, protectedProcedure, publicProcedure, router } from "../trpc";
 
 export const colorRouter = router({
-	create: protectedProcedure.input(colorSchema).mutation(async ({ input }) => {
-		return colorService.create(input);
-	}),
-
+	/** Catalogue couleurs — lecture publique (éditeur / create CV). */
 	findAll: publicProcedure.query(async () => {
 		return colorService.findAll();
 	}),
@@ -20,13 +21,22 @@ export const colorRouter = router({
 		return colorService.findByName(input.name);
 	}),
 
-	update: protectedProcedure
+	/** Écritures réservées ADMIN. */
+	create: adminProcedure.input(colorSchema).mutation(async ({ input }) => {
+		return colorService.create(input);
+	}),
+
+	update: adminProcedure
 		.input(z.object({ id: z.string(), data: updateColorSchema }))
 		.mutation(async ({ input }) => {
 			return colorService.update(input.id, input.data);
 		}),
 
-	delete: protectedProcedure.input(z.object({ id: z.string() })).mutation(async ({ input }) => {
+	move: adminProcedure.input(moveColorSchema).mutation(async ({ input }) => {
+		return colorService.move(input);
+	}),
+
+	delete: adminProcedure.input(z.object({ id: z.string() })).mutation(async ({ input }) => {
 		return colorService.delete(input.id);
 	}),
 });

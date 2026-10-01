@@ -1,5 +1,5 @@
 import type { CvFormValues } from "@/services/schemas/cvSave.schema";
-import { classiqueTokens } from "../../../prisma/seedDatas/themeTokens";
+import { defaultTokens } from "../../../prisma/seedDatas/themeTokens";
 
 /** Contenu Clara Delorme (seed.cvs), adapté form / galerie — pas d’IDs DB */
 export const galleryDemoValues: CvFormValues = {
@@ -24,8 +24,8 @@ export const galleryDemoValues: CvFormValues = {
 					"Professionnelle du retail passionnée par la culture de marque et la psychologie du consommateur. Spécialiste de la vente conseil à forte valeur ajoutée, j’associe une excellente maîtrise des outils phygitaux (CRM, caisse mobile, e-reservation) à un sens aigu du merchandising visuel.",
 			},
 			settings: {
-				title: classiqueTokens.sectionTitle,
-				content: classiqueTokens.body,
+				title: defaultTokens.sectionTitle,
+				content: defaultTokens.body,
 			},
 		},
 		experience: {
@@ -72,12 +72,12 @@ export const galleryDemoValues: CvFormValues = {
 							},
 						],
 						settings: {
-							title: classiqueTokens.itemTitle,
-							company: { ...classiqueTokens.meta, colorSelect: "primaryColor" },
-							periode: classiqueTokens.meta,
-							location: { ...classiqueTokens.meta, colorSelect: "primaryColor" },
-							description: classiqueTokens.body,
-							missions: classiqueTokens.body,
+							title: defaultTokens.itemTitle,
+							company: { ...defaultTokens.meta, colorSelect: "primaryColor" },
+							periode: defaultTokens.meta,
+							location: { ...defaultTokens.meta, colorSelect: "primaryColor" },
+							description: defaultTokens.body,
+							missions: defaultTokens.body,
 							withTitle: true,
 							withCompany: true,
 							withPeriode: true,
@@ -108,12 +108,12 @@ export const galleryDemoValues: CvFormValues = {
 							},
 						],
 						settings: {
-							title: classiqueTokens.itemTitle,
-							company: { ...classiqueTokens.meta, colorSelect: "primaryColor" },
-							periode: classiqueTokens.meta,
-							location: { ...classiqueTokens.meta, colorSelect: "primaryColor" },
-							description: classiqueTokens.body,
-							missions: classiqueTokens.body,
+							title: defaultTokens.itemTitle,
+							company: { ...defaultTokens.meta, colorSelect: "primaryColor" },
+							periode: defaultTokens.meta,
+							location: { ...defaultTokens.meta, colorSelect: "primaryColor" },
+							description: defaultTokens.body,
+							missions: defaultTokens.body,
 							withTitle: true,
 							withCompany: true,
 							withPeriode: true,
@@ -125,7 +125,7 @@ export const galleryDemoValues: CvFormValues = {
 				},
 			],
 			settings: {
-				title: classiqueTokens.sectionTitle,
+				title: defaultTokens.sectionTitle,
 			},
 		},
 		education: {
@@ -141,10 +141,10 @@ export const galleryDemoValues: CvFormValues = {
 						start: new Date("2019-09-01"),
 						end: new Date("2021-06-30"),
 						settings: {
-							diplome: classiqueTokens.itemTitle,
-							etablissement: { ...classiqueTokens.meta, colorSelect: "gray" },
-							ville: { ...classiqueTokens.meta, colorSelect: "gray" },
-							year: classiqueTokens.meta,
+							diplome: defaultTokens.itemTitle,
+							etablissement: { ...defaultTokens.meta, colorSelect: "gray" },
+							ville: { ...defaultTokens.meta, colorSelect: "gray" },
+							year: defaultTokens.meta,
 							withEtablissement: true,
 							withVille: true,
 							withYear: true,
@@ -162,10 +162,10 @@ export const galleryDemoValues: CvFormValues = {
 						start: new Date("2017-09-01"),
 						end: new Date("2019-06-30"),
 						settings: {
-							diplome: classiqueTokens.itemTitle,
-							etablissement: { ...classiqueTokens.meta, colorSelect: "gray" },
-							ville: { ...classiqueTokens.meta, colorSelect: "gray" },
-							year: classiqueTokens.meta,
+							diplome: defaultTokens.itemTitle,
+							etablissement: { ...defaultTokens.meta, colorSelect: "gray" },
+							ville: { ...defaultTokens.meta, colorSelect: "gray" },
+							year: defaultTokens.meta,
 							withEtablissement: true,
 							withVille: true,
 							withYear: true,
@@ -174,7 +174,7 @@ export const galleryDemoValues: CvFormValues = {
 				},
 			],
 			settings: {
-				title: classiqueTokens.sectionTitle,
+				title: defaultTokens.sectionTitle,
 			},
 		},
 		language: {
@@ -205,7 +205,7 @@ export const galleryDemoValues: CvFormValues = {
 				},
 			],
 			settings: {
-				title: classiqueTokens.sectionTitle,
+				title: defaultTokens.sectionTitle,
 			},
 		},
 		strength: {
@@ -218,8 +218,8 @@ export const galleryDemoValues: CvFormValues = {
 						description: "Capacité à décoder rapidement les attentes du client.",
 						icon: "faBrain",
 						settings: {
-							strength: classiqueTokens.itemTitle,
-							description: classiqueTokens.body,
+							strength: defaultTokens.itemTitle,
+							description: defaultTokens.body,
 							withStrength: true,
 							withDescription: true,
 							withIcon: true,
@@ -236,8 +236,8 @@ export const galleryDemoValues: CvFormValues = {
 						description: "Calme constant lors des pics de fréquentation.",
 						icon: "faSeedling",
 						settings: {
-							strength: classiqueTokens.itemTitle,
-							description: classiqueTokens.body,
+							strength: defaultTokens.itemTitle,
+							description: defaultTokens.body,
 							withStrength: true,
 							withDescription: true,
 							withIcon: true,
@@ -254,8 +254,8 @@ export const galleryDemoValues: CvFormValues = {
 						description: "Moteur de la motivation collective.",
 						icon: "faHandsHelping",
 						settings: {
-							strength: classiqueTokens.itemTitle,
-							description: classiqueTokens.body,
+							strength: defaultTokens.itemTitle,
+							description: defaultTokens.body,
 							withStrength: true,
 							withDescription: true,
 							withIcon: true,
@@ -273,8 +273,8 @@ export const galleryDemoValues: CvFormValues = {
 							"Force de proposition constante pour améliorer la présentation des rayons ou fluidifier l'organisation interne.",
 						icon: "faChartLine",
 						settings: {
-							strength: classiqueTokens.itemTitle,
-							description: classiqueTokens.body,
+							strength: defaultTokens.itemTitle,
+							description: defaultTokens.body,
 							withStrength: true,
 							withDescription: true,
 							withIcon: true,
@@ -285,7 +285,7 @@ export const galleryDemoValues: CvFormValues = {
 				},
 			],
 			settings: {
-				title: classiqueTokens.sectionTitle,
+				title: defaultTokens.sectionTitle,
 			},
 		},
 		passion: {
@@ -297,7 +297,7 @@ export const galleryDemoValues: CvFormValues = {
 						title: "Mode & seconde main",
 						icon: "faTshirt",
 						settings: {
-							passion: classiqueTokens.itemTitle,
+							passion: defaultTokens.itemTitle,
 							withIcon: true,
 							iconColor: "primaryColor",
 						},
@@ -310,7 +310,7 @@ export const galleryDemoValues: CvFormValues = {
 						title: "Podcasts psychologie",
 						icon: "faHeadphones",
 						settings: {
-							passion: classiqueTokens.itemTitle,
+							passion: defaultTokens.itemTitle,
 							withIcon: true,
 							iconColor: "primaryColor",
 						},
@@ -323,7 +323,7 @@ export const galleryDemoValues: CvFormValues = {
 						title: "Running",
 						icon: "faRunning",
 						settings: {
-							passion: classiqueTokens.itemTitle,
+							passion: defaultTokens.itemTitle,
 							withIcon: true,
 							iconColor: "primaryColor",
 						},
@@ -331,7 +331,7 @@ export const galleryDemoValues: CvFormValues = {
 				},
 			],
 			settings: {
-				title: classiqueTokens.sectionTitle,
+				title: defaultTokens.sectionTitle,
 			},
 		},
 		// Formulaire = .name (pas competenceId / tagId du seed)
@@ -356,8 +356,8 @@ export const galleryDemoValues: CvFormValues = {
 							},
 						})),
 						settings: {
-							groupTitle: classiqueTokens.itemTitle,
-							competences: classiqueTokens.body,
+							groupTitle: defaultTokens.itemTitle,
+							competences: defaultTokens.body,
 							withGroupTitle: true,
 						},
 					},
@@ -378,15 +378,15 @@ export const galleryDemoValues: CvFormValues = {
 							}),
 						),
 						settings: {
-							groupTitle: classiqueTokens.itemTitle,
-							competences: classiqueTokens.body,
+							groupTitle: defaultTokens.itemTitle,
+							competences: defaultTokens.body,
 							withGroupTitle: true,
 						},
 					},
 				},
 			],
 			settings: {
-				title: classiqueTokens.sectionTitle,
+				title: defaultTokens.sectionTitle,
 			},
 		},
 		tagGroup: {
@@ -409,11 +409,11 @@ export const galleryDemoValues: CvFormValues = {
 						})),
 						settings: {
 							groupTitle: {
-								...classiqueTokens.itemTitle,
+								...defaultTokens.itemTitle,
 								colorSelect: "black",
 								weightSelect: "xl",
 							},
-							tags: classiqueTokens.body,
+							tags: defaultTokens.body,
 							withGroupTitle: true,
 							design: "border",
 						},
@@ -437,11 +437,11 @@ export const galleryDemoValues: CvFormValues = {
 						})),
 						settings: {
 							groupTitle: {
-								...classiqueTokens.itemTitle,
+								...defaultTokens.itemTitle,
 								colorSelect: "black",
 								weightSelect: "xl",
 							},
-							tags: classiqueTokens.body,
+							tags: defaultTokens.body,
 							withGroupTitle: true,
 							design: "border",
 						},
@@ -449,7 +449,7 @@ export const galleryDemoValues: CvFormValues = {
 				},
 			],
 			settings: {
-				title: classiqueTokens.sectionTitle,
+				title: defaultTokens.sectionTitle,
 			},
 		},
 		socialMedia: {
@@ -462,8 +462,8 @@ export const galleryDemoValues: CvFormValues = {
 						username: "clara.delorme",
 						icon: "faLinkedin",
 						settings: {
-							socialNetwork: classiqueTokens.itemTitle,
-							username: classiqueTokens.body,
+							socialNetwork: defaultTokens.itemTitle,
+							username: defaultTokens.body,
 							withSocialNetwork: true,
 							withUsername: true,
 							withIcon: true,
@@ -480,8 +480,8 @@ export const galleryDemoValues: CvFormValues = {
 						username: "@clara.delorme75",
 						icon: "faInstagram",
 						settings: {
-							socialNetwork: classiqueTokens.itemTitle,
-							username: classiqueTokens.body,
+							socialNetwork: defaultTokens.itemTitle,
+							username: defaultTokens.body,
 							withSocialNetwork: true,
 							withUsername: true,
 							withIcon: true,
@@ -498,8 +498,8 @@ export const galleryDemoValues: CvFormValues = {
 						username: "clara.delorme",
 						icon: "faFacebook",
 						settings: {
-							socialNetwork: classiqueTokens.itemTitle,
-							username: classiqueTokens.body,
+							socialNetwork: defaultTokens.itemTitle,
+							username: defaultTokens.body,
 							withSocialNetwork: true,
 							withUsername: true,
 							withIcon: true,
@@ -510,7 +510,7 @@ export const galleryDemoValues: CvFormValues = {
 				},
 			],
 			settings: {
-				title: classiqueTokens.sectionTitle,
+				title: defaultTokens.sectionTitle,
 			},
 		},
 		project: {
@@ -552,12 +552,12 @@ export const galleryDemoValues: CvFormValues = {
 							},
 						],
 						settings: {
-							title: classiqueTokens.itemTitle,
-							description: classiqueTokens.body,
-							technology: classiqueTokens.body,
-							location: classiqueTokens.body,
-							periode: classiqueTokens.body,
-							missions: classiqueTokens.body,
+							title: defaultTokens.itemTitle,
+							description: defaultTokens.body,
+							technology: defaultTokens.body,
+							location: defaultTokens.body,
+							periode: defaultTokens.body,
+							missions: defaultTokens.body,
 							withTitle: true,
 							withDescription: true,
 							withTechnology: true,
@@ -569,7 +569,7 @@ export const galleryDemoValues: CvFormValues = {
 				},
 			],
 			settings: {
-				title: classiqueTokens.sectionTitle,
+				title: defaultTokens.sectionTitle,
 			},
 		},
 	},

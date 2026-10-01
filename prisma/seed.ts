@@ -1,7 +1,6 @@
 import { prisma } from "../lib/prisma";
 import users from "./seedDatas/seed.users.json";
 import colors from "./seedDatas/seed.colors.json";
-// import { seedTemplates } from "./seedDatas/seed.templates";
 import { seedTemplates } from "./seedDatas/cv-template";
 import { buildCvClaraDelorme } from "./seedDatas/seed.cvs";
 import { seedBilling } from "./seedDatas/seed.billing";
@@ -21,10 +20,10 @@ async function main() {
 
 	const usersResult = await buildUsers();
 	console.info("^^usersResult", usersResult);
-	const colors = await buildColors();
-	console.info("^^colors", colors);
-	const templates = await buildTemplates();
-	console.info("^^templates", templates);
+	const colorsResult = await buildColors();
+	console.info("^^colors", colorsResult);
+	const templatesResult = await buildTemplates();
+	console.info("^^templates", templatesResult);
 
 	const templateStockholm = await prisma.cVTemplate.findFirst({
 		where: { name: "Stockholm" },
@@ -66,11 +65,11 @@ function seedUserRole(role: string | undefined): UserRole | undefined {
 }
 
 /**
- * buildUsers
- *
+ * buildUsers — séquentiel (peu d’entrées ; évite de saturer le pool).
  */
 async function buildUsers() {
-	const userPromises = users.map(async (el) => {
+	const result = [];
+	for (const el of users) {
 		const hashedPassword = await hash(el.password, 12);
 		const role = seedUserRole("role" in el ? el.role : undefined);
 		const data: Prisma.UserCreateInput = {
@@ -84,40 +83,32 @@ async function buildUsers() {
 				: {}),
 			...(role ? { role } : {}),
 		};
-		return prisma.user.create({ data });
-	});
-	return await Promise.all(userPromises);
+		result.push(await prisma.user.create({ data }));
+	}
+	return result;
 }
 
 /**
- * buildTemplates
- *
+ * buildTemplates — createMany = 1 requête (évite Promise.all × N connexions).
  */
 async function buildTemplates() {
-	return Promise.all(
-		seedTemplates.map((el) =>
-			prisma.cVTemplate.create({
-				data: {
-					name: el.name,
-					slug: slugifyTemplateName(el.name),
-					structure: el.structure,
-					defaultStyles: el.defaultStyles,
-				},
-			}),
-		),
-	);
+	return prisma.cVTemplate.createMany({
+		data: seedTemplates.map((el) => ({
+			name: el.name,
+			slug: slugifyTemplateName(el.name),
+			structure: el.structure,
+			defaultStyles: el.defaultStyles,
+		})),
+	});
 }
 
 /**
- * buildColors
- *
+ * buildColors — createMany = 1 requête (le Promise.all d’avant saturait Postgres).
  */
 async function buildColors() {
-	const colorsPromises = colors.map(async (el) => {
-		const data = { ...el };
-		return prisma.color.create({ data });
+	return prisma.color.createMany({
+		data: colors.map((el) => ({ ...el })),
 	});
-	return await Promise.all(colorsPromises);
 }
 
 main()

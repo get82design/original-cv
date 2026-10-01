@@ -133,6 +133,8 @@ Critère done : créer/sauver CV → DL gratuit/payant → IA review/rewrite/let
 	- doc config : [`docs/cv-layout-config.md`](./docs/cv-layout-config.md)
 - [x] Headers split branchés sur `sectionHeader` (`HeaderSplitOne` + registre mono|split) — Berlin corrigé
 - [ ] Volume templates (cible ~25 classiques + premium catalogue)
+	- inventaire vivant : [`docs/cv-templates-catalog.md`](./docs/cv-templates-catalog.md) (à tenir à jour à chaque seed)
+	- création structure = **seeds** pré-prod ; admin = flags catalogue seulement (pas de builder)
 - [ ] Premiers templates **premium** basés sur header split / layouts riches
 - [ ] Logos / variantes couleurs manquantes (polish brand)
 - [ ] Onboarding guidé « première utilisation » (stepper) — **≠** modal Tips
@@ -155,7 +157,10 @@ Critère done : créer/sauver CV → DL gratuit/payant → IA review/rewrite/let
 
 ### Admin / ops
 
-- [ ] CRUD couleurs / catalogue admin
+- [x] CRUD couleurs / catalogue admin
+	- [x] Writes `color.create|update|delete` → `adminProcedure` ; `findAll` reste **public** (éditeur)
+	- [x] Page admin UI `/admin/colors` + liens dashboard
+	- [x] Reorder `order` (`color.move` up/down)
 
 ### Clôture V2
 

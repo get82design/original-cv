@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { colorService } from "../../../src/services/commons/colorService";
-import { ConflictError, NotFoundError } from "../../../src/services/errors";
+import { ConflictError, NotFoundError, ValidationError } from "../../../src/services/errors";
 
 describe("ColorService.create", () => {
 	it("creates a color", async () => {
@@ -170,5 +170,43 @@ describe("ColorService.delete", () => {
 
 	it("throws an error if the color is not found", async () => {
 		await expect(colorService.delete("123")).rejects.toThrow(NotFoundError);
+	});
+});
+
+describe("ColorService.move", () => {
+	it("moves a color down (swap with next)", async () => {
+		const red = await colorService.create({ name: "Red", primary: "-600" });
+		const blue = await colorService.create({ name: "Blue", primary: "-600" });
+
+		const list = await colorService.move({ id: red.id, direction: "down" });
+		expect(list.map((c) => c.name)).toEqual(["blue", "red"]);
+		expect(list[0]?.id).toBe(blue.id);
+		expect(list[1]?.id).toBe(red.id);
+	});
+
+	it("moves a color up (swap with previous)", async () => {
+		await colorService.create({ name: "Red", primary: "-600" });
+		const blue = await colorService.create({ name: "Blue", primary: "-600" });
+
+		const list = await colorService.move({ id: blue.id, direction: "up" });
+		expect(list.map((c) => c.name)).toEqual(["blue", "red"]);
+	});
+
+	it("throws at the top edge", async () => {
+		const red = await colorService.create({ name: "Red", primary: "-600" });
+		await colorService.create({ name: "Blue", primary: "-600" });
+
+		await expect(colorService.move({ id: red.id, direction: "up" })).rejects.toThrow(
+			ValidationError,
+		);
+	});
+
+	it("throws at the bottom edge", async () => {
+		await colorService.create({ name: "Red", primary: "-600" });
+		const blue = await colorService.create({ name: "Blue", primary: "-600" });
+
+		await expect(colorService.move({ id: blue.id, direction: "down" })).rejects.toThrow(
+			ValidationError,
+		);
 	});
 });

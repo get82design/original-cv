@@ -12,6 +12,7 @@ Point d’entrée agent : [`AGENTS.md`](../AGENTS.md) · règles actives : [`.cu
 | [api-patterns.md](./api-patterns.md) | tRPC, services, schemas, erreurs |
 | [cv-editor.md](./cv-editor.md) | A4, pagination, DnD, templates UI |
 | [cv-layout-config.md](./cv-layout-config.md) | pageLayout, headerPlacement, HeaderOne…Five (effets vérifiés) |
+| [cv-templates-catalog.md](./cv-templates-catalog.md) | Inventaire seed + convention typo (`defaultTokens`, presets header) |
 | [frontend.md](./frontend.md) | PrimeReact, RHF, admin, profile |
 | [testing.md](./testing.md) | Vitest, miroir, DB de test |
 | [coding-style.md](./coding-style.md) | Style TS/React, diffs, anti-patterns |

@@ -1,7 +1,8 @@
 # Configuration layout / headers CV
 
 Doc **vérifiée dans le code** (pas de cible produit inventée).  
-Sources : `cvTemplate.schema.ts`, layouts 2 cols / 1 col, `HeaderRegister`, seeds `prisma/seedDatas/cv-template/`.
+Sources : `cvTemplate.schema.ts`, layouts 2 cols / 1 col, `HeaderRegister`, seeds `prisma/seedDatas/cv-template/`.  
+Inventaire catalogue + convention typo seed (`defaultTokens`, presets header) : [`cv-templates-catalog.md`](./cv-templates-catalog.md).
 
 ---
 

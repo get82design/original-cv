@@ -4,6 +4,14 @@ import { TRPCError } from "@trpc/server";
 import { createTestUser } from "../utils/create-test-user";
 import { createTestCaller, createTestSession } from "./helpers/create-test-caller";
 
+function adminSession(user: { id: string; email: string }) {
+	return createTestSession({
+		id: user.id,
+		email: user.email,
+		role: "ADMIN",
+	});
+}
+
 describe("colorRouter", () => {
 	it("create returns UNAUTHORIZED without session", async () => {
 		const caller = await createTestCaller();
@@ -13,9 +21,18 @@ describe("colorRouter", () => {
 		});
 	});
 
-	it("create creates a color via tRPC", async () => {
+	it("create returns FORBIDDEN for non-admin", async () => {
 		const user = await createTestUser();
 		const caller = await createTestCaller(createTestSession(user));
+
+		await expect(caller.color.create({ name: "Red", primary: "#FF0000" })).rejects.toMatchObject({
+			code: "FORBIDDEN",
+		});
+	});
+
+	it("create creates a color via tRPC for ADMIN", async () => {
+		const user = await createTestUser();
+		const caller = await createTestCaller(adminSession(user));
 
 		const color = await caller.color.create({
 			name: " Red ",
@@ -28,7 +45,7 @@ describe("colorRouter", () => {
 
 	it("create rejects invalid input (Zod)", async () => {
 		const user = await createTestUser();
-		const caller = await createTestCaller(createTestSession(user));
+		const caller = await createTestCaller(adminSession(user));
 
 		await expect(
 			// @ts-expect-error — test de validation runtime
@@ -40,7 +57,7 @@ describe("colorRouter", () => {
 
 	it("create returns CONFLICT when name already exists", async () => {
 		const user = await createTestUser();
-		const caller = await createTestCaller(createTestSession(user));
+		const caller = await createTestCaller(adminSession(user));
 
 		await caller.color.create({ name: "Red", primary: "#FF0000" });
 
@@ -49,22 +66,22 @@ describe("colorRouter", () => {
 		});
 	});
 
-	it("findAll returns colors sorted by order", async () => {
-		const user = await createTestUser();
-		const caller = await createTestCaller(createTestSession(user));
+	it("findAll is public and returns colors sorted by order", async () => {
+		const admin = await createTestUser();
+		const adminCaller = await createTestCaller(adminSession(admin));
 
-		await caller.color.create({ name: "Red", primary: "#FF0000" });
-		await caller.color.create({ name: "Blue", primary: "#0000FF" });
+		await adminCaller.color.create({ name: "Red", primary: "#FF0000" });
+		await adminCaller.color.create({ name: "Blue", primary: "#0000FF" });
 
-		const list = await caller.color.findAll();
+		const publicCaller = await createTestCaller();
+		const list = await publicCaller.color.findAll();
 
 		expect(list).toHaveLength(2);
 		expect(list.map((c) => c.name)).toEqual(["red", "blue"]);
 	});
 
 	it("findAll returns empty array when no colors", async () => {
-		const user = await createTestUser();
-		const caller = await createTestCaller(createTestSession(user));
+		const caller = await createTestCaller();
 
 		const list = await caller.color.findAll();
 
@@ -72,13 +89,16 @@ describe("colorRouter", () => {
 	});
 
 	it("findById returns a color", async () => {
-		const user = await createTestUser();
-		const caller = await createTestCaller(createTestSession(user));
+		const admin = await createTestUser();
+		const adminCaller = await createTestCaller(adminSession(admin));
 
-		const created = await caller.color.create({
+		const created = await adminCaller.color.create({
 			name: "Green",
 			primary: "#00FF00",
 		});
+
+		const user = await createTestUser();
+		const caller = await createTestCaller(createTestSession(user));
 		const found = await caller.color.findById({ id: created.id });
 
 		expect(found.id).toBe(created.id);
@@ -95,10 +115,12 @@ describe("colorRouter", () => {
 	});
 
 	it("findByName returns a color or null", async () => {
+		const admin = await createTestUser();
+		const adminCaller = await createTestCaller(adminSession(admin));
+		await adminCaller.color.create({ name: "Purple", primary: "#800080" });
+
 		const user = await createTestUser();
 		const caller = await createTestCaller(createTestSession(user));
-
-		await caller.color.create({ name: "Purple", primary: "#800080" });
 
 		const found = await caller.color.findByName({ name: "purple" });
 		const missing = await caller.color.findByName({ name: "orange" });
@@ -107,9 +129,28 @@ describe("colorRouter", () => {
 		expect(missing).toBeNull();
 	});
 
-	it("update updates a color", async () => {
+	it("update returns FORBIDDEN for non-admin", async () => {
+		const admin = await createTestUser();
+		const adminCaller = await createTestCaller(adminSession(admin));
+		const created = await adminCaller.color.create({
+			name: "Yellow",
+			primary: "#FFFF00",
+		});
+
 		const user = await createTestUser();
 		const caller = await createTestCaller(createTestSession(user));
+
+		await expect(
+			caller.color.update({
+				id: created.id,
+				data: { name: "Gold" },
+			}),
+		).rejects.toMatchObject({ code: "FORBIDDEN" });
+	});
+
+	it("update updates a color for ADMIN", async () => {
+		const user = await createTestUser();
+		const caller = await createTestCaller(adminSession(user));
 
 		const created = await caller.color.create({
 			name: "Yellow",
@@ -126,7 +167,7 @@ describe("colorRouter", () => {
 
 	it("update returns NOT_FOUND for unknown id", async () => {
 		const user = await createTestUser();
-		const caller = await createTestCaller(createTestSession(user));
+		const caller = await createTestCaller(adminSession(user));
 
 		await expect(
 			caller.color.update({
@@ -138,7 +179,7 @@ describe("colorRouter", () => {
 
 	it("update returns CONFLICT if name already exists", async () => {
 		const user = await createTestUser();
-		const caller = await createTestCaller(createTestSession(user));
+		const caller = await createTestCaller(adminSession(user));
 
 		await caller.color.create({ name: "A", primary: "#000001" });
 		const b = await caller.color.create({ name: "B", primary: "#000002" });
@@ -151,9 +192,25 @@ describe("colorRouter", () => {
 		).rejects.toMatchObject({ code: "CONFLICT" });
 	});
 
-	it("delete deletes a color", async () => {
+	it("delete returns FORBIDDEN for non-admin", async () => {
+		const admin = await createTestUser();
+		const adminCaller = await createTestCaller(adminSession(admin));
+		const created = await adminCaller.color.create({
+			name: "ToDelete",
+			primary: "#123456",
+		});
+
 		const user = await createTestUser();
 		const caller = await createTestCaller(createTestSession(user));
+
+		await expect(caller.color.delete({ id: created.id })).rejects.toMatchObject({
+			code: "FORBIDDEN",
+		});
+	});
+
+	it("delete deletes a color for ADMIN", async () => {
+		const user = await createTestUser();
+		const caller = await createTestCaller(adminSession(user));
 
 		const created = await caller.color.create({
 			name: "ToDelete",
@@ -167,7 +224,7 @@ describe("colorRouter", () => {
 
 	it("delete returns NOT_FOUND for unknown id", async () => {
 		const user = await createTestUser();
-		const caller = await createTestCaller(createTestSession(user));
+		const caller = await createTestCaller(adminSession(user));
 
 		await expect(caller.color.delete({ id: "unknown-id" })).rejects.toMatchObject({
 			code: "NOT_FOUND",

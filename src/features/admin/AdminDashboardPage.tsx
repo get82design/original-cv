@@ -305,6 +305,12 @@ export function AdminDashboardPage() {
 									Catalogue →
 								</Link>
 								<Link
+									href="/admin/colors"
+									className="text-xs font-medium text-primary hover:underline dark:text-primary-dark"
+								>
+									Couleurs →
+								</Link>
+								<Link
 									href="/admin/unlocks"
 									className="text-xs font-medium text-primary hover:underline dark:text-primary-dark"
 								>
@@ -480,7 +486,13 @@ export function AdminDashboardPage() {
 									href="/admin/cvs?view=colors"
 									className="shrink-0 text-xs font-medium text-primary hover:underline dark:text-primary-dark"
 								>
-									Tout →
+									Stats →
+								</Link>
+								<Link
+									href="/admin/colors"
+									className="shrink-0 text-xs font-medium text-primary hover:underline dark:text-primary-dark"
+								>
+									Gérer →
 								</Link>
 							</div>
 							{!(data?.cvs.ready ?? false) ? (

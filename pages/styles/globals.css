@@ -444,6 +444,7 @@ html.dark #panel-modif-cv.cv-modif-tabview {
 .p-dialog.dialog-cover-letter,
 .p-dialog.dialog-delete-account,
 .p-dialog.dialog-admin-template,
+.p-dialog.dialog-admin-color,
 .p-dialog.dialog-admin-credit-pack,
 .p-dialog.dialog-profile-from-cv {
     background: #ffffff;
@@ -495,6 +496,7 @@ html.dark .p-dialog.dialog-rewrite-section,
 html.dark .p-dialog.dialog-cover-letter,
 html.dark .p-dialog.dialog-delete-account,
 html.dark .p-dialog.dialog-admin-template,
+html.dark .p-dialog.dialog-admin-color,
 html.dark .p-dialog.dialog-admin-credit-pack,
 html.dark .p-dialog.dialog-profile-from-cv {
     background: #18181b;
@@ -531,10 +533,12 @@ html.dark .p-dialog.dialog-profile-from-cv {
     }
 }
 
-/* Inputs dans modals lettre / suppression compte — light/dark */
+/* Inputs dans modals lettre / suppression compte / admin couleurs — light/dark */
 .p-dialog.dialog-cover-letter .p-inputtext,
 .p-dialog.dialog-cover-letter .p-inputtextarea,
-.p-dialog.dialog-delete-account .p-inputtext {
+.p-dialog.dialog-delete-account .p-inputtext,
+.p-dialog.dialog-admin-color .p-inputtext,
+.p-dialog.dialog-admin-color .p-dropdown {
     background: #ffffff;
     color: #18181b;
     border-color: #d4d4d8;
@@ -542,26 +546,37 @@ html.dark .p-dialog.dialog-profile-from-cv {
 
 .p-dialog.dialog-cover-letter .p-inputtext:enabled:hover,
 .p-dialog.dialog-cover-letter .p-inputtextarea:enabled:hover,
-.p-dialog.dialog-delete-account .p-inputtext:enabled:hover {
+.p-dialog.dialog-delete-account .p-inputtext:enabled:hover,
+.p-dialog.dialog-admin-color .p-inputtext:enabled:hover,
+.p-dialog.dialog-admin-color .p-dropdown:not(.p-disabled):hover {
     border-color: #a1a1aa;
 }
 
 .p-dialog.dialog-cover-letter .p-inputtext:enabled:focus,
 .p-dialog.dialog-cover-letter .p-inputtextarea:enabled:focus,
-.p-dialog.dialog-delete-account .p-inputtext:enabled:focus {
+.p-dialog.dialog-delete-account .p-inputtext:enabled:focus,
+.p-dialog.dialog-admin-color .p-inputtext:enabled:focus,
+.p-dialog.dialog-admin-color .p-dropdown.p-focus {
     border-color: #71717a;
     box-shadow: none;
 }
 
 .p-dialog.dialog-cover-letter .p-inputtext::placeholder,
 .p-dialog.dialog-cover-letter .p-inputtextarea::placeholder,
-.p-dialog.dialog-delete-account .p-inputtext::placeholder {
+.p-dialog.dialog-delete-account .p-inputtext::placeholder,
+.p-dialog.dialog-admin-color .p-inputtext::placeholder {
     color: #a1a1aa;
+}
+
+.p-dialog.dialog-admin-color .p-dropdown .p-dropdown-label {
+    color: #18181b;
 }
 
 html.dark .p-dialog.dialog-cover-letter .p-inputtext,
 html.dark .p-dialog.dialog-cover-letter .p-inputtextarea,
-html.dark .p-dialog.dialog-delete-account .p-inputtext {
+html.dark .p-dialog.dialog-delete-account .p-inputtext,
+html.dark .p-dialog.dialog-admin-color .p-inputtext,
+html.dark .p-dialog.dialog-admin-color .p-dropdown {
     background: #18181b;
     color: #f4f4f5;
     border-color: #3f3f46;
@@ -569,21 +584,31 @@ html.dark .p-dialog.dialog-delete-account .p-inputtext {
 
 html.dark .p-dialog.dialog-cover-letter .p-inputtext:enabled:hover,
 html.dark .p-dialog.dialog-cover-letter .p-inputtextarea:enabled:hover,
-html.dark .p-dialog.dialog-delete-account .p-inputtext:enabled:hover {
+html.dark .p-dialog.dialog-delete-account .p-inputtext:enabled:hover,
+html.dark .p-dialog.dialog-admin-color .p-inputtext:enabled:hover,
+html.dark .p-dialog.dialog-admin-color .p-dropdown:not(.p-disabled):hover {
     border-color: #52525b;
 }
 
 html.dark .p-dialog.dialog-cover-letter .p-inputtext:enabled:focus,
 html.dark .p-dialog.dialog-cover-letter .p-inputtextarea:enabled:focus,
-html.dark .p-dialog.dialog-delete-account .p-inputtext:enabled:focus {
+html.dark .p-dialog.dialog-delete-account .p-inputtext:enabled:focus,
+html.dark .p-dialog.dialog-admin-color .p-inputtext:enabled:focus,
+html.dark .p-dialog.dialog-admin-color .p-dropdown.p-focus {
     border-color: #71717a;
     box-shadow: none;
 }
 
 html.dark .p-dialog.dialog-cover-letter .p-inputtext::placeholder,
 html.dark .p-dialog.dialog-cover-letter .p-inputtextarea::placeholder,
-html.dark .p-dialog.dialog-delete-account .p-inputtext::placeholder {
+html.dark .p-dialog.dialog-delete-account .p-inputtext::placeholder,
+html.dark .p-dialog.dialog-admin-color .p-inputtext::placeholder {
     color: #71717a;
+}
+
+html.dark .p-dialog.dialog-admin-color .p-dropdown .p-dropdown-label,
+html.dark .p-dialog.dialog-admin-color .p-dropdown .p-dropdown-trigger {
+    color: #f4f4f5;
 }
 
 /* PickList dans modals profil ← CV / CV ← profil */

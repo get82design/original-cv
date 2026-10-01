@@ -1,6 +1,6 @@
 import { prisma } from "../../../lib/prisma";
-import type { CreateColorInput, UpdateColorInput } from "../schemas/color.schema";
-import { ConflictError, NotFoundError } from "../errors";
+import type { CreateColorInput, MoveColorInput, UpdateColorInput } from "../schemas/color.schema";
+import { ConflictError, NotFoundError, ValidationError } from "../errors";
 
 export class ColorService {
 	async create(data: CreateColorInput) {
@@ -90,6 +90,55 @@ export class ColorService {
 				primary: data.primary ?? color.primary,
 			},
 		});
+	}
+
+	/**
+	 * Échange l’ordre avec le voisin (haut / bas).
+	 * Contourne @@unique([order]) via un order temporaire en transaction.
+	 */
+	async move(input: MoveColorInput) {
+		const colors = await this.findAll();
+		const index = colors.findIndex((c) => c.id === input.id);
+		if (index < 0) {
+			throw new NotFoundError("COLOR", input.id);
+		}
+
+		const neighborIndex = input.direction === "up" ? index - 1 : index + 1;
+		if (neighborIndex < 0 || neighborIndex >= colors.length) {
+			throw new ValidationError(
+				"COLOR_MOVE_EDGE",
+				input.direction === "up"
+					? "La couleur est déjà en première position."
+					: "La couleur est déjà en dernière position.",
+			);
+		}
+
+		const current = colors[index];
+		const neighbor = colors[neighborIndex];
+		if (!current || !neighbor) {
+			throw new ValidationError("COLOR_MOVE_INVALID", "Réordonnancement impossible.");
+		}
+
+		const currentOrder = current.order;
+		const neighborOrder = neighbor.order;
+		const tempOrder = -1_000_000 - currentOrder;
+
+		await prisma.$transaction([
+			prisma.color.update({
+				where: { id: current.id },
+				data: { order: tempOrder },
+			}),
+			prisma.color.update({
+				where: { id: neighbor.id },
+				data: { order: currentOrder },
+			}),
+			prisma.color.update({
+				where: { id: current.id },
+				data: { order: neighborOrder },
+			}),
+		]);
+
+		return this.findAll();
 	}
 
 	async delete(id: string) {
