@@ -6,6 +6,7 @@ import { getClientErrorMessage } from "@/utils/clientError";
 
 /**
  * Préférences compte (UX) — au-dessus de la zone dangereuse.
+ * Aligné sur la checkbox « Ne plus afficher » du stepper onboarding.
  */
 export const ProfilePreferences = () => {
 	const toast = useRef<Toast>(null);
@@ -25,17 +26,17 @@ export const ProfilePreferences = () => {
 		},
 	});
 
-	const showOnboarding = me ? !me.hideCvOnboarding : true;
+	const hideOnboarding = me?.hideCvOnboarding ?? false;
 	const disabled = isLoading || !me || updateMutation.isPending;
 
 	const onToggle = (checked: boolean) => {
-		updateMutation.mutate({ hideCvOnboarding: !checked });
+		updateMutation.mutate({ hideCvOnboarding: checked });
 	};
 
 	return (
 		<>
 			<Toast ref={toast} position="top-center" />
-			<section className="mt-8 rounded-lg border border-zinc-200 bg-zinc-50/80 p-4 dark:border-zinc-700 dark:bg-zinc-900/50">
+			<section className="profile-preferences mt-8 rounded-lg border border-zinc-200 bg-zinc-50/80 p-4 dark:border-zinc-700 dark:bg-zinc-900/50">
 				<p className="m-0 text-sm font-semibold text-zinc-900 dark:text-zinc-100">
 					Préférences
 				</p>
@@ -43,19 +44,17 @@ export const ProfilePreferences = () => {
 					Contrôlez l’affichage du guide de première utilisation dans l’éditeur CV.
 				</p>
 				<label
-					htmlFor="profile-show-cv-onboarding"
+					htmlFor="profile-hide-cv-onboarding"
 					className="mt-3 flex items-start gap-2.5 text-sm text-zinc-800 dark:text-zinc-200 cursor-pointer select-none"
 				>
 					<Checkbox
-						inputId="profile-show-cv-onboarding"
-						checked={showOnboarding}
+						inputId="profile-hide-cv-onboarding"
+						checked={hideOnboarding}
 						disabled={disabled}
 						onChange={(e) => onToggle(Boolean(e.checked))}
 						className="mt-0.5"
 					/>
-					<span>
-						Afficher le guide à la prochaine ouverture de l’éditeur
-					</span>
+					<span>Ne plus afficher le guide à l’ouverture de l’éditeur</span>
 				</label>
 			</section>
 		</>

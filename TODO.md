@@ -120,7 +120,7 @@ Critère done : créer/sauver CV → DL gratuit/payant → IA review/rewrite/let
 1. DnD / layouts 2 cols (`TwoColumnCenter` 50/50 + preuve Vienna) → smoke
 2. CRUD couleurs / catalogue admin *(// possible avec 1)*
 3. Templates premium puis volume ~25 + logos / couleurs brand
-4. Onboarding stepper + opt-out compte · Tips persistants + illustrations (`public/tips/`)
+4. Onboarding stepper + opt-out compte · Tips (guide dans `DialogCvTips`) — **livré** ; illustrations → **V3**
 5. `match-job` → fiche métier France Travail
 6. Smoke + checklist légal light
 7. **Fin V2** : App Router hybride + évolution `/modeles/[slug]` *(mini CV ? — à cadrer)*
@@ -141,17 +141,17 @@ Critère done : créer/sauver CV → DL gratuit/payant → IA review/rewrite/let
 	- comptes connectés : checkbox « ne plus afficher » (préférence persistée)
 	- `hideCvOnboarding` sur `User` ; auto-open `CvEditor` ; prefs profil pour réactiver
 	- contenu : `cvOnboarding.ts` + `DialogCvOnboarding` (5 steps)
-- [x] Tips : accès **persistant** au guide onboarding dans `DialogCvTips` (SpeedDial)
+- [x] Tips : accès **persistant** au guide onboarding dans `DialogCvTips` (SpeedDial) — **validé**
 	- section « Guide de l’éditeur » = même source `CV_ONBOARDING_STEPS` que le stepper
-	- conseils rédaction (`cvTips.ts`) toujours dans la même modale
-	- illustrations `public/tips/` : reporté (structure `media` prête) — enrichissement V3 si besoin
+	- conseils rédaction (`cvTips.ts`) + Accordion (1 panneau ouvert)
+	- illustrations / captures → **reporté V3** (`public/tips/`, `media` déjà prévu dans `cvTips.ts`)
 - [ ] App Router **hybride** (surfaces marketing `app/` d’abord) — **fin V2**
 	- lien probable avec `/modeles/[slug]` (ex. mini CV à la place de la vignette) — à trancher au moment du chantier
 
 ### Profil
 
 - [x] Recover CV → profil — **socle déjà livré** (`mapCvToProfileFormValues` + action par CV dans `ProfileCvsCard`, header inclus)
-- [ ] Smoke recover en clôture V2 (régression uniquement si bug remonté)
+- [x] Smoke recover en clôture V2 (régression uniquement si bug remonté) — **validé**
 
 ### IA / emploi
 
@@ -205,6 +205,9 @@ Critère done : créer/sauver CV → DL gratuit/payant → IA review/rewrite/let
 	- aujourd’hui = screenshots à l’arrache (catalogue + fiches `/modeles/[slug]`)
 	- cible : rendu A4 cohérent (même jeu de données démo, fond neutre, pas de chrome UI)
 	- `(?)` script / export automatisé depuis l’éditeur (html-to-image / Browserless) vs batch manuel soigné
+- [ ] Tips : illustrations / captures (`public/tips/`, + `srcDark` si besoin)
+	- brancher `media` déjà prévu dans `cvTips.ts` (et éventuellement guide onboarding)
+	- enrichissement copy / captures — reporté depuis V2 (socle Tips + accordion **livré**)
 
 ### Différenciation templates premium (V3)
 
@@ -295,6 +298,7 @@ Contexte : **pas de prod publique avant fin V3**. Preprod sert à figer / faire 
 | Options exclusives premium / gating | **V3** (catalogue riche V2 sans gating serveur) |
 | Onboarding stepper V2 | **In** + opt-out checkbox compte |
 | Tips vs onboarding | **Complémentaires** — stepper 1ère fois ; même guide repris dans `DialogCvTips` (+ conseils) |
+| Tips illustrations | **V3** — captures `public/tips/` ; structure `media` déjà en place |
 | Recover CV → profil | **Socle livré V1** — smoke clôture V2 si besoin |
 | Funnel sans GA | **Reporté V3** |
 | App Router hybride + `/modeles/[slug]` | **Fin V2** — mini CV `(?)` à cadrer sur le chantier |

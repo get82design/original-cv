@@ -1,7 +1,6 @@
 import { FieldNameLayoutGeneral } from "@/features/cv-editor/utils/fields/fieldNameLayoutGeneral";
 import { SelectButton } from "primereact/selectbutton";
 import { Tooltip } from "primereact/tooltip";
-import { useEffect, useState } from "react";
 import { useFormContext } from "react-hook-form";
 import { MdInfo } from "react-icons/md";
 
@@ -10,29 +9,27 @@ interface TitleSectionLigneProps {
 	watchLigneDessous: boolean;
 }
 
+type LigneOption = "Aucun" | "Dessus" | "Dessous" | "Les 2";
+
+function lignesToOption(dessus: boolean, dessous: boolean): LigneOption {
+	if (dessus && dessous) return "Les 2";
+	if (dessus) return "Dessus";
+	if (dessous) return "Dessous";
+	return "Aucun";
+}
+
+/** Une seule source de vérité : les champs RHF — pas de sync bidirectionnel useEffect. */
 export const TitleSectionLigne = ({
 	watchLigneDessus,
 	watchLigneDessous,
 }: TitleSectionLigneProps) => {
 	const { setValue } = useFormContext();
-	const [iconStyle, setIconStyle] = useState<"Aucun" | "Dessus" | "Dessous" | "Les 2">();
-	const iconOptions = ["Aucun", "Dessus", "Dessous", "Les 2"];
-	useEffect(() => {
-		if (watchLigneDessous && watchLigneDessus) {
-			setIconStyle("Les 2");
-		}
-		if (watchLigneDessous && !watchLigneDessus) {
-			setIconStyle("Dessous");
-		}
-		if (!watchLigneDessous && watchLigneDessus) {
-			setIconStyle("Dessus");
-		}
-		if (!watchLigneDessous && !watchLigneDessus) {
-			setIconStyle("Aucun");
-		}
-	}, [watchLigneDessus, watchLigneDessous]);
-	useEffect(() => {
-		switch (iconStyle) {
+	const iconStyle = lignesToOption(watchLigneDessus, watchLigneDessous);
+	const iconOptions: LigneOption[] = ["Aucun", "Dessus", "Dessous", "Les 2"];
+
+	const onChange = (value: LigneOption | null) => {
+		if (!value) return;
+		switch (value) {
 			case "Aucun":
 				setValue(FieldNameLayoutGeneral.withLigneDessous, false);
 				setValue(FieldNameLayoutGeneral.withLigneDessus, false);
@@ -49,10 +46,9 @@ export const TitleSectionLigne = ({
 				setValue(FieldNameLayoutGeneral.withLigneDessous, true);
 				setValue(FieldNameLayoutGeneral.withLigneDessus, true);
 				break;
-			default:
-				break;
 		}
-	}, [iconStyle, setValue]);
+	};
+
 	const titleTransformTemplate = (option: string) => {
 		return <div className="text-xs">{option}</div>;
 	};
@@ -66,7 +62,7 @@ export const TitleSectionLigne = ({
 			<SelectButton
 				className="shadow-none text-xs panel-modification"
 				value={iconStyle}
-				onChange={(e) => setIconStyle(e.value)}
+				onChange={(e) => onChange(e.value as LigneOption | null)}
 				options={iconOptions}
 				unselectable={false}
 				itemTemplate={titleTransformTemplate}

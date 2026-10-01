@@ -193,7 +193,16 @@ export const CvEditor = () => {
 
 	useEffect(() => {
 		if (!modules) return;
-		setItemNoUse(modules?.filter((module) => module.isActive === false));
+		const next = modules.filter((module) => module.isActive === false);
+		setItemNoUse((prev) => {
+			if (
+				prev.length === next.length &&
+				prev.every((m, i) => m.type === next[i]?.type && m.isActive === next[i]?.isActive)
+			) {
+				return prev;
+			}
+			return next;
+		});
 	}, [modules]);
 
 	useEffect(() => {

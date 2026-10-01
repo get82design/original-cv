@@ -1,10 +1,21 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
+function mapsEqual(a: Map<string, number>, b: Map<string, number>): boolean {
+	if (a === b) return true;
+	if (a.size !== b.size) return false;
+	for (const [k, v] of a) {
+		if (b.get(k) !== v) return false;
+	}
+	return true;
+}
+
 /** Hauteurs stabilisées (évite un re-pack à chaque toolbar / bouton +). */
 export function useDebouncedHeights(heights: Map<string, number>, delayMs = 120) {
 	const [stable, setStable] = useState(heights);
 	useEffect(() => {
-		const t = window.setTimeout(() => setStable(heights), delayMs);
+		const t = window.setTimeout(() => {
+			setStable((prev) => (mapsEqual(prev, heights) ? prev : heights));
+		}, delayMs);
 		return () => window.clearTimeout(t);
 	}, [heights, delayMs]);
 	return stable;

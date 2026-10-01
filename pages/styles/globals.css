@@ -662,6 +662,43 @@ html.dark .p-dialog.dialog-cv-onboarding .p-checkbox.p-highlight .p-checkbox-box
 	color: #18181b;
 }
 
+/* Checkbox préférences profil — light / dark */
+.profile-preferences .p-checkbox .p-checkbox-box {
+	background: #ffffff;
+	border-color: #d4d4d8;
+	color: #ffffff;
+}
+
+.profile-preferences .p-checkbox:not(.p-disabled):hover .p-checkbox-box {
+	border-color: #a1a1aa;
+}
+
+.profile-preferences .p-checkbox.p-highlight .p-checkbox-box {
+	background: var(--primary-color);
+	border-color: var(--primary-color);
+	color: #ffffff;
+}
+
+.profile-preferences .p-checkbox.p-disabled .p-checkbox-box {
+	opacity: 0.6;
+}
+
+html.dark .profile-preferences .p-checkbox .p-checkbox-box {
+	background: #18181b;
+	border-color: #3f3f46;
+	color: #18181b;
+}
+
+html.dark .profile-preferences .p-checkbox:not(.p-disabled):hover .p-checkbox-box {
+	border-color: #71717a;
+}
+
+html.dark .profile-preferences .p-checkbox.p-highlight .p-checkbox-box {
+	background: var(--primary-color-dark);
+	border-color: var(--primary-color-dark);
+	color: #18181b;
+}
+
 /* Accordion Tips — light / dark */
 .p-dialog.dialog-cv-tips .cv-tips-accordion.p-accordion {
 	.p-accordion-header .p-accordion-header-link {

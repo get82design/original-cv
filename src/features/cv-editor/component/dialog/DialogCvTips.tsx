@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { Dialog } from "primereact/dialog";
 import { Button } from "primereact/button";
 import { Accordion, AccordionTab } from "primereact/accordion";
@@ -44,6 +45,12 @@ interface DialogCvTipsProps {
 }
 
 export const DialogCvTips = ({ visible, onHide }: DialogCvTipsProps) => {
+	const [activeIndex, setActiveIndex] = useState<number | number[] | null>(0);
+
+	useEffect(() => {
+		if (visible) setActiveIndex(0);
+	}, [visible]);
+
 	const footer = (
 		<div className="flex justify-end">
 			<Button
@@ -70,7 +77,11 @@ export const DialogCvTips = ({ visible, onHide }: DialogCvTipsProps) => {
 					disponible à tout moment via le SpeedDial.
 				</p>
 
-				<Accordion activeIndex={0} className="cv-tips-accordion">
+				<Accordion
+					activeIndex={activeIndex}
+					onTabChange={(e) => setActiveIndex(e.index)}
+					className="cv-tips-accordion"
+				>
 					{/* Même contenu que le stepper 1ère utilisation — source unique `cvOnboarding.ts`. */}
 					<AccordionTab
 						header={
