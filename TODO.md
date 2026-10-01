@@ -137,11 +137,14 @@ Critère done : créer/sauver CV → DL gratuit/payant → IA review/rewrite/let
 	- création structure = **seeds** pré-prod ; admin = flags catalogue seulement (pas de builder)
 - [ ] Premiers templates **premium** basés sur header split / layouts riches
 - [ ] Logos / variantes couleurs manquantes (polish brand)
-- [ ] Onboarding guidé « première utilisation » (stepper) — **≠** modal Tips
+- [x] Onboarding guidé « première utilisation » (stepper) — **≠** modal Tips
 	- comptes connectés : checkbox « ne plus afficher » (préférence persistée)
-- [ ] Tips : accès **persistant** hors modale (retrouver l’aide après fermeture de `DialogCvTips`)
-	- illustrations : `public/tips/` (+ `srcDark` si besoin) — `media` déjà dans `cvTips.ts`
-	- contenu texte / captures : V2 ; enrichissement éventuel **V3** si on reporte
+	- `hideCvOnboarding` sur `User` ; auto-open `CvEditor` ; prefs profil pour réactiver
+	- contenu : `cvOnboarding.ts` + `DialogCvOnboarding` (5 steps)
+- [x] Tips : accès **persistant** au guide onboarding dans `DialogCvTips` (SpeedDial)
+	- section « Guide de l’éditeur » = même source `CV_ONBOARDING_STEPS` que le stepper
+	- conseils rédaction (`cvTips.ts`) toujours dans la même modale
+	- illustrations `public/tips/` : reporté (structure `media` prête) — enrichissement V3 si besoin
 - [ ] App Router **hybride** (surfaces marketing `app/` d’abord) — **fin V2**
 	- lien probable avec `/modeles/[slug]` (ex. mini CV à la place de la vignette) — à trancher au moment du chantier
 
@@ -291,7 +294,7 @@ Contexte : **pas de prod publique avant fin V3**. Preprod sert à figer / faire 
 | Placement header | **figé par le template** (seed) — pas de sélecteur utilisateur |
 | Options exclusives premium / gating | **V3** (catalogue riche V2 sans gating serveur) |
 | Onboarding stepper V2 | **In** + opt-out checkbox compte |
-| Tips vs onboarding | **Complémentaires** — stepper 1ère fois ; Tips persistants + modale |
+| Tips vs onboarding | **Complémentaires** — stepper 1ère fois ; même guide repris dans `DialogCvTips` (+ conseils) |
 | Recover CV → profil | **Socle livré V1** — smoke clôture V2 si besoin |
 | Funnel sans GA | **Reporté V3** |
 | App Router hybride + `/modeles/[slug]` | **Fin V2** — mini CV `(?)` à cadrer sur le chantier |

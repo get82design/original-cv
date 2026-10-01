@@ -87,6 +87,21 @@ describe("UserService.updateProfile", () => {
 		expect(updated.name).toBe("John");
 		expect(updated.image).toBe("https://example.com/image.png");
 	});
+
+	it("updates hideCvOnboarding without touching other fields", async () => {
+		const user = await createTestUser();
+
+		const hidden = await userService.updateProfile(user.id, {
+			hideCvOnboarding: true,
+		});
+		expect(hidden.hideCvOnboarding).toBe(true);
+		expect(hidden.name).toBe(user.name);
+
+		const shown = await userService.updateProfile(user.id, {
+			hideCvOnboarding: false,
+		});
+		expect(shown.hideCvOnboarding).toBe(false);
+	});
 });
 
 describe("UserService.consumeDownloadCredit", () => {

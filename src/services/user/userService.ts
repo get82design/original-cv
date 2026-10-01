@@ -64,6 +64,9 @@ export class UserService {
 			data: {
 				...(data.name !== undefined ? { name: data.name } : {}),
 				...(data.image !== undefined ? { image: data.image } : {}),
+				...(data.hideCvOnboarding !== undefined
+					? { hideCvOnboarding: data.hideCvOnboarding }
+					: {}),
 			},
 		});
 	}

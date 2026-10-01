@@ -15,6 +15,7 @@ import { Toast } from "primereact/toast";
 import { isTemplateLocked } from "../cv-editor/utils/isTemplateLocked";
 import { useSession } from "next-auth/react";
 import { ProfileCvsCard } from "./compo/ProfileCvsCard";
+import { ProfilePreferences } from "./compo/ProfilePreferences";
 import { ProfileDangerZone } from "./compo/ProfileDangerZone";
 import { getClientErrorMessage } from "@/utils/clientError";
 
@@ -250,6 +251,7 @@ export const ProfilePage = () => {
 						</div>
 					</div>
 				</div>
+				<ProfilePreferences />
 				<ProfileDangerZone />
 			</div>
 		</FormProfile>

@@ -18,6 +18,7 @@ import { Tooltip } from "primereact/tooltip";
 import { Button } from "primereact/button";
 import { DialogDataFromProfile } from "./component/dialog/dataFromProfile/DialogDataFromProfile";
 import { DialogCvTips } from "./component/dialog/DialogCvTips";
+import { DialogCvOnboarding } from "./component/dialog/DialogCvOnboarding";
 import { DialogAssistantIa, type AiActionId } from "@/components/dialog/DialogAssistantIa";
 import { DialogAiPayment } from "@/components/dialog/DialogAiPayment";
 import { DialogCvReviewResult } from "@/components/dialog/DialogCvReviewResult";
@@ -64,10 +65,15 @@ export const CvEditor = () => {
 	console.log(data);
 	const { status } = useSession();
 	const { data: profile } = trpc.profile.completeMe.useQuery();
+	const { data: me } = trpc.user.me.useQuery(undefined, {
+		enabled: status === "authenticated",
+	});
+	const onboardingAutoOpenedRef = useRef(false);
 	const [itemNoUse, setItemNoUse] = useState<TemplateModule[]>([]);
 	const [visibleDialogDataFromProfile, setVisibleDialogDataFromProfile] = useState(false);
 	const [visibleAssistantIa, setVisibleAssistantIa] = useState(false);
 	const [visibleTips, setVisibleTips] = useState(false);
+	const [visibleOnboarding, setVisibleOnboarding] = useState(false);
 	const [visibleCvReview, setVisibleCvReview] = useState(false);
 	const [cvReview, setCvReview] = useState<CvReview | null>(null);
 	const [visibleRewrite, setVisibleRewrite] = useState(false);
@@ -110,6 +116,11 @@ export const CvEditor = () => {
 	const rewriteSectionMutation = trpc.ai.rewriteSection.useMutation();
 	const coverLetterMutation = trpc.ai.coverLetter.useMutation();
 	const utils = trpc.useUtils();
+	const updateUserProfileMutation = trpc.user.updateProfile.useMutation({
+		onSuccess: () => {
+			void utils.user.me.invalidate();
+		},
+	});
 	const toast = useRef<Toast>(null);
 	const consumeFreeDownloadMutation = trpc.user.consumeFreeDownload.useMutation();
 	const consumePaidDownloadMutation = trpc.user.consumePaidDownload.useMutation();
@@ -171,6 +182,14 @@ export const CvEditor = () => {
 		if (isXl) setDockOpen(true);
 		else if (dockCollapsible) setDockOpen(false);
 	}, [isXl, dockCollapsible]);
+
+	// Stepper 1ère utilisation : une seule auto-ouverture par montage si pas d’opt-out.
+	useEffect(() => {
+		if (status !== "authenticated" || !me || me.hideCvOnboarding) return;
+		if (onboardingAutoOpenedRef.current) return;
+		onboardingAutoOpenedRef.current = true;
+		setVisibleOnboarding(true);
+	}, [status, me]);
 
 	useEffect(() => {
 		if (!modules) return;
@@ -813,6 +832,13 @@ export const CvEditor = () => {
 					onSelectAction={onSelectAiAction}
 				/>
 				<DialogCvTips visible={visibleTips} onHide={() => setVisibleTips(false)} />
+				<DialogCvOnboarding
+					visible={visibleOnboarding}
+					onHide={() => setVisibleOnboarding(false)}
+					onDismissPermanently={() => {
+						updateUserProfileMutation.mutate({ hideCvOnboarding: true });
+					}}
+				/>
 				<DialogAiPayment
 					visible={!!paymentDialog}
 					onHide={() => {

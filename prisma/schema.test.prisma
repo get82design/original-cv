@@ -100,6 +100,9 @@ model User {
   iaRequestsUsed    Int               @default(0)  // Compteur de requêtes IA ce mois-ci
   lastIaReset       DateTime          @default(now()) // Pour réinitialiser le compteur tous les mois
 
+  // --- Préférences UX ---
+  hideCvOnboarding  Boolean @default(false) // ne plus afficher le stepper 1ère utilisation éditeur
+
   // --- Relations ---
   accounts          Account[]                   // NextAuth relation
   sessions          Session[]

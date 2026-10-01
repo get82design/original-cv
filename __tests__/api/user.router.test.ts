@@ -38,6 +38,20 @@ describe("userRouter", () => {
 		expect(updated.name).toBe("Nouveau nom");
 	});
 
+	it("updateProfile persists hideCvOnboarding", async () => {
+		const user = await createTestUser();
+		const caller = await createTestCaller(createTestSession(user));
+
+		const updated = await caller.user.updateProfile({
+			hideCvOnboarding: true,
+		});
+
+		expect(updated.hideCvOnboarding).toBe(true);
+
+		const me = await caller.user.me();
+		expect(me.hideCvOnboarding).toBe(true);
+	});
+
 	it("updateProfile rejects invalid input (Zod)", async () => {
 		const user = await createTestUser();
 		const caller = await createTestCaller(createTestSession(user));
