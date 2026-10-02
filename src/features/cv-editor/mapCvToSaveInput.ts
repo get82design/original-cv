@@ -576,6 +576,7 @@ export function mapCvToSaveInput(cv: CvFull): CvSaveInput {
 								.join(" "),
 							...(project.location != null ? { location: project.location } : {}),
 							...(project.description != null ? { description: project.description } : {}),
+							...(project.result != null ? { result: project.result } : {}),
 							...(project.technology != null ? { technology: project.technology } : {}),
 							...(project.status != null ? { status: project.status } : {}),
 							missions: [...project.cvMissions]

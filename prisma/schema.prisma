@@ -770,6 +770,7 @@ model Project {
   id          String @id @default(cuid())
   title       String
   description String?
+  result      String?
   location    String?
   start       DateTime
   end         DateTime?
@@ -802,6 +803,7 @@ model CvProject {
   id          String @id @default(cuid())
   title       String
   description String?
+  result      String?
   location    String?
   start       DateTime
   end         DateTime?

@@ -172,6 +172,7 @@ export class ProfileSaveService {
 						end: rest.end ?? null,
 						location: rest.location ?? null,
 						description: rest.description ?? null,
+						result: rest.result ?? null,
 						technology: rest.technology ?? null,
 						status: rest.status ?? null,
 						order,

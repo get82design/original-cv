@@ -233,6 +233,7 @@ export class CvSaveService {
 						start: rest.start,
 						end: rest.end ?? null,
 						description: rest.description ?? null,
+						result: rest.result ?? null,
 						location: rest.location ?? null,
 						technology: rest.technology ?? null,
 						status: rest.status ?? null,

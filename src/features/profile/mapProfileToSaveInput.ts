@@ -82,6 +82,7 @@ export function mapProfileToSaveInput(
 				location: project.location,
 				technology: project.technology,
 				description: project.description,
+				result: project.result,
 				missions: (project.missions ?? []).map((p) => ({
 					id: p.id,
 					clientKey: p.id,

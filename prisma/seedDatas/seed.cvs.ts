@@ -25,7 +25,10 @@ import {
 } from "./buildTemplateModules";
 import { CompetenceService } from "@/services/commons/competenceService";
 import { stockholm } from "./cv-template/one-column/stockholm";
-import type { TemplateDefaultStyles, TemplateLayout } from "@/services/schemas/cvTemplate.schema";
+import type {
+	TemplateDefaultStyles,
+	TemplateLayout,
+} from "@/services/schemas/cvTemplate.schema";
 
 /** Nettoie textAlign: null → undefined pour matcher le schéma Zod */
 function sectionTitle(t: ThemeTokens) {
@@ -60,18 +63,35 @@ export async function buildCvClaraDelorme(userId: string, templateId: string) {
 	const softComps = await Promise.all(
 		softCompNames.map((name) => competenceService.create({ name })),
 	);
-	const hardTags = await Promise.all(hardCompNames.map((name) => tagService.create({ name })));
-	const softTags = await Promise.all(softCompNames.map((name) => tagService.create({ name })));
+	const hardTags = await Promise.all(
+		hardCompNames.map((name) => tagService.create({ name })),
+	);
+	const softTags = await Promise.all(
+		softCompNames.map((name) => tagService.create({ name })),
+	);
 
 	// 2. Modules du CV (basés sur le template Classique, on active ce qu'on renseigne)
 	const modules = [
 		{
-			...buildDescriptionModule(stockholmTokens, { order: 1, title: "A propos de moi" }),
+			...buildDescriptionModule(stockholmTokens, {
+				order: 1,
+				title: "A propos de moi",
+			}),
 			column: 0,
 		},
-		{ ...buildExperienceModule(stockholmTokens, { order: 2, title: "Expériences" }), column: 0 },
 		{
-			...buildEducationModule(stockholmTokens, { order: 3, title: "Formations", columns: 2 }),
+			...buildExperienceModule(stockholmTokens, {
+				order: 2,
+				title: "Expériences",
+			}),
+			column: 0,
+		},
+		{
+			...buildEducationModule(stockholmTokens, {
+				order: 3,
+				title: "Formations",
+				columns: 2,
+			}),
 			column: 0,
 		},
 		{
@@ -110,7 +130,14 @@ export async function buildCvClaraDelorme(userId: string, templateId: string) {
 			}),
 			column: 0,
 		},
-		{ ...buildTagModule(stockholmTokens, { order: 8, title: "Tags", isActive: false }), column: 0 },
+		{
+			...buildTagModule(stockholmTokens, {
+				order: 8,
+				title: "Tags",
+				isActive: false,
+			}),
+			column: 0,
+		},
 		{
 			...buildCertificationModule(stockholmTokens, {
 				order: 9,
@@ -120,7 +147,11 @@ export async function buildCvClaraDelorme(userId: string, templateId: string) {
 			column: 0,
 		},
 		{
-			...buildPrizeModule(stockholmTokens, { order: 10, title: "Prix", isActive: false }),
+			...buildPrizeModule(stockholmTokens, {
+				order: 10,
+				title: "Prix",
+				isActive: false,
+			}),
 			column: 0,
 		},
 		{
@@ -148,15 +179,27 @@ export async function buildCvClaraDelorme(userId: string, templateId: string) {
 			column: 0,
 		},
 		{
-			...buildExpertiseModule(stockholmTokens, { order: 14, title: "Expertises", isActive: false }),
+			...buildExpertiseModule(stockholmTokens, {
+				order: 14,
+				title: "Expertises",
+				isActive: false,
+			}),
 			column: 0,
 		},
 		{
-			...buildFormationModule(stockholmTokens, { order: 15, title: "Formations", isActive: false }),
+			...buildFormationModule(stockholmTokens, {
+				order: 15,
+				title: "Formations",
+				isActive: false,
+			}),
 			column: 0,
 		},
 		{
-			...buildSkillModule(stockholmTokens, { order: 16, title: "Skills", isActive: false }),
+			...buildSkillModule(stockholmTokens, {
+				order: 16,
+				title: "Skills",
+				isActive: false,
+			}),
 			column: 0,
 		},
 		{
@@ -176,7 +219,11 @@ export async function buildCvClaraDelorme(userId: string, templateId: string) {
 			column: 0,
 		},
 		{
-			...buildProjectModule(stockholmTokens, { order: 19, title: "Projects", isActive: false }),
+			...buildProjectModule(stockholmTokens, {
+				order: 19,
+				title: "Projects",
+				isActive: false,
+			}),
 			column: 0,
 		},
 	];
@@ -207,7 +254,10 @@ export async function buildCvClaraDelorme(userId: string, templateId: string) {
 				},
 				settings: {
 					title: sectionTitle(stockholmTokens),
-					content: { ...sectionTitle(stockholmTokens), textAlign: "justify" as const },
+					content: {
+						...sectionTitle(stockholmTokens),
+						textAlign: "justify" as const,
+					},
 				},
 			},
 			philosophy: {
@@ -219,7 +269,10 @@ export async function buildCvClaraDelorme(userId: string, templateId: string) {
 					title: sectionTitle(stockholmTokens),
 					content: {
 						withAuthor: false,
-						citation: { ...stockholmTokens.body, textAlign: "justify" as const },
+						citation: {
+							...stockholmTokens.body,
+							textAlign: "justify" as const,
+						},
 						author: { ...stockholmTokens.meta, textAlign: "right" as const },
 					},
 				},
@@ -246,13 +299,15 @@ export async function buildCvClaraDelorme(userId: string, templateId: string) {
 								{
 									clientKey: "m1-2",
 									content: {
-										content: "Réalisation du merchandising vitrine hebdomadaire.",
+										content:
+											"Réalisation du merchandising vitrine hebdomadaire.",
 									},
 								},
 								{
 									clientKey: "m1-3",
 									content: {
-										content: "Formation et intégration de 4 nouveaux vendeurs saisonniers.",
+										content:
+											"Formation et intégration de 4 nouveaux vendeurs saisonniers.",
 									},
 								},
 								{
@@ -265,8 +320,14 @@ export async function buildCvClaraDelorme(userId: string, templateId: string) {
 							],
 							settings: {
 								title: { ...stockholmTokens.itemTitle }, // ou body selon ton design
-								company: { ...stockholmTokens.meta, colorSelect: "primaryColor" },
-								location: { ...stockholmTokens.meta, colorSelect: "primaryColor" },
+								company: {
+									...stockholmTokens.meta,
+									colorSelect: "primaryColor",
+								},
+								location: {
+									...stockholmTokens.meta,
+									colorSelect: "primaryColor",
+								},
 								periode: { ...stockholmTokens.meta },
 								description: { ...stockholmTokens.body },
 								missions: { ...stockholmTokens.body },
@@ -296,11 +357,24 @@ export async function buildCvClaraDelorme(userId: string, templateId: string) {
 											"Gestion de la caisse, réassort en rayon et traitement des livraisons matinales.",
 									},
 								},
+								{
+									clientKey: "m2-2",
+									content: {
+										content:
+											"Réassort continu, traitement de la marchandise (cintrage, antivol, étiquetage) et tenue irréprochable du magasin.",
+									},
+								},
 							],
 							settings: {
 								title: { ...stockholmTokens.itemTitle }, // ou body selon ton design
-								company: { ...stockholmTokens.meta, colorSelect: "primaryColor" },
-								location: { ...stockholmTokens.meta, colorSelect: "primaryColor" },
+								company: {
+									...stockholmTokens.meta,
+									colorSelect: "primaryColor",
+								},
+								location: {
+									...stockholmTokens.meta,
+									colorSelect: "primaryColor",
+								},
 								periode: { ...stockholmTokens.meta },
 								description: { ...stockholmTokens.body },
 								missions: { ...stockholmTokens.body },
@@ -574,6 +648,8 @@ export async function buildCvClaraDelorme(userId: string, templateId: string) {
 							title: "Refonte du Parcours Client Phygital & Merchandising",
 							description:
 								"Contexte : Baisse de la fréquentation physique de 10 % face à la montée de la vente en ligne.",
+							result:
+								"Résultats: réduction du temps d'attente en caisse de 35 %, hausse des ventes impulsives au comptoir de 12 %, et adoption du concept par 3 autres boutiques du réseau.",
 							technology: "",
 							location: "Boutique L'Élégance (Paris)",
 							start: new Date("2024-01-01"),

@@ -17,6 +17,7 @@ describe("CvProjectService.create", () => {
 			title: "Project 1",
 			start: new Date("2020-01-01"),
 			description: "Description 1",
+			result: "Résultat 1",
 			location: "Location 1",
 			technology: "Technology 1",
 			order: 1,
@@ -25,6 +26,7 @@ describe("CvProjectService.create", () => {
 		expect(project.cvId).toBe(cv.id);
 		expect(project.title).toBe("Project 1");
 		expect(project.description).toBe("Description 1");
+		expect(project.result).toBe("Résultat 1");
 		expect(project.location).toBe("Location 1");
 		expect(project.technology).toBe("Technology 1");
 		expect(project.order).toBe(1);
@@ -301,11 +303,13 @@ describe("CvProjectService.update", () => {
 		});
 		const updated = await cvProjectService.update(project.id, {
 			description: "Description 2",
+			result: "Résultat 2",
 			location: "Location 2",
 			technology: "Technology 2",
 		});
 
 		expect(updated.description).toBe("Description 2");
+		expect(updated.result).toBe("Résultat 2");
 		expect(updated.location).toBe("Location 2");
 		expect(updated.technology).toBe("Technology 2");
 		expect(updated.order).toBe(1);

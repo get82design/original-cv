@@ -60,7 +60,8 @@ export const galleryDemoValues: CvFormValues = {
 								clientKey: "demo-m1-3",
 								order: 3,
 								content: {
-									content: "Formation et intégration de 4 nouveaux vendeurs saisonniers.",
+									content:
+										"Formation et intégration de 4 nouveaux vendeurs saisonniers.",
 								},
 							},
 							{
@@ -104,6 +105,14 @@ export const galleryDemoValues: CvFormValues = {
 								content: {
 									content:
 										"Gestion de la caisse, réassort en rayon et traitement des livraisons matinales.",
+								},
+							},
+							{
+								clientKey: "demo-m2-2",
+								order: 2,
+								content: {
+									content:
+										"Réassort continu, traitement de la marchandise (cintrage, antivol, étiquetage) et tenue irréprochable du magasin.",
 								},
 							},
 						],
@@ -215,7 +224,8 @@ export const galleryDemoValues: CvFormValues = {
 					order: 1,
 					content: {
 						title: "Intelligence émotionnelle",
-						description: "Capacité à décoder rapidement les attentes du client.",
+						description:
+							"Capacité à décoder rapidement les attentes du client.",
 						icon: "faBrain",
 						settings: {
 							strength: defaultTokens.itemTitle,
@@ -367,16 +377,19 @@ export const galleryDemoValues: CvFormValues = {
 					order: 2,
 					content: {
 						title: "Soft Skills",
-						competences: ["Écoute active", "Empathie", "Gestion du stress", "Esprit d'équipe"].map(
-							(name, i) => ({
-								clientKey: `demo-comp-h-${i}`,
-								order: i + 1,
-								content: {
-									name,
-									competenceId: `demo-comp-h-${i}`, // faux id, pas en DB
-								},
-							}),
-						),
+						competences: [
+							"Écoute active",
+							"Empathie",
+							"Gestion du stress",
+							"Esprit d'équipe",
+						].map((name, i) => ({
+							clientKey: `demo-comp-h-${i}`,
+							order: i + 1,
+							content: {
+								name,
+								competenceId: `demo-comp-h-${i}`, // faux id, pas en DB
+							},
+						})),
 						settings: {
 							groupTitle: defaultTokens.itemTitle,
 							competences: defaultTokens.body,
@@ -522,6 +535,8 @@ export const galleryDemoValues: CvFormValues = {
 						title: "Refonte du Parcours Client Phygital & Merchandising",
 						description:
 							"Contexte : Baisse de la fréquentation physique de 10 % face à la montée de la vente en ligne.",
+						result:
+							"Résultats: réduction du temps d'attente en caisse de 35 %, hausse des ventes impulsives au comptoir de 12 %, et adoption du concept par 3 autres boutiques du réseau.",
 						technology: "",
 						location: "Boutique L'Élégance (Paris)",
 						start: new Date("2024-01-01"),
@@ -554,12 +569,14 @@ export const galleryDemoValues: CvFormValues = {
 						settings: {
 							title: defaultTokens.itemTitle,
 							description: defaultTokens.body,
+							result: defaultTokens.body,
 							technology: defaultTokens.body,
 							location: defaultTokens.body,
 							periode: defaultTokens.body,
 							missions: defaultTokens.body,
 							withTitle: true,
 							withDescription: true,
+							withResult: true,
 							withTechnology: true,
 							withLocation: true,
 							withPeriode: true,

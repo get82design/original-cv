@@ -28,6 +28,7 @@ export function createEmptyProject(opts?: { order?: number }): ListItem<ProjectI
 			end: undefined,
 			location: "",
 			description: "",
+			result: "",
 			missions: [],
 			technology: "",
 			status: undefined,
@@ -186,6 +187,14 @@ export const ProfileProject = ({ cvs }: { cvs: CV[] }) => {
 										leading={1}
 									/>
 									<ProjectMissions projectIndex={idx} />
+									<TextareaProfile
+										placeholder="Résultat"
+										name={`projects.${idx}.content.result`}
+										fontSize={"14px"}
+										weight={300}
+										textAlign="justify"
+										leading={1}
+									/>
 								</div>
 							</div>
 						);

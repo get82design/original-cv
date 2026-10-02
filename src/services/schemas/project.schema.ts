@@ -10,6 +10,7 @@ export const createMissionProjectSchema = z.object({
 export const createProjectSchema = z.object({
 	title: z.string().min(1),
 	description: z.string().optional(),
+	result: z.string().optional(),
 	location: z.string().optional(),
 	start: z.date(),
 	end: z.date().optional(),

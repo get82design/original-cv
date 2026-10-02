@@ -53,6 +53,7 @@ const projectContentSchema = createProjectSchema
 	.omit({ order: true, missions: true, settings: true })
 	.extend({
 		description: z.string().nullish(),
+		result: z.string().nullish(),
 		location: z.string().nullish(),
 		start: z.coerce.date(),
 		end: z.coerce.date().nullish(),

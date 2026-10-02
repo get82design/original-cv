@@ -59,6 +59,7 @@ export class ProfileProjectService {
 				profileId,
 				title: data.title,
 				description: data.description ?? null,
+				result: data.result ?? null,
 				location: data.location ?? null,
 				start: data.start,
 				end: data.end ?? null,
@@ -119,6 +120,7 @@ export class ProfileProjectService {
 		const dataToUpdate = {
 			title: data.title ?? existing.title,
 			description: data.description ?? existing.description,
+			result: data.result ?? existing.result,
 			location: data.location ?? existing.location,
 			technology: data.technology ?? existing.technology,
 			start: data.start ?? existing.start,

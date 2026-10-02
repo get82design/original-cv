@@ -181,6 +181,7 @@ export const projectContentSchema = z
 	.object({
 		title: baseSettingsSchema,
 		description: baseSettingsSchema,
+		result: baseSettingsSchema.optional(),
 		location: baseSettingsSchema,
 		periode: baseSettingsSchema,
 		technology: baseSettingsSchema,
@@ -188,6 +189,7 @@ export const projectContentSchema = z
 	})
 	.extend({
 		withDescription: z.boolean().default(true),
+		withResult: z.boolean().default(true),
 		withLocation: z.boolean().default(true),
 		withPeriode: z.boolean().default(true),
 		withTechnology: z.boolean().default(true),

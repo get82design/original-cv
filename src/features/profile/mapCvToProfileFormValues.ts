@@ -70,6 +70,7 @@ export function mapCvToProfileFormValues(cv: NonNullCv): Omit<ProfileSaveInput, 
 				location: exp.location,
 				technology: exp.technology,
 				description: exp.description,
+				result: exp.result,
 				missions:
 					exp.cvMissions?.map((m) => ({
 						clientKey: `mission-${uuid()}`,

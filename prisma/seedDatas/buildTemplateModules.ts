@@ -251,11 +251,13 @@ export function buildProjectModule(
 			content: {
 				title: t.itemTitle,
 				description: t.body,
+				result: t.body,
 				location: t.meta,
 				periode: t.meta,
 				technology: t.meta,
 				missions: t.body,
 				withDescription: true,
+				withResult: true,
 				withLocation: true,
 				withPeriode: true,
 				withTechnology: true,

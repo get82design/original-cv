@@ -112,6 +112,14 @@ export const ProjectDnd = ({
 							</div>
 						),
 					},
+					{
+						template: (
+							<div className="flex justify-between py-1 px-4 items-center">
+								<p>Résultat</p>
+								<ToggleAfficherCacher name={`${pathContent}.withResult`} />
+							</div>
+						),
+					},
 				],
 			},
 		];

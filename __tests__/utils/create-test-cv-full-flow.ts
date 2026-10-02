@@ -266,12 +266,14 @@ export async function createProject(
 	location?: string | null,
 	technology?: string | null,
 	end?: Date | null,
+	result?: string | null,
 ) {
 	return prismaTest.cvProject.create({
 		data: {
 			cvId,
 			title,
 			description: description ?? null,
+			result: result ?? null,
 			location: location ?? null,
 			start,
 			end: end ?? null,

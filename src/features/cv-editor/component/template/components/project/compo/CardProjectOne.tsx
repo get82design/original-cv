@@ -69,6 +69,7 @@ export const CardProjectOne = ({
 	const watchModelDescriptionOfProject = watch(
 		`${pathContent}.settings.description`,
 	);
+	const watchModelResultOfProject = watch(`${pathContent}.settings.result`);
 	const watchModelMissionOfProject = watch(`${pathContent}.settings.missions`);
 
 	const deleteProject = (itemToDelete: ListItem<ProjectItemContentInput>) => {
@@ -239,6 +240,23 @@ export const CardProjectOne = ({
 						}}
 					/>
 				}
+				resultCompo={
+					<TextareaCv
+						name={`${pathContent}.result`}
+						onClick={() => {
+							setSelectModifInput(`${pathContent}.settings.result`);
+							setSelectInputForm(`${pathContent}.settings.withResult`);
+						}}
+						placeholder="Résultat obtenu"
+						textColor={watchModelResultOfProject?.colorSelect}
+						textAlign={watchModelResultOfProject?.textAlign}
+						autoResize
+						dataInput={{
+							changeSize: "1px",
+							model: watchModelResultOfProject,
+						}}
+					/>
+				}
 				missionsCompo={
 					<ListInSection<ProjectItemContentInput>
 						pathContent={pathContent}
@@ -262,6 +280,7 @@ interface ContentProjectContainerProps {
 	periodeCompo: JSX.Element;
 	locationCompo: JSX.Element;
 	descriptionCompo: JSX.Element;
+	resultCompo: JSX.Element;
 	technologyCompo: JSX.Element;
 	missionsCompo: JSX.Element;
 }
@@ -273,6 +292,7 @@ export const ContentProjectContainer = ({
 	periodeCompo,
 	locationCompo,
 	descriptionCompo,
+	resultCompo,
 	technologyCompo,
 	missionsCompo,
 }: ContentProjectContainerProps) => {
@@ -298,6 +318,9 @@ export const ContentProjectContainer = ({
 			</div>
 			<div className="w-full -mt-1">
 				{item?.content?.settings?.withMissions && missionsCompo}
+			</div>
+			<div className="w-full">
+				{item?.content?.settings?.withResult && resultCompo}
 			</div>
 		</div>
 	);

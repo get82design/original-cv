@@ -78,4 +78,30 @@ describe("mapCvToProfileFormValues", () => {
 		expect(mapped.description).toBeNull();
 		expect(mapped.philosophy).toBeNull();
 	});
+
+	it("mappe le résultat des projets depuis le CV", () => {
+		const mapped = mapCvToProfileFormValues(
+			baseCv({
+				projects: [
+					{
+						id: "proj-1",
+						order: 1,
+						title: "Projet A",
+						start: new Date("2024-01-01"),
+						end: null,
+						location: "Paris",
+						technology: "React",
+						description: "Contexte",
+						result: "Hausse de 15 %",
+						cvMissions: [{ id: "pm1", order: 1, content: "Livrer" }],
+					},
+				],
+			}),
+		);
+		expect(mapped.projects).toHaveLength(1);
+		expect(mapped.projects?.[0]?.content.title).toBe("Projet A");
+		expect(mapped.projects?.[0]?.content.result).toBe("Hausse de 15 %");
+		expect(mapped.projects?.[0]?.content.description).toBe("Contexte");
+		expect(mapped.projects?.[0]?.id).toBeUndefined();
+	});
 });

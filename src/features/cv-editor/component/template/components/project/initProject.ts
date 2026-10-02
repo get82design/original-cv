@@ -22,6 +22,15 @@ const defaultSettings: ProjectContentSettings = {
 		withPrimaryColor: true,
 		textAlign: "left",
 	},
+	result: {
+		sizeModel: "18px",
+		weightModel: 600,
+		colorSelect: "primaryColor",
+		sizeSelect: "md",
+		weightSelect: "md",
+		withPrimaryColor: true,
+		textAlign: "left",
+	},
 	location: {
 		sizeModel: "18px",
 		weightModel: 600,
@@ -60,6 +69,7 @@ const defaultSettings: ProjectContentSettings = {
 	},
 	withTitle: true,
 	withDescription: true,
+	withResult: true,
 	withLocation: true,
 	withPeriode: true,
 	withTechnology: true,
@@ -76,6 +86,7 @@ export function createInitProject(opts?: {
 		content: {
 			title: "",
 			description: "",
+			result: "",
 			location: "",
 			start: new Date(),
 			end: undefined,

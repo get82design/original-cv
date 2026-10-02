@@ -277,6 +277,7 @@ function mapProfileProjectsToCvItems(
 		content: {
 			title: p.title,
 			description: p.description,
+			result: p.result,
 			location: p.location,
 			start: p.start,
 			end: p.end,

@@ -100,6 +100,7 @@ type TestUserOptions = {
 	projects?: {
 		title: string;
 		description?: string;
+		result?: string;
 		location?: string;
 		start: Date;
 		end?: Date;
@@ -339,6 +340,7 @@ export async function createTestUserWithProfile(options?: TestUserOptions) {
 							create: options.projects.map((p) => ({
 								title: p.title,
 								description: p.description,
+								result: p.result,
 								location: p.location,
 								start: p.start,
 								end: p.end,
@@ -756,6 +758,7 @@ export async function createProject(
 	location?: string | null,
 	end?: Date,
 	technology?: string | null,
+	result?: string | null,
 ) {
 	return prismaTest.project.create({
 		data: {
@@ -763,6 +766,7 @@ export async function createProject(
 			title,
 			start,
 			description: description ?? null,
+			result: result ?? null,
 			location: location ?? null,
 			end: end ?? null,
 			technology: technology ?? null,

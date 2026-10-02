@@ -164,6 +164,7 @@ export function mapProfileToCvDatas(
 							content: {
 								title: p.title,
 								description: p.description ?? undefined,
+								result: p.result ?? undefined,
 								technology: p.technology ?? undefined,
 								start: p.start ?? undefined,
 								end: p.end ?? undefined,
