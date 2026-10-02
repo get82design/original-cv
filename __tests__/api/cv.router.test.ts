@@ -295,10 +295,10 @@ describe("cvRouter.setPreview", () => {
 		});
 
 		expect(updated.previewUrl).toMatch(
-			new RegExp(`^/uploads/cv-previews/${user.id}/${cv.id}-with\\.jpg$`),
+			new RegExp(`^/uploads/cv-previews/${user.id}/${cv.id}-with\\.jpg(\\?v=\\d+)?$`),
 		);
 		expect(updated.previewUrlClean).toMatch(
-			new RegExp(`^/uploads/cv-previews/${user.id}/${cv.id}-clean\\.jpg$`),
+			new RegExp(`^/uploads/cv-previews/${user.id}/${cv.id}-clean\\.jpg(\\?v=\\d+)?$`),
 		);
 	});
 

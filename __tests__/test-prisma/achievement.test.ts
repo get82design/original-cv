@@ -71,7 +71,8 @@ describe("Achievement model", () => {
 					data: {
 						title: "Test",
 						description: "Test",
-						year: 2020, // faux type
+						// @ts-expect-error - year doit être un Int
+						year: "2020",
 						technology: "Test",
 						order: 1,
 						profile: { connect: { id: user.profile.id } },

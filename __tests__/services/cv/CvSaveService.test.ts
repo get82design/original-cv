@@ -69,6 +69,7 @@ const projectItemSettings = {
 const languageItemSettings = {
 	language: baseTextSettings,
 	design: "stars" as const,
+	columns: 1 as const,
 };
 
 // const expertiseItemSettings = {
@@ -84,6 +85,7 @@ const educationItemSettings = {
 	withYear: true,
 	withVille: true,
 	withEtablissement: true,
+	columns: 1 as const,
 };
 
 function buildSaveInput(
@@ -755,6 +757,7 @@ describe("CvSaveService.save", () => {
 			withTitle: true,
 			withStatus: true,
 			withPeriode: true,
+			columns: 1,
 		});
 		expect(result.formations[0]?.organismeFormation).toBe("Organisation 1");
 		expect(result.formations[0]?.start).toStrictEqual(new Date("2020-01-01"));
@@ -767,6 +770,7 @@ describe("CvSaveService.save", () => {
 			organismeCertification: baseTextSettings,
 			withTitle: true,
 			withOrganismeCertification: true,
+			columns: 1,
 		});
 		expect(result.certifications[0]?.organismeCertification).toBe("Organisation 1");
 		expect(result.prizes).toHaveLength(1);
@@ -777,6 +781,7 @@ describe("CvSaveService.save", () => {
 			withTitle: true,
 			withDomain: true,
 			withIcon: true,
+			columns: 1,
 		});
 		expect(result.prizes[0]?.domaine).toBe("Domain 1");
 		expect(result.expertises).toHaveLength(1);
@@ -785,6 +790,7 @@ describe("CvSaveService.save", () => {
 		expect(result.expertises[0]?.settings).toEqual({
 			title: baseTextSettings,
 			design: "stars" as const,
+			columns: 1,
 		});
 		expect(result.philosophy).not.toBeNull();
 		expect(result.philosophy?.citation).toBe("Philosophie 1");
@@ -799,15 +805,16 @@ describe("CvSaveService.save", () => {
 			withIcon: true,
 			withSocialNetwork: true,
 			withUsername: true,
+			columns: 1,
 		});
 		expect(result.passions).toHaveLength(1);
 		expect(result.passions[0]?.title).toBe("Passion 1");
 		expect(result.passions[0]?.icon).toBe("BsBalloonHeartFill");
 		expect(result.passions[0]?.settings).toEqual({
 			passion: baseTextSettings,
-			withPassion: true,
 			withIcon: true,
 			iconColor: "primaryColor" as const,
+			columns: 1,
 		});
 		expect(result.languages).toHaveLength(1);
 		expect(result.languages[0]?.name).toBe("Language 1");
@@ -843,6 +850,7 @@ describe("CvSaveService.save", () => {
 			iconColor: "primaryColor",
 			strength: baseTextSettings,
 			description: baseTextSettings,
+			columns: 1,
 		});
 		expect(result.achievements).toHaveLength(1);
 		expect(result.achievements[0]?.title).toBe("Achievement 1");
@@ -1397,6 +1405,7 @@ describe("CvSaveService.save", () => {
 			withOrganismeFormation: true,
 			withPeriode: true,
 			withStatus: true,
+			columns: 1,
 		});
 	});
 
@@ -1478,6 +1487,7 @@ describe("CvSaveService.save", () => {
 			organismeCertification: baseTextSettings,
 			withTitle: true,
 			withOrganismeCertification: true,
+			columns: 1,
 		});
 	});
 
@@ -1561,6 +1571,7 @@ describe("CvSaveService.save", () => {
 			withTitle: true,
 			withDomain: true,
 			withIcon: true,
+			columns: 1,
 		});
 	});
 
@@ -1732,6 +1743,7 @@ describe("CvSaveService.save", () => {
 			withIcon: true,
 			withSocialNetwork: true,
 			withUsername: true,
+			columns: 1,
 		});
 	});
 
@@ -1808,8 +1820,8 @@ describe("CvSaveService.save", () => {
 		expect(updated.passions[0]?.icon).toBe("🎨 updated");
 		expect(updated.passions[0]?.settings).toEqual({
 			passion: baseTextSettings,
-			withPassion: true,
 			withIcon: true,
+			columns: 1,
 		});
 	});
 
@@ -2095,6 +2107,7 @@ describe("CvSaveService.save", () => {
 			strength: baseTextSettings,
 			description: baseTextSettings,
 			withDescription: true,
+			columns: 1,
 		});
 	});
 
@@ -3330,7 +3343,7 @@ describe("CvSaveService.save", () => {
 		);
 		const volunteeringId = created.volunteerings[0]?.id;
         expect(volunteeringId).toBeDefined();
-		const keepMissionId = created.volunteerings[0]?.cvMissions.find((m) => m.content === "Mission A")?.id;
+		const keepMissionId = created.volunteerings[0]?.cvMissions.find((m) => m.content === "Aide A")?.id;
 		expect(keepMissionId).toBeDefined();
 		const updated = await cvSaveService.save(
 			user.id,
