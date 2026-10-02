@@ -31,6 +31,7 @@ import {
 	DialogMatchJob,
 	type MatchJobFormValues,
 } from "@/components/dialog/DialogMatchJob";
+import { DialogFicheMetier } from "@/components/dialog/DialogFicheMetier";
 import { CV_MODIF_DOCK_WIDTH, CvModifDock } from "./component/custom-cv-input/CvModifDock";
 import { useCvFormHistory } from "./component/form/CvFormHistoryContext";
 import { DialogDownloadCv } from "@/components/dialog/DialogDownloadCv";
@@ -50,8 +51,11 @@ import type { CvRewriteSection as CvRewriteResult } from "@/services/schemas/cvR
 import type { CvRewriteSectionType } from "@/services/schemas/cvRewriteSection.schema";
 import type { CvCoverLetter } from "@/services/schemas/cvCoverLetter.schema";
 import type { CvMatchJob } from "@/services/schemas/cvMatchJob.schema";
+import type { RomeFicheDto } from "@/services/schemas/romeFiche.schema";
+import { formatRomeFicheForPrompt } from "@/services/schemas/romeFiche.schema";
 import { Toast } from "primereact/toast";
 import { flattenCvFormToText } from "./utils/flattenCvFormToText";
+import { FieldNameHeader } from "./utils/fields/fieldNameHeader";
 import { extractPrimaryColorName } from "@/services/cv/extractPrimaryColorName";
 import { getClientErrorMessage, isTooManyRequestsError } from "@/utils/clientError";
 import {
@@ -88,6 +92,8 @@ export const CvEditor = () => {
 	const [coverLetterResult, setCoverLetterResult] = useState<CvCoverLetter | null>(null);
 	const [visibleMatchJob, setVisibleMatchJob] = useState(false);
 	const [matchJobResult, setMatchJobResult] = useState<CvMatchJob | null>(null);
+	const [visibleFicheMetier, setVisibleFicheMetier] = useState(false);
+	const [matchRomeFicheResult, setMatchRomeFicheResult] = useState<CvMatchJob | null>(null);
 	const [visibleDownloadDialog, setVisibleDownloadDialog] = useState(false);
 	const [downloadPreviewWithLogo, setDownloadPreviewWithLogo] = useState<string | null>(null);
 	const [downloadPreviewWithoutLogo, setDownloadPreviewWithoutLogo] = useState<string | null>(null);
@@ -120,6 +126,13 @@ export const CvEditor = () => {
 					jobOffer: string;
 					companyName?: string;
 					jobTitle?: string;
+			  }
+			| {
+					kind: "match-rome-fiche";
+					cvText: string;
+					ficheText: string;
+					codeRome: string;
+					libelleRome: string;
 			  };
 	} | null>(null);
 	const billingOptionsQuery = trpc.ai.getBillingOptions.useQuery(
@@ -130,6 +143,7 @@ export const CvEditor = () => {
 	const rewriteSectionMutation = trpc.ai.rewriteSection.useMutation();
 	const coverLetterMutation = trpc.ai.coverLetter.useMutation();
 	const matchJobMutation = trpc.ai.matchJob.useMutation();
+	const matchRomeFicheMutation = trpc.ai.matchRomeFiche.useMutation();
 	const utils = trpc.useUtils();
 	const updateUserProfileMutation = trpc.user.updateProfile.useMutation({
 		onSuccess: () => {
@@ -151,6 +165,7 @@ export const CvEditor = () => {
 	const isLg = useMediaQuery("(min-width: 1024px)");
 	const isXl = useMediaQuery("(min-width: 1440px)");
 	const modules = watch("modules") as TemplateModule[];
+	const watchHeaderSubtitle = (watch(FieldNameHeader.subTitle) as string | undefined) ?? "";
 	const watchTemplateId = watch("templateId") as string | undefined;
 	const watchCvId = watch("cvId") as string | undefined;
 	const downloadStatusCvId =
@@ -330,10 +345,11 @@ export const CvEditor = () => {
 			},
 		},
 		{
-			label: "Fiche métier (bientôt)",
+			label: "Fiche métier",
 			icon: "pi pi-clipboard",
 			command: () => {
-				showComingSoon("Les fiches métier seront disponibles dans une prochaine version.");
+				setMatchRomeFicheResult(null);
+				setVisibleFicheMetier(true);
 			},
 		},
 		{
@@ -645,6 +661,34 @@ export const CvEditor = () => {
 				return;
 			}
 
+			if (pending.kind === "match-rome-fiche") {
+				setPaymentDialog(null);
+				setMatchRomeFicheResult(null);
+				setVisibleFicheMetier(true);
+				const { match } = await matchRomeFicheMutation.mutateAsync({
+					cvText: pending.cvText,
+					ficheText: pending.ficheText,
+					paymentMethod: choice,
+					codeRome: pending.codeRome,
+					libelleRome: pending.libelleRome,
+				});
+				setMatchRomeFicheResult(match);
+				pushAdvice({
+					kind: "match-rome-fiche",
+					title: `Fiche · ${pending.libelleRome}`,
+					review: {
+						summary: match.summary,
+						score: match.score,
+						strengths: match.matched,
+						improvements: match.gaps,
+						quickWins: match.keywordsToAdd,
+					},
+					matchJob: match,
+					matchRomeFiche: true,
+				});
+				return;
+			}
+
 			setPaymentDialog(null);
 			setRewriteSectionType(pending.sectionType);
 			setRewriteResult(null);
@@ -664,6 +708,8 @@ export const CvEditor = () => {
 			} else if (pending.kind === "match-job") {
 				setMatchJobResult(null);
 				setVisibleMatchJob(false);
+			} else if (pending.kind === "match-rome-fiche") {
+				setMatchRomeFicheResult(null);
 			} else {
 				setRewriteSectionType(null);
 				setVisibleRewrite(false);
@@ -679,7 +725,9 @@ export const CvEditor = () => {
 							? "Lettre impossible"
 							: pending.kind === "match-job"
 								? "Comparaison impossible"
-								: "Reformulation impossible",
+								: pending.kind === "match-rome-fiche"
+									? "Comparaison fiche impossible"
+									: "Reformulation impossible",
 				detail: getClientErrorMessage(err, "Une erreur est survenue."),
 				life: rateLimited ? 7000 : 5000,
 			});
@@ -814,6 +862,45 @@ export const CvEditor = () => {
 	const reopenMatchJobResult = (match: CvMatchJob) => {
 		setMatchJobResult(match);
 		setVisibleMatchJob(true);
+	};
+
+	const reopenMatchRomeFicheResult = (match: CvMatchJob) => {
+		setMatchRomeFicheResult(match);
+		setVisibleFicheMetier(true);
+	};
+
+	const onCompareCvToRomeFiche = (fiche: RomeFicheDto) => {
+		if (status !== "authenticated") {
+			toast.current?.show({
+				severity: "warn",
+				summary: "Connexion requise",
+				detail: "Connectez-vous pour comparer votre CV à la fiche métier.",
+				life: 4000,
+			});
+			return;
+		}
+		const cvText = flattenCvFormToText(getValues() as CvFormValues);
+		if (!cvText.trim()) {
+			toast.current?.show({
+				severity: "warn",
+				summary: "CV vide",
+				detail: "Ajoutez du contenu avant de comparer à une fiche métier.",
+				life: 4000,
+			});
+			return;
+		}
+		setMatchRomeFicheResult(null);
+		setPaymentDialog({
+			feature: "MATCH_ROME_FICHE",
+			title: "Payer la comparaison fiche métier",
+			pending: {
+				kind: "match-rome-fiche",
+				cvText,
+				ficheText: formatRomeFicheForPrompt(fiche),
+				codeRome: fiche.codeRome,
+				libelleRome: fiche.libelle,
+			},
+		});
 	};
 
 	const onGenerateCoverLetter = (values: CoverLetterFormValues) => {
@@ -967,7 +1054,8 @@ export const CvEditor = () => {
 							reviewCvMutation.isPending ||
 							rewriteSectionMutation.isPending ||
 							coverLetterMutation.isPending ||
-							matchJobMutation.isPending
+							matchJobMutation.isPending ||
+							matchRomeFicheMutation.isPending
 						) {
 							return;
 						}
@@ -980,7 +1068,8 @@ export const CvEditor = () => {
 						reviewCvMutation.isPending ||
 						rewriteSectionMutation.isPending ||
 						coverLetterMutation.isPending ||
-						matchJobMutation.isPending
+						matchJobMutation.isPending ||
+						matchRomeFicheMutation.isPending
 					}
 					onConfirm={(choice) => {
 						void executePaidAiAction(choice);
@@ -1030,6 +1119,21 @@ export const CvEditor = () => {
 					onGenerate={onGenerateMatchJob}
 					onBackToForm={() => {
 						setMatchJobResult(null);
+					}}
+				/>
+				<DialogFicheMetier
+					visible={visibleFicheMetier}
+					initialQuery={watchHeaderSubtitle}
+					iaLoading={matchRomeFicheMutation.isPending}
+					iaResult={matchRomeFicheResult}
+					onHide={() => {
+						if (matchRomeFicheMutation.isPending) return;
+						setVisibleFicheMetier(false);
+						setMatchRomeFicheResult(null);
+					}}
+					onCompareCv={onCompareCvToRomeFiche}
+					onBackFromIa={() => {
+						setMatchRomeFicheResult(null);
 					}}
 				/>
 				{profile && (
@@ -1106,6 +1210,7 @@ export const CvEditor = () => {
 								onDownloadClick={openDownloadDialog}
 								onReopenCoverLetter={reopenCoverLetterResult}
 								onReopenMatchJob={reopenMatchJobResult}
+								onReopenMatchRomeFiche={reopenMatchRomeFicheResult}
 							/>
 						)}
 					</div>

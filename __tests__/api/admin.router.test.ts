@@ -282,17 +282,23 @@ describe("adminDashboardService.getAiStats", () => {
 				{ feature: "IMPORT_CV", userId: u1.id },
 				{ feature: "REVIEW_CV", userId: u1.id },
 				{ feature: "REWRITE_SECTION", userId: u2.id, detail: "Profil" },
+				{ feature: "COVER_LETTER", userId: u1.id },
+				{ feature: "MATCH_JOB", userId: u2.id },
+				{ feature: "MATCH_ROME_FICHE", userId: u2.id },
 			],
 		});
 
 		const stats = await adminDashboardService.getAiStats("7d");
 		expect(stats.ready).toBe(true);
-		expect(stats.total).toBeGreaterThanOrEqual(3);
+		expect(stats.total).toBeGreaterThanOrEqual(6);
 		expect(stats.importCv).toBeGreaterThanOrEqual(1);
 		expect(stats.reviewCv).toBeGreaterThanOrEqual(1);
 		expect(stats.rewriteSection).toBeGreaterThanOrEqual(1);
+		expect(stats.coverLetter).toBeGreaterThanOrEqual(1);
+		expect(stats.matchJob).toBeGreaterThanOrEqual(1);
+		expect(stats.matchRomeFiche).toBeGreaterThanOrEqual(1);
 		expect(stats.uniqueUsers).toBeGreaterThanOrEqual(2);
-		expect(stats.totalAllTime).toBeGreaterThanOrEqual(3);
+		expect(stats.totalAllTime).toBeGreaterThanOrEqual(6);
 	});
 });
 

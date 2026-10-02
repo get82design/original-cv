@@ -38,7 +38,13 @@ function formatDate(d: Date | string | null | undefined) {
 }
 
 function aiFeatureLabel(
-	feature: "IMPORT_CV" | "REVIEW_CV" | "REWRITE_SECTION" | "COVER_LETTER" | "MATCH_JOB",
+	feature:
+		| "IMPORT_CV"
+		| "REVIEW_CV"
+		| "REWRITE_SECTION"
+		| "COVER_LETTER"
+		| "MATCH_JOB"
+		| "MATCH_ROME_FICHE",
 ) {
 	switch (feature) {
 		case "IMPORT_CV":
@@ -51,6 +57,8 @@ function aiFeatureLabel(
 			return "Lettre de motivation";
 		case "MATCH_JOB":
 			return "Comparaison annonce";
+		case "MATCH_ROME_FICHE":
+			return "Comparaison fiche métier";
 	}
 }
 

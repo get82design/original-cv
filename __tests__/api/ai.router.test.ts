@@ -211,12 +211,13 @@ describe("ai.router", () => {
 			const caller = await createTestCaller(createTestSession(user));
 			const prices = await caller.ai.listFeaturePrices();
 
-			expect(prices.map((p) => p.feature)).toEqual([
-				"REVIEW_CV",
-				"REWRITE_SECTION",
-				"COVER_LETTER",
-				"MATCH_JOB",
-			]);
+		expect(prices.map((p) => p.feature)).toEqual([
+			"REVIEW_CV",
+			"REWRITE_SECTION",
+			"COVER_LETTER",
+			"MATCH_JOB",
+			"MATCH_ROME_FICHE",
+		]);
 			expect(prices.find((p) => p.feature === "REVIEW_CV")).toMatchObject({
 				costFree: null,
 				costPaid: 2,
@@ -626,6 +627,57 @@ describe("ai.router", () => {
 					jobOffer: "Offre",
 				}),
 			).rejects.toMatchObject({ code: "UNAUTHORIZED" });
+		});
+	});
+
+	describe("matchRomeFiche", () => {
+		it("returns the match from geminiService and logs AI usage", async () => {
+			const user = await createTestUser();
+			await prismaTest.aiFeaturePrice.upsert({
+				where: { feature: "MATCH_ROME_FICHE" },
+				create: {
+					feature: "MATCH_ROME_FICHE",
+					costFree: null,
+					costPaid: 2,
+				},
+				update: { costFree: null, costPaid: 2 },
+			});
+			await prismaTest.user.update({
+				where: { id: user.id },
+				data: { downloadCredits: 5, freeDownloadsRemaining: 0 },
+			});
+
+			vi.spyOn(geminiService, "matchRomeFiche").mockResolvedValue({
+				summary: "Alignement correct avec la fiche.",
+				score: 7,
+				matched: ["Dev"],
+				gaps: [{ area: "Savoirs", suggestion: "Ajouter SQL." }],
+				keywordsToAdd: ["application"],
+			});
+
+			const caller = await createTestCaller(createTestSession(user));
+			const result = await caller.ai.matchRomeFiche({
+				cvText: "Ada — Développeuse",
+				paymentMethod: "paid",
+				ficheText: "Métier ROME M1805",
+				codeRome: "M1805",
+				libelleRome: "Études et développement informatique",
+			});
+
+			expect(result.match.score).toBe(7);
+			expect(geminiService.matchRomeFiche).toHaveBeenCalledWith({
+				cvText: "Ada — Développeuse",
+				ficheText: "Métier ROME M1805",
+				codeRome: "M1805",
+				libelleRome: "Études et développement informatique",
+			});
+
+			const events = await prismaTest.aiEvent.findMany({
+				where: { userId: user.id },
+			});
+			expect(events).toHaveLength(1);
+			expect(events[0]?.feature).toBe("MATCH_ROME_FICHE");
+			expect(events[0]?.detail).toBe("M1805 · Études et développement informatique");
 		});
 	});
 });

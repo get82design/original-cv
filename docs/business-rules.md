@@ -57,7 +57,7 @@ Flux serveur (`userService`) :
 
 ## IA (live)
 
-Features (`AiFeature`) : `IMPORT_CV` \| `REVIEW_CV` \| `REWRITE_SECTION` \| `COVER_LETTER` \| `MATCH_JOB`
+Features (`AiFeature`) : `IMPORT_CV` \| `REVIEW_CV` \| `REWRITE_SECTION` \| `COVER_LETTER` \| `MATCH_JOB` \| `MATCH_ROME_FICHE`
 
 ### Import CV (`IMPORT_CV`)
 
@@ -73,7 +73,9 @@ Features (`AiFeature`) : `IMPORT_CV` \| `REVIEW_CV` \| `REWRITE_SECTION` \| `COV
 
 ### Features facturées (crédits)
 
-- `REVIEW_CV`, `REWRITE_SECTION`, `COVER_LETTER`, `MATCH_JOB` via `aiBillingService`
+- `REVIEW_CV`, `REWRITE_SECTION`, `COVER_LETTER`, `MATCH_JOB`, `MATCH_ROME_FICHE` via `aiBillingService`
+- Fiche métier ROME (lecture seule, autocomplete + fiche) : gratuit, API France Travail — pas de débit crédits
+- Comparaison CV ↔ fiche ROME : `MATCH_ROME_FICHE` (crédits, même logique free/paid que match-job)
 - Tarifs DB : `AiFeaturePrice` (`costFree` / `costPaid`, null = option absente)
 - Paiement : `AiPaymentMethod` `FREE` → consomme `freeDownloadsRemaining` ; `PAID` → `downloadCredits`
 - Pattern : `assertCanPay` **avant** l’appel ; `consumeAndLog` **après** succès (re-check solde + `AiEvent` + incrément `iaRequestsUsed`)

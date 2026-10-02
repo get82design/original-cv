@@ -44,6 +44,14 @@ describe("admin billing (packs + AI prices)", () => {
 		});
 		expect(updated.costFree).toBe(1);
 		expect(updated.costPaid).toBe(3);
+
+		const romePrice = await caller.admin.upsertAiFeaturePrice({
+			feature: "MATCH_ROME_FICHE",
+			costFree: null,
+			costPaid: 2,
+		});
+		expect(romePrice.feature).toBe("MATCH_ROME_FICHE");
+		expect(romePrice.costPaid).toBe(2);
 	});
 
 	it("CRUD credit packs for ADMIN", async () => {

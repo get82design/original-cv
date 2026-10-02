@@ -17,6 +17,7 @@ const billableFeatureSchema = z.enum([
 	"REWRITE_SECTION",
 	"COVER_LETTER",
 	"MATCH_JOB",
+	"MATCH_ROME_FICHE",
 ]);
 
 /**
@@ -167,6 +168,38 @@ export const aiRouter = router({
 			await aiBillingService.consumeAndLog({
 				userId,
 				feature: "MATCH_JOB",
+				choice: input.paymentMethod,
+				...(detailParts.length > 0 ? { detail: detailParts.join(" · ") } : {}),
+			});
+			return { match };
+		}),
+
+	/**
+	 * Comparaison CV ↔ fiche métier ROME — CV aplati + texte fiche.
+	 */
+	matchRomeFiche: protectedProcedure
+		.input(
+			z.object({
+				cvText: z.string().trim().min(1).max(50_000),
+				paymentMethod: aiPaymentChoiceSchema,
+				ficheText: z.string().trim().min(1).max(30_000),
+				codeRome: z.string().trim().max(8).optional(),
+				libelleRome: z.string().trim().max(200).optional(),
+			}),
+		)
+		.mutation(async ({ ctx, input }) => {
+			const userId = ctx.session.user.id;
+			await aiBillingService.assertCanPay(userId, "MATCH_ROME_FICHE", input.paymentMethod);
+			const match = await geminiService.matchRomeFiche({
+				cvText: input.cvText,
+				ficheText: input.ficheText,
+				...(input.codeRome ? { codeRome: input.codeRome } : {}),
+				...(input.libelleRome ? { libelleRome: input.libelleRome } : {}),
+			});
+			const detailParts = [input.codeRome, input.libelleRome].filter(Boolean);
+			await aiBillingService.consumeAndLog({
+				userId,
+				feature: "MATCH_ROME_FICHE",
 				choice: input.paymentMethod,
 				...(detailParts.length > 0 ? { detail: detailParts.join(" · ") } : {}),
 			});

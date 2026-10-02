@@ -20,6 +20,7 @@ const FEATURE_LABELS: Record<BillableAiFeature, string> = {
 	REWRITE_SECTION: "Reformulation",
 	COVER_LETTER: "Lettre de motivation",
 	MATCH_JOB: "Comparaison annonce",
+	MATCH_ROME_FICHE: "Comparaison fiche métier",
 };
 
 function formatPrice(cents: number) {
@@ -57,11 +58,12 @@ export function AdminBillingPage() {
 
 	const [priceDrafts, setPriceDrafts] = useState<
 		Record<BillableAiFeature, { costFree: number | null; costPaid: number | null }>
-	>({
+	> ({
 		REVIEW_CV: { costFree: null, costPaid: null },
 		REWRITE_SECTION: { costFree: null, costPaid: null },
 		COVER_LETTER: { costFree: null, costPaid: null },
 		MATCH_JOB: { costFree: null, costPaid: null },
+		MATCH_ROME_FICHE: { costFree: null, costPaid: null },
 	});
 
 	useEffect(() => {
@@ -284,7 +286,7 @@ export function AdminBillingPage() {
 						</thead>
 						<tbody>
 							{(
-								["REVIEW_CV", "REWRITE_SECTION", "COVER_LETTER", "MATCH_JOB"] as BillableAiFeature[]
+								["REVIEW_CV", "REWRITE_SECTION", "COVER_LETTER", "MATCH_JOB", "MATCH_ROME_FICHE"] as BillableAiFeature[]
 							).map(
 								(feature) => {
 									const draft = priceDrafts[feature];

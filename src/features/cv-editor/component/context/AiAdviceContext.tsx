@@ -1,15 +1,21 @@
-import { createContext, type PropsWithChildren, useContext, useState } from "react";
+import {
+	createContext,
+	type PropsWithChildren,
+	useContext,
+	useState,
+} from "react";
 import { v4 as uuid } from "uuid";
 import type { CvReview } from "@/services/schemas/cvReview.schema";
 import type { CvCoverLetter } from "@/services/schemas/cvCoverLetter.schema";
 import type { CvMatchJob } from "@/services/schemas/cvMatchJob.schema";
-import type { AiActionId } from "@/components/dialog/DialogAssistantIa";
 
 /** Kinds de conseils empilables (session) — prêts pour persistance BDD plus tard. */
-export type AiAdviceKind = Extract<
-	AiActionId,
-	"review-cv" | "rewrite-section" | "cover-letter" | "match-job"
->;
+export type AiAdviceKind =
+	| "review-cv"
+	| "rewrite-section"
+	| "cover-letter"
+	| "match-job"
+	| "match-rome-fiche";
 
 export type AiAdviceEntry = {
 	id: string;
@@ -20,8 +26,10 @@ export type AiAdviceEntry = {
 	review: CvReview;
 	/** Lettre complète — pour rouvrir la modale sans changer le résumé affiché */
 	coverLetter?: CvCoverLetter;
-	/** Résultat match-job — pour rouvrir la modale dédiée */
+	/** Résultat match-job / match-rome-fiche — pour rouvrir la modale dédiée */
 	matchJob?: CvMatchJob;
+	/** True si le match vient d’une fiche ROME (réouvre DialogFicheMetier). */
+	matchRomeFiche?: boolean;
 };
 
 type AiAdvicePushInput = {
@@ -30,6 +38,7 @@ type AiAdvicePushInput = {
 	review: CvReview;
 	coverLetter?: CvCoverLetter;
 	matchJob?: CvMatchJob;
+	matchRomeFiche?: boolean;
 };
 
 type AiAdviceContextValue = {
@@ -64,6 +73,7 @@ export const AiAdviceProvider = ({ children }: PropsWithChildren) => {
 			review: input.review,
 			...(input.coverLetter ? { coverLetter: input.coverLetter } : {}),
 			...(input.matchJob ? { matchJob: input.matchJob } : {}),
+			...(input.matchRomeFiche ? { matchRomeFiche: true } : {}),
 		};
 		setEntries((prev) => [entry, ...prev]);
 		setIaTabNonce((n) => n + 1);

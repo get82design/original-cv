@@ -8,6 +8,7 @@ export const BILLABLE_AI_FEATURES = [
 	"REWRITE_SECTION",
 	"COVER_LETTER",
 	"MATCH_JOB",
+	"MATCH_ROME_FICHE",
 ] as const satisfies readonly AiFeature[];
 
 export type BillableAiFeature = (typeof BILLABLE_AI_FEATURES)[number];

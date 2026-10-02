@@ -43,6 +43,7 @@ describe("aiBillingService", () => {
 			"REWRITE_SECTION",
 			"COVER_LETTER",
 			"MATCH_JOB",
+			"MATCH_ROME_FICHE",
 		]);
 		expect(prices.find((p) => p.feature === "REVIEW_CV")).toMatchObject({
 			costFree: null,

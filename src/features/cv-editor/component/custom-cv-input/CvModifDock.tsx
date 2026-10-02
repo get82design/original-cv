@@ -33,6 +33,7 @@ interface CvModifDockProps {
 	onDownloadClick?: () => void;
 	onReopenCoverLetter?: ((coverLetter: CvCoverLetter) => void) | undefined;
 	onReopenMatchJob?: ((match: CvMatchJob) => void) | undefined;
+	onReopenMatchRomeFiche?: ((match: CvMatchJob) => void) | undefined;
 }
 
 export function CvModifDock({
@@ -47,6 +48,7 @@ export function CvModifDock({
 	onDownloadClick,
 	onReopenCoverLetter,
 	onReopenMatchJob,
+	onReopenMatchRomeFiche,
 }: CvModifDockProps) {
 	const router = useRouter();
 	const { requestSave } = useCvFormSave();
@@ -155,6 +157,7 @@ export function CvModifDock({
 								<AiAdvicePanel
 									onReopenCoverLetter={onReopenCoverLetter}
 									onReopenMatchJob={onReopenMatchJob}
+									onReopenMatchRomeFiche={onReopenMatchRomeFiche}
 								/>
 							</TabPanel>
 						) : null}

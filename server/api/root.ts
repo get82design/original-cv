@@ -63,10 +63,12 @@ import { profileTagRouter } from "./routers/profileTag.router";
 import { profileTagGroupRouter } from "./routers/profileTagGroup.router";
 import { aiRouter } from "./routers/ai.router";
 import { adminRouter } from "./routers/admin.router";
+import { romeRouter } from "./routers/rome.router";
 
 export const appRouter = router({
 	user: userRouter,
 	ai: aiRouter,
+	rome: romeRouter,
 	admin: adminRouter,
 	profile: profileRouter,
 	cv: cvRouter,

@@ -126,6 +126,9 @@ export type AdminAiStats = {
 	importCv: number;
 	reviewCv: number;
 	rewriteSection: number;
+	coverLetter: number;
+	matchJob: number;
+	matchRomeFiche: number;
 	uniqueUsers: number;
 	totalAllTime: number;
 	/** Écart vs période précédente ; `null` si période = all */
@@ -133,6 +136,9 @@ export type AdminAiStats = {
 	importCvDelta: number | null;
 	reviewCvDelta: number | null;
 	rewriteSectionDelta: number | null;
+	coverLetterDelta: number | null;
+	matchJobDelta: number | null;
+	matchRomeFicheDelta: number | null;
 	uniqueUsersDelta: number | null;
 };
 
@@ -528,66 +534,80 @@ export class AdminDashboardService {
 		const whereBase = since ? { createdAt: { gte: since } } : {};
 		const prevWhere = previous ? { createdAt: { gte: previous.start, lt: previous.end } } : null;
 
-		const [
-			importCv,
-			reviewCv,
-			rewriteSection,
-			totalAllTime,
-			uniqueGroups,
-			prevImportCv,
-			prevReviewCv,
-			prevRewriteSection,
-			prevUniqueGroups,
-		] = await Promise.all([
-			prisma.aiEvent.count({
-				where: { ...whereBase, feature: "IMPORT_CV" },
-			}),
-			prisma.aiEvent.count({
-				where: { ...whereBase, feature: "REVIEW_CV" },
-			}),
-			prisma.aiEvent.count({
-				where: { ...whereBase, feature: "REWRITE_SECTION" },
-			}),
-			prisma.aiEvent.count(),
-			prisma.aiEvent.groupBy({
-				by: ["userId"],
-				where: {
-					...whereBase,
-					userId: { not: null },
-				},
-			}),
-			prevWhere
-				? prisma.aiEvent.count({
-						where: { ...prevWhere, feature: "IMPORT_CV" },
-					})
-				: Promise.resolve(null),
-			prevWhere
-				? prisma.aiEvent.count({
-						where: { ...prevWhere, feature: "REVIEW_CV" },
-					})
-				: Promise.resolve(null),
-			prevWhere
-				? prisma.aiEvent.count({
-						where: { ...prevWhere, feature: "REWRITE_SECTION" },
-					})
-				: Promise.resolve(null),
-			prevWhere
-				? prisma.aiEvent.groupBy({
-						by: ["userId"],
-						where: {
-							...prevWhere,
-							userId: { not: null },
-						},
-					})
-				: Promise.resolve(null),
-		]);
+		const countByFeature = (
+			rows: Array<{ feature: string; _count: { _all: number } }>,
+			feature: string,
+		) => rows.find((r) => r.feature === feature)?._count._all ?? 0;
 
-		const total = importCv + reviewCv + rewriteSection;
+		const [featureRows, totalAllTime, uniqueGroups, prevFeatureRows, prevUniqueGroups] =
+			await Promise.all([
+				prisma.aiEvent.groupBy({
+					by: ["feature"],
+					where: whereBase,
+					_count: { _all: true },
+				}),
+				prisma.aiEvent.count(),
+				prisma.aiEvent.groupBy({
+					by: ["userId"],
+					where: {
+						...whereBase,
+						userId: { not: null },
+					},
+				}),
+				prevWhere
+					? prisma.aiEvent.groupBy({
+							by: ["feature"],
+							where: prevWhere,
+							_count: { _all: true },
+						})
+					: Promise.resolve(null),
+				prevWhere
+					? prisma.aiEvent.groupBy({
+							by: ["userId"],
+							where: {
+								...prevWhere,
+								userId: { not: null },
+							},
+						})
+					: Promise.resolve(null),
+			]);
+
+		const importCv = countByFeature(featureRows, "IMPORT_CV");
+		const reviewCv = countByFeature(featureRows, "REVIEW_CV");
+		const rewriteSection = countByFeature(featureRows, "REWRITE_SECTION");
+		const coverLetter = countByFeature(featureRows, "COVER_LETTER");
+		const matchJob = countByFeature(featureRows, "MATCH_JOB");
+		const matchRomeFiche = countByFeature(featureRows, "MATCH_ROME_FICHE");
+		const total =
+			importCv + reviewCv + rewriteSection + coverLetter + matchJob + matchRomeFiche;
 		const uniqueUsers = uniqueGroups.length;
+
+		const prevImportCv = prevFeatureRows ? countByFeature(prevFeatureRows, "IMPORT_CV") : null;
+		const prevReviewCv = prevFeatureRows ? countByFeature(prevFeatureRows, "REVIEW_CV") : null;
+		const prevRewriteSection = prevFeatureRows
+			? countByFeature(prevFeatureRows, "REWRITE_SECTION")
+			: null;
+		const prevCoverLetter = prevFeatureRows
+			? countByFeature(prevFeatureRows, "COVER_LETTER")
+			: null;
+		const prevMatchJob = prevFeatureRows ? countByFeature(prevFeatureRows, "MATCH_JOB") : null;
+		const prevMatchRomeFiche = prevFeatureRows
+			? countByFeature(prevFeatureRows, "MATCH_ROME_FICHE")
+			: null;
 		const prevTotal =
-			prevImportCv === null || prevReviewCv === null || prevRewriteSection === null
+			prevImportCv === null ||
+			prevReviewCv === null ||
+			prevRewriteSection === null ||
+			prevCoverLetter === null ||
+			prevMatchJob === null ||
+			prevMatchRomeFiche === null
 				? null
-				: prevImportCv + prevReviewCv + prevRewriteSection;
+				: prevImportCv +
+					prevReviewCv +
+					prevRewriteSection +
+					prevCoverLetter +
+					prevMatchJob +
+					prevMatchRomeFiche;
 		const prevUniqueUsers = prevUniqueGroups === null ? null : prevUniqueGroups.length;
 
 		return {
@@ -596,12 +616,20 @@ export class AdminDashboardService {
 			importCv,
 			reviewCv,
 			rewriteSection,
+			coverLetter,
+			matchJob,
+			matchRomeFiche,
 			uniqueUsers,
 			totalAllTime,
 			totalDelta: prevTotal === null ? null : total - prevTotal,
 			importCvDelta: prevImportCv === null ? null : importCv - prevImportCv,
 			reviewCvDelta: prevReviewCv === null ? null : reviewCv - prevReviewCv,
-			rewriteSectionDelta: prevRewriteSection === null ? null : rewriteSection - prevRewriteSection,
+			rewriteSectionDelta:
+				prevRewriteSection === null ? null : rewriteSection - prevRewriteSection,
+			coverLetterDelta: prevCoverLetter === null ? null : coverLetter - prevCoverLetter,
+			matchJobDelta: prevMatchJob === null ? null : matchJob - prevMatchJob,
+			matchRomeFicheDelta:
+				prevMatchRomeFiche === null ? null : matchRomeFiche - prevMatchRomeFiche,
 			uniqueUsersDelta: prevUniqueUsers === null ? null : uniqueUsers - prevUniqueUsers,
 		};
 	}

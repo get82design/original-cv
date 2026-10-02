@@ -164,6 +164,7 @@ enum AiFeature {
   REWRITE_SECTION
   COVER_LETTER
   MATCH_JOB
+  MATCH_ROME_FICHE
 }
 
 /** Mode de paiement crédits pour une action IA (hors import) */

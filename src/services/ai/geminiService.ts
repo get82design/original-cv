@@ -26,6 +26,11 @@ import {
 	cvMatchJobSchema,
 	type CvMatchJob,
 } from "../schemas/cvMatchJob.schema";
+import {
+	buildMatchRomeFicheSystemPrompt,
+	cvMatchRomeFicheSchema,
+	type CvMatchRomeFiche,
+} from "../schemas/cvMatchRomeFiche.schema";
 import { ValidationError, TooManyRequestsError } from "../errors";
 
 const DEFAULT_MODEL = "gemini-3.6-flash";
@@ -369,6 +374,53 @@ export class GeminiService {
 		}
 
 		throw new ValidationError(`Match job validation failed after retry: ${lastReason}`);
+	}
+
+	/**
+	 * Comparaison CV ↔ fiche métier ROME.
+	 * safeParse → retry 1× avec les erreurs de validation dans le prompt.
+	 */
+	async matchRomeFiche(
+		input: {
+			cvText: string;
+			ficheText: string;
+			codeRome?: string;
+			libelleRome?: string;
+		},
+		options: { model?: string } = {},
+	): Promise<CvMatchRomeFiche> {
+		const cvText = input.cvText.trim();
+		if (!cvText) {
+			throw new ValidationError("CV text is empty");
+		}
+		const ficheText = input.ficheText.trim();
+		if (!ficheText) {
+			throw new ValidationError("Fiche métier text is empty");
+		}
+
+		const codeRome = input.codeRome?.trim() || undefined;
+		const libelleRome = input.libelleRome?.trim() || undefined;
+
+		const generativeModel = this.jsonModel(options.model ?? DEFAULT_MODEL);
+		let lastReason = "Unknown validation error";
+
+		for (let attempt = 0; attempt < MAX_ATTEMPTS; attempt++) {
+			const prompt = buildMatchRomeFicheSystemPrompt({
+				cvText,
+				ficheText,
+				...(codeRome ? { codeRome } : {}),
+				...(libelleRome ? { libelleRome } : {}),
+				...(attempt === 0 ? {} : { validationErrors: lastReason }),
+			});
+
+			const result = await withTransientRetry(() => generativeModel.generateContent(prompt));
+			const outcome = parseJsonWithSchema(result.response.text(), cvMatchRomeFicheSchema);
+
+			if (outcome.ok) return outcome.data;
+			lastReason = outcome.reason;
+		}
+
+		throw new ValidationError(`Match ROME fiche validation failed after retry: ${lastReason}`);
 	}
 }
 

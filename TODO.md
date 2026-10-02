@@ -157,7 +157,9 @@ Critère done : créer/sauver CV → DL gratuit/payant → IA review/rewrite/let
 
 - [x] Comparer à une annonce (`match-job`) — sortir du `comingSoon`
 	- `AiFeature.MATCH_JOB` + seed `costPaid: 2` ; `DialogMatchJob` ; `ai.matchJob` / `geminiService.matchJob`
-- [ ] Fiche métier France Travail (vraie intégration)
+- [x] Fiche métier France Travail (vraie intégration)
+	- API ROME 4.0 (Métiers + Fiches) ; autocomplete `appellation/requete` ; dialog + cache RQ
+	- IA optionnelle `MATCH_ROME_FICHE` (écarts CV ↔ fiche)
 
 ### Admin / ops
 
@@ -230,6 +232,10 @@ V1 = split partagé ; **gating options = chantier V3** (catalogue / layouts rich
 
 ### Clôture V3
 
+- [ ] **Réfléchir plafonds sur les 2 crédits** (`freeDownloadsRemaining` + `downloadCredits`) — **avant** fin V3
+	- peu de sens en pay-per-use pur (packs Stripe) ; devient critique avec les **abos V4** (illimité vs plafond, reset mensuel, cadeaux…)
+	- trancher modèle produit : max solde, fenêtre glissante, reset périodique, interaction grants / packs / abo
+	- doc cible → `docs/business-rules.md` + services ; **ne pas coder** tant que le modèle n’est pas figé
 - [ ] Checklist légal **ouverture prod** (mentions remplies, URSSAF, CGU / privacy à jour, Stripe pro, cookies si GA)
 
 ---
@@ -242,6 +248,7 @@ Package abo = vraie plus-value (récurrence + présence en ligne).
 
 - [ ] Stripe Billing (Standard / Premium / …) + `subscriptionEnd`
 - [ ] Abo actif → **téléchargements illimités** (règle produit à figer dans les services)
+	- s’appuyer sur la réflexion plafonds crédits (clôture V3) : abo = exception / reset / plafond mensuel selon décision
 - [ ] Portail client Stripe / gestion abo
 - [ ] `(?)` Historique IA persisté (si non fait en V3) — réservé éventuellement aux abonnés
 
@@ -315,6 +322,7 @@ Contexte : **pas de prod publique avant fin V3**. Preprod sert à figer / faire 
 | Micro-achat slot CV | **V3** (avec Stripe) |
 | Browserless / PDF ATS | **V3** |
 | Abo + QR + page web CV | **V4** |
+| Plafonds 2 crédits (free + payant) | **Réfléchir fin V3** → implémenter avec **abos V4** (modèle à figer ; pas de code avant) |
 | CRON / plafond IA abo | **V5+** (min V4) |
 | Tracker candidatures | **Parking** (après V3) |
 | RGPD min (delete + CGU) | **V1** |

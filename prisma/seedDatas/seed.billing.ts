@@ -6,6 +6,7 @@ export const SEED_AI_FEATURE_PRICES = [
 	{ feature: "REWRITE_SECTION" as const, costFree: 2, costPaid: 1 },
 	{ feature: "COVER_LETTER" as const, costFree: null, costPaid: 4 },
 	{ feature: "MATCH_JOB" as const, costFree: null, costPaid: 2 },
+	{ feature: "MATCH_ROME_FICHE" as const, costFree: null, costPaid: 2 },
 ];
 
 /** Packs vitrine — achat Stripe non branché. */

@@ -155,6 +155,16 @@ describe("adminDashboardService AI / API error deltas", () => {
 					userId: user.id,
 					createdAt: new Date(now.getTime() - 10 * day),
 				},
+				{
+					feature: "MATCH_JOB",
+					userId: user.id,
+					createdAt: new Date(now.getTime() - 1 * day),
+				},
+				{
+					feature: "MATCH_ROME_FICHE",
+					userId: user.id,
+					createdAt: new Date(now.getTime() - 10 * day),
+				},
 			],
 		});
 
@@ -163,8 +173,13 @@ describe("adminDashboardService AI / API error deltas", () => {
 		expect(stats.importCvDelta).not.toBeNull();
 		expect(stats.reviewCvDelta).not.toBeNull();
 		expect(stats.rewriteSectionDelta).not.toBeNull();
+		expect(stats.coverLetterDelta).not.toBeNull();
+		expect(stats.matchJobDelta).not.toBeNull();
+		expect(stats.matchRomeFicheDelta).not.toBeNull();
 		expect(stats.uniqueUsersDelta).not.toBeNull();
 		expect(stats.importCv).toBeGreaterThanOrEqual(1);
+		expect(stats.matchJob).toBeGreaterThanOrEqual(1);
+		expect(stats.matchRomeFiche).toBe(0);
 	});
 
 	it("returns null AI deltas for all-time", async () => {

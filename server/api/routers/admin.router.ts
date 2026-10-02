@@ -262,7 +262,13 @@ export const adminRouter = router({
 	upsertAiFeaturePrice: adminProcedure
 		.input(
 			z.object({
-				feature: z.enum(["REVIEW_CV", "REWRITE_SECTION", "COVER_LETTER"]),
+				feature: z.enum([
+					"REVIEW_CV",
+					"REWRITE_SECTION",
+					"COVER_LETTER",
+					"MATCH_JOB",
+					"MATCH_ROME_FICHE",
+				]),
 				costFree: z.number().int().min(1).max(100).nullable(),
 				costPaid: z.number().int().min(1).max(100).nullable(),
 			}),

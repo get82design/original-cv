@@ -600,7 +600,7 @@ export function AdminDashboardPage() {
 								Voir le feed →
 							</Link>
 						</div>
-						<div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+						<div className="grid grid-cols-1 gap-3 sm:grid-cols-3 lg:grid-cols-4">
 							<MetricCard
 								title="Requêtes IA"
 								hint={`${data?.ai.totalAllTime ?? 0} depuis toujours`}
@@ -629,6 +629,27 @@ export function AdminDashboardPage() {
 								value={data?.ai.rewriteSection ?? null}
 								periodTag={periodLabel}
 								delta={data?.ai.rewriteSectionDelta}
+							/>
+							<MetricCard
+								title="Lettre de motivation"
+								ready={data?.ai.ready ?? false}
+								value={data?.ai.coverLetter ?? null}
+								periodTag={periodLabel}
+								delta={data?.ai.coverLetterDelta}
+							/>
+							<MetricCard
+								title="Comparaison annonce"
+								ready={data?.ai.ready ?? false}
+								value={data?.ai.matchJob ?? null}
+								periodTag={periodLabel}
+								delta={data?.ai.matchJobDelta}
+							/>
+							<MetricCard
+								title="Comparaison fiche métier"
+								ready={data?.ai.ready ?? false}
+								value={data?.ai.matchRomeFiche ?? null}
+								periodTag={periodLabel}
+								delta={data?.ai.matchRomeFicheDelta}
 							/>
 							<MetricCard
 								title="Users IA"
