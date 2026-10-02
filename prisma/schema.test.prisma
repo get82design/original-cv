@@ -307,6 +307,7 @@ model Profile {
   educations  Education[]
   achievements Achievement[]
   strengths Strength[]
+  stats Stat[]
   volunteerings Volunteering[]
   projects Project[]
   publications Publication[]
@@ -696,6 +697,36 @@ model CvStrength {
   cvId        String
 
   @@unique([cvId, title])
+  @@unique([cvId, order])
+  @@index([cvId])
+}
+
+// === Stats / En nombres ===
+model Stat {
+  id          String @id @default(cuid())
+  label       String
+  value       String
+
+  order       Int @default(0)
+  profile     Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  profileId   String
+
+  @@unique([profileId, label])
+  @@unique([profileId, order])
+  @@index([profileId])
+}
+
+model CvStat {
+  id          String @id @default(cuid())
+  label       String
+  value       String
+  settings    Json?
+
+  order       Int @default(0)
+  cv          CV @relation(fields: [cvId], references: [id], onDelete: Cascade)
+  cvId        String
+
+  @@unique([cvId, label])
   @@unique([cvId, order])
   @@index([cvId])
 }
@@ -1132,6 +1163,7 @@ model CV {
   experiences CvExperience[]
   achievements CvAchievement[]
   strengths CvStrength[]
+  stats CvStat[]
   volunteerings CvVolunteering[]
   projects CvProject[]
   publications CvPublication[]
@@ -1280,4 +1312,5 @@ enum CVModuleType {
   strength   
   socialMedia 
   tag
+  stat
 }

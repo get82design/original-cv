@@ -1,4 +1,10 @@
-import { createContext, useContext, useEffect, useState, type JSX } from "react";
+import {
+	createContext,
+	useContext,
+	useEffect,
+	useState,
+	type JSX,
+} from "react";
 import type { Color, TemplateCv } from "@utils/trpc.types";
 import { trpc } from "@utils/trpc";
 
@@ -7,12 +13,16 @@ interface ModelAndColorContextProps {
 	modeles: TemplateCv[];
 }
 
-const ModelAndColorContext = createContext<ModelAndColorContextProps | null>(null);
+const ModelAndColorContext = createContext<ModelAndColorContextProps | null>(
+	null,
+);
 
 export const useModelAndColorContext = () => {
 	const context = useContext(ModelAndColorContext);
 	if (!context) {
-		throw new Error("useModelAndColorContext must be used within a ModelAndColorContextProvider");
+		throw new Error(
+			"useModelAndColorContext must be used within a ModelAndColorContextProvider",
+		);
 	}
 	return context;
 };
@@ -21,7 +31,9 @@ interface ModelAndColorProviderProps {
 	children: JSX.Element;
 }
 
-export const ModelAndColorProvider = ({ children }: ModelAndColorProviderProps) => {
+export const ModelAndColorProvider = ({
+	children,
+}: ModelAndColorProviderProps) => {
 	const [colors, setColors] = useState<Color[]>([]);
 	const { data: dataColor } = trpc.color.findAll.useQuery();
 	const [modeles, setModeles] = useState<TemplateCv[]>([]);
@@ -46,5 +58,9 @@ export const ModelAndColorProvider = ({ children }: ModelAndColorProviderProps) 
 		colors,
 		modeles,
 	};
-	return <ModelAndColorContext.Provider value={value}>{children}</ModelAndColorContext.Provider>;
+	return (
+		<ModelAndColorContext.Provider value={value}>
+			{children}
+		</ModelAndColorContext.Provider>
+	);
 };

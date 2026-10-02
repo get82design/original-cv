@@ -22,13 +22,16 @@ export function applyTemplateToForm(
 	const defaultStyles = templateDefaultStylesSchema.parse(model.defaultStyles);
 
 	const experienceFromModel = structure.modules.find(
-		(m): m is Extract<typeof m, { type: "experience" }> => m.type === "experience",
+		(m): m is Extract<typeof m, { type: "experience" }> =>
+			m.type === "experience",
 	);
 	const educationFromModel = structure.modules.find(
-		(m): m is Extract<typeof m, { type: "education" }> => m.type === "education",
+		(m): m is Extract<typeof m, { type: "education" }> =>
+			m.type === "education",
 	);
 	const descriptionFromModel = structure.modules.find(
-		(m): m is Extract<typeof m, { type: "description" }> => m.type === "description",
+		(m): m is Extract<typeof m, { type: "description" }> =>
+			m.type === "description",
 	);
 	const skillGroupFromModel = structure.modules.find(
 		(m): m is Extract<typeof m, { type: "skill" }> => m.type === "skill",
@@ -40,19 +43,26 @@ export function applyTemplateToForm(
 		(m): m is Extract<typeof m, { type: "project" }> => m.type === "project",
 	);
 	const socialMediaFromModel = structure.modules.find(
-		(m): m is Extract<typeof m, { type: "socialMedia" }> => m.type === "socialMedia",
+		(m): m is Extract<typeof m, { type: "socialMedia" }> =>
+			m.type === "socialMedia",
 	);
 	const strengthFromModel = structure.modules.find(
 		(m): m is Extract<typeof m, { type: "strength" }> => m.type === "strength",
 	);
+	const statFromModel = structure.modules.find(
+		(m): m is Extract<typeof m, { type: "stat" }> => m.type === "stat",
+	);
 	const philosophyFromModel = structure.modules.find(
-		(m): m is Extract<typeof m, { type: "philosophy" }> => m.type === "philosophy",
+		(m): m is Extract<typeof m, { type: "philosophy" }> =>
+			m.type === "philosophy",
 	);
 	const formationFromModel = structure.modules.find(
-		(m): m is Extract<typeof m, { type: "formation" }> => m.type === "formation",
+		(m): m is Extract<typeof m, { type: "formation" }> =>
+			m.type === "formation",
 	);
 	const certificationFromModel = structure.modules.find(
-		(m): m is Extract<typeof m, { type: "certification" }> => m.type === "certification",
+		(m): m is Extract<typeof m, { type: "certification" }> =>
+			m.type === "certification",
 	);
 	const prizeFromModel = structure.modules.find(
 		(m): m is Extract<typeof m, { type: "prize" }> => m.type === "prize",
@@ -61,19 +71,24 @@ export function applyTemplateToForm(
 		(m): m is Extract<typeof m, { type: "passion" }> => m.type === "passion",
 	);
 	const expertiseFromModel = structure.modules.find(
-		(m): m is Extract<typeof m, { type: "expertise" }> => m.type === "expertise",
+		(m): m is Extract<typeof m, { type: "expertise" }> =>
+			m.type === "expertise",
 	);
 	const volunteeringFromModel = structure.modules.find(
-		(m): m is Extract<typeof m, { type: "volunteering" }> => m.type === "volunteering",
+		(m): m is Extract<typeof m, { type: "volunteering" }> =>
+			m.type === "volunteering",
 	);
 	const publicationFromModel = structure.modules.find(
-		(m): m is Extract<typeof m, { type: "publication" }> => m.type === "publication",
+		(m): m is Extract<typeof m, { type: "publication" }> =>
+			m.type === "publication",
 	);
 	const achievementFromModel = structure.modules.find(
-		(m): m is Extract<typeof m, { type: "achievement" }> => m.type === "achievement",
+		(m): m is Extract<typeof m, { type: "achievement" }> =>
+			m.type === "achievement",
 	);
 	const competenceGroupFromModel = structure.modules.find(
-		(m): m is Extract<typeof m, { type: "competence" }> => m.type === "competence",
+		(m): m is Extract<typeof m, { type: "competence" }> =>
+			m.type === "competence",
 	);
 	const tagGroupFromModel = structure.modules.find(
 		(m): m is Extract<typeof m, { type: "tag" }> => m.type === "tag",
@@ -97,7 +112,8 @@ export function applyTemplateToForm(
 			...(experienceFromModel || current.datas?.experience
 				? {
 						experience: {
-							title: current.datas?.experience?.title ?? experienceFromModel!.title,
+							title:
+								current.datas?.experience?.title ?? experienceFromModel!.title,
 							content: current.datas?.experience?.content ?? [],
 							settings: options?.resetSectionStyles
 								? {
@@ -113,7 +129,8 @@ export function applyTemplateToForm(
 			...(educationFromModel || current.datas?.education
 				? {
 						education: {
-							title: current.datas?.education?.title ?? educationFromModel!.title,
+							title:
+								current.datas?.education?.title ?? educationFromModel!.title,
 							content: current.datas?.education?.content ?? [],
 							settings: options?.resetSectionStyles
 								? {
@@ -129,7 +146,9 @@ export function applyTemplateToForm(
 			...(descriptionFromModel || current.datas?.description
 				? {
 						description: {
-							title: current.datas?.description?.title ?? descriptionFromModel!.title,
+							title:
+								current.datas?.description?.title ??
+								descriptionFromModel!.title,
 							content: current.datas?.description?.content ?? {
 								description: "",
 							},
@@ -149,7 +168,8 @@ export function applyTemplateToForm(
 			...(skillGroupFromModel || current.datas?.skillGroup
 				? {
 						skillGroup: {
-							title: current.datas?.skillGroup?.title ?? skillGroupFromModel!.title,
+							title:
+								current.datas?.skillGroup?.title ?? skillGroupFromModel!.title,
 							content: current.datas?.skillGroup?.content ?? [],
 							settings: options?.resetSectionStyles
 								? {
@@ -197,7 +217,9 @@ export function applyTemplateToForm(
 			...(socialMediaFromModel || current.datas?.socialMedia
 				? {
 						socialMedia: {
-							title: current.datas?.socialMedia?.title ?? socialMediaFromModel!.title,
+							title:
+								current.datas?.socialMedia?.title ??
+								socialMediaFromModel!.title,
 							content: current.datas?.socialMedia?.content ?? [],
 							settings: options?.resetSectionStyles
 								? {
@@ -226,10 +248,27 @@ export function applyTemplateToForm(
 						},
 					}
 				: {}),
+			...(statFromModel || current.datas?.stat
+				? {
+						stat: {
+							title: current.datas?.stat?.title ?? statFromModel!.title,
+							content: current.datas?.stat?.content ?? [],
+							settings: options?.resetSectionStyles
+								? {
+										...current.datas?.stat?.settings,
+										title: statFromModel!.settings.title,
+									}
+								: (current.datas?.stat?.settings ?? {
+										title: statFromModel!.settings.title,
+									}),
+						},
+					}
+				: {}),
 			...(philosophyFromModel || current.datas?.philosophy
 				? {
 						philosophy: {
-							title: current.datas?.philosophy?.title ?? philosophyFromModel!.title,
+							title:
+								current.datas?.philosophy?.title ?? philosophyFromModel!.title,
 							content: current.datas?.philosophy?.content ?? {
 								citation: "",
 								author: "",
@@ -250,7 +289,8 @@ export function applyTemplateToForm(
 			...(formationFromModel || current.datas?.formation
 				? {
 						formation: {
-							title: current.datas?.formation?.title ?? formationFromModel!.title,
+							title:
+								current.datas?.formation?.title ?? formationFromModel!.title,
 							content: current.datas?.formation?.content ?? [],
 							settings: options?.resetSectionStyles
 								? {
@@ -266,7 +306,9 @@ export function applyTemplateToForm(
 			...(certificationFromModel || current.datas?.certification
 				? {
 						certification: {
-							title: current.datas?.certification?.title ?? certificationFromModel!.title,
+							title:
+								current.datas?.certification?.title ??
+								certificationFromModel!.title,
 							content: current.datas?.certification?.content ?? [],
 							settings: options?.resetSectionStyles
 								? {
@@ -314,7 +356,8 @@ export function applyTemplateToForm(
 			...(expertiseFromModel || current.datas?.expertise
 				? {
 						expertise: {
-							title: current.datas?.expertise?.title ?? expertiseFromModel!.title,
+							title:
+								current.datas?.expertise?.title ?? expertiseFromModel!.title,
 							content: current.datas?.expertise?.content ?? [],
 							settings: options?.resetSectionStyles
 								? {
@@ -330,7 +373,9 @@ export function applyTemplateToForm(
 			...(volunteeringFromModel || current.datas?.volunteering
 				? {
 						volunteering: {
-							title: current.datas?.volunteering?.title ?? volunteeringFromModel!.title,
+							title:
+								current.datas?.volunteering?.title ??
+								volunteeringFromModel!.title,
 							content: current.datas?.volunteering?.content ?? [],
 							settings: options?.resetSectionStyles
 								? {
@@ -346,7 +391,9 @@ export function applyTemplateToForm(
 			...(publicationFromModel || current.datas?.publication
 				? {
 						publication: {
-							title: current.datas?.publication?.title ?? publicationFromModel!.title,
+							title:
+								current.datas?.publication?.title ??
+								publicationFromModel!.title,
 							content: current.datas?.publication?.content ?? [],
 							settings: options?.resetSectionStyles
 								? {
@@ -362,7 +409,9 @@ export function applyTemplateToForm(
 			...(achievementFromModel || current.datas?.achievement
 				? {
 						achievement: {
-							title: current.datas?.achievement?.title ?? achievementFromModel!.title,
+							title:
+								current.datas?.achievement?.title ??
+								achievementFromModel!.title,
 							content: current.datas?.achievement?.content ?? [],
 							settings: options?.resetSectionStyles
 								? {
@@ -378,7 +427,9 @@ export function applyTemplateToForm(
 			...(competenceGroupFromModel || current.datas?.competenceGroup
 				? {
 						competenceGroup: {
-							title: current.datas?.competenceGroup?.title ?? competenceGroupFromModel!.title,
+							title:
+								current.datas?.competenceGroup?.title ??
+								competenceGroupFromModel!.title,
 							content: current.datas?.competenceGroup?.content ?? [],
 							settings: options?.resetSectionStyles
 								? {
@@ -443,7 +494,9 @@ export function applyTemplateToForm(
 				}
 			: {
 					modules: current?.modules?.map((module) => {
-						const fromModel = structure.modules.find((m) => m.type === module.type);
+						const fromModel = structure.modules.find(
+							(m) => m.type === module.type,
+						);
 						return {
 							...module,
 							settings: fromModel?.settings ?? module.settings,
@@ -478,7 +531,10 @@ function mergeDatasSettings(
 	return merged;
 }
 
-function mergeSnapshot(base: CvFormValues, snap: TemplateSnapshot): CvFormValues {
+function mergeSnapshot(
+	base: CvFormValues,
+	snap: TemplateSnapshot,
+): CvFormValues {
 	return {
 		...base,
 		layoutGeneral: snap.layoutGeneral ?? base.layoutGeneral,

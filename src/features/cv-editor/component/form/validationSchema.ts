@@ -3,7 +3,29 @@ import type {
 	SkillGroupItemContentInput,
 	TagGroupItemContentInput,
 } from "@/services/schemas/cvSave.schema";
-import type { CompetenceGroupInput, CompetenceInput, SkillInput, TagGroupInput, TagInput } from "@/services/schemas/profileSave.schema";
+import type {
+	AchievementInput,
+	CertificationInput,
+	CompetenceGroupInput,
+	CompetenceInput,
+	EducationInput,
+	ExperienceInput,
+	ExpertiseInput,
+	FormationInput,
+	LanguageInput,
+	PassionInput,
+	PrizeInput,
+	ProjectInput,
+	PublicationInput,
+	SkillGroupInput,
+	SkillInput,
+	SocialMediaInput,
+	StatInput,
+	StrengthInput,
+	TagGroupInput,
+	TagInput,
+	VolunteeringInput,
+} from "@/services/schemas/profileSave.schema";
 import {
 	isBlankAchievement,
 	isBlankCertification,
@@ -22,6 +44,7 @@ import {
 	isBlankSkillGroup,
 	isBlankSocialMedia,
 	isBlankStrength,
+	isBlankStat,
 	isBlankTag,
 	isBlankTagGroup,
 	isBlankVolunteering,
@@ -42,6 +65,11 @@ const sectionPassthrough = z
 		content: z.any().optional(),
 	})
 	.passthrough();
+
+/** `content` est `z.any()` → force un tableau typé pour les forEach. */
+function asSectionItems<T>(content: unknown): T[] {
+	return Array.isArray(content) ? (content as T[]) : [];
+}
 
 export const cvValidationSchema = z
 	.object({
@@ -73,6 +101,7 @@ export const cvValidationSchema = z
 				publication: sectionPassthrough.optional(),
 				socialMedia: sectionPassthrough.optional(),
 				strength: sectionPassthrough.optional(),
+				stat: sectionPassthrough.optional(),
 				volunteering: sectionPassthrough.optional(),
 				skillGroup: sectionPassthrough.optional(),
 				tagGroup: sectionPassthrough.optional(),
@@ -95,7 +124,7 @@ export const cvValidationSchema = z
 			});
 		}
 		if (isModuleActive(cv.modules, "experience")) {
-			const items = cv.datas?.experience?.content ?? [];
+			const items = asSectionItems<ListItem<ExperienceInput>>(cv.datas?.experience?.content);
 			items.forEach((item, i) => {
 				if (isBlankExperience(item)) return;
 				if (!item.content?.title?.trim()) {
@@ -115,7 +144,7 @@ export const cvValidationSchema = z
 			});
 		}
 		if (isModuleActive(cv.modules, "achievement")) {
-			const items = cv.datas?.achievement?.content ?? [];
+			const items = asSectionItems<ListItem<AchievementInput>>(cv.datas?.achievement?.content);
 			items.forEach((item, i) => {
 				if (isBlankAchievement(item)) return;
 				if (!item.content?.title?.trim()) {
@@ -128,7 +157,7 @@ export const cvValidationSchema = z
 			});
 		}
 		if (isModuleActive(cv.modules, "certification")) {
-			const items = cv.datas?.certification?.content ?? [];
+			const items = asSectionItems<ListItem<CertificationInput>>(cv.datas?.certification?.content);
 			items.forEach((item, i) => {
 				if (isBlankCertification(item)) return;
 				if (!item.content?.title?.trim()) {
@@ -141,7 +170,7 @@ export const cvValidationSchema = z
 			});
 		}
 		if (isModuleActive(cv.modules, "education")) {
-			const items = cv.datas?.education?.content ?? [];
+			const items = asSectionItems<ListItem<EducationInput>>(cv.datas?.education?.content);
 			items.forEach((item, i) => {
 				if (isBlankEducation(item)) return;
 				if (!item.content?.school?.trim()) {
@@ -154,7 +183,7 @@ export const cvValidationSchema = z
 			});
 		}
 		if (isModuleActive(cv.modules, "expertise")) {
-			const items = cv.datas?.expertise?.content ?? [];
+			const items = asSectionItems<ListItem<ExpertiseInput>>(cv.datas?.expertise?.content);
 			items.forEach((item, i) => {
 				if (isBlankExpertise(item)) return;
 				if (!item.content?.title?.trim()) {
@@ -167,7 +196,7 @@ export const cvValidationSchema = z
 			});
 		}
 		if (isModuleActive(cv.modules, "formation")) {
-			const items = cv.datas?.formation?.content ?? [];
+			const items = asSectionItems<ListItem<FormationInput>>(cv.datas?.formation?.content);
 			items.forEach((item, i) => {
 				if (isBlankFormation(item)) return;
 				if (!item.content?.title?.trim()) {
@@ -180,7 +209,7 @@ export const cvValidationSchema = z
 			});
 		}
 		if (isModuleActive(cv.modules, "language")) {
-			const items = cv.datas?.language?.content ?? [];
+			const items = asSectionItems<ListItem<LanguageInput>>(cv.datas?.language?.content);
 			items.forEach((item, i) => {
 				if (isBlankLanguage(item)) return;
 				if (!item.content?.name?.trim()) {
@@ -193,7 +222,7 @@ export const cvValidationSchema = z
 			});
 		}
 		if (isModuleActive(cv.modules, "passion")) {
-			const items = cv.datas?.passion?.content ?? [];
+			const items = asSectionItems<ListItem<PassionInput>>(cv.datas?.passion?.content);
 			items.forEach((item, i) => {
 				if (isBlankPassion(item)) return;
 				if (!item.content?.title?.trim()) {
@@ -206,7 +235,7 @@ export const cvValidationSchema = z
 			});
 		}
 		if (isModuleActive(cv.modules, "prize")) {
-			const items = cv.datas?.prize?.content ?? [];
+			const items = asSectionItems<ListItem<PrizeInput>>(cv.datas?.prize?.content);
 			items.forEach((item, i) => {
 				if (isBlankPrize(item)) return;
 				if (!item.content?.title?.trim()) {
@@ -219,7 +248,7 @@ export const cvValidationSchema = z
 			});
 		}
 		if (isModuleActive(cv.modules, "project")) {
-			const items = cv.datas?.project?.content ?? [];
+			const items = asSectionItems<ListItem<ProjectInput>>(cv.datas?.project?.content);
 			items.forEach((item, i) => {
 				if (isBlankProject(item)) return;
 				if (!item.content?.title?.trim()) {
@@ -232,7 +261,7 @@ export const cvValidationSchema = z
 			});
 		}
 		if (isModuleActive(cv.modules, "publication")) {
-			const items = cv.datas?.publication?.content ?? [];
+			const items = asSectionItems<ListItem<PublicationInput>>(cv.datas?.publication?.content);
 			items.forEach((item, i) => {
 				if (isBlankPublication(item)) return;
 				if (!item.content?.title?.trim()) {
@@ -245,7 +274,7 @@ export const cvValidationSchema = z
 			});
 		}
 		if (isModuleActive(cv.modules, "socialMedia")) {
-			const items = cv.datas?.socialMedia?.content ?? [];
+			const items = asSectionItems<ListItem<SocialMediaInput>>(cv.datas?.socialMedia?.content);
 			items.forEach((item, i) => {
 				if (isBlankSocialMedia(item)) return;
 				if (!item.content?.username?.trim()) {
@@ -258,7 +287,7 @@ export const cvValidationSchema = z
 			});
 		}
 		if (isModuleActive(cv.modules, "strength")) {
-			const items = cv.datas?.strength?.content ?? [];
+			const items = asSectionItems<ListItem<StrengthInput>>(cv.datas?.strength?.content);
 			items.forEach((item, i) => {
 				if (isBlankStrength(item)) return;
 				if (!item.content?.title?.trim()) {
@@ -270,8 +299,28 @@ export const cvValidationSchema = z
 				}
 			});
 		}
+		if (isModuleActive(cv.modules, "stat")) {
+			const items = asSectionItems<ListItem<StatInput>>(cv.datas?.stat?.content);
+			items.forEach((item, i) => {
+				if (isBlankStat(item)) return;
+				if (!item.content?.label?.trim()) {
+					ctx.addIssue({
+						code: "custom",
+						path: ["datas", "stat", "content", i, "content", "label"],
+						message: "Le libellé est requis",
+					});
+				}
+				if (!item.content?.value?.trim()) {
+					ctx.addIssue({
+						code: "custom",
+						path: ["datas", "stat", "content", i, "content", "value"],
+						message: "La valeur est requise",
+					});
+				}
+			});
+		}
 		if (isModuleActive(cv.modules, "volunteering")) {
-			const items = cv.datas?.volunteering?.content ?? [];
+			const items = asSectionItems<ListItem<VolunteeringInput>>(cv.datas?.volunteering?.content);
 			items.forEach((item, i) => {
 				if (isBlankVolunteering(item)) return;
 				if (!item.content?.title?.trim()) {
@@ -321,9 +370,9 @@ export const cvValidationSchema = z
 			// }
 		}
 		if (isModuleActive(cv.modules, "skill")) {
-			const groups = cv.datas?.skillGroup?.content ?? [];
-			groups.forEach((group: ListItem<SkillGroupItemContentInput>, gi) => {
-				if (isBlankSkillGroup(group)) return;
+			const groups = asSectionItems<ListItem<SkillGroupItemContentInput>>(cv.datas?.skillGroup?.content);
+			groups.forEach((group, gi) => {
+				if (isBlankSkillGroup(group as ListItem<SkillGroupInput>)) return;
 				// optionnel : exiger un titre de groupe s'il y a des skills
 				// if (!group.content?.title?.trim()) {
 				//   ctx.addIssue({
@@ -355,8 +404,8 @@ export const cvValidationSchema = z
 			});
 		}
 		if (isModuleActive(cv.modules, "tag")) {
-			const groups = cv.datas?.tagGroup?.content ?? [];
-			groups.forEach((group: ListItem<TagGroupItemContentInput>, gi) => {
+			const groups = asSectionItems<ListItem<TagGroupItemContentInput>>(cv.datas?.tagGroup?.content);
+			groups.forEach((group, gi) => {
 				if (isBlankTagGroup(group as ListItem<TagGroupInput>)) return;
 				// optionnel : exiger un titre de groupe s'il y a des skills
 				// if (!group.content?.title?.trim()) {
@@ -380,8 +429,8 @@ export const cvValidationSchema = z
 			});
 		}
 		if (isModuleActive(cv.modules, "competence")) {
-			const groups = cv.datas?.competenceGroup?.content ?? [];
-			groups.forEach((group: ListItem<CompetenceGroupItemContentInput>, gi) => {
+			const groups = asSectionItems<ListItem<CompetenceGroupItemContentInput>>(cv.datas?.competenceGroup?.content);
+			groups.forEach((group, gi) => {
 				if (isBlankCompetenceGroup(group as ListItem<CompetenceGroupInput>)) return;
 				// optionnel : exiger un titre de groupe s'il y a des skills
 				// if (!group.content?.title?.trim()) {

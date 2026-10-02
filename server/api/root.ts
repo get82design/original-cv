@@ -23,6 +23,8 @@ import { cvSocialMediaRouter } from "./routers/cvSocialMedia.router";
 import { profileSocialMediaRouter } from "./routers/profileSocialMedia.router";
 import { cvStrengthRouter } from "./routers/cvStrength.router";
 import { profileStrengthRouter } from "./routers/profileStrength.router";
+import { cvStatRouter } from "./routers/cvStat.router";
+import { profileStatRouter } from "./routers/profileStat.router";
 import { cvEducationRouter } from "./routers/cvEducation.router";
 import { profileEducationRouter } from "./routers/profileEducation.router";
 import { cvFormationRouter } from "./routers/cvFormation.router";
@@ -101,6 +103,7 @@ export const appRouter = router({
 	cvTagGroup: cvTagGroupRouter,
 	cvSocialMedia: cvSocialMediaRouter,
 	cvStrength: cvStrengthRouter,
+	cvStat: cvStatRouter,
 	cvVolunteering: cvVolunteeringRouter,
 	cvTemplate: cvTemplateRouter,
 	cvModule: cvModuleRouter,
@@ -129,6 +132,7 @@ export const appRouter = router({
 	profileTagGroup: profileTagGroupRouter,
 	profileSocialMedia: profileSocialMediaRouter,
 	profileStrength: profileStrengthRouter,
+	profileStat: profileStatRouter,
 	profileVolunteering: profileVolunteeringRouter,
 	unlockedTemplate: unlockedTemplateRouter,
 });

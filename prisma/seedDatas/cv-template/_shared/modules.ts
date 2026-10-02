@@ -14,6 +14,7 @@ type ModuleKey =
 	| "project"
 	| "expertise"
 	| "strength"
+	| "stat"
 	| "philosophy"
 	| "formation"
 	| "certification"
@@ -35,6 +36,7 @@ const DEFAULT_TITLES: Record<ModuleKey, string> = {
 	project: "Projets",
 	expertise: "Expertises",
 	strength: "Points forts",
+	stat: "En nombres",
 	philosophy: "Philosophie",
 	formation: "Formations",
 	certification: "Certifications",
@@ -88,6 +90,7 @@ export type ModuleOverrides = Partial<{
 	passion: BaseOverride & { columns?: 1 | 2 | 3 | 4 };
 	socialMedia: BaseOverride & { columns?: 1 | 2 | 3 | 4 };
 	strength: BaseOverride & { columns?: 1 | 2 | 3 | 4 };
+	stat: BaseOverride & { columns?: 1 | 2 | 3 | 4 };
 }>;
 
 function capitalize(key: string) {
@@ -110,6 +113,7 @@ export function buildModules(tokens: ThemeTokens, overrides: ModuleOverrides = {
 		"project",
 		"expertise",
 		"strength",
+		"stat",
 		"philosophy",
 		"formation",
 		"certification",

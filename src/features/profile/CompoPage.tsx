@@ -5,6 +5,7 @@ import { ProfileDescription } from "./compo/description/ProfileDescription";
 import { ProfileExperiences } from "./compo/experience/ProfileExperiences";
 import { ProfilePhilosophy } from "./compo/philosophy/ProfilePhilosophy";
 import { ProfileStrengths } from "./compo/strength/ProfileStrengths";
+import { ProfileStats } from "./compo/stat/ProfileStats";
 import { ProfileProject } from "./compo/project/ProfileProject";
 import { ProfilePublication } from "./compo/publication/ProfilePublication";
 import { ProfileAchievement } from "./compo/achievement/ProfileAchievement";
@@ -37,6 +38,7 @@ export const CompoPage = ({ cvs }: { cvs: CV[] }) => {
 					<>
 						<ProfileExperiences cvs={cvs} />
 						<ProfileStrengths cvs={cvs} />
+						<ProfileStats cvs={cvs} />
 						<ProfileFormation cvs={cvs} />
 						<ProfileProject cvs={cvs} />
 						<ProfilePublication cvs={cvs} />

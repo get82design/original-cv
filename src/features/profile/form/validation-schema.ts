@@ -1,6 +1,7 @@
 import {
 	isBlankExperience,
 	isBlankStrength,
+	isBlankStat,
 	isBlankFormation,
 	isBlankProject,
 	isBlankPublication,
@@ -49,6 +50,28 @@ export const validationSchema = z
 							code: "custom",
 							path: [i, "content", "title"],
 							message: "Le titre est requis",
+						});
+					}
+				});
+			}),
+		stats: z
+			.array(z.any())
+			.optional()
+			.superRefine((items, ctx) => {
+				items?.forEach((item, i) => {
+					if (isBlankStat(item)) return;
+					if (!item.content?.label?.trim()) {
+						ctx.addIssue({
+							code: "custom",
+							path: [i, "content", "label"],
+							message: "Le libellé est requis",
+						});
+					}
+					if (!item.content?.value?.trim()) {
+						ctx.addIssue({
+							code: "custom",
+							path: [i, "content", "value"],
+							message: "La valeur est requise",
 						});
 					}
 				});

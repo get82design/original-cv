@@ -16,6 +16,7 @@ import type {
 	SkillInput,
 	SocialMediaInput,
 	StrengthInput,
+	StatInput,
 	TagGroupInput,
 	VolunteeringInput,
 } from "@/services/schemas/profileSave.schema";
@@ -29,6 +30,7 @@ import { validationSchema } from "./validation-schema";
 import {
 	isBlankExperience,
 	isBlankStrength,
+	isBlankStat,
 	isBlankFormation,
 	isBlankProject,
 	isBlankPublication,
@@ -121,6 +123,14 @@ export const FormProfile = ({ children }: PropsWithChildren) => {
 				})),
 			strengths: (rest.strengths ?? [])
 				.filter((s) => !isBlankStrength(s as ListItem<StrengthInput>))
+				.map((s) => ({
+					...s,
+					content: {
+						...s.content,
+					},
+				})),
+			stats: (rest.stats ?? [])
+				.filter((s) => !isBlankStat(s as ListItem<StatInput>))
 				.map((s) => ({
 					...s,
 					content: {

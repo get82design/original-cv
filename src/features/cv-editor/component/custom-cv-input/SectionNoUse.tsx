@@ -9,6 +9,7 @@ import { MiniatureRegister as LanguageMiniatures } from "../template/register/la
 import { MiniatureRegister as ProjectMiniatures } from "../template/register/project/ProjectRegister";
 import { MiniatureRegister as SocialMediaMiniatures } from "../template/register/social-media/SocialMediaRegister";
 import { MiniatureRegister as StrengthMiniatures } from "../template/register/strength/StrengthRegister";
+import { MiniatureRegister as StatMiniatures } from "../template/register/stat/StatRegister";
 import { MiniatureRegister as PhilosophyMiniatures } from "../template/register/philosophy/PhilosophyRegister";
 import { MiniatureRegister as FormationMiniatures } from "../template/register/formation/FormationRegister";
 import { MiniatureRegister as CertificationMiniatures } from "../template/register/certification/CertificationRegister";
@@ -111,6 +112,11 @@ export const OneSectionNoUse = ({ idx, addItem, item }: OneSectionNoUseProps) =>
 			// console.log('key => ', key)
 			setMiniatureComponent(() => StrengthMiniatures[key] ?? StrengthMiniatures.MiniStrengthOne);
 			setLabelComponent(watchTemplateConfig?.components?.sectionStrength?.label ?? "Atout");
+		}
+		if (item.type === "stat") {
+			const key = watchTemplateConfig?.components?.sectionStat?.miniature ?? "MiniStatOne";
+			setMiniatureComponent(() => StatMiniatures[key] ?? StatMiniatures.MiniStatOne);
+			setLabelComponent(watchTemplateConfig?.components?.sectionStat?.Label ?? "En nombres");
 		}
 		if (item.type === "philosophy") {
 			const key =

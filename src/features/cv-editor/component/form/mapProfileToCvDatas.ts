@@ -20,6 +20,7 @@ export function mapProfileToCvDatas(
 	const exp = getModule(modules, "experience");
 	const edu = getModule(modules, "education");
 	const strength = getModule(modules, "strength");
+	const stat = getModule(modules, "stat");
 	const language = getModule(modules, "language");
 	const description = getModule(modules, "description");
 	const philosophy = getModule(modules, "philosophy");
@@ -112,6 +113,23 @@ export function mapProfileToCvDatas(
 								description: s.description ?? undefined,
 								icon: s.icon ?? undefined,
 								settings: strength.settings.content, // withTitle, styles…
+							},
+						})),
+					},
+				}
+			: {}),
+		...(stat
+			? {
+					stat: {
+						title: stat.title,
+						settings: { title: stat.settings.title },
+						content: (profile.stats ?? []).map((s) => ({
+							clientKey: s.id,
+							order: s.order,
+							content: {
+								label: s.label,
+								value: s.value,
+								settings: stat.settings.content,
 							},
 						})),
 					},

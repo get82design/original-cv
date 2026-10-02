@@ -14,6 +14,7 @@ function emptyLists() {
 		experiences: [],
 		achievements: [],
 		strengths: [],
+		stats: [],
 		projects: [],
 		publications: [],
 		volunteerings: [],
@@ -246,7 +247,7 @@ describe("mapProfileToSaveInput", () => {
 				},
 			},
 		]);
-		expect(input.projects[0]).toEqual({
+		expect(input.projects?.[0]).toEqual({
 			id: "pr1",
 			clientKey: "pr1",
 			order: 1,
@@ -267,7 +268,7 @@ describe("mapProfileToSaveInput", () => {
 				],
 			},
 		});
-		expect(input.volunteerings[0]).toEqual({
+		expect(input.volunteerings?.[0]).toEqual({
 			id: "v1",
 			clientKey: "v1",
 			order: 1,
@@ -413,7 +414,7 @@ describe("mapProfileToSaveInput", () => {
 			}),
 		);
 
-		expect(input.achievements[0]).toEqual({
+		expect(input.achievements?.[0]).toEqual({
 			id: "a1",
 			clientKey: "a1",
 			order: 1,
@@ -424,12 +425,12 @@ describe("mapProfileToSaveInput", () => {
 				year: 2024,
 			},
 		});
-		expect(input.strengths[0]?.content).toEqual({
+		expect(input.strengths?.[0]?.content).toEqual({
 			title: "Focus",
 			icon: "",
 			description: "Detail",
 		});
-		expect(input.publications[0]?.content).toEqual({
+		expect(input.publications?.[0]?.content).toEqual({
 			title: "Paper",
 			start,
 			end: null,
@@ -437,7 +438,7 @@ describe("mapProfileToSaveInput", () => {
 			url: "https://x",
 			journalName: "Nature",
 		});
-		expect(input.educations[0]?.content).toEqual({
+		expect(input.educations?.[0]?.content).toEqual({
 			title: "",
 			start,
 			end: null,
@@ -446,35 +447,35 @@ describe("mapProfileToSaveInput", () => {
 			city: "Paris",
 			school: "Uni",
 		});
-		expect(input.languages[0]?.content).toEqual({
+		expect(input.languages?.[0]?.content).toEqual({
 			name: "FR",
 			level: Level.Expert,
 		});
-		expect(input.socialMedias[0]?.content).toEqual({
+		expect(input.socialMedias?.[0]?.content).toEqual({
 			icon: "🌐",
 			socialNetwork: "LinkedIn",
 			username: "john",
 		});
-		expect(input.expertises[0]?.content).toEqual({
+		expect(input.expertises?.[0]?.content).toEqual({
 			title: "TS",
 			level: Level.Senior,
 		});
-		expect(input.certifications[0]?.content).toEqual({
+		expect(input.certifications?.[0]?.content).toEqual({
 			title: "AWS",
 			organismeCertification: "",
 		});
-		expect(input.formations[0]?.content).toEqual({
+		expect(input.formations?.[0]?.content).toEqual({
 			title: "React",
 			start,
 			end,
 			organismeFormation: "",
 			status: "COMPLETED",
 		});
-		expect(input.passions[0]?.content).toEqual({
+		expect(input.passions?.[0]?.content).toEqual({
 			title: "Ski",
 			icon: "ski",
 		});
-		expect(input.prizes[0]?.content).toEqual({
+		expect(input.prizes?.[0]?.content).toEqual({
 			title: "Oscar",
 			icon: "trophy",
 			domaine: "",
@@ -517,13 +518,13 @@ describe("mapProfileToSaveInput", () => {
 			}),
 		);
 
-		expect(input.socialMedias[0]?.content).toEqual({
+		expect(input.socialMedias?.[0]?.content).toEqual({
 			icon: "🌐",
 			socialNetwork: "",
 			username: "",
 		});
-		expect(input.passions[0]?.content.icon).toBe("");
-		expect(input.prizes[0]?.content).toEqual({
+		expect(input.passions?.[0]?.content.icon).toBe("");
+		expect(input.prizes?.[0]?.content).toEqual({
 			title: "Oscar",
 			icon: "",
 			domaine: "",
@@ -643,11 +644,11 @@ describe("mapProfileToSaveInput", () => {
 				},
 			},
 		]);
-		expect(input.tagGroups[0]?.content.tags[0]?.content).toEqual({
+		expect(input.tagGroups?.[0]?.content.tags[0]?.content).toEqual({
 			name: "TS",
 			tagId: "tag-1",
 		});
-		expect(input.competenceGroups[0]?.content.competences[0]?.content).toEqual({
+		expect(input.competenceGroups?.[0]?.content.competences[0]?.content).toEqual({
 			name: "Com",
 			competenceId: "comp-1",
 		});
@@ -698,9 +699,9 @@ describe("mapProfileToSaveInput", () => {
 			}),
 		);
 
-		expect(input.experiences.map((x) => x.id)).toEqual(["e2", "e1"]);
-		expect(input.experiences.map((x) => x.clientKey)).toEqual(["e2", "e1"]);
-		expect(input.formations[0]?.clientKey).toBe("f1");
+		expect(input.experiences?.map((x) => x.id)).toEqual(["e2", "e1"]);
+		expect(input.experiences?.map((x) => x.clientKey)).toEqual(["e2", "e1"]);
+		expect(input.formations?.[0]?.clientKey).toBe("f1");
 		expect(profileSaveSchema.safeParse(input).success).toBe(true);
 	});
 });

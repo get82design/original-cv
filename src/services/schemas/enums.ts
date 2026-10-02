@@ -27,6 +27,7 @@ export const CVModuleItemTypeSchema = z.enum([
 	"cvStrength",
 	"cvSocialMedia",
 	"cvTag",
+	"cvStat",
 ]);
 export type CVModuleItemType = z.infer<typeof CVModuleItemTypeSchema>;
 
@@ -50,5 +51,6 @@ export const CVModuleTypeSchema = z.enum([
 	"strength",
 	"socialMedia",
 	"tag",
+	"stat",
 ]);
 export type CVModuleType = z.infer<typeof CVModuleTypeSchema>;

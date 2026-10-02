@@ -1,17 +1,21 @@
+import { useEffect, useRef, useState, type PropsWithChildren } from "react";
 import {
-	useEffect,
-	useRef,
-	useState,
-	type PropsWithChildren,
-} from "react";
-import { FormProvider, useForm, type FieldErrors, type Resolver } from "react-hook-form";
+	FormProvider,
+	useForm,
+	type FieldErrors,
+	type Resolver,
+} from "react-hook-form";
 import type { CvFormValues } from "../../../../services/schemas/cvSave.schema";
 import { formCvDefaultValue } from "./defaultValue";
 import { trpc } from "@utils/trpc";
 import type { TemplateCv } from "@utils/trpc.types";
 import { DialogSelectModel } from "./DialogSelectModel";
 import { applyTemplateToForm } from "../../utils/applyTemplateToForm";
-import { clearGuestCvDraft, loadGuestCvDraft, saveGuestCvDraft } from "../../utils/guestCvDraft";
+import {
+	clearGuestCvDraft,
+	loadGuestCvDraft,
+	saveGuestCvDraft,
+} from "../../utils/guestCvDraft";
 import { mapCvToSaveInput, mapFormToSaveInput } from "../../mapCvToSaveInput";
 import { useRouter } from "next/router";
 import { Toast } from "primereact/toast";
@@ -31,13 +35,21 @@ import { DialogImportReview } from "./DialogImportReview";
 import { fileToBase64 } from "../../utils/fileToBase64";
 import type { CvImportDraft } from "@/services/schemas/cvImportDraft.schema";
 import { applyImportDraftToForm } from "./mapImportDraftToCvDatas";
-import { getClientErrorMessage, isTooManyRequestsError } from "@/utils/clientError";
+import {
+	getClientErrorMessage,
+	isTooManyRequestsError,
+} from "@/utils/clientError";
 import { CvFormSaveProvider } from "./CvFormSaveContext";
 import { CvFormHistoryProvider } from "./CvFormHistoryContext";
-import { clearCvFormHistory, commitCvFormHistory } from "../../utils/cvFormHistoryCommit";
+import {
+	clearCvFormHistory,
+	commitCvFormHistory,
+} from "../../utils/cvFormHistoryCommit";
 
 type RouterOutputs = inferRouterOutputs<AppRouter>;
-export type ProfileComplete = NonNullable<RouterOutputs["profile"]["completeMe"]>;
+export type ProfileComplete = NonNullable<
+	RouterOutputs["profile"]["completeMe"]
+>;
 
 const isCvLimitError = (err: unknown) =>
 	err instanceof Error && err.message.includes("Limite de CV atteinte");
@@ -48,7 +60,11 @@ interface FormCvProviderProps extends PropsWithChildren {
 	color?: string | null;
 }
 
-function applyProfileToNext(next: CvFormValues, profile: ProfileComplete, model: TemplateCv) {
+function applyProfileToNext(
+	next: CvFormValues,
+	profile: ProfileComplete,
+	model: TemplateCv,
+) {
 	next.photo = profile.photo ?? null;
 	next.title = `CV - ${profile.firstName} ${profile.lastName}`;
 	next.datas = {
@@ -58,7 +74,12 @@ function applyProfileToNext(next: CvFormValues, profile: ProfileComplete, model:
 	return next;
 }
 
-export const FormCv = ({ children, idCv, template, color }: FormCvProviderProps) => {
+export const FormCv = ({
+	children,
+	idCv,
+	template,
+	color,
+}: FormCvProviderProps) => {
 	const { status } = useSession();
 	const { modeles, colors } = useModelAndColorContext();
 	const appliedFromUrl = useRef(false);
@@ -79,12 +100,14 @@ export const FormCv = ({ children, idCv, template, color }: FormCvProviderProps)
 		{ id: idCv as string },
 		{ enabled: idCv !== "0", refetchOnMount: "always" },
 	);
-	const { data: userCvs, isLoading: loadingUserCvs } = trpc.cv.allByUser.useQuery(undefined, {
-		enabled: visibleLimitDialog && status === "authenticated",
-	});
+	const { data: userCvs, isLoading: loadingUserCvs } =
+		trpc.cv.allByUser.useQuery(undefined, {
+			enabled: visibleLimitDialog && status === "authenticated",
+		});
 	const needsTemplate =
 		!!dataCv &&
-		(dataCv.layoutGeneral == null || Object.keys(dataCv.layoutGeneral as object).length === 0);
+		(dataCv.layoutGeneral == null ||
+			Object.keys(dataCv.layoutGeneral as object).length === 0);
 	const { data: dataTemplate } = trpc.cvTemplate.findById.useQuery(
 		{ id: dataCv?.templateId ?? "" },
 		{ enabled: needsTemplate },
@@ -132,7 +155,10 @@ export const FormCv = ({ children, idCv, template, color }: FormCvProviderProps)
 			severity: "error",
 			summary,
 			detail: detail || "Une erreur est survenue lors de la sauvegarde du CV",
-			life: summary === "Assistant saturé" || summary === "Limite d’imports" ? 7000 : 4000,
+			life:
+				summary === "Assistant saturé" || summary === "Limite d’imports"
+					? 7000
+					: 4000,
 		});
 	};
 
@@ -204,7 +230,11 @@ export const FormCv = ({ children, idCv, template, color }: FormCvProviderProps)
 		if (loadedStampRef.current === stamp) return;
 		loadedStampRef.current = stamp;
 		const base = mapCvToSaveInput(dataCv);
-		reset(needsTemplate && dataTemplate ? applyTemplateToForm(base, dataTemplate) : base);
+		reset(
+			needsTemplate && dataTemplate
+				? applyTemplateToForm(base, dataTemplate)
+				: base,
+		);
 		clearCvFormHistory();
 	}, [dataCv, dataTemplate, needsTemplate, reset]);
 
@@ -270,7 +300,10 @@ export const FormCv = ({ children, idCv, template, color }: FormCvProviderProps)
 			showError("Connectez-vous pour importer un CV.");
 			return;
 		}
-		if (file.type !== "application/pdf" && !file.name.toLowerCase().endsWith(".pdf")) {
+		if (
+			file.type !== "application/pdf" &&
+			!file.name.toLowerCase().endsWith(".pdf")
+		) {
 			showError("Seuls les fichiers PDF sont acceptés.");
 			return;
 		}
@@ -295,7 +328,11 @@ export const FormCv = ({ children, idCv, template, color }: FormCvProviderProps)
 			const quotaHit = detail.includes("Limite d’imports");
 			showError(
 				detail,
-				isTooManyRequestsError(err) ? "Assistant saturé" : quotaHit ? "Limite d’imports" : "Erreur",
+				isTooManyRequestsError(err)
+					? "Assistant saturé"
+					: quotaHit
+						? "Limite d’imports"
+						: "Erreur",
 			);
 		} finally {
 			setImportBusy(false);
@@ -319,7 +356,8 @@ export const FormCv = ({ children, idCv, template, color }: FormCvProviderProps)
 		if (!importDraft) return;
 		const current = getValues();
 		const model =
-			modeles.find((m) => m.id === current.templateId) ?? modeles.find((m) => m.name === template);
+			modeles.find((m) => m.id === current.templateId) ??
+			modeles.find((m) => m.name === template);
 		if (!model) {
 			showError("Modèle introuvable — impossible d’appliquer l’import.");
 			return;
@@ -374,7 +412,8 @@ export const FormCv = ({ children, idCv, template, color }: FormCvProviderProps)
 				setVisibleLimitDialog(true);
 				return;
 			}
-			const message = err instanceof Error && err.message ? err.message : undefined;
+			const message =
+				err instanceof Error && err.message ? err.message : undefined;
 			showError(message);
 		}
 	};
@@ -387,7 +426,8 @@ export const FormCv = ({ children, idCv, template, color }: FormCvProviderProps)
 			setVisibleLimitDialog(false);
 		} catch (err) {
 			console.error(err);
-			const message = err instanceof Error && err.message ? err.message : undefined;
+			const message =
+				err instanceof Error && err.message ? err.message : undefined;
 			showError(message);
 		} finally {
 			setReplacingCv(false);

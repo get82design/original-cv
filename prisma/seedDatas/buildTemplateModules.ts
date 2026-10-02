@@ -11,6 +11,7 @@ import type {
 	SkillContentSettings,
 	SocialMediaContentSettings,
 	StrengthContentSettings,
+	StatContentSettings,
 	TagContentSettings,
 } from "@/services/schemas/cvTemplate.schema";
 import type { ThemeTokens } from "./themeTokens";
@@ -321,6 +322,38 @@ export function buildStrengthModule(
 				description: t.body,
 				withDescription: true,
 				columns: opts.columns ?? 1,
+			},
+		},
+	};
+}
+
+export function buildStatModule(
+	t: ThemeTokens,
+	opts: {
+		order: number;
+		title: string;
+		isActive?: boolean;
+		columns?: StatContentSettings["columns"];
+	},
+) {
+	return {
+		type: "stat" as const,
+		order: opts.order,
+		isActive: opts.isActive ?? true,
+		title: opts.title,
+		settings: {
+			title: t.sectionTitle,
+			content: {
+				value: {
+					...t.itemTitle,
+					sizeModel: "28px",
+					weightModel: 700,
+				},
+				label: t.body,
+				withValue: true,
+				withLabel: true,
+				columns: opts.columns ?? 3,
+				displayMode: "grid" as const,
 			},
 		},
 	};

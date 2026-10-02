@@ -59,6 +59,7 @@ const projectItemSettings = {
 	technology: baseTextSettings,
 	missions: baseTextSettings,
 	withDescription: true,
+	withResult: true,
 	withLocation: true,
 	withPeriode: true,
 	withTechnology: true,
@@ -2109,6 +2110,97 @@ describe("CvSaveService.save", () => {
 			withDescription: true,
 			columns: 1,
 		});
+	});
+
+	it("replaces stats: keeps listed ids and deletes others", async () => {
+		const user = await createTestUser();
+		const template = await createTestTemplate();
+
+		const created = await cvSaveService.save(
+			user.id,
+			buildSaveInput(template.id, {
+				datas: {
+					header: { title: "John Doe" },
+					stat: {
+						content: [
+							{
+								clientKey: "stat-1",
+								order: 1,
+								content: {
+									label: "projets",
+									value: "+50",
+									settings: {
+										withValue: true,
+										withLabel: true,
+										value: baseTextSettings,
+										label: baseTextSettings,
+										columns: 3,
+										displayMode: "grid",
+									},
+								},
+							},
+							{
+								clientKey: "stat-2",
+								order: 2,
+								content: {
+									label: "clients",
+									value: "12",
+									settings: {
+										withValue: true,
+										withLabel: true,
+										value: baseTextSettings,
+										label: baseTextSettings,
+										columns: 3,
+										displayMode: "grid",
+									},
+								},
+							},
+						],
+						settings: sectionTitleSettings,
+					},
+				},
+				modules: [],
+			}),
+		);
+
+		const keepId = created.stats.find((s) => s.label === "projets")?.id;
+		expect(keepId).toBeDefined();
+
+		const updated = await cvSaveService.save(
+			user.id,
+			buildSaveInput(template.id, {
+				cvId: created.id,
+				datas: {
+					stat: {
+						content: [
+							{
+								id: keepId,
+								clientKey: "stat-1",
+								order: 1,
+								content: {
+									label: "projets",
+									value: "+99",
+									settings: {
+										withValue: true,
+										withLabel: true,
+										value: baseTextSettings,
+										label: baseTextSettings,
+										columns: 3,
+										displayMode: "grid",
+									},
+								},
+							},
+						],
+						settings: sectionTitleSettings,
+					},
+				},
+				modules: [],
+			}),
+		);
+
+		expect(updated.stats).toHaveLength(1);
+		expect(updated.stats[0]?.id).toBe(keepId);
+		expect(updated.stats[0]?.value).toBe("+99");
 	});
 
 	it("replaces achievements: keeps listed ids and deletes others", async () => {

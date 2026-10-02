@@ -2,6 +2,7 @@ import type {
 	ExperienceInput,
 	FormationInput,
 	StrengthInput,
+	StatInput,
 	ProjectInput,
 	PublicationInput,
 	AchievementInput,
@@ -41,6 +42,12 @@ export function isBlankExperience(item: ListItem<ExperienceInput>) {
 export function isBlankStrength(item: ListItem<StrengthInput>) {
 	const c = item.content;
 	const hasText = [c.title, c.description].some((s) => s?.trim());
+	return !hasText;
+}
+
+export function isBlankStat(item: ListItem<StatInput>) {
+	const c = item.content;
+	const hasText = [c.label, c.value].some((s) => s?.trim());
 	return !hasText;
 }
 

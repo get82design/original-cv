@@ -80,6 +80,7 @@ function extractDatasSettings(datas: CvFormValues["datas"]): TemplateDatasSettin
 			"language",
 			"publication",
 			"strength",
+			"stat",
 			"achievement",
 			"education",
 			"skillGroup",

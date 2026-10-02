@@ -104,6 +104,7 @@ const FIELD_LABELS: Record<string, string> = {
 	publication: "Publication",
 	achievement: "Réalisation",
 	strength: "Atout",
+	stat: "Statistique",
 	domaine: "Domaine",
 	organisation: "Organisation",
 	// … les settings.* une seule fois
@@ -119,6 +120,7 @@ const SECTION_LABELS: Record<string, string> = {
 	project: "Projets",
 	socialMedia: "Réseaux sociaux",
 	strength: "Atouts",
+	stat: "En nombres",
 	philosophy: "Philosophie",
 	formation: "Formations",
 	certification: "Certifications",

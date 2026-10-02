@@ -35,7 +35,7 @@ export class CvSaveService {
 						...(input.layoutGeneral !== undefined
 							? {
 									layoutGeneral: input.layoutGeneral,
-									primaryColorName,
+									primaryColorName: primaryColorName ?? null,
 								}
 							: {}),
 					},
@@ -827,6 +827,53 @@ export class CvSaveService {
 							data: { cvId: id, ...strengthData },
 						});
 						strengthId = created.id;
+					}
+				}
+			}
+
+			// ——— 16b. Stat (replace) ———
+			if (datas.stat) {
+				const items = datas.stat.content;
+				const itemsToSave = items.filter(
+					(i) =>
+						(i.content.label ?? "").trim().length > 0 &&
+						(i.content.value ?? "").trim().length > 0,
+				);
+				const keepIds = itemsToSave
+					.map((item) => item.id)
+					.filter((statId): statId is string => !!statId);
+
+				if (keepIds.length === 0) {
+					await tx.cvStat.deleteMany({ where: { cvId: id } });
+				} else {
+					await tx.cvStat.deleteMany({
+						where: { cvId: id, id: { notIn: keepIds } },
+					});
+				}
+
+				for (const [index, item] of itemsToSave.entries()) {
+					const order = item.order ?? index + 1;
+					const { settings, ...rest } = item.content;
+
+					let statId = item.id;
+
+					const statData = {
+						label: rest.label,
+						value: rest.value,
+						order,
+						settings: settings ?? {},
+					};
+
+					if (statId) {
+						await tx.cvStat.update({
+							where: { id: statId },
+							data: statData,
+						});
+					} else {
+						const created = await tx.cvStat.create({
+							data: { cvId: id, ...statData },
+						});
+						statId = created.id;
 					}
 				}
 			}

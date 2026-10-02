@@ -154,6 +154,32 @@ export class ProfileSaveService {
 				}
 			}
 
+			// ——— 4b. Stats (many:1, upsert via profileId) ———
+			if (input.stats) {
+				const items = input.stats;
+				const keepIds = items.map((i) => i.id).filter((id): id is string => !!id);
+				await tx.stat.deleteMany({
+					where: keepIds.length
+						? { profileId: profile.id, id: { notIn: keepIds } }
+						: { profileId: profile.id },
+				});
+				for (const [index, item] of items.entries()) {
+					const order = item.order ?? index;
+					const data = {
+						label: item.content.label,
+						value: item.content.value,
+						order,
+					};
+					if (item.id) {
+						await tx.stat.update({ where: { id: item.id }, data });
+					} else {
+						await tx.stat.create({
+							data: { profileId: profile.id, ...data },
+						});
+					}
+				}
+			}
+
 			// ——— 5. Projects (many:1, upsert via profileId) ———
 			if (input.projects) {
 				const items = input.projects;
@@ -747,6 +773,7 @@ export class ProfileSaveService {
 						orderBy: { order: "asc" },
 					},
 					strengths: true,
+					stats: true,
 					projects: {
 						include: { missions: true },
 						orderBy: { order: "asc" },

@@ -71,6 +71,15 @@ export function mapProfileToSaveInput(
 				description: strength.description,
 			},
 		})),
+		stats: (profile.stats ?? []).map((stat) => ({
+			id: stat.id,
+			clientKey: stat.id,
+			order: stat.order,
+			content: {
+				label: stat.label,
+				value: stat.value,
+			},
+		})),
 		projects: profile.projects.map((project) => ({
 			id: project.id,
 			clientKey: project.id,

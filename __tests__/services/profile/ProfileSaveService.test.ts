@@ -1019,6 +1019,39 @@ describe("ProfileSaveService.save", () => {
 		expect(updated!.strengths[0]?.title).toBe("First updated");
 	});
 
+	it("replaces stats: keeps listed ids and deletes others", async () => {
+		const user = await createTestUser();
+		const created = await profileSaveService.save(
+			user.id,
+			identity({
+				stats: [
+					item("st-1", 1, { label: "projets", value: "+50" }),
+					item("st-2", 2, { label: "clients", value: "12" }),
+				],
+			}),
+		);
+		const keepId = created!.stats.find((s) => s.label === "projets")?.id;
+
+		const updated = await profileSaveService.save(
+			user.id,
+			identity({
+				stats: [
+					{
+						id: keepId,
+						...item("st-1", 1, {
+							label: "projets",
+							value: "+99",
+						}),
+					},
+				],
+			}),
+		);
+
+		expect(updated!.stats).toHaveLength(1);
+		expect(updated!.stats[0]?.id).toBe(keepId);
+		expect(updated!.stats[0]?.value).toBe("+99");
+	});
+
 	it("replaces achievements: keeps listed ids and deletes others", async () => {
 		const user = await createTestUser();
 		const created = await profileSaveService.save(

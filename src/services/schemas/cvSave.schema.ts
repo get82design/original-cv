@@ -16,6 +16,7 @@ import { createPassionInputSchema } from "./passion.schema";
 import { createLanguageSchema } from "./language.schema";
 import { createPublicationSchema } from "./publication.schema";
 import { createStrengthSchema } from "./strength.schema";
+import { createStatSchema } from "./stat.schema";
 import { createAchievementSchema } from "./achievement.schema";
 import { createEducationSchema } from "./education.schema";
 import { createSkillGroupSchema } from "./skillGroup.schema";
@@ -250,6 +251,18 @@ const strengthSectionSchema = z.object({
 		.optional(),
 });
 
+const statItemContentSchema = createStatSchema.omit({ order: true });
+
+const statSectionSchema = z.object({
+	title: z.string().optional(), // titre section UI
+	content: z.array(listItemSchema(statItemContentSchema)),
+	settings: z
+		.object({
+			title: baseSettingsSchema,
+		})
+		.optional(),
+});
+
 const achievementItemContentSchema = createAchievementSchema.omit({
 	order: true,
 });
@@ -347,6 +360,7 @@ const datasSchema = z.object({
 	language: languageSectionSchema.optional(),
 	publication: publicationSectionSchema.optional(),
 	strength: strengthSectionSchema.optional(),
+	stat: statSectionSchema.optional(),
 	achievement: achievementSectionSchema.optional(),
 	education: educationSectionSchema.optional(),
 	skillGroup: skillGroupSectionSchema.optional(),
@@ -395,6 +409,7 @@ export type SkillGroupItemContentInput = z.infer<typeof skillGroupItemContentSch
 export type SkillItemContentInput = z.infer<typeof skillInGroupSchema>;
 export type SocialMediaItemContentInput = z.infer<typeof socialMediaItemContentSchema>;
 export type StrengthItemContentInput = z.infer<typeof strengthItemContentSchema>;
+export type StatItemContentInput = z.infer<typeof statItemContentSchema>;
 export type ExpertiseItemContentInput = z.infer<typeof expertiseItemContentSchema>;
 export type VolunteeringItemContentInput = z.infer<typeof volunteeringItemContentSchema>;
 export type PublicationItemContentInput = z.infer<typeof publicationItemContentSchema>;

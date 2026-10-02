@@ -23,6 +23,7 @@ const SIDEBAR_ALLOWED = new Set([
 	"passion",
 	"prize",
 	"expertise",
+	"stat",
 ]);
 
 function resolveSidebarColumns(opts: {

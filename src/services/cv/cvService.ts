@@ -94,6 +94,7 @@ export class CvService {
 				educations: true,
 				achievements: true,
 				strengths: true,
+				stats: true,
 				volunteerings: { include: { cvMissions: true } },
 				projects: { include: { cvMissions: true } },
 				publications: true,

@@ -23,6 +23,7 @@ import type {
 	SkillContentSettings,
 	SocialMediaContentSettings,
 	StrengthContentSettings,
+	StatContentSettings,
 	TagContentSettings,
 	VolunteeringContentSettings,
 } from "@/services/schemas/cvTemplate.schema";
@@ -39,6 +40,7 @@ import { createInitProject } from "../../template/components/project/initProject
 import { createInitPublication } from "../../template/components/publication/initPublication";
 import { createInitSocialMedia } from "../../template/components/social-media/initSocialMedia";
 import { createInitStrength } from "../../template/components/strength/initStrength";
+import { createInitStat } from "../../template/components/stat/initStat";
 import { createInitVolunteering } from "../../template/components/volunteering/initVolunteering";
 import { createInitTag } from "../../template/components/tag/initTag";
 import { createInitSkill } from "../../template/components/skill/initSkill";
@@ -338,6 +340,21 @@ function mapProfileStrengthsToCvItems(
 			title: s.title,
 			description: s.description,
 			icon: s.icon,
+			settings: contentSettings,
+		},
+	}));
+}
+
+function mapProfileStatsToCvItems(
+	stats: NonNullable<ProfileComplete["stats"]>,
+	contentSettings: StatContentSettings | undefined,
+) {
+	return stats.map((s) => ({
+		clientKey: s.id,
+		order: s.order,
+		content: {
+			label: s.label,
+			value: s.value,
 			settings: contentSettings,
 		},
 	}));
@@ -694,6 +711,22 @@ export const DialogDataSectionFromProfile = ({
 					getKey={(item) => `${item.content.title}|${item.content.icon ?? ""}`}
 					itemTemplate={(item) => (
 						<p className="font-semibold">{item.content.title}</p>
+					)}
+				/>
+			)}
+			{sectionName === "stat" && (
+				<ListTransfer
+					source={mapProfileStatsToCvItems(
+						profile?.stats ?? [],
+						cvSection?.content?.[0]?.content?.settings ?? createInitStat().content.settings,
+					)}
+					target={Array.isArray(draft?.content) ? draft.content : []}
+					onChange={(next) => setDraft((d) => d && { ...d, content: next })}
+					getKey={(item) => `${item.content.label}|${item.content.value}`}
+					itemTemplate={(item) => (
+						<p className="font-semibold">
+							{item.content.value} — {item.content.label}
+						</p>
 					)}
 				/>
 			)}

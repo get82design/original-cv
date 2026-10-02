@@ -337,6 +337,13 @@ export async function createStrength(
 	});
 }
 
+// === STATS ===
+export async function createStat(cvId: string, label: string, value: string, order: number) {
+	return prismaTest.cvStat.create({
+		data: { cvId, label, value, order },
+	});
+}
+
 // === VOLUNTEERING ===
 export async function createVolunteering(
 	cvId: string,

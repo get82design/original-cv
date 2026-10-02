@@ -79,6 +79,7 @@ export class ProfileService {
 				educations: true,
 				achievements: true,
 				strengths: true,
+				stats: true,
 				volunteerings: {
 					include: {
 						missions: true,

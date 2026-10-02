@@ -49,6 +49,12 @@ const strengthContentSchema = z.object({
 	description: z.string().nullish(),
 });
 
+const statContentSchema = z.object({
+	id: z.string().optional(),
+	label: z.string().min(1),
+	value: z.string().min(1),
+});
+
 const projectContentSchema = createProjectSchema
 	.omit({ order: true, missions: true, settings: true })
 	.extend({
@@ -186,6 +192,7 @@ export const profileSaveSchema = createProfileSchema.extend({
 	philosophy: philosophySchema.nullish(),
 	experiences: z.array(listItemSchema(experienceContentSchema)).optional(),
 	strengths: z.array(listItemSchema(strengthContentSchema)).optional(),
+	stats: z.array(listItemSchema(statContentSchema)).optional(),
 	projects: z.array(listItemSchema(projectContentSchema)).optional(),
 	publications: z.array(listItemSchema(publicationContentSchema)).optional(),
 	achievements: z.array(listItemSchema(achievementContentSchema)).optional(),
@@ -208,6 +215,7 @@ export type ExperienceInput = z.infer<typeof experienceContentSchema>;
 export type DescriptionInput = z.infer<typeof descriptionSchema>;
 export type PhilosophyInput = z.infer<typeof philosophySchema>;
 export type StrengthInput = z.infer<typeof strengthContentSchema>;
+export type StatInput = z.infer<typeof statContentSchema>;
 export type ProjectInput = z.infer<typeof projectContentSchema>;
 export type PublicationInput = z.infer<typeof publicationContentSchema>;
 export type AchievementInput = z.infer<typeof achievementContentSchema>;

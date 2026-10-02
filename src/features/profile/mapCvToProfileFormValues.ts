@@ -60,6 +60,14 @@ export function mapCvToProfileFormValues(cv: NonNullCv): Omit<ProfileSaveInput, 
 				description: exp.description,
 			},
 		})),
+		stats: (cv.stats ?? []).map((stat) => ({
+			clientKey: `stat-${uuid()}`,
+			order: stat.order,
+			content: {
+				label: stat.label,
+				value: stat.value,
+			},
+		})),
 		projects: (cv.projects ?? []).map((exp) => ({
 			clientKey: `project-${uuid()}`,
 			order: exp.order,

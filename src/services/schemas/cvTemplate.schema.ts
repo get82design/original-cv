@@ -247,6 +247,26 @@ const strengthModuleSchema = baseModuleSchema.extend({
 	}),
 });
 
+export const statContentSchema = z
+	.object({
+		value: baseSettingsSchema,
+		label: baseSettingsSchema,
+	})
+	.extend({
+		withValue: z.boolean().default(true),
+		withLabel: z.boolean().default(true),
+		columns: z.union([z.literal(1), z.literal(2), z.literal(3), z.literal(4)]).default(3),
+		displayMode: z.enum(["grid"]).default("grid"),
+	});
+
+const statModuleSchema = baseModuleSchema.extend({
+	type: z.literal("stat"),
+	settings: z.object({
+		title: baseSettingsSchema,
+		content: statContentSchema,
+	}),
+});
+
 export const formationContentSchema = z
 	.object({
 		title: baseSettingsSchema,
@@ -439,6 +459,7 @@ export const templateModuleSchema = z.discriminatedUnion("type", [
 	projectModuleSchema,
 	socialMediaModuleSchema,
 	strengthModuleSchema,
+	statModuleSchema,
 	formationModuleSchema,
 	certificationModuleSchema,
 	prizeModuleSchema,
@@ -655,6 +676,13 @@ export const templateDefaultStylesSchema = z.object({
 				Label: z.string().min(1),
 				icon: z.enum(["FaThumbsUp"]),
 			}),
+			sectionStat: z.object({
+				component: z.enum(["SectionStatOne", "SectionStatTwo"]),
+				miniature: z.enum(["MiniStatOne"]),
+				item: z.enum(["CardStatOne"]).default("CardStatOne"),
+				Label: z.string().min(1),
+				icon: z.enum(["FaChartBar"]),
+			}),
 			sectionPhilosophy: z.object({
 				component: z.enum(["SectionPhilosophyOne", "SectionPhilosophyTwo"]),
 				miniature: z.enum(["MiniPhilosophyOne"]),
@@ -761,6 +789,7 @@ export type LanguageContentSettings = z.infer<typeof languageContentSchema>;
 export type ProjectContentSettings = z.infer<typeof projectContentSchema>;
 export type SocialMediaContentSettings = z.infer<typeof socialMediaContentSchema>;
 export type StrengthContentSettings = z.infer<typeof strengthContentSchema>;
+export type StatContentSettings = z.infer<typeof statContentSchema>;
 export type PhilosophyContentSettings = z.infer<typeof philosophyContentSchema>;
 export type FormationContentSettings = z.infer<typeof formationContentSchema>;
 export type CertificationContentSettings = z.infer<typeof certificationContentSchema>;

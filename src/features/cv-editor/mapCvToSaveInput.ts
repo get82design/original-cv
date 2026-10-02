@@ -10,6 +10,7 @@ import {
 	projectContentSchema,
 	socialMediaContentSchema,
 	strengthContentSchema,
+	statContentSchema,
 	formationContentSchema,
 	certificationContentSchema,
 	prizeContentSchema,
@@ -36,6 +37,7 @@ type SocialMediaSettings = NonNullable<
 	NonNullable<CvSaveInput["datas"]["socialMedia"]>["settings"]
 >;
 type StrengthSettings = NonNullable<NonNullable<CvSaveInput["datas"]["strength"]>["settings"]>;
+type StatSettings = NonNullable<NonNullable<CvSaveInput["datas"]["stat"]>["settings"]>;
 type PhilosophySettings = NonNullable<NonNullable<CvSaveInput["datas"]["philosophy"]>["settings"]>;
 type FormationSettings = NonNullable<NonNullable<CvSaveInput["datas"]["formation"]>["settings"]>;
 type CertificationSettings = NonNullable<
@@ -118,6 +120,8 @@ export function mapFormToSaveInput(cv: CvFormValues): CvSaveInput {
 															? { ...m, title: cv.datas?.socialMedia?.title ?? m.title }
 															: m.type === "strength"
 																? { ...m, title: cv.datas?.strength?.title ?? m.title }
+																: m.type === "stat"
+																	? { ...m, title: cv.datas?.stat?.title ?? m.title }
 																: m.type === "philosophy"
 																	? { ...m, title: cv.datas?.philosophy?.title ?? m.title }
 																	: m.type === "passion"
@@ -368,6 +372,23 @@ export function mapFormToSaveInput(cv: CvFormValues): CvSaveInput {
 							})),
 					}
 				: undefined,
+			stat: cv.datas?.stat
+				? {
+						...cv.datas.stat,
+						content: cv.datas.stat.content
+							.filter(
+								(item) => item.content.label.trim() && item.content.value.trim(),
+							)
+							.map((item) => ({
+								...item,
+								content: {
+									...item.content,
+									label: withFallback(item.content.label, "Libellé"),
+									value: withFallback(item.content.value, "0"),
+								},
+							})),
+					}
+				: undefined,
 			description: cv.datas?.description?.content?.description?.trim()
 				? cv.datas.description
 				: undefined,
@@ -444,6 +465,7 @@ export function mapCvToSaveInput(cv: CvFull): CvSaveInput {
 	const projectModule = cv.modules.find((m) => m.type === "project");
 	const socialMediaModule = cv.modules.find((m) => m.type === "socialMedia");
 	const strengthModule = cv.modules.find((m) => m.type === "strength");
+	const statModule = cv.modules.find((m) => m.type === "stat");
 	const philosophyModule = cv.modules.find((m) => m.type === "philosophy");
 	const formationModule = cv.modules.find((m) => m.type === "formation");
 	const certificationModule = cv.modules.find((m) => m.type === "certification");
@@ -940,6 +962,32 @@ export function mapCvToSaveInput(cv: CvFull): CvSaveInput {
 						(
 							strengthModule?.settings as {
 								title?: StrengthSettings["title"];
+							} | null
+						)?.title ?? defaultTitleSettings,
+				},
+			},
+			stat: {
+				title: statModule?.title ?? undefined,
+				content: [...(cv.stats ?? [])]
+					.sort((a, b) => a.order - b.order)
+					.map((stat) => ({
+						id: stat.id,
+						clientKey: stat.id,
+						order: stat.order,
+						content: {
+							label: stat.label,
+							value: stat.value,
+							settings: statContentSchema.safeParse({
+								...((statModule?.settings as { content?: object } | null)?.content ?? {}),
+								...(stat.settings && typeof stat.settings === "object" ? stat.settings : {}),
+							}).data,
+						},
+					})),
+				settings: {
+					title:
+						(
+							statModule?.settings as {
+								title?: StatSettings["title"];
 							} | null
 						)?.title ?? defaultTitleSettings,
 				},

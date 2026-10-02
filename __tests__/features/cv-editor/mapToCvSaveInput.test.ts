@@ -25,6 +25,7 @@ function emptyLists() {
 		languages: [],
 		publications: [],
 		strengths: [],
+		stats: [],
 		achievements: [],
 		educations: [],
 		skillGroups: [],

@@ -1,5 +1,6 @@
 import { tagService } from "../../src/services/commons/tagService";
 import { CvSaveService } from "../../src/services/cv/cvSaveService";
+import { ProfileSaveService } from "../../src/services/profile/profileSaveService";
 import { stockholmTokens } from "./themeTokens";
 import type { ThemeTokens } from "./themeTokens";
 import {
@@ -19,6 +20,7 @@ import {
 	buildPublicationModule,
 	buildSkillModule,
 	buildSocialMediaModule,
+	buildStatModule,
 	buildStrengthModule,
 	buildTagModule,
 	buildVolunteeringModule,
@@ -69,6 +71,36 @@ export async function buildCvClaraDelorme(userId: string, templateId: string) {
 	const softTags = await Promise.all(
 		softCompNames.map((name) => tagService.create({ name })),
 	);
+
+	const demoStats = [
+		{
+			clientKey: "stat-1",
+			order: 1,
+			content: {
+				value: "+18 %",
+				label:
+					"de panier moyen réalisé grâce aux techniques de ventes croisées et incitatives",
+			},
+		},
+		{
+			clientKey: "stat-2",
+			order: 2,
+			content: {
+				value: "98 %",
+				label:
+					"de taux de satisfaction client sur l’ensemble des enquêtes « Client Mystère » (2024)",
+			},
+		},
+		{
+			clientKey: "stat-3",
+			order: 3,
+			content: {
+				value: "+25 %",
+				label:
+					"de nouvelles adhésions au programme de fidélité de la boutique en 12 mois",
+			},
+		},
+	] as const;
 
 	// 2. Modules du CV (basés sur le template Classique, on active ce qu'on renseigne)
 	const modules = [
@@ -223,6 +255,14 @@ export async function buildCvClaraDelorme(userId: string, templateId: string) {
 				order: 19,
 				title: "Projects",
 				isActive: false,
+			}),
+			column: 0,
+		},
+		{
+			...buildStatModule(stockholmTokens, {
+				order: 20,
+				title: "En nombres",
+				isActive: true,
 			}),
 			column: 0,
 		},
@@ -729,7 +769,23 @@ export async function buildCvClaraDelorme(userId: string, templateId: string) {
 				],
 				settings: { title: sectionTitle(stockholmTokens) },
 			},
+			stat: {
+				title: "En nombres",
+				content: [...demoStats],
+				settings: { title: sectionTitle(stockholmTokens) },
+			},
 		},
 		modules,
+	});
+
+	// Profil démo (même vivier stats) pour tester l’import depuis le profil
+	const profileSaveService = new ProfileSaveService();
+	await profileSaveService.save(userId, {
+		firstName: "Clara",
+		lastName: "Delorme",
+		email: "clara.delorme@email.com",
+		phone: "06 78 90 12 34",
+		location: "Paris, France",
+		stats: [...demoStats],
 	});
 }

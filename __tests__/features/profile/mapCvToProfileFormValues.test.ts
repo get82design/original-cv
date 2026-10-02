@@ -35,6 +35,7 @@ function baseCv(overrides: Record<string, unknown> = {}): NonNullable<CvFull> {
 			},
 		],
 		strengths: [],
+		stats: [],
 		projects: [],
 		publications: [],
 		achievements: [],

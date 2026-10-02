@@ -15,6 +15,7 @@ const SECTION_TITLE_PATHS = [
 	"datas.project.settings.title",
 	"datas.expertise.settings.title",
 	"datas.strength.settings.title",
+	"datas.stat.settings.title",
 	"datas.philosophy.settings.title",
 	"datas.formation.settings.title",
 	"datas.certification.settings.title",

@@ -76,6 +76,12 @@ const labels = {
 		miniature: "MiniStrengthOne" as const,
 		item: "CardStrengthOne" as const,
 	},
+	sectionStat: {
+		Label: "En nombres",
+		icon: "FaChartBar" as const,
+		miniature: "MiniStatOne" as const,
+		item: "CardStatOne" as const,
+	},
 	sectionPhilosophy: {
 		Label: "Philosophie",
 		icon: "FaQuoteLeft" as const,
@@ -140,6 +146,7 @@ export function buildComponents(opts: {
 		sectionProject: { ...labels.sectionProject, component: `SectionProject${v}` },
 		sectionExpertise: { ...labels.sectionExpertise, component: `SectionExpertise${v}` },
 		sectionStrength: { ...labels.sectionStrength, component: `SectionStrength${v}` },
+		sectionStat: { ...labels.sectionStat, component: `SectionStat${v}` },
 		sectionPhilosophy: { ...labels.sectionPhilosophy, component: `SectionPhilosophy${v}` },
 		sectionFormation: { ...labels.sectionFormation, component: `SectionFormation${v}` },
 		sectionCertification: { ...labels.sectionCertification, component: `SectionCertification${v}` },

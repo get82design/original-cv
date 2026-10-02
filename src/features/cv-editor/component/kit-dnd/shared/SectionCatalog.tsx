@@ -8,6 +8,7 @@ import { SkillRegister } from "../../template/register/skill/SkillRegister";
 import { ProjectRegister } from "../../template/register/project/ProjectRegister";
 import { SocialMediaRegister } from "../../template/register/social-media/SocialMediaRegister";
 import { StrengthRegister } from "../../template/register/strength/StrengthRegister";
+import { StatRegister } from "../../template/register/stat/StatRegister";
 import { FormationRegister } from "../../template/register/formation/FormationRegister";
 import { CertificationRegister } from "../../template/register/certification/CertificationRegister";
 import { PrizeRegister } from "../../template/register/prize/PrizeRegister";
@@ -25,6 +26,7 @@ import { ExpertiseSectionMenu } from "../../template/components/expertise/compo/
 import { EducationSectionMenu } from "../../template/components/education/compo/EducationSectionMenu";
 import { FormationSectionMenu } from "../../template/components/formation/compo/FormationSectionMenu";
 import { StrengthSectionMenu } from "../../template/components/strength/compo/StrengthSectionMenu";
+import { StatSectionMenu } from "../../template/components/stat/compo/StatSectionMenu";
 import { CertificationSectionMenu } from "../../template/components/certification/compo/CertificationSectionMenu";
 import { PrizeSectionMenu } from "../../template/components/prize/compo/PrizeSectionMenu";
 import { SocialMediaSectionMenu } from "../../template/components/social-media/compo/SocialMediaSectionMenu";
@@ -103,6 +105,13 @@ export const sectionCatalog: Record<string, CatalogEntry> = {
 		register: StrengthRegister,
 		fallback: "SectionStrengthOne",
 		menu: () => <StrengthSectionMenu />,
+	},
+	stat: {
+		id: "section-stat",
+		configKey: "sectionStat",
+		register: StatRegister,
+		fallback: "SectionStatOne",
+		menu: () => <StatSectionMenu />,
 	},
 	formation: {
 		id: "section-formation",

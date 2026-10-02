@@ -38,6 +38,7 @@ Modifier un `Cv*` ne doit pas écraser silencieusement le Profile (et inversemen
 | Publication | `Publication` | `CvPublication` | |
 | Réalisation | `Achievement` | `CvAchievement` | |
 | Force / atout | `Strength` | `CvStrength` | |
+| Stats / En nombres | `Stat` | `CvStat` | `label` + `value` (string) |
 | Expertise | `Expertise` | `CvExpertise` | |
 | Prix | `Prize` | `CvPrize` | |
 | Certification | `Certification` | `CvCertification` | |

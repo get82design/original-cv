@@ -12,6 +12,7 @@ import type {
 	Education,
 	Achievement,
 	Strength,
+	Stat,
 	Volunteering,
 	MissionVolunteering,
 	Project,
@@ -85,6 +86,11 @@ type TestUserOptions = {
 	strengths?: {
 		title: string;
 		icon?: string;
+		order?: number;
+	}[];
+	stats?: {
+		label: string;
+		value: string;
 		order?: number;
 	}[];
 	volunteerings?: {
@@ -311,6 +317,16 @@ export async function createTestUserWithProfile(options?: TestUserOptions) {
 						},
 					}),
 
+					...(options?.stats && {
+						stats: {
+							create: options.stats.map((s) => ({
+								label: s.label,
+								value: s.value,
+								order: s.order ?? 0,
+							})),
+						},
+					}),
+
 					// Volunteering
 					...(options?.volunteerings && {
 						volunteerings: {
@@ -500,6 +516,7 @@ export async function createTestUserWithProfile(options?: TestUserOptions) {
 					educations: true,
 					achievements: true,
 					strengths: true,
+					stats: true,
 					volunteerings: {
 						include: {
 							missions: true,
@@ -542,6 +559,7 @@ export async function createTestUserWithProfile(options?: TestUserOptions) {
 			educations: Education[];
 			achievements: Achievement[];
 			strengths: Strength[];
+			stats: Stat[];
 			volunteerings: (Volunteering & {
 				missions: MissionVolunteering[];
 			})[];
@@ -843,6 +861,18 @@ export async function createStrength(
 ) {
 	return prismaTest.strength.create({
 		data: { profileId, title, icon, order },
+	});
+}
+
+// === STAT ===
+export async function createStat(
+	profileId: string,
+	label: string,
+	value: string,
+	order: number,
+) {
+	return prismaTest.stat.create({
+		data: { profileId, label, value, order },
 	});
 }
 
