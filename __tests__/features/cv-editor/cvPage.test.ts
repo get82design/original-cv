@@ -3,6 +3,7 @@ import {
 	cvPageContentHeight,
 	packSectionsIntoPages,
 	mergeTwoColumnPages,
+	twoColumnPageKey,
 	CV_PAGE_HEIGHT,
 	CV_PAGE_PAD_PX,
 	CV_SIGNATURE_RESERVE_PX,
@@ -87,5 +88,17 @@ describe("mergeTwoColumnPages", () => {
 		expect(mergeTwoColumnPages([[]], [[]])).toEqual([
 			{ sidebarIds: [], mainIds: [] },
 		]);
+	});
+});
+
+describe("twoColumnPageKey", () => {
+	it("dérive une clé du contenu des colonnes", () => {
+		expect(
+			twoColumnPageKey({ sidebarIds: ["s1"], mainIds: ["m1", "m2"] }),
+		).toBe("2col-s1__m1+m2");
+	});
+
+	it("reste stable pour une page vide", () => {
+		expect(twoColumnPageKey({ sidebarIds: [], mainIds: [] })).toBe("2col-____");
 	});
 });

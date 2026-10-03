@@ -1,37 +1,37 @@
-import { hamburgTokens } from "../../themeTokens";
+import { naplesTokens } from "../../themeTokens";
 import { defineTemplate } from "../_shared/defineTemplate";
 import { sharedLayout } from "../_shared/layouts";
 
 /**
- * Hamburg — HeaderSplitOne + TwoColumnSideBar, col 0 fond sombre (style Toronto).
- * Nom libre (pas encore au catalogue).
+ * Naples : TwoColumnCenter + HeaderFive —
+ * fond col 0 sombre type Hamburg (`gray-700` / white), vs Milan light `-100`.
  */
-export const hamburg = defineTemplate({
-	name: "Hamburg",
-	slug: "hamburg-split-dark-x",
-	tokens: hamburgTokens,
-	primaryColor: { name: "rose", primary: "-600" },
-	sectionHeader: "HeaderSplitOne",
-	pageLayout: "TwoColumnSideBar",
+export const naples = defineTemplate({
+	name: "Naples",
+	slug: "naples-five-dark-x",
+	tokens: naplesTokens,
+	primaryColor: { name: "mist", primary: "-600" },
+	sectionHeader: "HeaderFive",
+	pageLayout: "TwoColumnCenter",
 	variant: 1,
 	layout: {
 		...sharedLayout,
 		columns: 2,
 		lockPhotoSide: true,
-		headerPlacement: "split",
+		headerPlacement: "sidebar",
 		withPhoto: true,
 		stylePhoto: "circle",
 		sidebarTheme: { bgColor: "gray", shadeBgColor: "-700", fg: "white" },
 		listStyle: "none",
 		titleSection: {
 			...sharedLayout.titleSection,
-			withIcon: false,
-			withLigneDessous: true,
+			withIcon: true,
+			iconStyle: "flat",
+			iconColor: "primaryColor",
 			textTransform: "uppercase",
 		},
 	},
 	modules: {
-		// main (colonne 1)
 		description: { title: "Présentation", isActive: true, order: 1, column: 1 },
 		experience: { title: "Expériences", isActive: true, order: 2, column: 1 },
 		education: {
@@ -48,8 +48,13 @@ export const hamburg = defineTemplate({
 			column: 1,
 			columns: 1,
 		},
-		project: { isActive: true, column: 1 },
-		// sidebar (colonne 0)
+		project: { isActive: false, column: 1 },
+		volunteering: { isActive: false, column: 1 },
+		philosophy: { isActive: false, column: 1 },
+		certification: { isActive: false, column: 1 },
+		formation: { isActive: false, column: 1 },
+		achievement: { isActive: false, column: 1 },
+		publication: { isActive: false, column: 1 },
 		language: {
 			design: "stars",
 			isActive: true,
@@ -58,14 +63,8 @@ export const hamburg = defineTemplate({
 			columns: 1,
 		},
 		tag: { title: "Skills", design: "tag", isActive: true, order: 2, column: 0 },
-		socialMedia: { title: "Réseaux", isActive: true, order: 4, column: 0, columns: 1 },
+		socialMedia: { title: "Réseaux", isActive: true, order: 3, column: 0, columns: 1 },
 		passion: { isActive: false, column: 0, columns: 1 },
-		volunteering: { isActive: false, column: 1 },
-		philosophy: { isActive: false, column: 1 },
-		certification: { isActive: false, column: 1 },
-		formation: { isActive: false, column: 1 },
-		achievement: { isActive: false, column: 1 },
-		publication: { isActive: false, column: 1 },
 		prize: { isActive: false, column: 0, columns: 1 },
 		expertise: { isActive: false, column: 0, columns: 1 },
 	},

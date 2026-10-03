@@ -2,6 +2,7 @@ import { prisma } from "../lib/prisma";
 import users from "./seedDatas/seed.users.json";
 import colors from "./seedDatas/seed.colors.json";
 import { seedTemplates } from "./seedDatas/cv-template";
+import { styleCategoryForTemplateName } from "./seedDatas/cv-template/templateStyleCategories";
 import { buildCvClaraDelorme } from "./seedDatas/seed.cvs";
 import { seedBilling } from "./seedDatas/seed.billing";
 import { slugifyTemplateName } from "../src/services/cv/templateSlug";
@@ -98,6 +99,7 @@ async function buildTemplates() {
 			slug: slugifyTemplateName(el.name),
 			structure: el.structure,
 			defaultStyles: el.defaultStyles,
+			styleCategory: styleCategoryForTemplateName(el.name),
 		})),
 	});
 }

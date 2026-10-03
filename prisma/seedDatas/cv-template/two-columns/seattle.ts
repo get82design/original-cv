@@ -43,7 +43,7 @@ export const seattle = defineTemplate({
 			isActive: true,
 			order: 4,
 			column: 1,
-			columns: 2,
+			columns: 1,
 		},
 		project: { isActive: true, column: 1 },
 		// sidebar (colonne 0)

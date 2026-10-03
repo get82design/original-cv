@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { TemplateStyleCategory } from "../../../generated/prisma/enums";
 import { prismaTest } from "../../../lib/prismaTest";
 import { adminTemplateService } from "../../../src/services/admin/adminTemplateService";
 import { NotFoundError, ValidationError } from "../../../src/services/errors";
@@ -15,6 +16,7 @@ describe("adminTemplateService", () => {
 				isPremium: true,
 				isFeatured: true,
 				isActive: true,
+				styleCategory: TemplateStyleCategory.BOLD,
 			},
 		});
 
@@ -23,11 +25,23 @@ describe("adminTemplateService", () => {
 			isPremium: true,
 			isFeatured: true,
 			isActive: true,
+			styleCategory: TemplateStyleCategory.BOLD,
 			page: 1,
 			pageSize: 10,
 		});
 
 		expect(result.items.some((t) => t.id === template.id)).toBe(true);
+		expect(result.items.find((t) => t.id === template.id)?.styleCategory).toBe(
+			TemplateStyleCategory.BOLD,
+		);
+	});
+
+	it("updateCatalog updates styleCategory", async () => {
+		const template = await createTestTemplate();
+		const updated = await adminTemplateService.updateCatalog(template.id, {
+			styleCategory: TemplateStyleCategory.CREATIVE,
+		});
+		expect(updated.styleCategory).toBe(TemplateStyleCategory.CREATIVE);
 	});
 
 	it("updateCatalog rejects empty patch", async () => {

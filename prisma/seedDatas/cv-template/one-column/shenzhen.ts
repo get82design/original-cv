@@ -15,6 +15,8 @@ export const shenzhen = defineTemplate({
 		stylePhoto: "circle",
 		photoSide: "left",
 		listStyle: "line",
+		marge: "sm",
+		space: "sm",
 		titleSection: {
 			withIcon: true,
 			iconStyle: "flat",

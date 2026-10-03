@@ -351,3 +351,59 @@ export const frankfurtTokens = defineTokens(
 export const viennaTokens = defineTokens(
 	mergeTokenOverrides(headerOneTokenDefaults),
 );
+
+/** Prague — HeaderTwo (TwoColumnCenter). */
+export const pragueTokens = defineTokens(
+	mergeTokenOverrides(headerTwoTokenDefaults, {
+		sectionTitle: { weightSelect: "sm", textAlign: "left", colorSelect: "black" },
+	}),
+);
+
+/** Budapest — HeaderThree (TwoColumnCenter). */
+export const budapestTokens = defineTokens(
+	mergeTokenOverrides(headerThreeTokenDefaults, denverBody),
+);
+
+/** Madrid — HeaderFour bandeau gris (TwoColumnCenter). */
+export const madridTokens = defineTokens(
+	mergeTokenOverrides(headerFourTokenDefaults, denseBody, {
+		sectionTitle: { colorSelect: "gray" },
+	}),
+);
+
+/** Barcelona — HeaderFour bandeau primary (TwoColumnCenter). */
+export const barcelonaTokens = defineTokens(
+	mergeTokenOverrides(headerFourTokenDefaults, denseBody, {
+		sectionTitle: { colorSelect: "primaryColor" },
+	}),
+);
+
+/** Munich — HeaderSplitOne (TwoColumnCenter 50/50). */
+export const munichTokens = defineTokens(
+	mergeTokenOverrides(headerSplitOneTokenDefaults, denseBody),
+);
+
+/** Milan — HeaderFive en sidebar (TwoColumnCenter 50/50). */
+export const milanTokens = defineTokens(
+	mergeTokenOverrides(headerFiveTokenDefaults, denseBody),
+);
+
+/** Genoa — HeaderFive Center, sans sidebarTheme. */
+export const genoaTokens = defineTokens(
+	mergeTokenOverrides(headerFiveTokenDefaults, denseBody),
+);
+
+/** Naples — HeaderFive Center, sidebar sombre type Hamburg. */
+export const naplesTokens = defineTokens(
+	mergeTokenOverrides(headerFiveTokenDefaults, denseBody),
+);
+
+/** Lyon — HeaderSplitOne Center, sans sidebarTheme. */
+export const lyonTokens = defineTokens(
+	mergeTokenOverrides(headerSplitOneTokenDefaults, denseBody),
+);
+
+/** Bordeaux — HeaderSplitOne Center, sidebar sombre type Hamburg. */
+export const bordeauxTokens = defineTokens(
+	mergeTokenOverrides(headerSplitOneTokenDefaults, denseBody),
+);

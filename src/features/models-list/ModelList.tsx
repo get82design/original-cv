@@ -8,9 +8,9 @@ import { FormProvider, useForm } from "react-hook-form";
 import { OneColumnModel } from "../cv-editor/component/kit-dnd/one-column-model/OneColumnModel";
 import { switchTemplate } from "../cv-editor/utils/applyTemplateToForm";
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { flushSync } from "react-dom";
 import { useModelAndColorContext } from "../cv-editor/component/context/ModelAndColorContext";
 import { galleryDemoValues } from "./galleryDemoValues";
-import { LoadingBadge } from "@/components/feedback/LoadingBadge";
 import { TemplateCatalogBadges } from "@/components/badge/TemplateCatalogBadges";
 import { ProgressSpinner } from "primereact/progressspinner";
 import { PageLayoutRegister } from "../cv-editor/component/kit-dnd/register/PageLayoutRegister";
@@ -22,13 +22,46 @@ import {
 	CV_TEXTAREA_RECALC_EVENT,
 	remesureTextareas,
 } from "@/components/input-writer/input-textarea-cv/InputTextareaCv";
+import type { TemplateStyleCategory } from "../../../generated/prisma/enums";
+import {
+	TEMPLATE_STYLE_OPTIONS,
+	templateStyleLabel,
+} from "@/utils/templateStyleCategory";
+import {
+	GALLERY_MODIFICATIONS_MAX,
+	isGalleryCardLive,
+	isGalleryModificationsLocked,
+	shouldDeferGalleryListSwap,
+	shouldProgressGalleryLive,
+} from "./galleryLiveRules";
 
 type ElmSize = "sm" | "md" | "lg";
-type ColumnFilter = "all" | 1 | 2;
-const MAX_SELECTION = 10;
+type StyleFilter = "all" | TemplateStyleCategory;
+type GalleryListQuery = {
+	styleFilter: StyleFilter;
+	selectionMode: boolean;
+};
+const MAX_SELECTION = GALLERY_MODIFICATIONS_MAX;
 const SELECTION_LIMIT_MESSAGE = "Pour bien comparer, limitez-vous à 10 modèles";
 const MODIFICATIONS_LIMIT_MESSAGE =
 	"Pour modifier confortablement, utilisez une sélection (max 10) ou réduisez les modèles affichés.";
+
+function filterGalleryTemplates(
+	templates: TemplateCv[] | undefined,
+	query: GalleryListQuery,
+	selectedIds: Set<string>,
+): TemplateCv[] {
+	if (!templates?.length) return [];
+	let list = [...templates];
+	if (query.styleFilter !== "all") {
+		list = list.filter((t) => t.styleCategory === query.styleFilter);
+	}
+	if (query.selectionMode) {
+		list = list.filter((t) => selectedIds.has(t.id));
+	}
+	list.sort((a, b) => Number(b.isFeatured) - Number(a.isFeatured));
+	return list;
+}
 
 function getTemplateColumns(template: TemplateCv): number {
 	const layout = template.structure as { layout?: { columns?: number } } | null;
@@ -268,14 +301,17 @@ function GalleryCard({
 			</div>
 			{!live && (
 				<>
-					<p className="absolute bottom-0 inset-x-0 z-10 text-center text-sm font-semibold px-2 py-1 bg-black/40 text-white">
+					<p className="absolute bottom-0 inset-x-0 z-10 text-center px-2 py-1 bg-black/40 text-white">
 						<Link
 							href={`/modeles/${template.slug}`}
-							className="text-white hover:underline"
+							className="text-sm font-semibold text-white hover:underline"
 							onClick={(e) => e.stopPropagation()}
 						>
 							{template.name}
 						</Link>
+						<span className="mt-0.5 block text-[10px] font-medium uppercase tracking-wide text-white/80">
+							{templateStyleLabel(template.styleCategory)}
+						</span>
 					</p>
 					<div className="absolute inset-0 z-20 flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 bg-black/40 transition">
 						<Link href={`/modeles/${template.slug}`}>
@@ -323,62 +359,140 @@ export default function ModelList() {
 	const toast = useRef<Toast>(null);
 	const PAGE = 9;
 	const [shownCount, setShownCount] = useState(0); // cartes visibles (images)
-	const [liveCount, setLiveCount] = useState(0); // mini-CV montés
+	const [liveCount, setLiveCount] = useState(0); // mini-CV montés (persistés jusqu’au filtre)
+	const [liveArmed, setLiveArmed] = useState(false); // session live démarrée via panneau
 	const [visibleSidebar, setVisibleSidebar] = useState(false);
-	const [columnFilter, setColumnFilter] = useState<ColumnFilter>("all");
-	const [filterLoading, setFilterLoading] = useState(false);
+	const [styleFilter, setStyleFilter] = useState<StyleFilter>("all");
 	const [selectedIds, setSelectedIds] = useState<Set<string>>(() => new Set());
 	const [selectionMode, setSelectionMode] = useState(false);
+	// Overlay PNG de la liste cible pendant que le live courant reste monté (invisible)
+	const [listOverlay, setListOverlay] = useState<GalleryListQuery | null>(null);
 
-	const filteredTemplates = useMemo(() => {
-		if (!templates?.length) return [];
-		let list = [...templates];
-		if (columnFilter !== "all") {
-			list = list.filter((t) => getTemplateColumns(t) === columnFilter);
-		}
-		if (selectionMode) {
-			list = list.filter((t) => selectedIds.has(t.id));
-		}
-		// Featured d’abord (sortOrder déjà appliqué côté API)
-		list.sort((a, b) => Number(b.isFeatured) - Number(a.isFeatured));
-		return list;
-	}, [templates, columnFilter, selectionMode, selectedIds]);
+	const liveCountRef = useRef(0);
+	liveCountRef.current = liveCount;
+	const listSwapRafRef = useRef<number | null>(null);
+	const pendingListSwapRef = useRef<(() => void) | null>(null);
+
+	const listQuery = useMemo<GalleryListQuery>(
+		() => ({ styleFilter, selectionMode }),
+		[styleFilter, selectionMode],
+	);
+
+	const filteredTemplates = useMemo(
+		() => filterGalleryTemplates(templates, listQuery, selectedIds),
+		[templates, listQuery, selectedIds],
+	);
+
+	const overlayTemplates = useMemo(
+		() => (listOverlay ? filterGalleryTemplates(templates, listOverlay, selectedIds) : null),
+		[templates, listOverlay, selectedIds],
+	);
 
 	const selectedCount = selectedIds.size;
+	const chipStyleFilter = listOverlay?.styleFilter ?? styleFilter;
+	const chipSelectionMode = listOverlay?.selectionMode ?? selectionMode;
 
-	useEffect(() => {
-		if (!templates?.length) return;
-		setShownCount(Math.min(PAGE, templates.length));
-		setLiveCount(0);
-	}, [templates]);
-
+	// Changement de liste commitée : retour PNG ; live désarmé jusqu’à réouverture
 	useEffect(() => {
 		if (!filteredTemplates.length) {
 			setShownCount(0);
 			setLiveCount(0);
+			setLiveArmed(false);
 			return;
 		}
 		setShownCount(Math.min(PAGE, filteredTemplates.length));
+		setLiveCount(0);
+		setLiveArmed(false);
 	}, [filteredTemplates]);
 
-	// Si la galerie rétrécit (filtre / sélection), liveCount ne doit pas rester trop haut
+	// Ouverture du panneau → arme la session live (conservée après fermeture)
+	useEffect(() => {
+		if (visibleSidebar) setLiveArmed(true);
+	}, [visibleSidebar]);
+
+	// « Voir plus » : plafonner si la liste a rétréci
 	useEffect(() => {
 		setLiveCount((n) => (n > shownCount ? shownCount : n));
 	}, [shownCount]);
 
+	// Montage progressif tant que la session est armée (pause pendant transition de liste)
 	useEffect(() => {
-		if (liveCount >= shownCount) return;
+		if (listOverlay) return;
+		if (!shouldProgressGalleryLive(liveArmed, liveCount, shownCount)) return;
 		const id = requestAnimationFrame(() => setLiveCount((n) => n + 1));
 		return () => cancelAnimationFrame(id);
-	}, [liveCount, shownCount]);
+	}, [listOverlay, liveArmed, liveCount, shownCount]);
 
-	const shown = filteredTemplates.slice(0, shownCount);
-	const hasMore = shownCount < filteredTemplates.length;
-	const activeLiveCount = Math.min(liveCount, shownCount);
-	const galleryReady = shownCount > 0 && activeLiveCount >= shownCount;
-	const modificationsLocked = activeLiveCount > MAX_SELECTION;
-	const showGalleryLoader =
-		filterLoading || (!isLoadingTemplates && filteredTemplates.length > 0 && !galleryReady);
+	useEffect(
+		() => () => {
+			if (listSwapRafRef.current != null) {
+				cancelAnimationFrame(listSwapRafRef.current);
+			}
+		},
+		[],
+	);
+
+	const scheduleCommittedListSwap = (apply: () => void) => {
+		pendingListSwapRef.current = apply;
+		if (listSwapRafRef.current != null) return;
+		listSwapRafRef.current = requestAnimationFrame(() => {
+			listSwapRafRef.current = requestAnimationFrame(() => {
+				listSwapRafRef.current = null;
+				const pending = pendingListSwapRef.current;
+				pendingListSwapRef.current = null;
+				pending?.();
+			});
+		});
+	};
+
+	/** Swap de liste : peindre d’abord les PNG cibles, démonter le live ensuite. */
+	const applyListChange = (next: GalleryListQuery) => {
+		const same =
+			next.styleFilter === styleFilter && next.selectionMode === selectionMode;
+		if (same && !listOverlay) return;
+
+		const commit = () => {
+			flushSync(() => {
+				setStyleFilter(next.styleFilter);
+				setSelectionMode(next.selectionMode);
+				setLiveCount(0);
+				setLiveArmed(false);
+				liveCountRef.current = 0;
+				setListOverlay(null);
+			});
+		};
+
+		if (listSwapRafRef.current != null || pendingListSwapRef.current != null) {
+			// Transition déjà en cours : coalescer la cible + chips via overlay
+			flushSync(() => setListOverlay(next));
+			scheduleCommittedListSwap(commit);
+			return;
+		}
+
+		if (shouldDeferGalleryListSwap(liveCountRef.current)) {
+			flushSync(() => setListOverlay(next));
+			scheduleCommittedListSwap(commit);
+			return;
+		}
+
+		commit();
+	};
+
+	const baseShown = filteredTemplates.slice(0, shownCount);
+	const overlayShown = overlayTemplates
+		? overlayTemplates.slice(0, Math.min(PAGE, overlayTemplates.length))
+		: null;
+	const listTransitioning = overlayShown != null;
+	const shown = overlayShown ?? baseShown;
+	const hasMore = listTransitioning
+		? false
+		: shownCount < filteredTemplates.length;
+	const activeLiveCount = listTransitioning ? 0 : Math.min(liveCount, shownCount);
+	const galleryReady = !listTransitioning && shownCount > 0 && activeLiveCount >= shownCount;
+	const modificationsLocked = isGalleryModificationsLocked(
+		listTransitioning ? overlayShown.length : shownCount,
+		MAX_SELECTION,
+	);
 
 	useEffect(() => {
 		if (!modificationsLocked) return;
@@ -402,29 +516,8 @@ export default function ModelList() {
 		setVisibleSidebar(true);
 	};
 
-	useEffect(() => {
-		if (!filterLoading) return;
-		if (filteredTemplates.length === 0) {
-			setFilterLoading(false);
-			return;
-		}
-		if (!galleryReady) return;
-		const id = requestAnimationFrame(() => {
-			requestAnimationFrame(() => setFilterLoading(false));
-		});
-		return () => cancelAnimationFrame(id);
-	}, [filterLoading, galleryReady, filteredTemplates.length]);
-
-	const runWithLoader = (action: () => void) => {
-		setFilterLoading(true);
-		requestAnimationFrame(() => {
-			requestAnimationFrame(action);
-		});
-	};
-
-	const applyColumnFilter = (filter: ColumnFilter) => {
-		if (filter === columnFilter || filterLoading) return;
-		runWithLoader(() => setColumnFilter(filter));
+	const applyStyleFilter = (filter: StyleFilter) => {
+		applyListChange({ styleFilter: filter, selectionMode: chipSelectionMode });
 	};
 
 	const showSelectionLimitMessage = () => {
@@ -459,22 +552,19 @@ export default function ModelList() {
 	const selectionFull = selectedCount >= MAX_SELECTION;
 
 	const applySelection = () => {
-		if (selectedCount === 0 || filterLoading || selectionMode) return;
-		runWithLoader(() => {
-			setColumnFilter("all");
-			setSelectionMode(true);
-		});
+		if (selectedCount === 0 || chipSelectionMode) return;
+		applyListChange({ styleFilter: "all", selectionMode: true });
 	};
 
 	const exitSelectionMode = () => {
-		if (!selectionMode || filterLoading) return;
-		runWithLoader(() => setSelectionMode(false));
+		if (!chipSelectionMode) return;
+		applyListChange({ styleFilter: chipStyleFilter, selectionMode: false });
 	};
 
 	const clearSelection = () => {
 		setSelectedIds(new Set());
-		if (selectionMode) {
-			runWithLoader(() => setSelectionMode(false));
+		if (chipSelectionMode) {
+			applyListChange({ styleFilter: chipStyleFilter, selectionMode: false });
 		}
 	};
 
@@ -505,7 +595,11 @@ export default function ModelList() {
 			<Button
 				outlined
 				aria-disabled={modificationsLocked}
-				title={modificationsLocked ? MODIFICATIONS_LIMIT_MESSAGE : undefined}
+				title={
+					modificationsLocked
+						? MODIFICATIONS_LIMIT_MESSAGE
+						: "Aperçu interactif : couleurs, photo, marges…"
+				}
 				className={`fixed z-40 bg-white dark:bg-gray-800 text-primary-color dark:text-primary-color-dark top-28 -right-11 rotate-270 ${
 					modificationsLocked ? "opacity-50" : ""
 				}`}
@@ -563,7 +657,9 @@ export default function ModelList() {
 								/>
 							</div>
 						) : (
-							<p className="my-0 text-xs text-muted-color">Chargement des templates...</p>
+							<p className="my-0 text-xs text-muted-color">
+								Chargement de l&apos;aperçu interactif…
+							</p>
 						)}
 					</div>
 					<div className="flex flex-col gap-1">
@@ -710,31 +806,29 @@ export default function ModelList() {
 			<AppCard className="min-h-full flex flex-col gap-4 items-center py-8 px-16">
 				<TitleAppTwo firstPart="Choisissez un modèle" secondPart="CV" size="text-4xl" withSpace />
 				<p>Commencez par choisir un CV parmi notre sélection. Vous pourrez en changer plus tard.</p>
+				{/* Une seule barre : Tous | styles | sélection — free/premium plus tard */}
 				<div className="flex flex-wrap gap-2 justify-center items-center">
 					<Button
 						size="small"
 						label="Tous"
-						outlined={columnFilter !== "all"}
-						onClick={() => applyColumnFilter("all")}
+						outlined={chipStyleFilter !== "all"}
+						onClick={() => applyStyleFilter("all")}
 					/>
-					<Button
-						size="small"
-						label="1 colonne"
-						outlined={columnFilter !== 1}
-						onClick={() => applyColumnFilter(1)}
-					/>
-					<Button
-						size="small"
-						label="2 colonnes"
-						outlined={columnFilter !== 2}
-						onClick={() => applyColumnFilter(2)}
-					/>
+					{TEMPLATE_STYLE_OPTIONS.map((opt) => (
+						<Button
+							key={opt.value}
+							size="small"
+							label={opt.label}
+							outlined={chipStyleFilter !== opt.value}
+							onClick={() => applyStyleFilter(opt.value)}
+						/>
+					))}
 					<span className="mx-1 h-5 w-px bg-gray-300 dark:bg-gray-600" aria-hidden />
-					{selectionMode ? (
+					{chipSelectionMode ? (
 						<>
 							<Button
 								size="small"
-								label={`Sélection · ${filteredTemplates.length}`}
+								label={`Sélection · ${overlayTemplates?.length ?? filteredTemplates.length}`}
 								outlined={false}
 								disabled
 							/>
@@ -750,7 +844,7 @@ export default function ModelList() {
 										: "Utiliser la sélection"
 								}
 								outlined
-								disabled={selectedCount === 0 || filterLoading}
+								disabled={selectedCount === 0}
 								onClick={applySelection}
 							/>
 							{selectedCount > 0 && (
@@ -763,44 +857,77 @@ export default function ModelList() {
 					<div className="w-full flex justify-center py-16">
 						<ProgressSpinner />
 					</div>
-				) : filteredTemplates.length === 0 ? (
+				) : shown.length === 0 && !listTransitioning ? (
 					<p className="text-center text-muted-color">
-						{selectionMode
+						{chipSelectionMode
 							? "Aucun modèle sélectionné pour ce filtre."
 							: "Aucun modèle ne correspond à ce filtre."}
 					</p>
 				) : (
 					<>
-						<div className="w-full relative grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6 [grid-template-columns:repeat(4,minmax(0,1fr))]">
-							{filterLoading && (
-								<div
-									className="absolute inset-0 z-20 bg-white/45 dark:bg-black/35 pointer-events-none transition-opacity duration-150"
-									aria-hidden
-								/>
+						<div className="w-full relative">
+							{/* Keepalive live : display:none pour différer le démontage sans bloquer la hauteur PNG */}
+							<div
+								className={
+									listTransitioning
+										? "hidden"
+										: "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6 [grid-template-columns:repeat(4,minmax(0,1fr))]"
+								}
+								aria-hidden={listTransitioning}
+							>
+								{!listTransitioning && colorLoading && (
+									<div className="absolute inset-0 z-30 flex items-center justify-center bg-white/60">
+										<ProgressSpinner />
+									</div>
+								)}
+								{baseShown.map((t, i) => (
+									<GalleryCard
+										key={t.id}
+										template={t}
+										color={picked}
+										withPhoto={withPhoto}
+										photoSide={photoSide}
+										stylePhoto={stylePhoto}
+										sidebarSide={sidebarSide}
+										marge={marge}
+										space={space}
+										live={isGalleryCardLive(i, liveCount)}
+										selected={selectedIds.has(t.id)}
+										selectionDisabled={selectionFull && !selectedIds.has(t.id)}
+										onToggleSelected={() => toggleSelected(t.id)}
+										onSelectionLimit={showSelectionLimitMessage}
+									/>
+								))}
+							</div>
+							{listTransitioning && overlayShown && overlayShown.length === 0 && (
+								<p className="text-center text-muted-color">
+									{chipSelectionMode
+										? "Aucun modèle sélectionné pour ce filtre."
+										: "Aucun modèle ne correspond à ce filtre."}
+								</p>
 							)}
-							{colorLoading && (
-								<div className="absolute inset-0 z-30 flex items-center justify-center bg-white/60">
-									<ProgressSpinner />
+							{listTransitioning && overlayShown && overlayShown.length > 0 && (
+								<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6 [grid-template-columns:repeat(4,minmax(0,1fr))]">
+									{overlayShown.map((t) => (
+										<GalleryCard
+											key={`overlay-${t.id}`}
+											template={t}
+											color={picked}
+											withPhoto={withPhoto}
+											photoSide={photoSide}
+											stylePhoto={stylePhoto}
+											sidebarSide={sidebarSide}
+											marge={marge}
+											space={space}
+											live={false}
+											selected={selectedIds.has(t.id)}
+											selectionDisabled={selectionFull && !selectedIds.has(t.id)}
+											onToggleSelected={() => toggleSelected(t.id)}
+											onSelectionLimit={showSelectionLimitMessage}
+										/>
+									))}
 								</div>
 							)}
-							{shown?.map((t, i) => (
-								<GalleryCard
-									key={t.id}
-									template={t}
-									color={picked}
-									withPhoto={withPhoto}
-									photoSide={photoSide}
-									stylePhoto={stylePhoto}
-									sidebarSide={sidebarSide}
-									marge={marge}
-									space={space}
-									live={i < liveCount}
-									selected={selectedIds.has(t.id)}
-									selectionDisabled={selectionFull && !selectedIds.has(t.id)}
-									onToggleSelected={() => toggleSelected(t.id)}
-									onSelectionLimit={showSelectionLimitMessage}
-								/>
-							))}
 						</div>
 						{hasMore && (
 							<Button
@@ -812,7 +939,6 @@ export default function ModelList() {
 					</>
 				)}
 			</AppCard>
-			<LoadingBadge visible={showGalleryLoader} />
 		</div>
 	);
 }

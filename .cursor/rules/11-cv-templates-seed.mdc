@@ -1,0 +1,36 @@
+---
+description: Conventions seed templates CV (variant, layout, tokens)
+globs: prisma/seedDatas/cv-template/**/*,prisma/seedDatas/themeTokens.ts,prisma/seedDatas/headerTokenDefaults.ts,docs/cv-templates-catalog.md,docs/cv-layout-config.md
+alwaysApply: false
+---
+
+# Seeds templates CV
+
+Détail inventaire : `docs/cv-templates-catalog.md` · layout : `docs/cv-layout-config.md`.
+
+## `variant` (sections `One` / `Two`)
+
+Dans `defineTemplate` → `buildComponents` : `1` → `Section*One`, `2` → `Section*Two`.
+
+| `variant` | Usage |
+|-----------|--------|
+| `1` | **Tous** les 2 colonnes (`TwoColumnSideBar`, `TwoColumnCenter`) — et 1-col si sections One |
+| `2` | **Uniquement** `OneColumnModel` (jamais sur 2 cols) |
+
+```ts
+// ❌ BAD — TwoColumnCenter / SideBar
+variant: 2,
+
+// ✅ GOOD — 2 cols
+variant: 1,
+
+// ✅ GOOD — 1 col avec composants *Two
+pageLayout: "OneColumnModel", // ou défaut
+variant: 2,
+```
+
+## Autres garde-fous seed
+
+- Coupler `sectionHeader` + `headerPlacement` (mono → `top`/`sidebar` ; split → `split`)
+- Tokens : `defineTokens(mergeTokenOverrides(headerXTokenDefaults, …))` — même `headerX` que `sectionHeader`
+- Après ajout : mettre à jour `docs/cv-templates-catalog.md` + `npm run seed`

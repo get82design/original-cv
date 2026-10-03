@@ -76,6 +76,7 @@ Modifier un `Cv*` ne doit pas écraser silencieusement le Profile (et inversemen
 - `CV.layoutGeneral` (JSON) : mise en page globale (marges, styles par défaut, etc.).
 - `CV.primaryColorName` : dénormalisé depuis le layout — stats admin / downloads.
 - Template : `CVTemplate.structure` + `defaultStyles` (JSON).
+- Catalogue : `CVTemplate.styleCategory` (`TemplateStyleCategory` : `CLASSIC` | `MODERN` | `CREATIVE` | `PROFESSIONAL` | `BOLD`) — filtre `/modeles` + admin ; seed via `templateStyleCategories.ts`.
 
 ## Champs CV notables
 

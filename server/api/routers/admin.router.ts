@@ -4,6 +4,7 @@ import {
 	AiFeature,
 	UnlockMethod,
 	AdminCreditKind,
+	TemplateStyleCategory,
 } from "../../../generated/prisma/enums";
 import { ValidationError } from "../../../src/services/errors";
 import { adminProcedure, router } from "../trpc";
@@ -41,6 +42,7 @@ const updateTemplateCatalogSchema = z
 		priceCents: z.number().int().min(0).max(100_000_000).nullable().optional(),
 		priceCredits: z.number().int().min(0).max(10_000).nullable().optional(),
 		isFeatured: z.boolean().optional(),
+		styleCategory: z.nativeEnum(TemplateStyleCategory).optional(),
 		sortOrder: z.number().int().min(0).max(10_000).optional(),
 		unlockGifts: unlockGiftsSchema.nullable().optional(),
 	})
@@ -51,6 +53,7 @@ const updateTemplateCatalogSchema = z
 			v.priceCents !== undefined ||
 			v.priceCredits !== undefined ||
 			typeof v.isFeatured === "boolean" ||
+			typeof v.styleCategory === "string" ||
 			typeof v.sortOrder === "number" ||
 			v.unlockGifts !== undefined,
 		{ message: "Au moins un champ catalogue à mettre à jour" },
@@ -230,6 +233,7 @@ export const adminRouter = router({
 				isActive: z.boolean().optional(),
 				isPremium: z.boolean().optional(),
 				isFeatured: z.boolean().optional(),
+				styleCategory: z.nativeEnum(TemplateStyleCategory).optional(),
 				page: z.number().int().min(1).default(1),
 				pageSize: z.number().int().min(1).max(50).default(20),
 			}),

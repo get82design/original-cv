@@ -21,7 +21,7 @@ import {
 } from "@/features/cv-editor/utils/cvPage";
 import { FieldNameLayoutGeneral } from "@/features/cv-editor/utils/fields/fieldNameLayoutGeneral";
 import { GetPrimaryColor } from "@/features/cv-editor/utils/utilsCv/color";
-import { ChangePaddingDocument } from "@/features/cv-editor/utils/utilsCv/marge";
+import { ChangePaddingDocument, columnPaddingForHeaderPlacement } from "@/features/cv-editor/utils/utilsCv/marge";
 import type { HeaderPlacement } from "@/services/schemas/cvTemplate.schema";
 import { useCreateCvContext } from "../../context/CreateCvContext";
 import { resolveMonoHeaderEntry, resolveSplitHeaderEntry } from "../../template/register/header/HeaderRegister";
@@ -50,6 +50,7 @@ export function TwoColumnSideBar({ deleteSection }: TwoColumnSideBarProps) {
 	const sidebarSide = watch(FieldNameLayoutGeneral.sidebarSide) ?? "left";
 	const headerPlacement = (watch(FieldNameLayoutGeneral.headerPlacement) ??
 		"top") as HeaderPlacement;
+	const columnPadding = columnPaddingForHeaderPlacement(paddingDoc, headerPlacement);
 
 	const left = useCvSectionItems(0);
 	const right = useCvSectionItems(1);
@@ -248,7 +249,7 @@ export function TwoColumnSideBar({ deleteSection }: TwoColumnSideBarProps) {
 											pageIndex={pageIndex}
 											className={`col-span-3 ${
 												sidebarSide === "right" ? "order-2" : "order-1"
-											} ${paddingDoc}`}
+											} ${columnPadding}`}
 											fg={columnFg}
 											style={{
 												backgroundColor: cssToken ? `var(--${cssToken})` : undefined,
@@ -285,7 +286,7 @@ export function TwoColumnSideBar({ deleteSection }: TwoColumnSideBarProps) {
 											pageIndex={pageIndex}
 											className={`col-span-5 ${
 												sidebarSide === "right" ? "order-1 pr-0" : "order-2 pl-0"
-											} ${paddingDoc}`}
+											} ${columnPadding}`}
 										>
 											{pageIndex === 0 && headerPlacement === "split" && (
 												<button

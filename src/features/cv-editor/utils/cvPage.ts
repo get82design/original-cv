@@ -63,6 +63,13 @@ export type TwoColumnPageSlot = {
 	mainIds: string[];
 };
 
+/** Clé React stable pour une feuille 2 colonnes (contenu, pas l’index). */
+export function twoColumnPageKey(page: TwoColumnPageSlot): string {
+	const side = page.sidebarIds.join("+") || "_";
+	const main = page.mainIds.join("+") || "_";
+	return `2col-${side}__${main}`;
+}
+
 /**
  * Fusionne deux flux de pages (sidebar / main) en N feuilles.
  * Une colonne peut être vide sur les dernières pages (chrome conservé).

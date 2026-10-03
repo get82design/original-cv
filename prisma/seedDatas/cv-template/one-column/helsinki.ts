@@ -29,6 +29,6 @@ export const helsinki = defineTemplate({
 		tag: { title: "Skills", design: "border", isActive: true, order: 5 },
 		strength: { title: "Atouts", isActive: true, order: 6, columns: 1 },
 		socialMedia: { title: "Réseaux", isActive: true, order: 7 },
-		passion: { title: "Passions", isActive: true, order: 8 },
+		passion: { title: "Passions", isActive: false },
 	},
 });

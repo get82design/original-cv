@@ -13,6 +13,8 @@ import { TitleAppOne } from "@/components/title/TitleAppOne";
 import { AppCard } from "@/components/card/AppCard";
 import { trpc } from "@utils/trpc";
 import type { AdminTemplateListItem } from "@/services/admin/adminTemplateService";
+import { TemplateStyleCategory } from "../../../generated/prisma/enums";
+import { TEMPLATE_STYLE_OPTIONS, templateStyleLabel } from "@/utils/templateStyleCategory";
 
 type TemplateRow = AdminTemplateListItem;
 
@@ -20,6 +22,11 @@ const BOOL_OPTIONS: { label: string; value: boolean | null }[] = [
 	{ label: "Tous", value: null },
 	{ label: "Oui", value: true },
 	{ label: "Non", value: false },
+];
+
+const STYLE_FILTER_OPTIONS: { label: string; value: TemplateStyleCategory | null }[] = [
+	{ label: "Tous", value: null },
+	...TEMPLATE_STYLE_OPTIONS.map((o) => ({ label: o.label, value: o.value })),
 ];
 
 function formatPrice(cents: number | null) {
@@ -46,6 +53,7 @@ export function AdminTemplatesPage() {
 	const [isActive, setIsActive] = useState<boolean | null>(null);
 	const [isPremium, setIsPremium] = useState<boolean | null>(null);
 	const [isFeatured, setIsFeatured] = useState<boolean | null>(null);
+	const [styleCategory, setStyleCategory] = useState<TemplateStyleCategory | null>(null);
 	const [page, setPage] = useState(1);
 	const pageSize = 20;
 
@@ -53,6 +61,9 @@ export function AdminTemplatesPage() {
 	const [draftActive, setDraftActive] = useState(true);
 	const [draftPremium, setDraftPremium] = useState(false);
 	const [draftFeatured, setDraftFeatured] = useState(false);
+	const [draftStyleCategory, setDraftStyleCategory] = useState<TemplateStyleCategory>(
+		TemplateStyleCategory.CLASSIC,
+	);
 	const [draftSort, setDraftSort] = useState(0);
 	const [draftPriceEuros, setDraftPriceEuros] = useState<number | null>(null);
 	const [draftPriceCredits, setDraftPriceCredits] = useState<number | null>(null);
@@ -83,6 +94,7 @@ export function AdminTemplatesPage() {
 			...(typeof isActive === "boolean" ? { isActive } : {}),
 			...(typeof isPremium === "boolean" ? { isPremium } : {}),
 			...(typeof isFeatured === "boolean" ? { isFeatured } : {}),
+			...(styleCategory ? { styleCategory } : {}),
 		},
 		{ enabled: status === "authenticated" && isAdmin },
 	);
@@ -113,6 +125,7 @@ export function AdminTemplatesPage() {
 		setDraftActive(row.isActive);
 		setDraftPremium(row.isPremium);
 		setDraftFeatured(row.isFeatured);
+		setDraftStyleCategory(row.styleCategory);
 		setDraftSort(row.sortOrder);
 		setDraftPriceEuros(row.priceCents != null ? row.priceCents / 100 : null);
 		setDraftPriceCredits(row.priceCredits);
@@ -132,6 +145,7 @@ export function AdminTemplatesPage() {
 			isActive: draftActive,
 			isPremium: draftPremium,
 			isFeatured: draftFeatured,
+			styleCategory: draftStyleCategory,
 			sortOrder: draftSort,
 			priceCents: draftPriceEuros == null ? null : Math.round(draftPriceEuros * 100),
 			priceCredits: draftPriceCredits,
@@ -250,6 +264,21 @@ export function AdminTemplatesPage() {
 								className="w-full"
 							/>
 						</div>
+						<div className="w-full sm:w-40">
+							<label htmlFor="admin-templates-style" className="mb-1 block text-xs text-zinc-500">Style</label>
+							<Dropdown
+								id="admin-templates-style"
+								value={styleCategory}
+								options={STYLE_FILTER_OPTIONS}
+								onChange={(e) => {
+									setStyleCategory(e.value as TemplateStyleCategory | null);
+									setPage(1);
+								}}
+								optionLabel="label"
+								optionValue="value"
+								className="w-full"
+							/>
+						</div>
 					</div>
 				</div>
 			</AppCard>
@@ -261,6 +290,7 @@ export function AdminTemplatesPage() {
 							<th className="px-4 py-3 font-semibold">Modèle</th>
 							<th className="px-3 py-3 font-semibold">Statut</th>
 							<th className="px-3 py-3 font-semibold">Type</th>
+							<th className="px-3 py-3 font-semibold">Style</th>
 							<th className="px-3 py-3 font-semibold">€</th>
 							<th className="px-3 py-3 font-semibold">Crédits</th>
 							<th className="px-3 py-3 font-semibold">Ordre</th>
@@ -272,13 +302,13 @@ export function AdminTemplatesPage() {
 					<tbody>
 						{listQuery.isLoading ? (
 							<tr>
-								<td colSpan={9} className="px-4 py-8 text-center text-zinc-500">
+								<td colSpan={10} className="px-4 py-8 text-center text-zinc-500">
 									Chargement…
 								</td>
 							</tr>
 						) : (listQuery.data?.items.length ?? 0) === 0 ? (
 							<tr>
-								<td colSpan={9} className="px-4 py-8 text-center text-zinc-500">
+								<td colSpan={10} className="px-4 py-8 text-center text-zinc-500">
 									Aucun modèle.
 								</td>
 							</tr>
@@ -310,6 +340,9 @@ export function AdminTemplatesPage() {
 										) : (
 											<span className="text-zinc-500">Free</span>
 										)}
+									</td>
+									<td className="px-3 py-3 text-xs text-zinc-600 dark:text-zinc-400">
+										{templateStyleLabel(t.styleCategory)}
 									</td>
 									<td className="px-3 py-3 text-zinc-700 dark:text-zinc-300">
 										{formatPrice(t.priceCents)}
@@ -403,6 +436,21 @@ export function AdminTemplatesPage() {
 								<Checkbox id="admin-templates-featured" checked={draftFeatured} onChange={(e) => setDraftFeatured(!!e.checked)} />
 								À la une
 							</label>
+						</div>
+
+						<div>
+							<label htmlFor="admin-templates-draft-style" className="mb-1 block text-xs text-zinc-500">
+								Style marketing
+							</label>
+							<Dropdown
+								id="admin-templates-draft-style"
+								value={draftStyleCategory}
+								options={TEMPLATE_STYLE_OPTIONS}
+								onChange={(e) => setDraftStyleCategory(e.value as TemplateStyleCategory)}
+								optionLabel="label"
+								optionValue="value"
+								className="w-full"
+							/>
 						</div>
 
 						<div className="grid gap-3 sm:grid-cols-3">

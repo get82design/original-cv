@@ -2,6 +2,7 @@ import { TemplateCatalogBadges } from "@/components/badge/TemplateCatalogBadges"
 import { buildTemplateMarketingCopy } from "@/features/models-list/templateMarketingCopy";
 import type { PublicTemplateDetail } from "@/services/cv/cvTemplateService";
 import type { TemplateNavItem } from "@/services/cv/templateNeighbors";
+import { templateStyleLabel } from "@/utils/templateStyleCategory";
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "primereact/button";
@@ -50,7 +51,7 @@ export const TemplateDetailPage = ({ template, prev, next }: TemplateDetailPageP
 
 				<div className="flex flex-col gap-4 lg:pt-2">
 					<p className="m-0 text-xs font-medium uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
-						Modèle de CV · {colsLabel}
+						Modèle de CV · {templateStyleLabel(template.styleCategory)} · {colsLabel}
 						{template.isPremium ? " · Premium" : " · Gratuit"}
 					</p>
 					<h1 className="m-0 text-3xl font-bold tracking-tight sm:text-4xl">{template.name}</h1>

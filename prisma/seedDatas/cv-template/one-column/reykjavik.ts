@@ -28,7 +28,7 @@ export const reykjavik = defineTemplate({
 		competence: { title: "Compétences", isActive: true, order: 5, columns: 2 },
 		strength: { title: "Atouts", isActive: true, order: 6, columns: 2 },
 		passion: { title: "Passions", isActive: true, order: 7, columns: 3 },
-		socialMedia: { title: "Réseaux", isActive: true, order: 8 },
+		socialMedia: { title: "Réseaux", isActive: false },
 		skill: { title: "Skills", design: "stars", isActive: false },
 	},
 });

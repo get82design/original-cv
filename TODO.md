@@ -109,7 +109,7 @@ Critère done : créer/sauver CV → DL gratuit/payant → IA review/rewrite/let
 	- mentions (SIRET / hébergeur), URSSAF, Stripe, cookies analytics → **reportés ouverture prod (fin V3)**
 	- placeholders mentions + bandeau amber OK jusqu’à la prod
 - [x] Sync canvas + ce fichier
-	- carte `avancement-v1.canvas.tsx` recalée **2026-10-01** : V1 100 % · V2 ~50 % (layouts/onboarding/couleurs livrés ; reste catalogue premium, match-job, App Router, clôture)
+	- carte `avancement-v1.canvas.tsx` recalée **2026-10-02** : V1 100 % · V2 ~64 % (match-job + fiche métier livrés ; reste catalogue premium, App Router, clôture)
 
 ---
 

@@ -26,6 +26,7 @@ export function defineTemplate(opts: {
 		| "HeaderFour"
 		| "HeaderFive"
 		| "HeaderSplitOne";
+	/** `1` = Section*One ; `2` = Section*Two — réservé aux OneColumnModel (jamais 2 cols). */
 	variant: 1 | 2;
 	pageLayout?: PageLayout;
 	layout?: Omit<Partial<TemplateLayout>, "titleSection" | "typography"> & {

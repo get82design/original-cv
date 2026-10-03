@@ -11,6 +11,7 @@ export const nara = defineTemplate({
 	layout: {
 		...sharedLayout,
 		stylePhoto: "circle",
+		marge: "sm",
 		titleSection: {
 			...sharedLayout.titleSection,
 			bgColor: "primaryColor",

@@ -111,6 +111,7 @@ describe("CvTemplateService.findPublicBySlug", () => {
 		expect(detail.slug).toBe("berlin");
 		expect(detail.columns).toBe(2);
 		expect(detail.isPremium).toBe(false);
+		expect(detail.styleCategory).toBe("CLASSIC");
 	});
 
 	it("throws if slug unknown", async () => {

@@ -19,6 +19,6 @@ export const oslo = defineTemplate({
 		language: { design: "stars", isActive: true, order: 4, columns: 3 },
 		tag: { title: "Compétences", isActive: true, design: "border", order: 5 },
 		strength: { title: "Atouts", isActive: true, order: 6, columns: 2 },
-		socialMedia: { title: "Réseaux sociaux", isActive: true, columns: 3, order: 7 },
+		socialMedia: { title: "Réseaux sociaux", isActive: false },
 	},
 });

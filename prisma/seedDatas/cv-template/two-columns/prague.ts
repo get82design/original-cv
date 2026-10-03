@@ -1,26 +1,34 @@
-import { krakowTokens } from "../../themeTokens";
+import { pragueTokens } from "../../themeTokens";
 import { defineTemplate } from "../_shared/defineTemplate";
 import { sharedLayout } from "../_shared/layouts";
 
-export const krakow = defineTemplate({
-	name: "Krakow",
-	slug: "krakow-noLine-x",
-	tokens: krakowTokens,
-	primaryColor: { name: "amber", primary: "-600" },
+/**
+ * Prague : TwoColumnCenter + HeaderTwo (titre centré, sans photo).
+ */
+export const prague = defineTemplate({
+	name: "Prague",
+	slug: "prague-noLine-x",
+	tokens: pragueTokens,
+	primaryColor: { name: "blue", primary: "-600" },
 	sectionHeader: "HeaderTwo",
+	pageLayout: "TwoColumnCenter",
 	variant: 1,
-	pageLayout: "TwoColumnSideBar",
 	layout: {
 		...sharedLayout,
 		columns: 2,
-		sidebarSide: "left",
+		headerPlacement: "top",
+		marge: "sm",
+		space: "sm",
+		withPhoto: false,
+		listStyle: "none",
 		titleSection: {
 			...sharedLayout.titleSection,
+			textTransform: "uppercase",
+			textAlign: "left",
 		},
 	},
 	modules: {
-		// main (colonne 1)
-		description: { title: "Présentation", isActive: true, order: 1, column: 1 },
+		description: { title: "À propos", isActive: true, order: 1, column: 1 },
 		experience: { title: "Expériences", isActive: true, order: 2, column: 1 },
 		education: {
 			title: "Formations",
@@ -37,16 +45,21 @@ export const krakow = defineTemplate({
 			columns: 1,
 		},
 		project: { isActive: false, column: 1 },
-		// sidebar (colonne 0)
+		volunteering: { isActive: false, column: 1 },
+		philosophy: { isActive: false, column: 1 },
+		certification: { isActive: false, column: 1 },
+		formation: { isActive: false, column: 1 },
+		achievement: { isActive: false, column: 1 },
+		publication: { isActive: false, column: 1 },
 		language: {
-			design: "bars",
+			design: "stars",
 			isActive: true,
 			order: 1,
 			column: 0,
 			columns: 1,
 		},
 		tag: {
-			title: "Skills",
+			title: "Compétences",
 			design: "border",
 			isActive: true,
 			order: 2,
@@ -55,17 +68,11 @@ export const krakow = defineTemplate({
 		socialMedia: {
 			title: "Réseaux",
 			isActive: true,
-			order: 4,
+			order: 3,
 			column: 0,
 			columns: 1,
 		},
-		passion: { isActive: true, column: 0, columns: 1 },
-		volunteering: { isActive: false, column: 1 },
-		philosophy: { isActive: false, column: 1 },
-		certification: { isActive: false, column: 1 },
-		formation: { isActive: false, column: 1 },
-		achievement: { isActive: false, column: 1 },
-		publication: { isActive: false, column: 1 },
+		passion: { isActive: false, column: 0, columns: 1 },
 		prize: { isActive: false, column: 0, columns: 1 },
 		expertise: { isActive: false, column: 0, columns: 1 },
 	},

@@ -30,6 +30,6 @@ export const seoul = defineTemplate({
 		language: { design: "bars", isActive: true, order: 4, columns: 3 },
 		tag: { title: "Skills", design: "tag", isActive: true, order: 5 },
 		strength: { title: "Atouts", isActive: true, order: 6 },
-		socialMedia: { title: "Réseaux", isActive: true, order: 7, columns: 3 },
+		socialMedia: { title: "Réseaux", isActive: false },
 	},
 });

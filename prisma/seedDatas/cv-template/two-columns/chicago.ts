@@ -19,6 +19,7 @@ export const chicago = defineTemplate({
 		stylePhoto: "circle",
 		listStyle: "none",
 		marge: "sm",
+		space: "sm",
 		titleSection: {
 			...sharedLayout.titleSection,
 		},
@@ -39,9 +40,9 @@ export const chicago = defineTemplate({
 			isActive: true,
 			order: 4,
 			column: 1,
-			columns: 2,
+			columns: 1,
 		},
-		project: { isActive: true, column: 1 },
+		project: { isActive: false, column: 1 },
 		// sidebar (colonne 0)
 		language: {
 			design: "bars",
@@ -50,8 +51,20 @@ export const chicago = defineTemplate({
 			column: 0,
 			columns: 1,
 		},
-		tag: { title: "Skills", design: "border", isActive: true, order: 2, column: 0 },
-		socialMedia: { title: "Réseaux", isActive: true, order: 4, column: 0, columns: 1 },
+		tag: {
+			title: "Skills",
+			design: "border",
+			isActive: true,
+			order: 2,
+			column: 0,
+		},
+		socialMedia: {
+			title: "Réseaux",
+			isActive: true,
+			order: 4,
+			column: 0,
+			columns: 1,
+		},
 		passion: { isActive: true, column: 0, columns: 1 },
 		volunteering: { isActive: false, column: 1 },
 		philosophy: { isActive: false, column: 1 },

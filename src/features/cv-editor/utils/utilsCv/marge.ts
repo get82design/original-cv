@@ -13,6 +13,23 @@ export const ChangePaddingDocument = () => {
 	return "p-8";
 };
 
+/**
+ * Padding des colonnes 2-col.
+ * Si header en `top`, pas de `pt` : le bandeau a déjà la marge haute, sinon double espace.
+ */
+export function columnPaddingForHeaderPlacement(
+	paddingDoc: string,
+	headerPlacement: "top" | "sidebar" | "split",
+): string {
+	if (headerPlacement !== "top") return paddingDoc;
+	const withoutTop: Record<string, string> = {
+		"p-8": "px-8 pb-8 pt-0",
+		"p-12": "px-12 pb-12 pt-0",
+		"p-16": "px-16 pb-16 pt-0",
+	};
+	return withoutTop[paddingDoc] ?? paddingDoc;
+}
+
 import type { ElmSize } from "@/services/schemas/cvTemplate.schema";
 import { useFormContext } from "react-hook-form";
 

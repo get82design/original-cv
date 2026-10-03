@@ -1,5 +1,8 @@
 import { DndContext, DragOverlay } from "@dnd-kit/core";
-import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
+import {
+	SortableContext,
+	verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
 import type { ItemGeneralProps } from "@utils/type";
 import { useEffect, useMemo, useState } from "react";
 import { useFormContext } from "react-hook-form";
@@ -18,13 +21,20 @@ import {
 	type CvMarge,
 	mergeTwoColumnPages,
 	packSectionsIntoPages,
+	twoColumnPageKey,
 } from "@/features/cv-editor/utils/cvPage";
 import { FieldNameLayoutGeneral } from "@/features/cv-editor/utils/fields/fieldNameLayoutGeneral";
 import { GetPrimaryColor } from "@/features/cv-editor/utils/utilsCv/color";
-import { ChangePaddingDocument } from "@/features/cv-editor/utils/utilsCv/marge";
+import {
+	ChangePaddingDocument,
+	columnPaddingForHeaderPlacement,
+} from "@/features/cv-editor/utils/utilsCv/marge";
 import type { HeaderPlacement } from "@/services/schemas/cvTemplate.schema";
 import { useCreateCvContext } from "../../context/CreateCvContext";
-import { resolveMonoHeaderEntry, resolveSplitHeaderEntry } from "../../template/register/header/HeaderRegister";
+import {
+	resolveMonoHeaderEntry,
+	resolveSplitHeaderEntry,
+} from "../../template/register/header/HeaderRegister";
 import { ColumnDropZone } from "../shared/ColumnDropZone";
 import { resolveSidebarFg } from "../shared/ColumnFgContext";
 import { CvPageShell } from "../shared/CvPageShell";
@@ -55,12 +65,25 @@ export function TwoColumnCenter({ deleteSection }: TwoColumnCenterProps) {
 	const sidebarSide = watch(FieldNameLayoutGeneral.sidebarSide) ?? "left";
 	const headerPlacement = (watch(FieldNameLayoutGeneral.headerPlacement) ??
 		"top") as HeaderPlacement;
+	const columnPadding = columnPaddingForHeaderPlacement(
+		paddingDoc,
+		headerPlacement,
+	);
 
 	const left = useCvSectionItems(0);
 	const right = useCvSectionItems(1);
-	const sidebarItems = useMemo(() => [...left].sort((a, b) => a.order - b.order), [left]);
-	const mainItems = useMemo(() => [...right].sort((a, b) => a.order - b.order), [right]);
-	const sidebarIds = useMemo(() => sidebarItems.map((i) => i.id), [sidebarItems]);
+	const sidebarItems = useMemo(
+		() => [...left].sort((a, b) => a.order - b.order),
+		[left],
+	);
+	const mainItems = useMemo(
+		() => [...right].sort((a, b) => a.order - b.order),
+		[right],
+	);
+	const sidebarIds = useMemo(
+		() => sidebarItems.map((i) => i.id),
+		[sidebarItems],
+	);
 	const mainIds = useMemo(() => mainItems.map((i) => i.id), [mainItems]);
 	const sidebarById = useMemo(
 		() => new Map<string, SectionItem>(sidebarItems.map((i) => [i.id, i])),
@@ -73,8 +96,13 @@ export function TwoColumnCenter({ deleteSection }: TwoColumnCenterProps) {
 
 	const [activeSectionId, setActiveSectionId] = useState<string | null>(null);
 	const activeItem = [...left, ...right].find((i) => i.id === activeSectionId);
-	const { sensors, handleDragStart, handleDragEnd, handleDragOver, collisionDetection } =
-		useCvPageDnd([left, right]);
+	const {
+		sensors,
+		handleDragStart,
+		handleDragEnd,
+		handleDragOver,
+		collisionDetection,
+	} = useCvPageDnd([left, right]);
 
 	const primaryColor = GetPrimaryColor() ?? "white";
 	const accent = watch(FieldNameLayoutGeneral.pageAccent);
@@ -86,9 +114,13 @@ export function TwoColumnCenter({ deleteSection }: TwoColumnCenterProps) {
 	const marge = (watch(FieldNameLayoutGeneral.marge) ?? "md") as CvMarge;
 	const pagePad = { sm: "2rem", md: "3rem", lg: "4rem" }[marge];
 	const [colorSelected, setColorSelected] = useState<string | null>(null);
-	const bandStop = "calc(var(--page-pad) + (100% - 2 * var(--page-pad)) * 0.2 + 0.5rem)";
+	const bandStop =
+		"calc(var(--page-pad) + (100% - 2 * var(--page-pad)) * 0.2 + 0.5rem)";
 
-	const hue = sidebarBgColor === "primaryColor" ? primaryColor.split("-")[0] : sidebarBgColor;
+	const hue =
+		sidebarBgColor === "primaryColor"
+			? primaryColor.split("-")[0]
+			: sidebarBgColor;
 	const cssToken =
 		sidebarBgColor && (hue === "black" || hue === "white")
 			? hue
@@ -97,7 +129,9 @@ export function TwoColumnCenter({ deleteSection }: TwoColumnCenterProps) {
 				: undefined;
 	const columnFg = resolveSidebarFg(sidebarFg, sidebarShadeBgColor);
 
-	const headerKey = watch("layoutGeneral.defaultStyles")?.components?.sectionHeader ?? "HeaderOne";
+	const headerKey =
+		watch("layoutGeneral.defaultStyles")?.components?.sectionHeader ??
+		"HeaderOne";
 	const HeaderComponent = resolveMonoHeaderEntry(headerKey).Component;
 	const splitHeader = resolveSplitHeaderEntry(headerKey);
 	const SplitSidebar = splitHeader.Sidebar;
@@ -110,7 +144,10 @@ export function TwoColumnCenter({ deleteSection }: TwoColumnCenterProps) {
 
 	const { heights, setMeasureRef } = useElementHeights(measureIds);
 	const stableHeights = useDebouncedHeights(heights);
-	const packingHeights = useFrozenPackingHeights(stableHeights, sectionSelected);
+	const packingHeights = useFrozenPackingHeights(
+		stableHeights,
+		sectionSelected,
+	);
 
 	const padPx = CV_PAGE_PAD_PX[marge] ?? CV_PAGE_PAD_PX.md;
 	const headerHeights = useMemo(
@@ -196,7 +233,10 @@ export function TwoColumnCenter({ deleteSection }: TwoColumnCenterProps) {
 		</div>
 	);
 
-	const allSortableIds = useMemo(() => [...sidebarIds, ...mainIds], [sidebarIds, mainIds]);
+	const allSortableIds = useMemo(
+		() => [...sidebarIds, ...mainIds],
+		[sidebarIds, mainIds],
+	);
 
 	return (
 		<DndContext
@@ -215,11 +255,13 @@ export function TwoColumnCenter({ deleteSection }: TwoColumnCenterProps) {
 			}}
 			onDragCancel={() => setActiveSectionId(null)}
 		>
-			<SortableContext items={allSortableIds} strategy={verticalListSortingStrategy}>
+			<SortableContext
+				items={allSortableIds}
+				strategy={verticalListSortingStrategy}
+			>
 				<div className="flex flex-col gap-6">
 					{pages.map((page, pageIndex) => (
-						// biome-ignore lint/suspicious/noArrayIndexKey: index de page A4 stable
-						<div key={`cv-page-2col-center-${pageIndex}`} className="flex flex-col gap-2">
+						<div key={twoColumnPageKey(page)} className="flex flex-col gap-2">
 							{pages.length > 1 && (
 								<p className="text-xs text-muted-color m-0 px-1">
 									Page {pageIndex + 1} / {pages.length}
@@ -243,16 +285,18 @@ export function TwoColumnCenter({ deleteSection }: TwoColumnCenterProps) {
 										</button>
 									)}
 
-									<div className="sections-container grid min-h-0 w-full flex-1 grid-cols-8 gap-6">
+									<div className="sections-container grid min-h-0 w-full flex-1 grid-cols-8 gap-0">
 										<ColumnDropZone
 											column={0}
 											pageIndex={pageIndex}
 											className={`col-span-4 ${
 												sidebarSide === "right" ? "order-2" : "order-1"
-											} ${paddingDoc}`}
+											} ${columnPadding}`}
 											fg={columnFg}
 											style={{
-												backgroundColor: cssToken ? `var(--${cssToken})` : undefined,
+												backgroundColor: cssToken
+													? `var(--${cssToken})`
+													: undefined,
 											}}
 										>
 											{pageIndex === 0 && headerPlacement === "sidebar" && (
@@ -277,7 +321,9 @@ export function TwoColumnCenter({ deleteSection }: TwoColumnCenterProps) {
 											)}
 											{page.sidebarIds.map((id) => {
 												const item = sidebarById.get(id);
-												return item ? renderSection(item, "sections-container-left") : null;
+												return item
+													? renderSection(item, "sections-container-left")
+													: null;
 											})}
 										</ColumnDropZone>
 
@@ -286,7 +332,7 @@ export function TwoColumnCenter({ deleteSection }: TwoColumnCenterProps) {
 											pageIndex={pageIndex}
 											className={`col-span-4 ${
 												sidebarSide === "right" ? "order-1" : "order-2"
-											} ${paddingDoc}`}
+											} ${columnPadding}`}
 										>
 											{pageIndex === 0 && headerPlacement === "split" && (
 												<button
@@ -300,7 +346,9 @@ export function TwoColumnCenter({ deleteSection }: TwoColumnCenterProps) {
 											)}
 											{page.mainIds.map((id) => {
 												const item = mainById.get(id);
-												return item ? renderSection(item, "sections-container-right") : null;
+												return item
+													? renderSection(item, "sections-container-right")
+													: null;
 											})}
 										</ColumnDropZone>
 									</div>

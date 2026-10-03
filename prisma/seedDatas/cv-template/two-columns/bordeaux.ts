@@ -1,32 +1,34 @@
-import { tokyoTokens } from "../../themeTokens";
+import { bordeauxTokens } from "../../themeTokens";
 import { defineTemplate } from "../_shared/defineTemplate";
 import { sharedLayout } from "../_shared/layouts";
 
-export const tokyo = defineTemplate({
-	name: "Tokyo",
-	slug: "tokyo-noLine-x",
-	tokens: tokyoTokens,
-	primaryColor: { name: "yellow", primary: "-600" },
-	sectionHeader: "HeaderFour",
+/**
+ * Bordeaux : TwoColumnCenter + HeaderSplitOne —
+ * fond col 0 sombre type Hamburg (`gray-700` / white), vs Munich light `-100`.
+ */
+export const bordeaux = defineTemplate({
+	name: "Bordeaux",
+	slug: "bordeaux-split-dark-x",
+	tokens: bordeauxTokens,
+	primaryColor: { name: "red", primary: "-700" },
+	sectionHeader: "HeaderSplitOne",
+	pageLayout: "TwoColumnCenter",
 	variant: 1,
-	pageLayout: "TwoColumnSideBar",
 	layout: {
 		...sharedLayout,
 		columns: 2,
+		lockPhotoSide: true,
+		headerPlacement: "split",
 		withPhoto: true,
-		photoSide: "left",
-		sidebarSide: "left",
 		stylePhoto: "circle",
+		sidebarTheme: { bgColor: "gray", shadeBgColor: "-700", fg: "white" },
 		listStyle: "none",
-		marge: "sm",
-		space: "sm",
-		headerPrimaryColor: true,
 		titleSection: {
 			...sharedLayout.titleSection,
+			textTransform: "uppercase",
 		},
 	},
 	modules: {
-		// main (colonne 1)
 		description: { title: "Présentation", isActive: true, order: 1, column: 1 },
 		experience: { title: "Expériences", isActive: true, order: 2, column: 1 },
 		education: {
@@ -43,8 +45,13 @@ export const tokyo = defineTemplate({
 			column: 1,
 			columns: 1,
 		},
-		project: { isActive: true, column: 1 },
-		// sidebar (colonne 0)
+		project: { isActive: false, column: 1 },
+		volunteering: { isActive: false, column: 1 },
+		philosophy: { isActive: false, column: 1 },
+		certification: { isActive: false, column: 1 },
+		formation: { isActive: false, column: 1 },
+		achievement: { isActive: false, column: 1 },
+		publication: { isActive: false, column: 1 },
 		language: {
 			design: "stars",
 			isActive: true,
@@ -62,17 +69,11 @@ export const tokyo = defineTemplate({
 		socialMedia: {
 			title: "Réseaux",
 			isActive: true,
-			order: 4,
+			order: 3,
 			column: 0,
 			columns: 1,
 		},
-		passion: { isActive: true, column: 0, columns: 1 },
-		volunteering: { isActive: false, column: 1 },
-		philosophy: { isActive: false, column: 1 },
-		certification: { isActive: false, column: 1 },
-		formation: { isActive: false, column: 1 },
-		achievement: { isActive: false, column: 1 },
-		publication: { isActive: false, column: 1 },
+		passion: { isActive: false, column: 0, columns: 1 },
 		prize: { isActive: false, column: 0, columns: 1 },
 		expertise: { isActive: false, column: 0, columns: 1 },
 	},

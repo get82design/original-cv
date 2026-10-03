@@ -1,5 +1,6 @@
 import type { Prisma } from "../../../generated/prisma/client";
 import { Prisma as PrismaNS } from "../../../generated/prisma/client";
+import type { TemplateStyleCategory } from "../../../generated/prisma/enums";
 import { prisma } from "../../../lib/prisma";
 import { NotFoundError, ValidationError } from "../errors";
 import { parseUnlockGifts, type TemplateUnlockGifts } from "../commons/templateAccess";
@@ -12,6 +13,7 @@ export type AdminTemplateListItem = {
 	priceCents: number | null;
 	priceCredits: number | null;
 	isFeatured: boolean;
+	styleCategory: TemplateStyleCategory;
 	sortOrder: number;
 	unlockGifts: TemplateUnlockGifts | null;
 	cvCount: number;
@@ -31,10 +33,59 @@ export type AdminTemplateCatalogPatch = {
 	priceCents?: number | null | undefined;
 	priceCredits?: number | null | undefined;
 	isFeatured?: boolean | undefined;
+	styleCategory?: TemplateStyleCategory | undefined;
 	sortOrder?: number | undefined;
 	/** null = vider les cadeaux */
 	unlockGifts?: TemplateUnlockGifts | null | undefined;
 };
+
+const catalogSelect = {
+	id: true,
+	name: true,
+	isActive: true,
+	isPremium: true,
+	priceCents: true,
+	priceCredits: true,
+	isFeatured: true,
+	styleCategory: true,
+	sortOrder: true,
+	unlockGifts: true,
+	_count: {
+		select: {
+			cvs: true,
+			unlockedTemplates: true,
+		},
+	},
+} as const;
+
+function toListItem(t: {
+	id: string;
+	name: string;
+	isActive: boolean;
+	isPremium: boolean;
+	priceCents: number | null;
+	priceCredits: number | null;
+	isFeatured: boolean;
+	styleCategory: TemplateStyleCategory;
+	sortOrder: number;
+	unlockGifts: unknown;
+	_count: { cvs: number; unlockedTemplates: number };
+}): AdminTemplateListItem {
+	return {
+		id: t.id,
+		name: t.name,
+		isActive: t.isActive,
+		isPremium: t.isPremium,
+		priceCents: t.priceCents,
+		priceCredits: t.priceCredits,
+		isFeatured: t.isFeatured,
+		styleCategory: t.styleCategory,
+		sortOrder: t.sortOrder,
+		unlockGifts: parseUnlockGifts(t.unlockGifts),
+		cvCount: t._count.cvs,
+		unlockCount: t._count.unlockedTemplates,
+	};
+}
 
 export class AdminTemplateService {
 	async listTemplates(input: {
@@ -42,6 +93,7 @@ export class AdminTemplateService {
 		isActive?: boolean | undefined;
 		isPremium?: boolean | undefined;
 		isFeatured?: boolean | undefined;
+		styleCategory?: TemplateStyleCategory | undefined;
 		page?: number | undefined;
 		pageSize?: number | undefined;
 	}): Promise<AdminTemplateListResult> {
@@ -53,6 +105,7 @@ export class AdminTemplateService {
 			...(typeof input.isActive === "boolean" ? { isActive: input.isActive } : {}),
 			...(typeof input.isPremium === "boolean" ? { isPremium: input.isPremium } : {}),
 			...(typeof input.isFeatured === "boolean" ? { isFeatured: input.isFeatured } : {}),
+			...(input.styleCategory ? { styleCategory: input.styleCategory } : {}),
 			...(search
 				? {
 						name: {
@@ -70,23 +123,7 @@ export class AdminTemplateService {
 				orderBy: [{ sortOrder: "asc" }, { name: "asc" }],
 				skip: (page - 1) * pageSize,
 				take: pageSize,
-				select: {
-					id: true,
-					name: true,
-					isActive: true,
-					isPremium: true,
-					priceCents: true,
-					priceCredits: true,
-					isFeatured: true,
-					sortOrder: true,
-					unlockGifts: true,
-					_count: {
-						select: {
-							cvs: true,
-							unlockedTemplates: true,
-						},
-					},
-				},
+				select: catalogSelect,
 			}),
 		]);
 
@@ -94,59 +131,19 @@ export class AdminTemplateService {
 			total,
 			page,
 			pageSize,
-			items: rows.map((t) => ({
-				id: t.id,
-				name: t.name,
-				isActive: t.isActive,
-				isPremium: t.isPremium,
-				priceCents: t.priceCents,
-				priceCredits: t.priceCredits,
-				isFeatured: t.isFeatured,
-				sortOrder: t.sortOrder,
-				unlockGifts: parseUnlockGifts(t.unlockGifts),
-				cvCount: t._count.cvs,
-				unlockCount: t._count.unlockedTemplates,
-			})),
+			items: rows.map(toListItem),
 		};
 	}
 
 	async getTemplate(id: string): Promise<AdminTemplateListItem> {
 		const t = await prisma.cVTemplate.findUnique({
 			where: { id },
-			select: {
-				id: true,
-				name: true,
-				isActive: true,
-				isPremium: true,
-				priceCents: true,
-				priceCredits: true,
-				isFeatured: true,
-				sortOrder: true,
-				unlockGifts: true,
-				_count: {
-					select: {
-						cvs: true,
-						unlockedTemplates: true,
-					},
-				},
-			},
+			select: catalogSelect,
 		});
 		if (!t) {
 			throw new NotFoundError("CV_TEMPLATE", id);
 		}
-		return {
-			id: t.id,
-			name: t.name,
-			isActive: t.isActive,
-			isPremium: t.isPremium,
-			priceCents: t.priceCents,
-			priceCredits: t.priceCredits,
-			isFeatured: t.isFeatured,
-			sortOrder: t.sortOrder,
-			unlockGifts: parseUnlockGifts(t.unlockGifts),
-			cvCount: t._count.cvs,
-			unlockCount: t._count.unlockedTemplates,
-		};
+		return toListItem(t);
 	}
 
 	/**
@@ -161,6 +158,7 @@ export class AdminTemplateService {
 		const hasPrice = patch.priceCents !== undefined;
 		const hasPriceCredits = patch.priceCredits !== undefined;
 		const hasFeatured = typeof patch.isFeatured === "boolean";
+		const hasStyle = typeof patch.styleCategory === "string";
 		const hasSort = typeof patch.sortOrder === "number";
 		const hasGifts = patch.unlockGifts !== undefined;
 
@@ -170,6 +168,7 @@ export class AdminTemplateService {
 			!hasPrice &&
 			!hasPriceCredits &&
 			!hasFeatured &&
+			!hasStyle &&
 			!hasSort &&
 			!hasGifts
 		) {
@@ -197,6 +196,7 @@ export class AdminTemplateService {
 		if (hasPrice) data.priceCents = patch.priceCents ?? null;
 		if (hasPriceCredits) data.priceCredits = patch.priceCredits ?? null;
 		if (hasFeatured) data.isFeatured = patch.isFeatured!;
+		if (hasStyle) data.styleCategory = patch.styleCategory!;
 		if (hasSort) data.sortOrder = patch.sortOrder!;
 		if (hasGifts) {
 			if (patch.unlockGifts === null) {

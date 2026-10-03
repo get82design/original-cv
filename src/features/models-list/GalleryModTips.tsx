@@ -2,6 +2,10 @@ import { useEffect, useState } from "react";
 
 const TIPS = [
 	{
+		title: "Aperçu à la demande",
+		text: "La galerie reste en image pour filtrer vite. L’aperçu interactif se charge à l’ouverture de ce panneau, puis reste affiché jusqu’au prochain filtre.",
+	},
+	{
 		title: "Modifications verrouillées",
 		text: "Au-delà de 10 modèles affichés, le panneau se verrouille. Passez par une sélection (max 10) pour modifier confortablement.",
 	},

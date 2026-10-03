@@ -1,3 +1,4 @@
+import type { TemplateStyleCategory } from "../../../generated/prisma/enums";
 import { prisma } from "../../../lib/prisma";
 import { ConflictError, NotFoundError } from "../errors";
 import type { CreateCvTemplateInput } from "../schemas/cvTemplate.schema";
@@ -13,6 +14,7 @@ const catalogSelect = {
 	isActive: true,
 	isPremium: true,
 	isFeatured: true,
+	styleCategory: true,
 	priceCents: true,
 	priceCredits: true,
 } as const;
@@ -26,6 +28,7 @@ const publicDetailSelect = {
 	isActive: true,
 	isPremium: true,
 	isFeatured: true,
+	styleCategory: true,
 	priceCents: true,
 	priceCredits: true,
 } as const;
@@ -36,6 +39,7 @@ export type PublicTemplateDetail = {
 	slug: string;
 	isPremium: boolean;
 	isFeatured: boolean;
+	styleCategory: TemplateStyleCategory;
 	priceCents: number | null;
 	priceCredits: number | null;
 	columns: number;
@@ -117,6 +121,7 @@ export class CvTemplateService {
 			slug: template.slug,
 			isPremium: template.isPremium,
 			isFeatured: template.isFeatured,
+			styleCategory: template.styleCategory,
 			priceCents: template.priceCents,
 			priceCredits: template.priceCredits,
 			columns: columnsFromStructure(template.structure),
