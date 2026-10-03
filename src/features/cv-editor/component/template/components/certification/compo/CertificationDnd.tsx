@@ -75,8 +75,9 @@ export const CertificationDnd = ({
 				className={`certifications-grid grid ${COL_CLASS[colOfCertification as keyof typeof COL_CLASS] ?? "grid-cols-2"} ${colOfCertification === 1 ? "gap-1" : "gap-x-4 gap-y-1"}`}
 			>
 				{watchCertifications.map((certification, index) => (
-					<button
-						type="button"
+					// biome-ignore lint/a11y/noStaticElementInteractions: carte : enfants déjà interactifs
+					// biome-ignore lint/a11y/useKeyWithClickEvents: sélection d'item
+					<div
 						className="certification-card"
 						key={certification.clientKey}
 						onClick={(e) => {
@@ -92,7 +93,7 @@ export const CertificationDnd = ({
 							setItemSelected={setItemSelected} // local
 							itemsMenu={itemsMenu}
 						/>
-					</button>
+					</div>
 				))}
 				{showAddCertification && (
 					<Button

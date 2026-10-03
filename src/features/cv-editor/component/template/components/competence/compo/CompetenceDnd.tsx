@@ -49,8 +49,9 @@ export const CompetenceDnd = ({
 		>
 			<div className={`competence-dnd-grid min-h-[30px]`}>
 				{competences.map((competence, index) => (
-					<button
-						type="button"
+					// biome-ignore lint/a11y/noStaticElementInteractions: carte : enfants déjà interactifs
+					// biome-ignore lint/a11y/useKeyWithClickEvents: sélection d'item
+					<div
 						className="competence-card w-full"
 						key={competence.clientKey}
 						onClick={(e) => {
@@ -68,7 +69,7 @@ export const CompetenceDnd = ({
 							itemName={`datas.competenceGroup.content.${groupIndex}.content.competences`}
 							clientKeyGroup={clientKeyGroup}
 						/>
-					</button>
+					</div>
 				))}
 				{showAddCompetence && (
 					<Button

@@ -142,14 +142,15 @@ export const OneColumnModel = ({ deleteSection }: OneColumnModelProps) => {
 								background={background}
 							>
 								{pageIndex === 0 && (
-									<button
-										type="button"
+									// biome-ignore lint/a11y/noStaticElementInteractions: wrapper header : PhotoField déjà en bouton
+									// biome-ignore lint/a11y/useKeyWithClickEvents: sélection de section header
+									<div
 										ref={setMeasureRef(HEADER_MEASURE_ID)}
 										onClick={() => selectSection("header")}
 										className="w-full"
 									>
 										{HeaderComponent && <HeaderComponent />}
-									</button>
+									</div>
 								)}
 								{pageSectionIds.map((id) => {
 									const item = itemsById.get(id);

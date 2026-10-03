@@ -134,8 +134,9 @@ export const ProjectDnd = ({
 		>
 			<div className="projects-grid">
 				{watchProjects.map((project, index) => (
-					<button
-						type="button"
+					// biome-ignore lint/a11y/noStaticElementInteractions: carte : enfants déjà interactifs
+					// biome-ignore lint/a11y/useKeyWithClickEvents: sélection d'item
+					<div
 						className="project-card w-full"
 						key={project.clientKey}
 						onClick={(e) => {
@@ -153,7 +154,7 @@ export const ProjectDnd = ({
 							addElmList={addElmList}
 							deleteMission={deleteMission}
 						/>
-					</button>
+					</div>
 				))}
 				{showAddProject && (
 					<Button

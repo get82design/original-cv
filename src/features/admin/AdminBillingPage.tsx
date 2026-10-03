@@ -75,16 +75,17 @@ export function AdminBillingPage() {
 
 	useEffect(() => {
 		if (!pricesQuery.data) return;
-		const next = { ...priceDrafts };
-		for (const row of pricesQuery.data) {
-			next[row.feature] = {
-				costFree: row.costFree,
-				costPaid: row.costPaid,
-			};
-		}
-		setPriceDrafts(next);
-		// eslint-disable-next-line react-hooks/exhaustive-deps -- sync from server only
-	}, [pricesQuery.data, priceDrafts]);
+		setPriceDrafts((prev) => {
+			const next = { ...prev };
+			for (const row of pricesQuery.data) {
+				next[row.feature] = {
+					costFree: row.costFree,
+					costPaid: row.costPaid,
+				};
+			}
+			return next;
+		});
+	}, [pricesQuery.data]);
 
 	const upsertPriceMutation = trpc.admin.upsertAiFeaturePrice.useMutation({
 		onSuccess: async () => {

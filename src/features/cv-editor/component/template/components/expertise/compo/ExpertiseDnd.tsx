@@ -77,8 +77,9 @@ export const CompoExpertiseDnd = ({
 	return (
 		<>
 			{expertises.map((expertise, index) => (
-				<button
-					type="button"
+				// biome-ignore lint/a11y/noStaticElementInteractions: carte : RatingCvInput déjà interactif
+				// biome-ignore lint/a11y/useKeyWithClickEvents: sélection d'item expertise
+				<div
 					className="expertise-card"
 					key={expertise.clientKey}
 					onClick={(e) => {
@@ -93,7 +94,7 @@ export const CompoExpertiseDnd = ({
 						itemSelected={itemSelected} // local
 						setItemSelected={setItemSelected} // local
 					/>
-				</button>
+				</div>
 			))}
 			{showAddExpertise && (
 				<Button

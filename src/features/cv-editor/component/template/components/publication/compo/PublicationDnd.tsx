@@ -88,8 +88,9 @@ export const PublicationDnd = ({
 		>
 			<div className="publications-grid">
 				{watchPublications.map((publication, index) => (
-					<button
-						type="button"
+					// biome-ignore lint/a11y/noStaticElementInteractions: carte : enfants déjà interactifs
+					// biome-ignore lint/a11y/useKeyWithClickEvents: sélection d'item
+					<div
 						className="publication-card w-full"
 						key={publication.clientKey}
 						onClick={(e) => {
@@ -105,7 +106,7 @@ export const PublicationDnd = ({
 							setItemSelected={setItemSelected} // local
 							itemsMenu={itemsMenu}
 						/>
-					</button>
+					</div>
 				))}
 				{showAddPublication && (
 					<Button

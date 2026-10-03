@@ -275,14 +275,15 @@ export function TwoColumnCenter({ deleteSection }: TwoColumnCenterProps) {
 							>
 								<div className="flex h-full min-h-0 flex-col">
 									{pageIndex === 0 && headerPlacement === "top" && (
-										<button
-											type="button"
+										// biome-ignore lint/a11y/noStaticElementInteractions: wrapper header : PhotoField déjà en bouton
+										// biome-ignore lint/a11y/useKeyWithClickEvents: sélection de section header
+										<div
 											ref={setMeasureRef(HEADER_TOP_ID)}
 											onClick={() => selectSection("header")}
 											className={`w-full shrink-0 ${paddingDoc} pb-0`}
 										>
 											{HeaderComponent && <HeaderComponent />}
-										</button>
+										</div>
 									)}
 
 									<div className="sections-container grid min-h-0 w-full flex-1 grid-cols-8 gap-0">
@@ -300,24 +301,26 @@ export function TwoColumnCenter({ deleteSection }: TwoColumnCenterProps) {
 											}}
 										>
 											{pageIndex === 0 && headerPlacement === "sidebar" && (
-												<button
-													type="button"
+												// biome-ignore lint/a11y/noStaticElementInteractions: wrapper header : PhotoField déjà en bouton
+												// biome-ignore lint/a11y/useKeyWithClickEvents: sélection de section header
+												<div
 													ref={setMeasureRef(HEADER_SIDEBAR_ID)}
 													onClick={() => selectSection("header")}
 													className="w-full"
 												>
 													{HeaderComponent && <HeaderComponent />}
-												</button>
+												</div>
 											)}
 											{pageIndex === 0 && headerPlacement === "split" && (
-												<button
-													type="button"
+												// biome-ignore lint/a11y/noStaticElementInteractions: wrapper header : PhotoField déjà en bouton
+												// biome-ignore lint/a11y/useKeyWithClickEvents: sélection de section header
+												<div
 													ref={setMeasureRef(HEADER_SPLIT_SIDEBAR_ID)}
 													onClick={() => selectSection("header")}
 													className="w-full"
 												>
 													<SplitSidebar />
-												</button>
+												</div>
 											)}
 											{page.sidebarIds.map((id) => {
 												const item = sidebarById.get(id);
@@ -335,14 +338,15 @@ export function TwoColumnCenter({ deleteSection }: TwoColumnCenterProps) {
 											} ${columnPadding}`}
 										>
 											{pageIndex === 0 && headerPlacement === "split" && (
-												<button
-													type="button"
+												// biome-ignore lint/a11y/noStaticElementInteractions: wrapper header : enfants déjà interactifs
+												// biome-ignore lint/a11y/useKeyWithClickEvents: sélection de section header
+												<div
 													ref={setMeasureRef(HEADER_SPLIT_MAIN_ID)}
 													onClick={() => selectSection("header")}
 													className="w-full"
 												>
 													<SplitMain />
-												</button>
+												</div>
 											)}
 											{page.mainIds.map((id) => {
 												const item = mainById.get(id);

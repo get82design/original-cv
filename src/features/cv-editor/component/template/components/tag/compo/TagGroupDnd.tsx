@@ -103,8 +103,9 @@ export const TagGroupDnd = ({
 		>
 			<div className="tags-grid">
 				{watchTags.map((tag, index) => (
-					<button
-						type="button"
+					// biome-ignore lint/a11y/noStaticElementInteractions: carte : enfants déjà interactifs
+					// biome-ignore lint/a11y/useKeyWithClickEvents: sélection d'item
+					<div
 						className="tag-group-card w-full"
 						key={tag.clientKey}
 						onClick={(e) => {
@@ -121,7 +122,7 @@ export const TagGroupDnd = ({
 							itemsMenu={itemsMenu}
 							colOfTag={colOfTag}
 						/>
-					</button>
+					</div>
 				))}
 				{showAddGroup && (
 					<Button

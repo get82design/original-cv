@@ -102,8 +102,9 @@ export const CompoSkillDnd = ({
 	return (
 		<>
 			{skills.map((skill, index) => (
-				<button
-					type="button"
+				// biome-ignore lint/a11y/noStaticElementInteractions: carte : RatingCvInput déjà interactif
+				// biome-ignore lint/a11y/useKeyWithClickEvents: sélection d'item skill
+				<div
 					className="skill-card w-full"
 					key={skill.clientKey}
 					onClick={(e) => {
@@ -121,7 +122,7 @@ export const CompoSkillDnd = ({
 						itemName={`datas.skillGroup.content.${groupIndex}.content.skills`}
 						clientKeyGroup={clientKeyGroup}
 					/>
-				</button>
+				</div>
 			))}
 			{showAddSkill && (
 				<Button

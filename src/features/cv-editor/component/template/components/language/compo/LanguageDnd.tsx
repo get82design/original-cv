@@ -73,8 +73,9 @@ export const CompoLanguageDnd = ({
 	return (
 		<>
 			{languages.map((language, index) => (
-				<button
-					type="button"
+				// biome-ignore lint/a11y/noStaticElementInteractions: carte : RatingCvInput déjà interactif
+				// biome-ignore lint/a11y/useKeyWithClickEvents: sélection d'item language
+				<div
 					className="language-card"
 					key={language.clientKey}
 					onClick={(e) => {
@@ -89,7 +90,7 @@ export const CompoLanguageDnd = ({
 						itemSelected={itemSelected} // local
 						setItemSelected={setItemSelected} // local
 					/>
-				</button>
+				</div>
 			))}
 			{showAddLanguage && (
 				<Button

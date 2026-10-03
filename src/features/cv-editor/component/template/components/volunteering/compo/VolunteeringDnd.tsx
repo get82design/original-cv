@@ -127,8 +127,9 @@ export const VolunteeringsDnd = ({
 		>
 			<div className="volunteerings-grid">
 				{watchVolunteerings.map((volunteering, index) => (
-					<button
-						type="button"
+					// biome-ignore lint/a11y/noStaticElementInteractions: carte : enfants déjà interactifs
+					// biome-ignore lint/a11y/useKeyWithClickEvents: sélection d'item
+					<div
 						className="volunteering-card w-full"
 						key={volunteering.clientKey}
 						onClick={(e) => {
@@ -146,7 +147,7 @@ export const VolunteeringsDnd = ({
 							addElmList={addElmList}
 							deleteMission={deleteMission}
 						/>
-					</button>
+					</div>
 				))}
 				{showAddVolunteering && (
 					<Button

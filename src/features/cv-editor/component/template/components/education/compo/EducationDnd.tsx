@@ -77,8 +77,9 @@ export const EducationDnd = ({
 				className={`educations-grid grid items-start ${COL_CLASS[colOfEducation as keyof typeof COL_CLASS] ?? "grid-cols-1"} gap-x-6 gap-y-2`}
 			>
 				{watchEducations.map((education, index) => (
-					<button
-						type="button"
+					// biome-ignore lint/a11y/noStaticElementInteractions: carte : enfants déjà interactifs
+					// biome-ignore lint/a11y/useKeyWithClickEvents: sélection d'item
+					<div
 						className="education-card w-full"
 						key={education.clientKey}
 						onClick={(e) => {
@@ -94,7 +95,7 @@ export const EducationDnd = ({
 							setItemSelected={setItemSelected} // local
 							itemsMenu={itemsMenu}
 						/>
-					</button>
+					</div>
 				))}
 				{showAddEducation && (
 					<Button

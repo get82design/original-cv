@@ -91,8 +91,9 @@ export const FormationDnd = ({
 				className={`formations-grid grid ${COL_CLASS[colOfFormation as keyof typeof COL_CLASS] ?? "grid-cols-2"} ${colOfFormation === 1 ? "gap-1" : "gap-x-4 gap-y-1"}`}
 			>
 				{watchFormations.map((formation, index) => (
-					<button
-						type="button"
+					// biome-ignore lint/a11y/noStaticElementInteractions: carte : enfants déjà interactifs
+					// biome-ignore lint/a11y/useKeyWithClickEvents: sélection d'item
+					<div
 						className="formation-card"
 						key={formation.clientKey}
 						onClick={(e) => {
@@ -108,7 +109,7 @@ export const FormationDnd = ({
 							setItemSelected={setItemSelected} // local
 							itemsMenu={itemsMenu}
 						/>
-					</button>
+					</div>
 				))}
 				{showAddFormation && (
 					<Button

@@ -125,8 +125,9 @@ export const SkillGroupDnd = ({
 				className={`skills-grid grid items-start grid ${COL_CLASS[groupCols as keyof typeof COL_CLASS] ?? "grid-cols-1"} ${groupCols === 1 ? "gap-1" : "gap-x-4 gap-y-1"}`}
 			>
 				{watchSkills.map((skill, index) => (
-					<button
-						type="button"
+					// biome-ignore lint/a11y/noStaticElementInteractions: carte : enfants déjà interactifs
+					// biome-ignore lint/a11y/useKeyWithClickEvents: sélection d'item
+					<div
 						className={`skill-group-card w-full`}
 						key={skill.clientKey}
 						onClick={(e) => {
@@ -143,7 +144,7 @@ export const SkillGroupDnd = ({
 							itemsMenu={itemsMenu}
 							// colOfSkill={colOfSkill}
 						/>
-					</button>
+					</div>
 				))}
 				{showAddGroup && (
 					<Button

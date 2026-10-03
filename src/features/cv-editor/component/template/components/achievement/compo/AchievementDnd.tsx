@@ -80,8 +80,9 @@ export const AchievementDnd = ({
 		>
 			<div className="achievements-grid">
 				{watchAchievements.map((achievement, index) => (
-					<button
-						type="button"
+					// biome-ignore lint/a11y/noStaticElementInteractions: carte : enfants déjà interactifs
+					// biome-ignore lint/a11y/useKeyWithClickEvents: sélection d'item
+					<div
 						className="achievement-card w-full"
 						key={achievement.clientKey}
 						onClick={(e) => {
@@ -97,7 +98,7 @@ export const AchievementDnd = ({
 							setItemSelected={setItemSelected} // local
 							itemsMenu={itemsMenu}
 						/>
-					</button>
+					</div>
 				))}
 				{showAddAchievement && (
 					<Button

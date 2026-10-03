@@ -127,8 +127,9 @@ export const ExperiencesDnd = ({
 		>
 			<div className="experiences-grid grid grid-cols-1 gap-2">
 				{watchExperiences.map((experience, index) => (
-					<button
-						type="button"
+					// biome-ignore lint/a11y/noStaticElementInteractions: carte : enfants déjà interactifs
+					// biome-ignore lint/a11y/useKeyWithClickEvents: sélection d'item
+					<div
 						className="experience-card w-full"
 						key={experience.clientKey}
 						onClick={(e) => {
@@ -146,7 +147,7 @@ export const ExperiencesDnd = ({
 							addElmList={addElmList}
 							deleteMission={deleteMission}
 						/>
-					</button>
+					</div>
 				))}
 				{showAddExperience && (
 					<Button

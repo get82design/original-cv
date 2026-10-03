@@ -45,8 +45,9 @@ export const TagDnd = ({
 		<SortableContext items={tags.map((t) => t.clientKey)} strategy={horizontalListSortingStrategy}>
 			<div className={`tag-dnd-grid flex gap-2 flex-wrap min-h-[30px]`}>
 				{tags.map((tag, index) => (
-					<button
-						type="button"
+					// biome-ignore lint/a11y/noStaticElementInteractions: carte : enfants déjà interactifs
+					// biome-ignore lint/a11y/useKeyWithClickEvents: sélection d'item
+					<div
 						className="tag-card w-auto"
 						key={tag.clientKey}
 						onClick={(e) => {
@@ -64,7 +65,7 @@ export const TagDnd = ({
 							itemName={`datas.tagGroup.content.${groupIndex}.content.tags`}
 							clientKeyGroup={clientKeyGroup}
 						/>
-					</button>
+					</div>
 				))}
 				{showAddTag && (
 					<Button
