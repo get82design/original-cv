@@ -1,16 +1,17 @@
-import { InputTextCv } from "@/components/input-writer/input-text-cv/InputTextCv";
 import { useFormContext } from "react-hook-form";
-import { IntituleCvInput } from "../input-cv/intitule-input/IntituleCvInput";
-import { EmailInput } from "../input-cv/email-input/EmailCvInput";
-import { PhoneInput } from "../input-cv/phone-input/PhoneCvInput";
-import { LocationInput } from "../input-cv/location-input/LocationCvInput";
-import { HeaderThreeContainer } from "./content/HeaderThreeContainer";
-import { FieldNameLayoutGeneral } from "@/features/cv-editor/utils/fields/fieldNameLayoutGeneral";
-import { FieldNameHeader } from "@/features/cv-editor/utils/fields/fieldNameHeader";
-import { FieldNameCv } from "@/features/cv-editor/utils/fields/fieldNameCv";
-import { useCreateCvContext } from "../../../context/CreateCvContext";
-import { getHeaderChrome } from "./utils/headerLayout";
+import { InputTextCv } from "@/components/input-writer/input-text-cv/InputTextCv";
 import { PhotoField } from "@/components/photo/PhotoField";
+import { FieldNameCv } from "@/features/cv-editor/utils/fields/fieldNameCv";
+import { FieldNameHeader } from "@/features/cv-editor/utils/fields/fieldNameHeader";
+import { FieldNameLayoutGeneral } from "@/features/cv-editor/utils/fields/fieldNameLayoutGeneral";
+import { useCreateCvContext } from "../../../context/CreateCvContext";
+import { DrivingLicenseCvInput } from "../input-cv/driving-license-input/DrivingLicenseCvInput";
+import { EmailInput } from "../input-cv/email-input/EmailCvInput";
+import { IntituleCvInput } from "../input-cv/intitule-input/IntituleCvInput";
+import { LocationInput } from "../input-cv/location-input/LocationCvInput";
+import { PhoneInput } from "../input-cv/phone-input/PhoneCvInput";
+import { HeaderThreeContainer } from "./content/HeaderThreeContainer";
+import { getHeaderChrome } from "./utils/headerLayout";
 
 export const HeaderThree = () => {
 	const { watch } = useFormContext();
@@ -54,18 +55,13 @@ export const HeaderThree = () => {
 					forceWidthFull={true}
 				/>
 			}
-			subTitleCompo={
-				<IntituleCvInput forceWidthFull textAlign={chrome.textAlign} />
-			}
+			subTitleCompo={<IntituleCvInput forceWidthFull textAlign={chrome.textAlign} />}
 			emailCompo={<EmailInput withIcon textAlign={chrome.textAlign} />}
 			phoneCompo={<PhoneInput withIcon textAlign={chrome.textAlign} />}
 			locationCompo={<LocationInput withIcon textAlign={chrome.textAlign} />}
+			drivingLicenseCompo={<DrivingLicenseCvInput withIcon textAlign={chrome.textAlign} />}
 			photo={
-				<PhotoField
-					name={FieldNameCv.photo}
-					stylePhoto={watchGeneral?.stylePhoto}
-					size={160}
-				/>
+				<PhotoField name={FieldNameCv.photo} stylePhoto={watchGeneral?.stylePhoto} size={160} />
 			}
 		/>
 	);

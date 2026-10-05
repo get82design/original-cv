@@ -821,6 +821,59 @@ html.dark .profile-identite-permis .p-checkbox.p-highlight .p-checkbox-box {
 	color: #18181b;
 }
 
+/* Overlay édition permis dans le header CV */
+.p-overlaypanel.cv-driving-license-overlay {
+	background: #ffffff;
+	color: #18181b;
+	border: 1px solid #d4d4d8;
+}
+
+.p-overlaypanel.cv-driving-license-overlay .p-overlaypanel-content {
+	padding: 0.75rem;
+}
+
+.p-overlaypanel.cv-driving-license-overlay .p-multiselect {
+	background: #ffffff;
+	color: #18181b;
+	border-color: #d4d4d8;
+}
+
+.p-overlaypanel.cv-driving-license-overlay .p-checkbox .p-checkbox-box {
+	background: #ffffff;
+	border-color: #d4d4d8;
+	color: #ffffff;
+}
+
+.p-overlaypanel.cv-driving-license-overlay .p-checkbox.p-highlight .p-checkbox-box {
+	background: var(--primary-color);
+	border-color: var(--primary-color);
+	color: #ffffff;
+}
+
+html.dark .p-overlaypanel.cv-driving-license-overlay {
+	background: #18181b;
+	color: #f4f4f5;
+	border-color: #3f3f46;
+}
+
+html.dark .p-overlaypanel.cv-driving-license-overlay .p-multiselect {
+	background: #18181b;
+	color: #f4f4f5;
+	border-color: #3f3f46;
+}
+
+html.dark .p-overlaypanel.cv-driving-license-overlay .p-checkbox .p-checkbox-box {
+	background: #18181b;
+	border-color: #3f3f46;
+	color: #18181b;
+}
+
+html.dark .p-overlaypanel.cv-driving-license-overlay .p-checkbox.p-highlight .p-checkbox-box {
+	background: var(--primary-color-dark);
+	border-color: var(--primary-color-dark);
+	color: #18181b;
+}
+
 /* Overlay MultiSelect permis (portal body) */
 .p-multiselect-panel.profile-identite-permis-panel {
 	background: #ffffff;

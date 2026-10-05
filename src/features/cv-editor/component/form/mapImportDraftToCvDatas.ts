@@ -63,6 +63,8 @@ export function mapImportDraftToCvDatas(
 			email: draft.identity?.email ?? "",
 			location: draft.identity?.location ?? "",
 			portfolio: "",
+			drivingLicenses: [],
+			hasVehicle: false,
 			settings: header.settings,
 		},
 		...(exp

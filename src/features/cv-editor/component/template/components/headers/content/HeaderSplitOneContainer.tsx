@@ -8,6 +8,7 @@ interface HeaderSplitOneSidebarContainerProps {
 	emailCompo: JSX.Element;
 	phoneCompo: JSX.Element;
 	locationCompo: JSX.Element;
+	drivingLicenseCompo: JSX.Element;
 }
 
 /** Slot sidebar de HeaderSplitOne : photo + coordonnées. */
@@ -17,6 +18,7 @@ export const HeaderSplitOneSidebarContainer = ({
 	emailCompo,
 	phoneCompo,
 	locationCompo,
+	drivingLicenseCompo,
 }: HeaderSplitOneSidebarContainerProps) => {
 	return (
 		<div
@@ -30,6 +32,7 @@ export const HeaderSplitOneSidebarContainer = ({
 				{emailCompo}
 				{phoneCompo}
 				{locationCompo}
+				{drivingLicenseCompo}
 			</div>
 		</div>
 	);

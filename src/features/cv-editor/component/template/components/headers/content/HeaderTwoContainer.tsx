@@ -12,6 +12,7 @@ interface HeaderTwoContainerProps {
 	emailCompo: JSX.Element;
 	phoneCompo: JSX.Element;
 	locationCompo: JSX.Element;
+	drivingLicenseCompo: JSX.Element;
 }
 
 export const HeaderTwoContainer = ({
@@ -21,6 +22,7 @@ export const HeaderTwoContainer = ({
 	emailCompo,
 	phoneCompo,
 	locationCompo,
+	drivingLicenseCompo,
 }: HeaderTwoContainerProps) => {
 	return (
 		<div
@@ -37,12 +39,13 @@ export const HeaderTwoContainer = ({
 			<span className="w-full" style={{ fontFamily: "var(--cv-font-headerSubTitle)" }}>
 				{subTitle}
 			</span>
-			<div className="w-full flex justify-center gap-3 mt-3">
+			<div className="w-full flex flex-wrap justify-center items-center gap-3 mt-3">
 				{emailCompo}
 				<p>|</p>
 				{phoneCompo}
 				<p>|</p>
 				{locationCompo}
+				{drivingLicenseCompo}
 			</div>
 		</div>
 	);

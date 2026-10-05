@@ -501,6 +501,8 @@ export function mapCvToSaveInput(cv: CvFull): CvSaveInput {
 							...(cv.headerCv.portfolio != null ? { portfolio: cv.headerCv.portfolio } : {}),
 							...(cv.headerCv.nom != null ? { nom: cv.headerCv.nom } : {}),
 							...(cv.headerCv.prenom != null ? { prenom: cv.headerCv.prenom } : {}),
+							drivingLicenses: cv.headerCv.drivingLicenses ?? [],
+							hasVehicle: cv.headerCv.hasVehicle ?? false,
 							...(cv.headerCv.settings != null
 								? {
 										settings: cv.headerCv.settings as NonNullable<

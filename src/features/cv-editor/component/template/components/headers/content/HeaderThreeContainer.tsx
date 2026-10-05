@@ -12,6 +12,7 @@ interface HeaderThreeContainerProps {
 	emailCompo: JSX.Element;
 	phoneCompo: JSX.Element;
 	locationCompo: JSX.Element;
+	drivingLicenseCompo: JSX.Element;
 	photo: JSX.Element;
 }
 
@@ -24,6 +25,7 @@ export const HeaderThreeContainer = ({
 	emailCompo,
 	phoneCompo,
 	locationCompo,
+	drivingLicenseCompo,
 	photo,
 }: HeaderThreeContainerProps) => {
 	return (
@@ -43,6 +45,7 @@ export const HeaderThreeContainer = ({
 					{phoneCompo}
 					{emailCompo}
 					{locationCompo}
+					{drivingLicenseCompo}
 				</div>
 			</div>
 		</div>

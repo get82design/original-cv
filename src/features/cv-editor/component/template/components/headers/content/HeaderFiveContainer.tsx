@@ -8,6 +8,7 @@ interface HeaderFiveContainerProps {
 	emailCompo: JSX.Element;
 	phoneCompo: JSX.Element;
 	locationCompo: JSX.Element;
+	drivingLicenseCompo: JSX.Element;
 	photo: JSX.Element;
 }
 
@@ -18,6 +19,7 @@ export function HeaderFiveContainer({
 	emailCompo,
 	phoneCompo,
 	locationCompo,
+	drivingLicenseCompo,
 	photo,
 }: HeaderFiveContainerProps) {
 	return (
@@ -30,6 +32,7 @@ export function HeaderFiveContainer({
 				{emailCompo}
 				{phoneCompo}
 				{locationCompo}
+				{drivingLicenseCompo}
 			</div>
 		</div>
 	);

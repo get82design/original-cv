@@ -10,6 +10,7 @@ interface HeaderContentProps {
 	emailCompo: JSX.Element;
 	phoneCompo: JSX.Element;
 	locationCompo: JSX.Element;
+	drivingLicenseCompo: JSX.Element;
 	photo: JSX.Element;
 	chrome: HeaderChrome;
 }
@@ -22,6 +23,7 @@ export const HeaderOneContainer = ({
 	emailCompo,
 	phoneCompo,
 	locationCompo,
+	drivingLicenseCompo,
 	photo,
 }: HeaderContentProps) => {
 	return (
@@ -31,7 +33,10 @@ export const HeaderOneContainer = ({
 			<div className={`w-full flex gap-4 ${chrome.rowClass}`}>
 				{modelGeneral?.withPhoto && photo}
 				<div className={`header-content w-full flex flex-col gap-0 ${chrome.textAlignClass}`}>
-					{titleCompo}
+					<div className="w-full flex justify-between items-start gap-3">
+						<div className="min-w-0 flex-1">{titleCompo}</div>
+						<div className="shrink-0 max-w-[48%] self-start mt-2">{drivingLicenseCompo}</div>
+					</div>
 					<div className="-mt-2 w-full">{subTitleCompo}</div>
 					<div className="w-full grid grid-cols-3 mt-3">
 						{emailCompo}

@@ -1,6 +1,6 @@
-import { templateStructureSchema, type TemplateModule } from "@/services/schemas/cvTemplate.schema";
 import type { TemplateCv } from "@utils/trpc.types";
 import type { CvFormValues } from "@/services/schemas/cvSave.schema";
+import { type TemplateModule, templateStructureSchema } from "@/services/schemas/cvTemplate.schema";
 import type { ProfileComplete } from "./FormCv";
 
 function getModule<T extends TemplateModule["type"]>(
@@ -50,6 +50,8 @@ export function mapProfileToCvDatas(
 			email: profile.email ?? "",
 			location: profile.location ?? "",
 			portfolio: "",
+			drivingLicenses: profile.drivingLicenses ?? [],
+			hasVehicle: profile.hasVehicle ?? false,
 			settings: header.settings, // si tu veux aussi le header template
 		},
 		...(exp

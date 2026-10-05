@@ -13,6 +13,7 @@ interface HeaderContentProps {
 	emailCompo: JSX.Element;
 	phoneCompo: JSX.Element;
 	locationCompo: JSX.Element;
+	drivingLicenseCompo: JSX.Element;
 	photo: JSX.Element;
 }
 
@@ -25,6 +26,7 @@ export const HeaderFourContainer = ({
 	emailCompo,
 	phoneCompo,
 	locationCompo,
+	drivingLicenseCompo,
 	photo,
 }: HeaderContentProps) => {
 	const { watch } = useFormContext();
@@ -60,6 +62,7 @@ export const HeaderFourContainer = ({
 						{emailCompo}
 						{phoneCompo}
 						{locationCompo}
+						{drivingLicenseCompo}
 					</div>
 				</div>
 				{modelGeneral?.withPhoto && photo}

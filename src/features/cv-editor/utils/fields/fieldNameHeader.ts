@@ -8,6 +8,8 @@ export enum FieldNameHeader {
 	email = "datas.header.email",
 	phone = "datas.header.phone",
 	location = "datas.header.location",
+	drivingLicenses = "datas.header.drivingLicenses",
+	hasVehicle = "datas.header.hasVehicle",
 	settings = "datas.header.settings",
 	settingsTitle = "datas.header.settings.title",
 	settingsSubTitle = "datas.header.settings.subTitle",

@@ -1,14 +1,15 @@
 import { useFormContext } from "react-hook-form";
-import { HeaderFiveContainer } from "./content/HeaderFiveContainer";
-import { FieldNameLayoutGeneral } from "@/features/cv-editor/utils/fields/fieldNameLayoutGeneral";
+import { PhotoField } from "@/components/photo/PhotoField";
 import { FieldNameCv } from "@/features/cv-editor/utils/fields/fieldNameCv";
-import { IntituleCvInput } from "../input-cv/intitule-input/IntituleCvInput";
+import { FieldNameHeader } from "@/features/cv-editor/utils/fields/fieldNameHeader";
+import { FieldNameLayoutGeneral } from "@/features/cv-editor/utils/fields/fieldNameLayoutGeneral";
+import { DrivingLicenseCvInput } from "../input-cv/driving-license-input/DrivingLicenseCvInput";
 import { EmailInput } from "../input-cv/email-input/EmailCvInput";
-import { PhoneInput } from "../input-cv/phone-input/PhoneCvInput";
+import { IntituleCvInput } from "../input-cv/intitule-input/IntituleCvInput";
 import { LocationInput } from "../input-cv/location-input/LocationCvInput";
 import { NomPrenomInput } from "../input-cv/nom-input/NomPrenomInput";
-import { FieldNameHeader } from "@/features/cv-editor/utils/fields/fieldNameHeader";
-import { PhotoField } from "@/components/photo/PhotoField";
+import { PhoneInput } from "../input-cv/phone-input/PhoneCvInput";
+import { HeaderFiveContainer } from "./content/HeaderFiveContainer";
 
 export function HeaderFive() {
 	const { watch } = useFormContext();
@@ -34,12 +35,9 @@ export function HeaderFive() {
 			emailCompo={<EmailInput withIcon />}
 			phoneCompo={<PhoneInput withIcon />}
 			locationCompo={<LocationInput withIcon />}
+			drivingLicenseCompo={<DrivingLicenseCvInput withIcon />}
 			photo={
-				<PhotoField
-					name={FieldNameCv.photo}
-					stylePhoto={watchGeneral?.stylePhoto}
-					size={150}
-				/>
+				<PhotoField name={FieldNameCv.photo} stylePhoto={watchGeneral?.stylePhoto} size={150} />
 			}
 		/>
 	);

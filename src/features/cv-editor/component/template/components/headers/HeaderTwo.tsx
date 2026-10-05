@@ -1,12 +1,13 @@
-import { NomPrenomInput } from "../input-cv/nom-input/NomPrenomInput";
-import { IntituleCvInput } from "../input-cv/intitule-input/IntituleCvInput";
-import { EmailInput } from "../input-cv/email-input/EmailCvInput";
-import { PhoneInput } from "../input-cv/phone-input/PhoneCvInput";
-import { LocationInput } from "../input-cv/location-input/LocationCvInput";
-import { HeaderTwoContainer } from "./content/HeaderTwoContainer";
 import { useFormContext } from "react-hook-form";
-import type { BaseTextSettings } from "@/services/schemas/cvTemplate.schema";
 import { FieldNameHeader } from "@/features/cv-editor/utils/fields/fieldNameHeader";
+import type { BaseTextSettings } from "@/services/schemas/cvTemplate.schema";
+import { DrivingLicenseCvInput } from "../input-cv/driving-license-input/DrivingLicenseCvInput";
+import { EmailInput } from "../input-cv/email-input/EmailCvInput";
+import { IntituleCvInput } from "../input-cv/intitule-input/IntituleCvInput";
+import { LocationInput } from "../input-cv/location-input/LocationCvInput";
+import { NomPrenomInput } from "../input-cv/nom-input/NomPrenomInput";
+import { PhoneInput } from "../input-cv/phone-input/PhoneCvInput";
+import { HeaderTwoContainer } from "./content/HeaderTwoContainer";
 
 export const HeaderTwo = () => {
 	const { watch } = useFormContext();
@@ -24,6 +25,7 @@ export const HeaderTwo = () => {
 			emailCompo={<EmailInput textAlign="center" />}
 			phoneCompo={<PhoneInput textAlign="center" />}
 			locationCompo={<LocationInput textAlign="center" />}
+			drivingLicenseCompo={<DrivingLicenseCvInput textAlign="center" leadingSeparator />}
 		/>
 	);
 };

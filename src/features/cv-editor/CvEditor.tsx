@@ -1,73 +1,71 @@
-import { useSession } from "next-auth/react";
-import { useMediaQuery } from "@utils/useWindowWidth";
-import { TitleAppOne } from "@/components/title/TitleAppOne";
-import { useFormContext } from "react-hook-form";
-import type { TemplateModule } from "@/services/schemas/cvTemplate.schema";
-import { useEffect, useMemo, useRef, useState } from "react";
-import { OneColumnModel } from "./component/kit-dnd/one-column-model/OneColumnModel";
-import { clearEditorSelection, useCreateCvContext } from "./component/context/CreateCvContext";
-import type { ItemGeneralProps } from "@utils/type";
-import { compactActiveOrders, nextActiveOrderInColumn } from "@/utils/moduleOrder";
-import { commitCvFormHistory } from "./utils/cvFormHistoryCommit";
-import { PageLayoutRegister } from "./component/kit-dnd/register/PageLayoutRegister";
-import { getCvTypographyVars } from "./utils/utilsCv/font";
-import type { CvFormValues } from "@/services/schemas/cvSave.schema";
 import { trpc } from "@utils/trpc";
-import { SpeedDial } from "primereact/speeddial";
-import { Tooltip } from "primereact/tooltip";
+import type { ItemGeneralProps } from "@utils/type";
+import { useMediaQuery } from "@utils/useWindowWidth";
+import { useSession } from "next-auth/react";
 import { Button } from "primereact/button";
-import { DialogDataFromProfile } from "./component/dialog/dataFromProfile/DialogDataFromProfile";
-import { DialogCvTips } from "./component/dialog/DialogCvTips";
-import { DialogCvOnboarding } from "./component/dialog/DialogCvOnboarding";
-import { DialogAssistantIa, type AiActionId } from "@/components/dialog/DialogAssistantIa";
+import { SpeedDial } from "primereact/speeddial";
+import { Toast } from "primereact/toast";
+import { Tooltip } from "primereact/tooltip";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { useFormContext } from "react-hook-form";
 import { DialogAiPayment } from "@/components/dialog/DialogAiPayment";
-import { DialogCvReviewResult } from "@/components/dialog/DialogCvReviewResult";
-import { DialogRewriteSection } from "@/components/dialog/DialogRewriteSection";
+import { type AiActionId, DialogAssistantIa } from "@/components/dialog/DialogAssistantIa";
 import {
-	DialogCoverLetter,
 	type CoverLetterFormValues,
+	DialogCoverLetter,
 } from "@/components/dialog/DialogCoverLetter";
-import {
-	DialogMatchJob,
-	type MatchJobFormValues,
-} from "@/components/dialog/DialogMatchJob";
-import { DialogFicheMetier } from "@/components/dialog/DialogFicheMetier";
-import { CV_MODIF_DOCK_WIDTH, CvModifDock } from "./component/custom-cv-input/CvModifDock";
-import { useCvFormHistory } from "./component/form/CvFormHistoryContext";
+import { DialogCvReviewResult } from "@/components/dialog/DialogCvReviewResult";
 import { DialogDownloadCv } from "@/components/dialog/DialogDownloadCv";
+import { DialogFicheMetier } from "@/components/dialog/DialogFicheMetier";
+import { DialogMatchJob, type MatchJobFormValues } from "@/components/dialog/DialogMatchJob";
 import {
 	DialogRecentDownloadWarn,
 	type PendingDownloadKind,
 } from "@/components/dialog/DialogRecentDownloadWarn";
+import { DialogRewriteSection } from "@/components/dialog/DialogRewriteSection";
+import { TitleAppOne } from "@/components/title/TitleAppOne";
+import type { AiCreditPaymentChoice, BillableAiFeature } from "@/services/ai/aiBillingService";
+import { extractPrimaryColorName } from "@/services/cv/extractPrimaryColorName";
+import type { CvCoverLetter } from "@/services/schemas/cvCoverLetter.schema";
+import type { CvMatchJob } from "@/services/schemas/cvMatchJob.schema";
+import type { CvReview } from "@/services/schemas/cvReview.schema";
+import type {
+	CvRewriteSection as CvRewriteResult,
+	CvRewriteSectionType,
+} from "@/services/schemas/cvRewriteSection.schema";
+import type { CvFormValues } from "@/services/schemas/cvSave.schema";
+import type { TemplateModule } from "@/services/schemas/cvTemplate.schema";
+import type { RomeFicheDto } from "@/services/schemas/romeFiche.schema";
+import { formatRomeFicheForPrompt } from "@/services/schemas/romeFiche.schema";
+import { getClientErrorMessage, isTooManyRequestsError } from "@/utils/clientError";
+import { compactActiveOrders, nextActiveOrderInColumn } from "@/utils/moduleOrder";
+import { useAiAdvice } from "./component/context/AiAdviceContext";
+import { clearEditorSelection, useCreateCvContext } from "./component/context/CreateCvContext";
+import { useCvSignatureVariant } from "./component/context/CvSignatureVariantContext";
+import { useModelAndColorContext } from "./component/context/ModelAndColorContext";
+import { CV_MODIF_DOCK_WIDTH, CvModifDock } from "./component/custom-cv-input/CvModifDock";
+import { DialogCvOnboarding } from "./component/dialog/DialogCvOnboarding";
+import { DialogCvTips } from "./component/dialog/DialogCvTips";
+import { DialogDataFromProfile } from "./component/dialog/dataFromProfile/DialogDataFromProfile";
+import { useCvFormHistory } from "./component/form/CvFormHistoryContext";
+import { OneColumnModel } from "./component/kit-dnd/one-column-model/OneColumnModel";
+import { PageLayoutRegister } from "./component/kit-dnd/register/PageLayoutRegister";
+import { applyCvRewriteToForm } from "./utils/applyCvRewriteToForm";
 import {
 	captureCvPreview,
 	captureDownloadPreviews,
 	waitForNextPaint,
 } from "./utils/captureCvPreview";
-import { useCvSignatureVariant } from "./component/context/CvSignatureVariantContext";
+import { commitCvFormHistory } from "./utils/cvFormHistoryCommit";
 import type { CvSignatureVariantId } from "./utils/cvSignatureVariants";
-import type { CvReview } from "@/services/schemas/cvReview.schema";
-import type { CvRewriteSection as CvRewriteResult } from "@/services/schemas/cvRewriteSection.schema";
-import type { CvRewriteSectionType } from "@/services/schemas/cvRewriteSection.schema";
-import type { CvCoverLetter } from "@/services/schemas/cvCoverLetter.schema";
-import type { CvMatchJob } from "@/services/schemas/cvMatchJob.schema";
-import type { RomeFicheDto } from "@/services/schemas/romeFiche.schema";
-import { formatRomeFicheForPrompt } from "@/services/schemas/romeFiche.schema";
-import { Toast } from "primereact/toast";
-import { flattenCvFormToText } from "./utils/flattenCvFormToText";
-import { FieldNameHeader } from "./utils/fields/fieldNameHeader";
-import { extractPrimaryColorName } from "@/services/cv/extractPrimaryColorName";
-import { getClientErrorMessage, isTooManyRequestsError } from "@/utils/clientError";
 import {
 	extractCvSectionSourceText,
 	listRewriteableSections,
 } from "./utils/extractCvSectionForRewrite";
-import { applyCvRewriteToForm } from "./utils/applyCvRewriteToForm";
-import { useAiAdvice } from "./component/context/AiAdviceContext";
-import { useModelAndColorContext } from "./component/context/ModelAndColorContext";
-import type { AiCreditPaymentChoice } from "@/services/ai/aiBillingService";
-import type { BillableAiFeature } from "@/services/ai/aiBillingService";
+import { FieldNameHeader } from "./utils/fields/fieldNameHeader";
+import { flattenCvFormToText } from "./utils/flattenCvFormToText";
 import { isTemplateLocked } from "./utils/isTemplateLocked";
+import { getCvTypographyVars } from "./utils/utilsCv/font";
 
 export const CvEditor = () => {
 	const { data } = trpc.cv.allByUser.useQuery();
@@ -243,7 +241,9 @@ export const CvEditor = () => {
 			// Dock modifications → ne rien faire (ne ferme pas, ne clear pas)
 			if (target.closest("#modele-cv-modif")) return;
 
-			if (target.closest(".p-dialog, .p-menu, .p-overlaypanel")) return;
+			if (target.closest(".p-dialog, .p-menu, .p-overlaypanel, .p-multiselect-panel")) {
+				return;
+			}
 
 			if (target.closest(".cv-page-document")) {
 				if (target.closest("input, textarea, .section-card, [data-cv-selectable]")) return;
