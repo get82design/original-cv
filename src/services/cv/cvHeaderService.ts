@@ -37,6 +37,8 @@ export class CvHeaderService {
 				location: data?.location ?? null,
 				subtitle: data?.subtitle ?? null,
 				settings: data?.settings ?? {},
+				drivingLicenses: data?.drivingLicenses ?? [],
+				hasVehicle: data?.hasVehicle ?? false,
 			},
 		});
 	}
@@ -78,6 +80,8 @@ export class CvHeaderService {
 				...(data.nom !== undefined ? { nom: data.nom } : {}),
 				...(data.prenom !== undefined ? { prenom: data.prenom } : {}),
 				...(data.settings !== undefined ? { settings: data.settings } : {}),
+				...(data.drivingLicenses !== undefined ? { drivingLicenses: data.drivingLicenses } : {}),
+				...(data.hasVehicle !== undefined ? { hasVehicle: data.hasVehicle } : {}),
 			},
 		});
 	}

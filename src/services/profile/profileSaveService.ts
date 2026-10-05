@@ -25,6 +25,8 @@ export class ProfileSaveService {
 					location: input.location ?? null,
 					email: input.email ?? null,
 					photo: input.photo ?? null,
+					drivingLicenses: input.drivingLicenses ?? [],
+					hasVehicle: input.hasVehicle ?? false,
 				},
 				update: {
 					firstName: input.firstName,
@@ -33,6 +35,8 @@ export class ProfileSaveService {
 					location: input.location ?? null,
 					email: input.email ?? null,
 					photo: input.photo ?? null,
+					drivingLicenses: input.drivingLicenses ?? [],
+					hasVehicle: input.hasVehicle ?? false,
 				},
 			});
 

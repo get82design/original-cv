@@ -1,6 +1,6 @@
-import type { ProfileSaveInput } from "@/services/schemas/profileSave.schema";
 import type { AppRouter } from "@server/api/root";
 import type { inferRouterOutputs } from "@trpc/server";
+import type { ProfileSaveInput } from "@/services/schemas/profileSave.schema";
 
 type RouterOutputs = inferRouterOutputs<AppRouter>;
 type ProfileComplete = NonNullable<RouterOutputs["profile"]["completeMe"]>;
@@ -18,6 +18,8 @@ export function mapProfileToSaveInput(
 		location: profile.location,
 		email: profile.email,
 		photo: profile.photo,
+		drivingLicenses: profile.drivingLicenses ?? [],
+		hasVehicle: profile.hasVehicle ?? false,
 		description: profile.description
 			? {
 					id: profile.description.id,

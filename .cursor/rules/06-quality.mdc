@@ -12,6 +12,7 @@ Détail : `docs/architecture.md` (dossiers + scripts + Biome) · stack : `docs/s
 - Tabs, double quotes, semicolons, trailing commas
 - `lineWidth: 100`, line endings CRLF
 - CSS lint/format désactivés — ne pas reformater massivement le CSS
+- **Imports** : `organizeImports` activé — après édition d’un fichier TS/TSX, laisser Biome trier (`npx biome check --write <fichier>` ou `npm run check:fix`) ; ne pas inventer un ordre manuel
 - Commandes : `npm run check` / `lint` / `format` (`check:fix` pour écrire)
 
 ## Git

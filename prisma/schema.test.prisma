@@ -299,6 +299,8 @@ model Profile {
   location    String?
   email       String?
   photo       String?
+  drivingLicenses DrivingLicense[] @default([])
+  hasVehicle      Boolean          @default(false)
 
   user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   description Description?
@@ -337,6 +339,25 @@ enum CvTimelineStatus {
   INTERRUPTED
 }
 
+/// Catégories de permis de conduire (France)
+enum DrivingLicense {
+  AM
+  A1
+  A2
+  A
+  B
+  B1
+  BE
+  C1
+  C
+  C1E
+  CE
+  D1
+  D
+  D1E
+  DE
+}
+
 model CvHeader {
   id          String @id @default(cuid())
   title       String
@@ -348,6 +369,8 @@ model CvHeader {
   nom         String?
   prenom      String?
   settings    Json?
+  drivingLicenses DrivingLicense[] @default([])
+  hasVehicle      Boolean          @default(false)
 
   cv          CV @relation(fields: [cvId], references: [id], onDelete: Cascade)
   cvId        String @unique
@@ -1205,6 +1228,15 @@ enum CVStatus {
 }
 
 // === Template de CV ===
+/// Style marketing catalogue `/modeles` + filtre admin
+enum TemplateStyleCategory {
+  CLASSIC
+  MODERN
+  CREATIVE
+  PROFESSIONAL
+  BOLD
+}
+
 model CVTemplate {
   id        String @id @default(cuid())
   name      String @unique                          // nom du template
@@ -1224,6 +1256,8 @@ model CVTemplate {
   isFeatured Boolean @default(false)
   /** Ordre d’affichage (plus petit = plus haut) */
   sortOrder  Int @default(0)
+  /** Catégorie de style (filtre catalogue / admin) */
+  styleCategory TemplateStyleCategory @default(CLASSIC)
   /**
    * Cadeaux à l’unlock / achat (JSON).
    * Ex. { "downloadCredits": 2, "freeDownloads": 1 }
@@ -1235,6 +1269,7 @@ model CVTemplate {
 
   @@index([isActive, sortOrder])
   @@index([isPremium])
+  @@index([styleCategory])
 }
 
 // === Item d'un module ===

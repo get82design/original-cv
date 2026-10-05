@@ -1,29 +1,32 @@
+import z from "zod";
+import { DrivingLicenseSchema } from "@/services/schemas/enums";
 import {
-	isBlankExperience,
-	isBlankStrength,
-	isBlankStat,
-	isBlankFormation,
-	isBlankProject,
-	isBlankPublication,
 	isBlankAchievement,
-	isBlankVolunteering,
+	isBlankCertification,
+	isBlankCompetenceGroup,
 	isBlankEducation,
+	isBlankExperience,
+	isBlankExpertise,
+	isBlankFormation,
 	isBlankLanguage,
 	isBlankPassion,
 	isBlankPrize,
-	isBlankCertification,
-	isBlankSocialMedia,
-	isBlankExpertise,
+	isBlankProject,
+	isBlankPublication,
 	isBlankSkillGroup,
-	isBlankCompetenceGroup,
+	isBlankSocialMedia,
+	isBlankStat,
+	isBlankStrength,
 	isBlankTagGroup,
+	isBlankVolunteering,
 } from "@/utils/isBankSection";
-import z from "zod";
 
 export const validationSchema = z
 	.object({
 		firstName: z.string().min(1, { message: "Le prénom est requis" }),
 		lastName: z.string().min(1, { message: "Le nom est requis" }),
+		drivingLicenses: z.array(DrivingLicenseSchema).optional().default([]),
+		hasVehicle: z.boolean().optional().default(false),
 		experiences: z
 			.array(z.any())
 			.optional()

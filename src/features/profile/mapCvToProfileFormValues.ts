@@ -1,6 +1,6 @@
-import type { ProfileSaveInput } from "@/services/schemas/profileSave.schema";
 import type { CvFull } from "@utils/trpc.types";
 import { v4 as uuid } from "uuid";
+import type { ProfileSaveInput } from "@/services/schemas/profileSave.schema";
 
 type NonNullCv = NonNullable<CvFull>;
 
@@ -18,6 +18,8 @@ export function mapCvToProfileFormValues(cv: NonNullCv): Omit<ProfileSaveInput, 
 		phone: header?.phone ?? null,
 		location: header?.location ?? null,
 		photo: cv.photo ?? null,
+		drivingLicenses: header?.drivingLicenses ?? [],
+		hasVehicle: header?.hasVehicle ?? false,
 		...(cv.description?.description?.trim()
 			? {
 					description: {

@@ -14,6 +14,8 @@ function baseCv(overrides: Record<string, unknown> = {}): NonNullable<CvFull> {
 			email: "ada@example.com",
 			phone: "0600000000",
 			location: "Paris",
+			drivingLicenses: ["B"],
+			hasVehicle: true,
 		},
 		description: { id: "d1", description: "Bio CV" },
 		philosophy: {
@@ -61,6 +63,8 @@ describe("mapCvToProfileFormValues", () => {
 		expect(mapped.firstName).toBe("Ada");
 		expect(mapped.lastName).toBe("Lovelace");
 		expect(mapped.email).toBe("ada@example.com");
+		expect(mapped.drivingLicenses).toEqual(["B"]);
+		expect(mapped.hasVehicle).toBe(true);
 		expect(mapped.description?.description).toBe("Bio CV");
 		expect(mapped.philosophy?.citation).toBe("Inventer le futur");
 		expect(mapped.experiences).toHaveLength(1);

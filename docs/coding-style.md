@@ -18,7 +18,7 @@ Quand un fichier voisin a déjà une convention, **la suivre**.
 
 - Préférer `@/` pour `src/`, `@utils/`, `@server/`, `@generated/`
 - `import type { … }` pour les types (`verbatimModuleSyntax`)
-- Biome organise les imports — ne pas les réordonner à la main hors besoin
+- Biome `organizeImports` : **obligatoire** — après édition d’imports, passer `npx biome check --write <fichier>` (ou `npm run check:fix`) ; ne pas inventer un ordre manuel
 
 ## TypeScript
 

@@ -1,6 +1,6 @@
 import { prisma } from "../../../lib/prisma";
-import type { CreateProfileInput, UpdateProfileInput } from "../schemas/profile.schema";
 import { ConflictError, NotFoundError } from "../errors";
+import type { CreateProfileInput, UpdateProfileInput } from "../schemas/profile.schema";
 
 export class ProfileService {
 	// CREATE
@@ -32,6 +32,10 @@ export class ProfileService {
 				lastName: data.lastName,
 				...(data.phone !== undefined ? { phone: data.phone } : {}),
 				...(data.location !== undefined ? { location: data.location } : {}),
+				...(data.email !== undefined ? { email: data.email } : {}),
+				...(data.photo !== undefined ? { photo: data.photo } : {}),
+				drivingLicenses: data.drivingLicenses ?? [],
+				hasVehicle: data.hasVehicle ?? false,
 			},
 		});
 	}
@@ -133,6 +137,10 @@ export class ProfileService {
 				...(data.lastName !== undefined ? { lastName: data.lastName } : {}),
 				...(data.phone !== undefined ? { phone: data.phone } : {}),
 				...(data.location !== undefined ? { location: data.location } : {}),
+				...(data.email !== undefined ? { email: data.email } : {}),
+				...(data.photo !== undefined ? { photo: data.photo } : {}),
+				...(data.drivingLicenses !== undefined ? { drivingLicenses: data.drivingLicenses } : {}),
+				...(data.hasVehicle !== undefined ? { hasVehicle: data.hasVehicle } : {}),
 			},
 		});
 	}

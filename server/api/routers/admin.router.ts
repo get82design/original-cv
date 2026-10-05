@@ -136,14 +136,18 @@ export const adminRouter = router({
 		.input(z.object({ id: z.string().min(1) }))
 		.query(({ input }) => adminUserService.getUserDetail(input.id)),
 
-	updateUser: adminProcedure.input(updateUserInputSchema).mutation(async ({ ctx, input }) => {
-		if (input.isActive === false && ctx.session?.user.id === input.id) {
-			throw new ValidationError("Impossible de désactiver votre propre compte");
-		}
+	updateUser: adminProcedure
+		.input(updateUserInputSchema)
+		.mutation(async ({ ctx, input }) => {
+			if (input.isActive === false && ctx.session?.user.id === input.id) {
+				throw new ValidationError(
+					"Impossible de désactiver votre propre compte",
+				);
+			}
 
-		const { id, ...patch } = input;
-		return adminUserService.updateUser(id, patch, ctx.session?.user.id ?? "");
-	}),
+			const { id, ...patch } = input;
+			return adminUserService.updateUser(id, patch, ctx.session?.user.id ?? "");
+		}),
 
 	softResetUser: adminProcedure
 		.input(z.object({ id: z.string().min(1) }))
@@ -158,7 +162,9 @@ export const adminRouter = router({
 				templateId: z.string().min(1),
 			}),
 		)
-		.mutation(({ input }) => adminUnlockService.unlockForUser(input.userId, input.templateId)),
+		.mutation(({ input }) =>
+			adminUnlockService.unlockForUser(input.userId, input.templateId),
+		),
 
 	listDownloads: adminProcedure
 		.input(
@@ -244,10 +250,12 @@ export const adminRouter = router({
 		.input(z.object({ id: z.string().min(1) }))
 		.query(({ input }) => adminTemplateService.getTemplate(input.id)),
 
-	updateTemplateCatalog: adminProcedure.input(updateTemplateCatalogSchema).mutation(({ input }) => {
-		const { id, ...patch } = input;
-		return adminTemplateService.updateCatalog(id, patch);
-	}),
+	updateTemplateCatalog: adminProcedure
+		.input(updateTemplateCatalogSchema)
+		.mutation(({ input }) => {
+			const { id, ...patch } = input;
+			return adminTemplateService.updateCatalog(id, patch);
+		}),
 
 	listAiEvents: adminProcedure
 		.input(
@@ -261,7 +269,9 @@ export const adminRouter = router({
 		)
 		.query(({ input }) => adminAiService.listAiEvents(input)),
 
-	listAiFeaturePrices: adminProcedure.query(() => aiBillingService.listPrices()),
+	listAiFeaturePrices: adminProcedure.query(() =>
+		aiBillingService.listPrices(),
+	),
 
 	upsertAiFeaturePrice: adminProcedure
 		.input(

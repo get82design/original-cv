@@ -75,6 +75,22 @@ describe("CvHeaderService.create", () => {
 		expect(header.title).toBe("Mon CV");
 		expect(header.email).toBeNull();
 		expect(header.prenom).toBeNull();
+		expect(header.drivingLicenses).toEqual([]);
+		expect(header.hasVehicle).toBe(false);
+	});
+
+	it("creates a header with drivingLicenses and hasVehicle", async () => {
+		const user = await createTestUser();
+		const template = await createTestTemplate();
+		const cv = await createCV(user.id, template.id);
+		const header = await cvHeaderService.create(cv.id, {
+			title: "Mon CV",
+			drivingLicenses: ["B", "C"],
+			hasVehicle: true,
+		});
+
+		expect(header.drivingLicenses).toEqual(["B", "C"]);
+		expect(header.hasVehicle).toBe(true);
 	});
 });
 
@@ -121,10 +137,14 @@ describe("CvHeaderService.update", () => {
 		const updated = await cvHeaderService.update(cv.id, {
 			title: "Nouveau titre",
 			email: "test@test.com",
+			drivingLicenses: ["A", "B"],
+			hasVehicle: true,
 		});
 		expect(updated.title).toBe("Nouveau titre");
 		expect(updated.email).toBe("test@test.com");
 		expect(updated.prenom).toBe("John");
+		expect(updated.drivingLicenses).toEqual(["A", "B"]);
+		expect(updated.hasVehicle).toBe(true);
 	});
 
 	// TEST 2 : header inexistant

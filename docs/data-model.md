@@ -28,7 +28,7 @@ Modifier un `Cv*` ne doit pas écraser silencieusement le Profile (et inversemen
 
 | Domaine | Profile (vivier) | CV (instance) | Notes |
 |---------|------------------|---------------|--------|
-| Identité / header | champs sur `Profile` (`firstName`, `lastName`…) | `CvHeader` | Header **uniquement** côté CV ; pas de `ProfileHeader` |
+| Identité / header | champs sur `Profile` (`firstName`, `lastName`, `drivingLicenses`, `hasVehicle`…) | `CvHeader` (mêmes champs permis / véhicule) | Header **uniquement** côté CV ; pas de `ProfileHeader` ; rendu template des permis à brancher ensuite |
 | Description | `Description` (1:1 Profile) | `CvDescription` (1:1 CV) | |
 | Expérience | `Experience` + `MissionExperience` | `CvExperience` + `CvMissionExperience` | |
 | Formation (diplômes) | `Education` | `CvEducation` | `obtained` : `CvTimelineStatus` |
@@ -56,7 +56,7 @@ Modifier un `Cv*` ne doit pas écraser silencieusement le Profile (et inversemen
 - **Groupes** : skills / compétences / tags passent par un niveau Groupe (`*Group`) + items ordonnés.
 - **Missions** : expériences, projets et bénévolats ont des sous-items `Mission*` / `CvMission*`.
 - **`settings Json?`** : présent sur beaucoup d’entités `Cv*` (et modules) pour styles / affichage éditeur — ne pas confondre avec le contenu métier.
-- **Enums utiles** : `Level` (niveaux), `CvTimelineStatus` (`COMPLETED` | `ABANDONED` | `INTERRUPTED`).
+- **Enums utiles** : `Level` (niveaux), `CvTimelineStatus` (`COMPLETED` | `ABANDONED` | `INTERRUPTED`), `DrivingLicense` (permis FR : `AM`…`DE`) — multi-valeur sur `Profile` / `CvHeader` + booléen `hasVehicle`.
 
 ## Composition d’un CV
 

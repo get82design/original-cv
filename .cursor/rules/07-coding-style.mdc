@@ -19,6 +19,7 @@ Détail : `docs/coding-style.md`. Imiter les fichiers voisins.
 ## Essentiel
 
 - Aliases `@/`, `@utils/`, `@server/` ; `import type` pour les types
+- **Tri des imports** : déléguer à Biome (`organizeImports`) — après ajout/modif d’imports, `npx biome check --write` sur le fichier (pas d’ordre maison)
 - Services : classe + singleton ; routers tRPC minces ; Zod dans `schemas/`
 - Composants : `export const Foo = …` ; forms RHF ; UI PrimeReact + Tailwind
 - Zéro Prisma dans les composants ; erreurs via `src/services/errors`

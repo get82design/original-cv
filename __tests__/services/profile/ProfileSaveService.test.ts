@@ -228,6 +228,40 @@ describe("ProfileSaveService.save", () => {
 		);
 	});
 
+	it("persists drivingLicenses and hasVehicle on create and update", async () => {
+		const user = await createTestUser();
+
+		const created = await profileSaveService.save(
+			user.id,
+			identity({
+				drivingLicenses: ["B", "BE"],
+				hasVehicle: true,
+			}),
+		);
+
+		expect(created!.drivingLicenses).toEqual(["B", "BE"]);
+		expect(created!.hasVehicle).toBe(true);
+
+		const cleared = await profileSaveService.save(
+			user.id,
+			identity({
+				drivingLicenses: [],
+				hasVehicle: false,
+			}),
+		);
+
+		expect(cleared!.drivingLicenses).toEqual([]);
+		expect(cleared!.hasVehicle).toBe(false);
+	});
+
+	it("defaults drivingLicenses to empty and hasVehicle to false", async () => {
+		const user = await createTestUser();
+		const created = await profileSaveService.save(user.id, identity());
+
+		expect(created!.drivingLicenses).toEqual([]);
+		expect(created!.hasVehicle).toBe(false);
+	});
+
 	it("creates a full profile when none exists", async () => {
 		const user = await createTestUser();
 		const catalogSkill = await createCatalogSkill(`skill-${Date.now()}`);

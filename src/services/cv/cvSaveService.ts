@@ -1,10 +1,10 @@
 // src/services/cv/cvSaveService.ts
 import { prisma } from "../../../lib/prisma";
+import { compactActiveOrders } from "../../utils/moduleOrder";
 import { validateTimeline } from "../../utils/validateTimeline";
 import { ForbiddenError, NotFoundError, ValidationError } from "../errors";
 import type { CvSaveInput } from "../schemas/cvSave.schema";
 import type { TemplateModule } from "../schemas/cvTemplate.schema";
-import { compactActiveOrders } from "../../utils/moduleOrder";
 import { userService } from "../user/userService";
 import { cvService } from "./cvService";
 import { extractPrimaryColorName } from "./extractPrimaryColorName";
@@ -78,6 +78,10 @@ export class CvSaveService {
 					...(headerData.nom !== undefined ? { nom: headerData.nom } : {}),
 					...(headerData.prenom !== undefined ? { prenom: headerData.prenom } : {}),
 					...(headerData.settings != null ? { settings: headerData.settings } : {}),
+					...(headerData.drivingLicenses !== undefined
+						? { drivingLicenses: headerData.drivingLicenses }
+						: {}),
+					...(headerData.hasVehicle !== undefined ? { hasVehicle: headerData.hasVehicle } : {}),
 				};
 				if (headerData.title === undefined) {
 					throw new ValidationError("Header title is required to create or upsert a CV header.");
@@ -95,6 +99,8 @@ export class CvSaveService {
 						...(headerData.nom !== undefined ? { nom: headerData.nom } : {}),
 						...(headerData.prenom !== undefined ? { prenom: headerData.prenom } : {}),
 						...(headerData.settings != null ? { settings: headerData.settings } : {}),
+						drivingLicenses: headerData.drivingLicenses ?? [],
+						hasVehicle: headerData.hasVehicle ?? false,
 					},
 					update: headerUpdate,
 				});
@@ -836,8 +842,7 @@ export class CvSaveService {
 				const items = datas.stat.content;
 				const itemsToSave = items.filter(
 					(i) =>
-						(i.content.label ?? "").trim().length > 0 &&
-						(i.content.value ?? "").trim().length > 0,
+						(i.content.label ?? "").trim().length > 0 && (i.content.value ?? "").trim().length > 0,
 				);
 				const keepIds = itemsToSave
 					.map((item) => item.id)

@@ -1,7 +1,7 @@
-import { useEffect, useRef, useState } from "react";
-import { useSession } from "next-auth/react";
-import { useRouter } from "next/router";
+import { trpc } from "@utils/trpc";
 import Link from "next/link";
+import { useRouter } from "next/router";
+import { useSession } from "next-auth/react";
 import { Button } from "primereact/button";
 import { Checkbox } from "primereact/checkbox";
 import { Dialog } from "primereact/dialog";
@@ -9,9 +9,9 @@ import { InputNumber } from "primereact/inputnumber";
 import { InputText } from "primereact/inputtext";
 import { InputTextarea } from "primereact/inputtextarea";
 import { Toast } from "primereact/toast";
-import { TitleAppOne } from "@/components/title/TitleAppOne";
+import { useEffect, useRef, useState } from "react";
 import { AppCard } from "@/components/card/AppCard";
-import { trpc } from "@utils/trpc";
+import { TitleAppOne } from "@/components/title/TitleAppOne";
 import type { BillableAiFeature } from "@/services/ai/aiBillingService";
 import { getClientErrorMessage } from "@/utils/clientError";
 
@@ -58,7 +58,7 @@ export function AdminBillingPage() {
 
 	const [priceDrafts, setPriceDrafts] = useState<
 		Record<BillableAiFeature, { costFree: number | null; costPaid: number | null }>
-	> ({
+	>({
 		REVIEW_CV: { costFree: null, costPaid: null },
 		REWRITE_SECTION: { costFree: null, costPaid: null },
 		COVER_LETTER: { costFree: null, costPaid: null },
@@ -287,75 +287,79 @@ export function AdminBillingPage() {
 						</thead>
 						<tbody>
 							{(
-								["REVIEW_CV", "REWRITE_SECTION", "COVER_LETTER", "MATCH_JOB", "MATCH_ROME_FICHE"] as BillableAiFeature[]
-							).map(
-								(feature) => {
-									const draft = priceDrafts[feature];
-									return (
-										<tr key={feature} className="border-b border-zinc-100 dark:border-zinc-800">
-											<td className="px-4 py-3 font-medium text-zinc-900 dark:text-zinc-100">
-												{FEATURE_LABELS[feature]}
-											</td>
-											<td className="px-4 py-3">
-												<InputNumber
-													value={draft.costFree}
-													onValueChange={(e) =>
-														setPriceDrafts((prev) => ({
-															...prev,
-															[feature]: {
-																...prev[feature],
-																costFree: e.value ?? null,
-															},
-														}))
-													}
-													min={1}
-													max={100}
-													showButtons={false}
-													placeholder="—"
-													className="w-24"
-												/>
-											</td>
-											<td className="px-4 py-3">
-												<InputNumber
-													value={draft.costPaid}
-													onValueChange={(e) =>
-														setPriceDrafts((prev) => ({
-															...prev,
-															[feature]: {
-																...prev[feature],
-																costPaid: e.value ?? null,
-															},
-														}))
-													}
-													min={1}
-													max={100}
-													showButtons={false}
-													placeholder="—"
-													className="w-24"
-												/>
-											</td>
-											<td className="px-4 py-3 text-right">
-												<Button
-													type="button"
-													label="Enregistrer"
-													size="small"
-													loading={
-														upsertPriceMutation.isPending &&
-														upsertPriceMutation.variables?.feature === feature
-													}
-													onClick={() =>
-														upsertPriceMutation.mutate({
-															feature,
-															costFree: draft.costFree,
-															costPaid: draft.costPaid,
-														})
-													}
-												/>
-											</td>
-										</tr>
-									);
-								},
-							)}
+								[
+									"REVIEW_CV",
+									"REWRITE_SECTION",
+									"COVER_LETTER",
+									"MATCH_JOB",
+									"MATCH_ROME_FICHE",
+								] as BillableAiFeature[]
+							).map((feature) => {
+								const draft = priceDrafts[feature];
+								return (
+									<tr key={feature} className="border-b border-zinc-100 dark:border-zinc-800">
+										<td className="px-4 py-3 font-medium text-zinc-900 dark:text-zinc-100">
+											{FEATURE_LABELS[feature]}
+										</td>
+										<td className="px-4 py-3">
+											<InputNumber
+												value={draft.costFree}
+												onValueChange={(e) =>
+													setPriceDrafts((prev) => ({
+														...prev,
+														[feature]: {
+															...prev[feature],
+															costFree: e.value ?? null,
+														},
+													}))
+												}
+												min={1}
+												max={100}
+												showButtons={false}
+												placeholder="—"
+												className="w-24"
+											/>
+										</td>
+										<td className="px-4 py-3">
+											<InputNumber
+												value={draft.costPaid}
+												onValueChange={(e) =>
+													setPriceDrafts((prev) => ({
+														...prev,
+														[feature]: {
+															...prev[feature],
+															costPaid: e.value ?? null,
+														},
+													}))
+												}
+												min={1}
+												max={100}
+												showButtons={false}
+												placeholder="—"
+												className="w-24"
+											/>
+										</td>
+										<td className="px-4 py-3 text-right">
+											<Button
+												type="button"
+												label="Enregistrer"
+												size="small"
+												loading={
+													upsertPriceMutation.isPending &&
+													upsertPriceMutation.variables?.feature === feature
+												}
+												onClick={() =>
+													upsertPriceMutation.mutate({
+														feature,
+														costFree: draft.costFree,
+														costPaid: draft.costPaid,
+													})
+												}
+											/>
+										</td>
+									</tr>
+								);
+							})}
 						</tbody>
 					</table>
 				</AppCard>
@@ -494,7 +498,11 @@ export function AdminBillingPage() {
 				<div className="admin-filters flex flex-col gap-3">
 					<label htmlFor="admin-billing-name" className="flex flex-col gap-1 text-sm">
 						<span className="text-zinc-600 dark:text-zinc-400">Nom</span>
-						<InputText id="admin-billing-name" value={draftName} onChange={(e) => setDraftName(e.target.value)} />
+						<InputText
+							id="admin-billing-name"
+							value={draftName}
+							onChange={(e) => setDraftName(e.target.value)}
+						/>
 					</label>
 					<label htmlFor="admin-billing-description" className="flex flex-col gap-1 text-sm">
 						<span className="text-zinc-600 dark:text-zinc-400">Description</span>
@@ -554,7 +562,11 @@ export function AdminBillingPage() {
 						</label>
 					</div>
 					<label htmlFor="admin-billing-active" className="flex items-center gap-2 text-sm">
-						<Checkbox id="admin-billing-active" checked={draftActive} onChange={(e) => setDraftActive(!!e.checked)} />
+						<Checkbox
+							id="admin-billing-active"
+							checked={draftActive}
+							onChange={(e) => setDraftActive(!!e.checked)}
+						/>
 						<span>Actif (visible vitrine)</span>
 					</label>
 				</div>

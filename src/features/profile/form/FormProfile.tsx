@@ -1,3 +1,9 @@
+import { zodResolver } from "@hookform/resolvers/zod";
+import { trpc } from "@utils/trpc";
+import type { ListItem } from "@utils/type";
+import { Toast } from "primereact/toast";
+import { type PropsWithChildren, useEffect, useRef } from "react";
+import { FormProvider, useForm } from "react-hook-form";
 import type {
 	AchievementInput,
 	CertificationInput,
@@ -15,40 +21,34 @@ import type {
 	SkillGroupInput,
 	SkillInput,
 	SocialMediaInput,
-	StrengthInput,
 	StatInput,
+	StrengthInput,
 	TagGroupInput,
 	VolunteeringInput,
 } from "@/services/schemas/profileSave.schema";
-import { trpc } from "@utils/trpc";
-import { Toast } from "primereact/toast";
-import { useEffect, useRef, type PropsWithChildren } from "react";
-import { FormProvider, useForm } from "react-hook-form";
-import { mapProfileToSaveInput } from "../mapProfileToSaveInput";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { validationSchema } from "./validation-schema";
 import {
-	isBlankExperience,
-	isBlankStrength,
-	isBlankStat,
-	isBlankFormation,
-	isBlankProject,
-	isBlankPublication,
 	isBlankAchievement,
-	isBlankVolunteering,
+	isBlankCertification,
+	isBlankCompetenceGroup,
 	isBlankEducation,
+	isBlankExperience,
+	isBlankExpertise,
+	isBlankFormation,
 	isBlankLanguage,
 	isBlankPassion,
 	isBlankPrize,
-	isBlankCertification,
-	isBlankSocialMedia,
-	isBlankExpertise,
-	isBlankSkillGroup,
-	isBlankCompetenceGroup,
-	isBlankTagGroup,
+	isBlankProject,
+	isBlankPublication,
 	isBlankSkill,
+	isBlankSkillGroup,
+	isBlankSocialMedia,
+	isBlankStat,
+	isBlankStrength,
+	isBlankTagGroup,
+	isBlankVolunteering,
 } from "@/utils/isBankSection";
-import type { ListItem } from "@utils/type";
+import { mapProfileToSaveInput } from "../mapProfileToSaveInput";
+import { validationSchema } from "./validation-schema";
 
 export const FormProfile = ({ children }: PropsWithChildren) => {
 	const toast = useRef<Toast>(null);
@@ -102,6 +102,8 @@ export const FormProfile = ({ children }: PropsWithChildren) => {
 			location: rest.location || null,
 			email: rest.email || null,
 			photo: rest.photo || null,
+			drivingLicenses: rest.drivingLicenses ?? [],
+			hasVehicle: rest.hasVehicle ?? false,
 			description,
 			philosophy,
 			experiences: (rest.experiences ?? [])

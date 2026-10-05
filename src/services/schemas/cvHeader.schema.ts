@@ -1,5 +1,6 @@
 import z from "zod";
 import { templateHeaderSettingsSchema } from "./cvTemplate.schema";
+import { DrivingLicenseSchema } from "./enums";
 
 export const createCvHeaderSchema = z.object({
 	title: z.string(),
@@ -11,6 +12,8 @@ export const createCvHeaderSchema = z.object({
 	nom: z.string().optional(),
 	prenom: z.string().optional(),
 	settings: templateHeaderSettingsSchema.optional(),
+	drivingLicenses: z.array(DrivingLicenseSchema).optional().default([]),
+	hasVehicle: z.boolean().optional().default(false),
 });
 export const updateCvHeaderSchema = createCvHeaderSchema.partial();
 export type CreateCvHeaderInput = z.infer<typeof createCvHeaderSchema>;
