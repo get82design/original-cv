@@ -1,14 +1,14 @@
-import { berlinTokens } from "../../themeTokens";
+import { rotterdamTokens } from "../../themeTokens";
 import { defineTemplate } from "../_shared/defineTemplate";
 import { sharedLayout } from "../_shared/layouts";
 
-/** Berlin : vitrine HeaderSplitOne — photo + contacts en sidebar, nom/intitulé en colonne 1. */
-export const berlin = defineTemplate({
-	name: "Berlin",
-	slug: "berlin-line-x",
-	tokens: berlinTokens,
-	primaryColor: { name: "teal", primary: "-600" },
-	sectionHeader: "HeaderSplitOne",
+/** Rotterdam : HeaderSplitTwo comme Amsterdam, col 0 fond sombre (style Hamburg). */
+export const rotterdam = defineTemplate({
+	name: "Rotterdam",
+	slug: "rotterdam-split-dark-x",
+	tokens: rotterdamTokens,
+	primaryColor: { name: "emerald", primary: "-700" },
+	sectionHeader: "HeaderSplitTwo",
 	pageLayout: "TwoColumnSideBar",
 	variant: 1,
 	layout: {
@@ -18,13 +18,7 @@ export const berlin = defineTemplate({
 		headerPlacement: "split",
 		withPhoto: true,
 		stylePhoto: "circle",
-		marge: "sm",
-		space: "sm",
-		sidebarTheme: {
-			bgColor: "primaryColor",
-			shadeBgColor: "-100",
-			fg: "black",
-		},
+		sidebarTheme: { bgColor: "gray", shadeBgColor: "-700", fg: "white" },
 		listStyle: "none",
 		titleSection: {
 			...sharedLayout.titleSection,
@@ -32,7 +26,6 @@ export const berlin = defineTemplate({
 		},
 	},
 	modules: {
-		// main (colonne 1)
 		description: { title: "Présentation", isActive: true, order: 1, column: 1 },
 		experience: { title: "Expériences", isActive: true, order: 2, column: 1 },
 		education: {
@@ -49,10 +42,9 @@ export const berlin = defineTemplate({
 			column: 1,
 			columns: 1,
 		},
-		project: { isActive: true, column: 1 },
-		// sidebar (colonne 0)
+		project: { isActive: false, column: 1 },
 		language: {
-			design: "bars",
+			design: "stars",
 			isActive: true,
 			order: 1,
 			column: 0,
@@ -60,7 +52,7 @@ export const berlin = defineTemplate({
 		},
 		tag: {
 			title: "Skills",
-			design: "border",
+			design: "tag",
 			isActive: true,
 			order: 2,
 			column: 0,

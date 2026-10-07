@@ -9,16 +9,16 @@ import { IntituleCvInput } from "../input-cv/intitule-input/IntituleCvInput";
 import { LocationInput } from "../input-cv/location-input/LocationCvInput";
 import { NomPrenomInput } from "../input-cv/nom-input/NomPrenomInput";
 import { PhoneInput } from "../input-cv/phone-input/PhoneCvInput";
-import { HeaderFiveContainer } from "./content/HeaderFiveContainer";
+import { HeaderSidebarTwoContainer } from "./content/HeaderSidebarTwoContainer";
 
-export function HeaderFive() {
+export function HeaderSidebarTwo() {
 	const { watch } = useFormContext();
 	const watchGeneral = watch(FieldNameLayoutGeneral.layout);
 	const watchDataHeaderTitleSettings = watch(FieldNameHeader.title);
 	const watchDataHeaderSubTitleSettings = watch(FieldNameHeader.subTitle);
 
 	return (
-		<HeaderFiveContainer
+		<HeaderSidebarTwoContainer
 			modelGeneral={watchGeneral}
 			titleCompo={
 				<NomPrenomInput

@@ -1,16 +1,15 @@
 import type { ComponentType } from "react";
 import type { TemplateDefaultStyles } from "@/services/schemas/cvTemplate.schema";
-import { HeaderFive } from "../../components/headers/HeaderFive";
 import { HeaderFour } from "../../components/headers/HeaderFour";
 import { HeaderOne } from "../../components/headers/HeaderOne";
-import {
-	HeaderSplitOneMain,
-	HeaderSplitOneSidebar,
-} from "../../components/headers/HeaderSplitOne";
+import { HeaderSidebarOne } from "../../components/headers/HeaderSidebarOne";
+import { HeaderSidebarTwo } from "../../components/headers/HeaderSidebarTwo";
+import { HeaderSplitOneMain, HeaderSplitOneSidebar } from "../../components/headers/HeaderSplitOne";
+import { HeaderSplitTwoMain, HeaderSplitTwoSidebar } from "../../components/headers/HeaderSplitTwo";
 import { HeaderThree } from "../../components/headers/HeaderThree";
 import { HeaderTwo } from "../../components/headers/HeaderTwo";
 
-/** Header monobloc (`top` / `sidebar`) — HeaderOne…Five (et futurs HeaderTop* / HeaderSidebar*). */
+/** Header monobloc (`top` / `sidebar`) — HeaderOne…Four, HeaderSidebar* (futurs HeaderTop*). */
 export type HeaderMonoEntry = {
 	kind: "mono";
 	Component: ComponentType;
@@ -38,8 +37,14 @@ export const HeaderRegister: Record<string, HeaderEntry> = {
 	HeaderTwo: { kind: "mono", Component: HeaderTwo },
 	HeaderThree: { kind: "mono", Component: HeaderThree },
 	HeaderFour: { kind: "mono", Component: HeaderFour },
-	HeaderFive: { kind: "mono", Component: HeaderFive },
+	HeaderSidebarOne: { kind: "mono", Component: HeaderSidebarOne },
+	HeaderSidebarTwo: { kind: "mono", Component: HeaderSidebarTwo },
 	HeaderSplitOne: DefaultSplit,
+	HeaderSplitTwo: {
+		kind: "split",
+		Sidebar: HeaderSplitTwoSidebar,
+		Main: HeaderSplitTwoMain,
+	},
 };
 
 /** Résout une entrée registre (fallback mono = HeaderOne). */
@@ -49,7 +54,9 @@ export function resolveHeaderEntry(sectionHeader: string | undefined | null): He
 }
 
 /** Entrée split pour `headerPlacement: "split"` (fallback HeaderSplitOne). */
-export function resolveSplitHeaderEntry(sectionHeader: string | undefined | null): HeaderSplitEntry {
+export function resolveSplitHeaderEntry(
+	sectionHeader: string | undefined | null,
+): HeaderSplitEntry {
 	const entry = resolveHeaderEntry(sectionHeader);
 	if (entry.kind === "split") return entry;
 	return DefaultSplit;

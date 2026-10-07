@@ -7,7 +7,7 @@ export const singapore = defineTemplate({
 	slug: "singapore-line-x",
 	tokens: singaporeTokens,
 	primaryColor: { name: "lime", primary: "-500" },
-	sectionHeader: "HeaderFive",
+	sectionHeader: "HeaderSidebarOne",
 	pageLayout: "TwoColumnSideBar",
 	variant: 1,
 	layout: {

@@ -44,32 +44,34 @@ Mesures pagination : `utils/cvHeaderPlacement.ts` (`HEADER_TOP_ID`, `HEADER_SIDE
 
 Chemin : `layoutGeneral.defaultStyles.components.sectionHeader`
 
-Convention de nommage (cible) : **`Header[Placement]N`** — ex. `HeaderSplitOne`, futurs `HeaderSplitTwo`, `HeaderSidebarOne`, `HeaderTopOne`…
+Convention de nommage : **`Header[Placement]N`** pour les headers récents — `HeaderSplitOne`, `HeaderSplitTwo`, `HeaderSidebarOne`, `HeaderSidebarTwo` ; futurs `HeaderTop*`.
 
-**Décision (2026-09-29)** : **pas de renommage massif** `HeaderOne`…`Five` → `HeaderTop*` / `HeaderSidebar*` pour l’instant.
+**Décision (2026-09-29, précisée 2026-10-07)** : **pas de renommage massif** de `HeaderOne`…`Four`.
 
+- `HeaderFive` a été renommé en `HeaderSidebarOne` (sans alias : pas de données prod, re-seed).
 - Nouveaux headers → convention `Header[Placement]N` uniquement.
-- Legacy `HeaderOne`…`Five` **conservés** (seeds + BDD `sectionHeader`) ; `headerPlacement` + `kind` portent le sens.
-- Pourquoi pas tout renommer maintenant : One…Four ≠ tous `top` de façon symétrique avec Five (`sidebar`) ; coût schema / seeds / CV déjà sauvés.
-- Renommage legacy (+ alias éventuel, ex. `HeaderFive` → `HeaderSidebarOne`) = chantier migration dédié si besoin plus tard.
+- Legacy `HeaderOne`…`Four` **conservés** ; `headerPlacement` + `kind` portent le sens.
+- Pourquoi pas `HeaderTop*` : One…Four ne forment pas une famille `top` homogène.
 
 Registre unifié (`HeaderRegister`) : chaque clé = `{ kind: "mono", Component }` **ou** `{ kind: "split", Sidebar, Main }`.
 
 | Clé | kind | Contenu vérifié | Placement attendu |
 |-----|------|-----------------|-------------------|
 | `HeaderOne` | mono | Photo + titre/sous-titre + contacts grille 3 cols | `top` (souvent) |
-| `HeaderTwo` | mono | Titre cadré centré, contacts centrés | `top` |
+| `HeaderTwo` | mono | Titre cadré centré, contacts en ligne (`|`), permis coin droit | `top` |
 | `HeaderThree` | mono | Photo + nom/prenom/sous-titre + contacts colonne | `top` |
 | `HeaderFour` | mono | Bandeau couleur + nom/prenom + contacts | `top` |
-| `HeaderFive` | mono | Colonne : nom → photo → intitulé → contacts | `sidebar` (seeds Frankfurt, Singapore, Toronto, minimal) |
+| `HeaderSidebarOne` | mono | Colonne : nom → photo → intitulé → contacts | `sidebar` (Frankfurt, Genoa, Milan, Naples, Singapore, Toronto) |
+| `HeaderSidebarTwo` | mono | Colonne : photo → nom → intitulé → contacts | `sidebar` (Bilbao, Bruges, Brussels, Copenhagen, Glasgow, Porto) |
 | `HeaderSplitOne` | **split** | Sidebar : photo + contacts · Main : nom/prénom + intitulé + trait | **`split`** (Berlin) |
+| `HeaderSplitTwo` | **split** | Sidebar : photo seule · Main : nom/prénom + intitulé + trait + contacts | **`split`** (Amsterdam, Rotterdam, Dublin, Antwerp, Cologne, Ghent) |
 
 Helpers :
 
 - `resolveMonoHeaderEntry` — fallback `HeaderOne` si clé absente ou entrée split
 - `resolveSplitHeaderEntry` — fallback `HeaderSplitOne` si clé absente ou entrée mono
 
-Ainsi un mismatch seed (ex. ancien Berlin `HeaderFive` + `split`) ne casse pas le rendu : le layout split retombe sur `HeaderSplitOne`. **Le seed doit quand même être cohérent** (Berlin corrigé → `HeaderSplitOne`).
+Ainsi un mismatch seed (clé mono + `split`, ex. `HeaderSidebarOne`) ne casse pas le rendu : le layout split retombe sur `HeaderSplitOne`. **Le seed doit quand même être cohérent.**
 
 ---
 
@@ -96,7 +98,7 @@ DnD vers colonne 0 — **uniquement** `TwoColumnSideBar` (`sidebarColumn: 0`) : 
 
 1. `pageLayout` : `TwoColumnSideBar` (3/8+5/8) **ou** `TwoColumnCenter` (50/50).  
 2. Coupler `headerPlacement` + `sectionHeader` :
-   - mono (`HeaderOne`…`Five`) → `top` ou `sidebar`
-   - split (`HeaderSplitOne`…) → **`split`**
+   - mono (`HeaderOne`…`Four`, `HeaderSidebarOne`, `HeaderSidebarTwo`…) → `top` ou `sidebar`
+   - split (`HeaderSplitOne`, `HeaderSplitTwo`…) → **`split`**
 3. `sidebarTheme` seulement si la colonne 0 doit être teintée.  
 4. Modules : seed initial libre ; sur **SideBar**, préférer contenus longs en `column: 1` (DnD restreignera ensuite) ; sur **Center**, n’importe quelle colonne.

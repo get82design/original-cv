@@ -28,7 +28,7 @@ export const HeaderFour = () => {
 			nomCompo={
 				<InputTextCv
 					placeholder="Prenom"
-					className="w-auto"
+					className="w-auto max-w-full"
 					name={FieldNameHeader.prenom}
 					onClick={() => setSelectModifInput(FieldNameHeader.settingsPrenom)}
 					textColor={watchModelHeaderPrenom?.colorSelect}
@@ -41,7 +41,7 @@ export const HeaderFour = () => {
 			}
 			prenomCompo={
 				<InputTextCv
-					className="w-auto"
+					className="w-auto max-w-full"
 					placeholder="Nom"
 					name={FieldNameHeader.nom}
 					onClick={() => setSelectModifInput(FieldNameHeader.settingsNom)}

@@ -1,17 +1,14 @@
-import { milanTokens } from "../../themeTokens";
+import { brugesTokens } from "../../themeTokens";
 import { defineTemplate } from "../_shared/defineTemplate";
 import { sharedLayout } from "../_shared/layouts";
 
-/**
- * Milan : TwoColumnCenter (50/50) + HeaderSidebarOne en tête de col 0 —
- * comble le trou HeaderSidebarOne × Center du catalogue.
- */
-export const milan = defineTemplate({
-	name: "Milan",
-	slug: "milan-sidebar-center-x",
-	tokens: milanTokens,
-	primaryColor: { name: "stone", primary: "-600" },
-	sectionHeader: "HeaderSidebarOne",
+/** Bruges : TwoColumnCenter + HeaderSidebarTwo, sidebar claire (style Brussels). */
+export const bruges = defineTemplate({
+	name: "Bruges",
+	slug: "bruges-line-center-x",
+	tokens: brugesTokens,
+	primaryColor: { name: "orange", primary: "-600" },
+	sectionHeader: "HeaderSidebarTwo",
 	pageLayout: "TwoColumnCenter",
 	variant: 1,
 	layout: {
@@ -25,9 +22,6 @@ export const milan = defineTemplate({
 		listStyle: "none",
 		titleSection: {
 			...sharedLayout.titleSection,
-			withIcon: true,
-			iconStyle: "flat",
-			iconColor: "primaryColor",
 			textTransform: "uppercase",
 		},
 	},

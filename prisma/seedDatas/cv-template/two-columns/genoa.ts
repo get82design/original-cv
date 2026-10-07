@@ -2,13 +2,13 @@ import { genoaTokens } from "../../themeTokens";
 import { defineTemplate } from "../_shared/defineTemplate";
 import { sharedLayout } from "../_shared/layouts";
 
-/** Genoa : TwoColumnCenter + HeaderFive — sans fond col 0. */
+/** Genoa : TwoColumnCenter + HeaderSidebarOne — sans fond col 0. */
 export const genoa = defineTemplate({
 	name: "Genoa",
 	slug: "genoa-five-nobg-x",
 	tokens: genoaTokens,
 	primaryColor: { name: "zinc", primary: "-600" },
-	sectionHeader: "HeaderFive",
+	sectionHeader: "HeaderSidebarOne",
 	pageLayout: "TwoColumnCenter",
 	variant: 1,
 	layout: {

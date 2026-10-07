@@ -18,8 +18,8 @@ export const tokyo = defineTemplate({
 		sidebarSide: "left",
 		stylePhoto: "circle",
 		listStyle: "none",
-		marge: "sm",
-		space: "sm",
+		marge: "md",
+		space: "md",
 		headerPrimaryColor: true,
 		titleSection: {
 			...sharedLayout.titleSection,
@@ -43,7 +43,7 @@ export const tokyo = defineTemplate({
 			column: 1,
 			columns: 1,
 		},
-		project: { isActive: true, column: 1 },
+		project: { isActive: false, column: 1 },
 		// sidebar (colonne 0)
 		language: {
 			design: "stars",

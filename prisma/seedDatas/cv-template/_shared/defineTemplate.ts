@@ -1,10 +1,10 @@
-import { sharedLayout } from "./layouts";
-import { buildComponents } from "./components";
-import { buildModules, type ModuleOverrides } from "./modules";
+import type z from "zod";
+import type { createCvTemplateSchema, TemplateLayout } from "@/services/schemas/cvTemplate.schema";
 import { buildHeader } from "../../buildTemplateModules";
 import type { ThemeTokens } from "../../themeTokens";
-import type { createCvTemplateSchema, TemplateLayout } from "@/services/schemas/cvTemplate.schema";
-import type z from "zod";
+import { buildComponents } from "./components";
+import { sharedLayout } from "./layouts";
+import { buildModules, type ModuleOverrides } from "./modules";
 
 type SeedTemplate = z.input<typeof createCvTemplateSchema>;
 
@@ -24,8 +24,10 @@ export function defineTemplate(opts: {
 		| "HeaderTwo"
 		| "HeaderThree"
 		| "HeaderFour"
-		| "HeaderFive"
-		| "HeaderSplitOne";
+		| "HeaderSidebarOne"
+		| "HeaderSidebarTwo"
+		| "HeaderSplitOne"
+		| "HeaderSplitTwo";
 	/** `1` = Section*One ; `2` = Section*Two — réservé aux OneColumnModel (jamais 2 cols). */
 	variant: 1 | 2;
 	pageLayout?: PageLayout;

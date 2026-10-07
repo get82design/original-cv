@@ -3,7 +3,7 @@ import { defineTemplate } from "../_shared/defineTemplate";
 import { sharedLayout } from "../_shared/layouts";
 
 /**
- * Naples : TwoColumnCenter + HeaderFive —
+ * Naples : TwoColumnCenter + HeaderSidebarOne —
  * fond col 0 sombre type Hamburg (`gray-700` / white), vs Milan light `-100`.
  */
 export const naples = defineTemplate({
@@ -11,7 +11,7 @@ export const naples = defineTemplate({
 	slug: "naples-five-dark-x",
 	tokens: naplesTokens,
 	primaryColor: { name: "mist", primary: "-600" },
-	sectionHeader: "HeaderFive",
+	sectionHeader: "HeaderSidebarOne",
 	pageLayout: "TwoColumnCenter",
 	variant: 1,
 	layout: {

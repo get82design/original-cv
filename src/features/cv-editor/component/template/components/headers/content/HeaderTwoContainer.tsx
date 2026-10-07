@@ -1,9 +1,9 @@
+import type { JSX } from "react";
 import {
 	ChangeSpaceDocument,
 	ChangeSpaceDocumentApercu,
 } from "@/features/cv-editor/utils/utilsCv/marge";
 import type { TemplateLayout } from "@/services/schemas/cvTemplate.schema";
-import type { JSX } from "react";
 
 interface HeaderTwoContainerProps {
 	modelGeneral?: TemplateLayout;
@@ -30,22 +30,22 @@ export const HeaderTwoContainer = ({
 				modelGeneral ? ChangeSpaceDocumentApercu(modelGeneral.space) : ChangeSpaceDocument()
 			}`}
 		>
-			<div
-				className="border py-1 px-4 relative inline-block"
-				style={{ fontFamily: "var(--cv-font-headerTitle)" }}
-			>
-				{title}
+			<div className="w-full grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-2">
+				<div />
+				<div className="border py-1 px-4" style={{ fontFamily: "var(--cv-font-headerTitle)" }}>
+					{title}
+				</div>
+				<div className="flex justify-end min-w-0">{drivingLicenseCompo}</div>
 			</div>
 			<span className="w-full" style={{ fontFamily: "var(--cv-font-headerSubTitle)" }}>
 				{subTitle}
 			</span>
-			<div className="w-full flex flex-wrap justify-center items-center gap-3 mt-3">
+			<div className="w-full flex flex-wrap justify-center items-center gap-x-3 gap-y-1 mt-3">
 				{emailCompo}
-				<p>|</p>
+				<p className="m-0 shrink-0">|</p>
 				{phoneCompo}
-				<p>|</p>
+				<p className="m-0 shrink-0">|</p>
 				{locationCompo}
-				{drivingLicenseCompo}
 			</div>
 		</div>
 	);

@@ -1,13 +1,14 @@
-import { ModifSelectInput } from "@/features/cv-editor/component/custom-cv-input/ModifSelectInput";
-import { useInputCvColor } from "@/features/cv-editor/utils/utilsCv/color";
-import { useChangeTextFormat } from "@/features/cv-editor/utils/utilsCv/font";
-import type { BaseTextSettings } from "@/services/schemas/cvTemplate.schema";
 import { useMediaQuery } from "@utils/useWindowWidth";
 import type { InputTextProps as PrimeInputTextProps } from "primereact/inputtext";
 import { InputText as PrimeInputText } from "primereact/inputtext";
 import { OverlayPanel } from "primereact/overlaypanel";
 import { useLayoutEffect, useRef } from "react";
 import { Controller, useFormContext } from "react-hook-form";
+import { ModifSelectInput } from "@/features/cv-editor/component/custom-cv-input/ModifSelectInput";
+import { useInputCvColor } from "@/features/cv-editor/utils/utilsCv/color";
+import { useChangeTextFormat } from "@/features/cv-editor/utils/utilsCv/font";
+import type { BaseTextSettings } from "@/services/schemas/cvTemplate.schema";
+import { cvInputTextWidth } from "./cvInputTextWidth";
 
 interface DataInputProps {
 	model: BaseTextSettings;
@@ -81,11 +82,7 @@ export const InputTextCv = ({
 								textTransform: "inherit",
 								backgroundColor: "transparent",
 								color: `var(--${color})`,
-								width: forceWidthFull
-									? "100%"
-									: field.value === "" && props.placeholder
-										? `${props.placeholder.length}ch`
-										: `${field.value?.length}ch`,
+								width: cvInputTextWidth(field.value, props.placeholder, forceWidthFull),
 							}}
 							onKeyDown={(e) => {
 								// Évite le submit HTML implicite du <form> parent (Entrée).

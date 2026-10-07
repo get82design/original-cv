@@ -9,6 +9,7 @@ export const oslo = defineTemplate({
 	primaryColor: { name: "teal", primary: "-600" },
 	layout: {
 		...sharedLayout,
+		space: "sm",
 	},
 	sectionHeader: "HeaderTwo",
 	variant: 1,

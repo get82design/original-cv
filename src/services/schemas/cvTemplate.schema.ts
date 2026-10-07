@@ -617,8 +617,10 @@ export const templateDefaultStylesSchema = z.object({
 				"HeaderTwo",
 				"HeaderThree",
 				"HeaderFour",
-				"HeaderFive",
+				"HeaderSidebarOne",
+				"HeaderSidebarTwo",
 				"HeaderSplitOne",
+				"HeaderSplitTwo",
 			]),
 			sectionExperience: z.object({
 				component: z.enum(["SectionExperienceOne", "SectionExperienceTwo"]),

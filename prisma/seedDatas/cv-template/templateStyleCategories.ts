@@ -36,8 +36,17 @@ export const TEMPLATE_STYLE_BY_NAME: Record<string, TemplateStyleCategory> = {
 	Singapore: TemplateStyleCategory.PROFESSIONAL,
 	Toronto: TemplateStyleCategory.PROFESSIONAL,
 	Frankfurt: TemplateStyleCategory.PROFESSIONAL,
+	Brussels: TemplateStyleCategory.PROFESSIONAL,
+	Copenhagen: TemplateStyleCategory.PROFESSIONAL,
+	Glasgow: TemplateStyleCategory.PROFESSIONAL,
 	Krakow: TemplateStyleCategory.PROFESSIONAL,
 	// Audacieux
+	Amsterdam: TemplateStyleCategory.BOLD,
+	Rotterdam: TemplateStyleCategory.BOLD,
+	Dublin: TemplateStyleCategory.BOLD,
+	Antwerp: TemplateStyleCategory.BOLD,
+	Cologne: TemplateStyleCategory.BOLD,
+	Ghent: TemplateStyleCategory.BOLD,
 	Berlin: TemplateStyleCategory.BOLD,
 	Hamburg: TemplateStyleCategory.BOLD,
 	Seattle: TemplateStyleCategory.BOLD,
@@ -48,6 +57,9 @@ export const TEMPLATE_STYLE_BY_NAME: Record<string, TemplateStyleCategory> = {
 	Lyon: TemplateStyleCategory.BOLD,
 	Bordeaux: TemplateStyleCategory.BOLD,
 	Vienna: TemplateStyleCategory.BOLD,
+	Bruges: TemplateStyleCategory.BOLD,
+	Porto: TemplateStyleCategory.BOLD,
+	Bilbao: TemplateStyleCategory.BOLD,
 };
 
 export function styleCategoryForTemplateName(name: string): TemplateStyleCategory {

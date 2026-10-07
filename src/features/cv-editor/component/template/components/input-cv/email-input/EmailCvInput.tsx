@@ -1,20 +1,27 @@
+import { useFormContext } from "react-hook-form";
+import { MdOutlineEmail } from "react-icons/md";
 import { InputTextCv } from "@/components/input-writer/input-text-cv/InputTextCv";
 import { useCreateCvContext } from "@/features/cv-editor/component/context/CreateCvContext";
 import { FieldNameHeader } from "@/features/cv-editor/utils/fields/fieldNameHeader";
 import { useInputCvColor } from "@/features/cv-editor/utils/utilsCv/color";
 import { GetAlignementHeader } from "@/features/cv-editor/utils/utilsCv/marge";
 import type { BaseTextSettings } from "@/services/schemas/cvTemplate.schema";
-import { useFormContext } from "react-hook-form";
-import { MdOutlineEmail } from "react-icons/md";
 
 interface EmailInputProps {
 	withIcon?: boolean;
 	/** Override hex sans # (ex. "000000"). Sinon = couleur du texte (fg colonne inclus). */
 	colorIcon?: string;
 	textAlign?: "left" | "center" | "right";
+	/** Largeur au contenu, pour une ligne de contacts (HeaderTwo). */
+	inline?: boolean;
 }
 
-export const EmailInput = ({ withIcon, colorIcon, textAlign = "left" }: EmailInputProps) => {
+export const EmailInput = ({
+	withIcon,
+	colorIcon,
+	textAlign = "left",
+	inline = false,
+}: EmailInputProps) => {
 	const { watch } = useFormContext();
 	const { setSelectModifInput, setSelectInputForm } = useCreateCvContext();
 	const iconAfter = textAlign === "right";
@@ -25,7 +32,9 @@ export const EmailInput = ({ withIcon, colorIcon, textAlign = "left" }: EmailInp
 	const icon = withIcon ? <MdOutlineEmail style={{ color: iconColor }} /> : null;
 
 	return (
-		<div className={`w-full flex ${GetAlignementHeader(textAlign)} gap-2 items-center`}>
+		<div
+			className={`${inline ? "w-auto shrink-0" : "w-full"} flex ${GetAlignementHeader(textAlign)} gap-2 items-center`}
+		>
 			{!iconAfter && icon}
 			<InputTextCv
 				placeholder="email"
@@ -40,7 +49,7 @@ export const EmailInput = ({ withIcon, colorIcon, textAlign = "left" }: EmailInp
 					changeSize: "1px",
 					model: watchModelHeaderContent,
 				}}
-				forceWidthFull
+				forceWidthFull={!inline}
 			/>
 			{iconAfter && icon}
 		</div>

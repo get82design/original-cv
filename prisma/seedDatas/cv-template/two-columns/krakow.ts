@@ -14,6 +14,7 @@ export const krakow = defineTemplate({
 		...sharedLayout,
 		columns: 2,
 		sidebarSide: "left",
+		marge: "sm",
 		titleSection: {
 			...sharedLayout.titleSection,
 		},

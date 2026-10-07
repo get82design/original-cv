@@ -1,17 +1,14 @@
-import { milanTokens } from "../../themeTokens";
+import { portoTokens } from "../../themeTokens";
 import { defineTemplate } from "../_shared/defineTemplate";
 import { sharedLayout } from "../_shared/layouts";
 
-/**
- * Milan : TwoColumnCenter (50/50) + HeaderSidebarOne en tête de col 0 —
- * comble le trou HeaderSidebarOne × Center du catalogue.
- */
-export const milan = defineTemplate({
-	name: "Milan",
-	slug: "milan-sidebar-center-x",
-	tokens: milanTokens,
-	primaryColor: { name: "stone", primary: "-600" },
-	sectionHeader: "HeaderSidebarOne",
+/** Porto : TwoColumnCenter + HeaderSidebarTwo, col 0 fond blanc. */
+export const porto = defineTemplate({
+	name: "Porto",
+	slug: "porto-line-white-x",
+	tokens: portoTokens,
+	primaryColor: { name: "purple", primary: "-700" },
+	sectionHeader: "HeaderSidebarTwo",
 	pageLayout: "TwoColumnCenter",
 	variant: 1,
 	layout: {
@@ -21,13 +18,12 @@ export const milan = defineTemplate({
 		headerPlacement: "sidebar",
 		withPhoto: true,
 		stylePhoto: "circle",
-		sidebarTheme: { bgColor: "primaryColor", shadeBgColor: "-100", fg: "black" },
+		marge: "sm",
+		space: "sm",
+		sidebarTheme: { bgColor: "white", fg: "black" },
 		listStyle: "none",
 		titleSection: {
 			...sharedLayout.titleSection,
-			withIcon: true,
-			iconStyle: "flat",
-			iconColor: "primaryColor",
 			textTransform: "uppercase",
 		},
 	},
@@ -62,8 +58,20 @@ export const milan = defineTemplate({
 			column: 0,
 			columns: 1,
 		},
-		tag: { title: "Skills", design: "border", isActive: true, order: 2, column: 0 },
-		socialMedia: { title: "Réseaux", isActive: true, order: 3, column: 0, columns: 1 },
+		tag: {
+			title: "Skills",
+			design: "border",
+			isActive: true,
+			order: 2,
+			column: 0,
+		},
+		socialMedia: {
+			title: "Réseaux",
+			isActive: true,
+			order: 3,
+			column: 0,
+			columns: 1,
+		},
 		passion: { isActive: false, column: 0, columns: 1 },
 		prize: { isActive: false, column: 0, columns: 1 },
 		expertise: { isActive: false, column: 0, columns: 1 },

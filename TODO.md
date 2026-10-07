@@ -119,7 +119,7 @@ Critère done : créer/sauver CV → DL gratuit/payant → IA review/rewrite/let
 
 1. DnD / layouts 2 cols (`TwoColumnCenter` 50/50 + preuve Vienna) → smoke
 2. CRUD couleurs / catalogue admin *(// possible avec 1)*
-3. Templates premium puis volume ~25 + logos / couleurs brand
+3. Volume templates — **livré** (50 seeds, tous gratuits) ; logos / couleurs brand — templates `isPremium` → **V3**
 4. Onboarding stepper + opt-out compte · Tips (guide dans `DialogCvTips`) — **livré** ; illustrations → **V3**
 5. `match-job` → fiche métier France Travail
 6. Smoke + checklist légal light
@@ -132,10 +132,10 @@ Critère done : créer/sauver CV → DL gratuit/payant → IA review/rewrite/let
 	- template preuve **Vienna** (`HeaderOne` + `headerPlacement: "top"`, sans `sidebarTheme`)
 	- doc config : [`docs/cv-layout-config.md`](./docs/cv-layout-config.md)
 - [x] Headers split branchés sur `sectionHeader` (`HeaderSplitOne` + registre mono|split) — Berlin corrigé
-- [ ] Volume templates (cible ~25 classiques + premium catalogue)
+- [x] Volume templates — **50** seeds, tous gratuits (cible ~25 dépassée)
 	- inventaire vivant : [`docs/cv-templates-catalog.md`](./docs/cv-templates-catalog.md) (à tenir à jour à chaque seed)
 	- création structure = **seeds** pré-prod ; admin = flags catalogue seulement (pas de builder)
-- [ ] Premiers templates **premium** basés sur header split / layouts riches
+	- quels modèles sont `isPremium` → **V3**, avec le chemin d’achat Stripe
 - [ ] Logos / variantes couleurs manquantes (polish brand)
 - [x] Onboarding guidé « première utilisation » (stepper) — **≠** modal Tips
 	- comptes connectés : checkbox « ne plus afficher » (préférence persistée)
@@ -214,9 +214,11 @@ Critère done : créer/sauver CV → DL gratuit/payant → IA review/rewrite/let
 
 ### Différenciation templates premium (V3)
 
-Les templates payants pourront exposer des **options** que les gratuits n’ont pas.  
-V1 = split partagé ; **gating options = chantier V3** (catalogue / layouts riches en V2 sans assert capabilities).
+Catalogue V2 = **gratuit** (50 seeds). Le choix des modèles `isPremium` et les options réservées aux payants arrivent avec le chemin d’achat (Stripe), pas avant : le download premium est déjà refusé sans `UnlockedTemplate`.
 
+V1 = split partagé ; **gating options = chantier V3**.
+
+- [ ] Premiers templates **premium** (`isPremium`) sur header split / layouts riches — en même temps que l’achat, pas de lock avant
 - [ ] Modèle produit : options `free` vs `premium` (liste figée)
 - [ ] Données catalogue : flags / capabilities par template
 - [ ] UI éditeur : masquer ou teaser options premium
@@ -303,7 +305,8 @@ Contexte : **pas de prod publique avant fin V3**. Preprod sert à figer / faire 
 | Header split | Variantes `HeaderSplitOne`… via `sectionHeader` + `headerPlacement: "split"` (plus 1 composition hardcodée) |
 | Nommage headers | Cible `Header[Placement]N` ; **pas** de rename massif `HeaderOne`…`Five` ; nouveaux = convention ; migration legacy plus tard si besoin — [`cv-layout-config.md`](./docs/cv-layout-config.md) §3 |
 | Placement header | **figé par le template** (seed) — pas de sélecteur utilisateur |
-| Options exclusives premium / gating | **V3** (catalogue riche V2 sans gating serveur) |
+| Options exclusives premium / gating | **V3** (catalogue V2 gratuit, sans gating serveur) |
+| Quels templates sont `isPremium` | **V3** — avec le chemin d’achat Stripe ; pas de lock avant |
 | Onboarding stepper V2 | **In** + opt-out checkbox compte |
 | Tips vs onboarding | **Complémentaires** — stepper 1ère fois ; même guide repris dans `DialogCvTips` (+ conseils) |
 | Tips illustrations | **V3** — captures `public/tips/` ; structure `media` déjà en place |

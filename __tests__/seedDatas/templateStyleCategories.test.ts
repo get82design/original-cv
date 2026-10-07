@@ -1,9 +1,9 @@
 import { describe, expect, it } from "vitest";
-import {
-	TEMPLATE_STYLE_BY_NAME,
-	styleCategoryForTemplateName,
-} from "../../prisma/seedDatas/cv-template/templateStyleCategories";
 import { TemplateStyleCategory } from "../../generated/prisma/enums";
+import {
+	styleCategoryForTemplateName,
+	TEMPLATE_STYLE_BY_NAME,
+} from "../../prisma/seedDatas/cv-template/templateStyleCategories";
 
 /** Noms attendus = inventaire seed (tenir aligné avec seedTemplates). */
 const EXPECTED_SEED_NAMES = [
@@ -45,13 +45,25 @@ const EXPECTED_SEED_NAMES = [
 	"Naples",
 	"Lyon",
 	"Bordeaux",
+	"Amsterdam",
+	"Rotterdam",
+	"Dublin",
+	"Antwerp",
+	"Cologne",
+	"Ghent",
+	"Brussels",
+	"Copenhagen",
+	"Glasgow",
+	"Bruges",
+	"Porto",
+	"Bilbao",
 ] as const;
 
 describe("templateStyleCategories seed map", () => {
-	it("couvre les 38 templates seed sans orphelin", () => {
+	it("couvre les 50 templates seed sans orphelin", () => {
 		const mapNames = Object.keys(TEMPLATE_STYLE_BY_NAME).sort();
 		expect(mapNames).toEqual([...EXPECTED_SEED_NAMES].sort());
-		expect(mapNames).toHaveLength(38);
+		expect(mapNames).toHaveLength(50);
 	});
 
 	it("assigne les 5 styles marketing attendus", () => {
@@ -59,12 +71,22 @@ describe("templateStyleCategories seed map", () => {
 		expect(styleCategoryForTemplateName("Austin")).toBe(TemplateStyleCategory.MODERN);
 		expect(styleCategoryForTemplateName("Denver")).toBe(TemplateStyleCategory.CREATIVE);
 		expect(styleCategoryForTemplateName("Singapore")).toBe(TemplateStyleCategory.PROFESSIONAL);
+		expect(styleCategoryForTemplateName("Brussels")).toBe(TemplateStyleCategory.PROFESSIONAL);
+		expect(styleCategoryForTemplateName("Copenhagen")).toBe(TemplateStyleCategory.PROFESSIONAL);
+		expect(styleCategoryForTemplateName("Glasgow")).toBe(TemplateStyleCategory.PROFESSIONAL);
+		expect(styleCategoryForTemplateName("Bruges")).toBe(TemplateStyleCategory.BOLD);
+		expect(styleCategoryForTemplateName("Porto")).toBe(TemplateStyleCategory.BOLD);
+		expect(styleCategoryForTemplateName("Bilbao")).toBe(TemplateStyleCategory.BOLD);
 		expect(styleCategoryForTemplateName("Berlin")).toBe(TemplateStyleCategory.BOLD);
+		expect(styleCategoryForTemplateName("Amsterdam")).toBe(TemplateStyleCategory.BOLD);
+		expect(styleCategoryForTemplateName("Rotterdam")).toBe(TemplateStyleCategory.BOLD);
+		expect(styleCategoryForTemplateName("Dublin")).toBe(TemplateStyleCategory.BOLD);
+		expect(styleCategoryForTemplateName("Antwerp")).toBe(TemplateStyleCategory.BOLD);
+		expect(styleCategoryForTemplateName("Cologne")).toBe(TemplateStyleCategory.BOLD);
+		expect(styleCategoryForTemplateName("Ghent")).toBe(TemplateStyleCategory.BOLD);
 	});
 
 	it("throw si nom absent de la map", () => {
-		expect(() => styleCategoryForTemplateName("VilleInconnue")).toThrow(
-			/styleCategory manquant/,
-		);
+		expect(() => styleCategoryForTemplateName("VilleInconnue")).toThrow(/styleCategory manquant/);
 	});
 });

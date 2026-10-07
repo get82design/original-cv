@@ -1,8 +1,10 @@
 import {
-	headerFiveTokenDefaults,
 	headerFourTokenDefaults,
 	headerOneTokenDefaults,
+	headerSidebarOneTokenDefaults,
+	headerSidebarTwoTokenDefaults,
 	headerSplitOneTokenDefaults,
+	headerSplitTwoTokenDefaults,
 	headerThreeTokenDefaults,
 	headerTwoTokenDefaults,
 	mergeTokenOverrides,
@@ -186,9 +188,7 @@ export const osloTokens = defineTokens(
 );
 
 /** Denver — HeaderThree + corps. */
-export const denverTokens = defineTokens(
-	mergeTokenOverrides(headerThreeTokenDefaults, denverBody),
-);
+export const denverTokens = defineTokens(mergeTokenOverrides(headerThreeTokenDefaults, denverBody));
 
 /** Seattle — HeaderSplitOne (comme Berlin, sans fond col 0). */
 export const seattleTokens = defineTokens(
@@ -244,24 +244,16 @@ export const zurichTokens = defineTokens(
 );
 
 /** Chicago — HeaderFour pur. */
-export const chicagoTokens = defineTokens(
-	mergeTokenOverrides(headerFourTokenDefaults),
-);
+export const chicagoTokens = defineTokens(mergeTokenOverrides(headerFourTokenDefaults));
 
 /** Tokyo — HeaderFour pur. */
-export const tokyoTokens = defineTokens(
-	mergeTokenOverrides(headerFourTokenDefaults),
-);
+export const tokyoTokens = defineTokens(mergeTokenOverrides(headerFourTokenDefaults));
 
 /** Lisbon — HeaderThree (aligné sectionHeader). */
-export const lisbonTokens = defineTokens(
-	mergeTokenOverrides(headerThreeTokenDefaults),
-);
+export const lisbonTokens = defineTokens(mergeTokenOverrides(headerThreeTokenDefaults));
 
 /** Florence — HeaderOne (aligné sectionHeader). */
-export const florenceTokens = defineTokens(
-	mergeTokenOverrides(headerOneTokenDefaults),
-);
+export const florenceTokens = defineTokens(mergeTokenOverrides(headerOneTokenDefaults));
 
 /** Helsinki — HeaderOne + corps dense / sections grises. */
 export const helsinkiTokens = defineTokens(
@@ -322,14 +314,14 @@ export const oxfordTokens = defineTokens(
 	}),
 );
 
-/** Singapore — HeaderFive + corps dense. */
+/** Singapore — HeaderSidebarOne + corps dense. */
 export const singaporeTokens = defineTokens(
-	mergeTokenOverrides(headerFiveTokenDefaults, denseBody),
+	mergeTokenOverrides(headerSidebarOneTokenDefaults, denseBody),
 );
 
-/** Toronto — HeaderFive + corps dense. */
+/** Toronto — HeaderSidebarOne + corps dense. */
 export const torontoTokens = defineTokens(
-	mergeTokenOverrides(headerFiveTokenDefaults, denseBody),
+	mergeTokenOverrides(headerSidebarOneTokenDefaults, denseBody),
 );
 
 /** Berlin — HeaderSplitOne + corps dense. */
@@ -342,15 +334,13 @@ export const hamburgTokens = defineTokens(
 	mergeTokenOverrides(headerSplitOneTokenDefaults, denseBody),
 );
 
-/** Frankfurt — HeaderFive + corps dense. */
+/** Frankfurt — HeaderSidebarOne + corps dense. */
 export const frankfurtTokens = defineTokens(
-	mergeTokenOverrides(headerFiveTokenDefaults, denseBody),
+	mergeTokenOverrides(headerSidebarOneTokenDefaults, denseBody),
 );
 
 /** Vienna — HeaderOne (vitrine TwoColumnCenter). */
-export const viennaTokens = defineTokens(
-	mergeTokenOverrides(headerOneTokenDefaults),
-);
+export const viennaTokens = defineTokens(mergeTokenOverrides(headerOneTokenDefaults));
 
 /** Prague — HeaderTwo (TwoColumnCenter). */
 export const pragueTokens = defineTokens(
@@ -383,27 +373,85 @@ export const munichTokens = defineTokens(
 	mergeTokenOverrides(headerSplitOneTokenDefaults, denseBody),
 );
 
-/** Milan — HeaderFive en sidebar (TwoColumnCenter 50/50). */
+/** Milan — HeaderSidebarOne en sidebar (TwoColumnCenter 50/50). */
 export const milanTokens = defineTokens(
-	mergeTokenOverrides(headerFiveTokenDefaults, denseBody),
+	mergeTokenOverrides(headerSidebarOneTokenDefaults, denseBody),
 );
 
-/** Genoa — HeaderFive Center, sans sidebarTheme. */
+/** Genoa — HeaderSidebarOne Center, sans sidebarTheme. */
 export const genoaTokens = defineTokens(
-	mergeTokenOverrides(headerFiveTokenDefaults, denseBody),
+	mergeTokenOverrides(headerSidebarOneTokenDefaults, denseBody),
 );
 
-/** Naples — HeaderFive Center, sidebar sombre type Hamburg. */
+/** Naples — HeaderSidebarOne Center, sidebar sombre type Hamburg. */
 export const naplesTokens = defineTokens(
-	mergeTokenOverrides(headerFiveTokenDefaults, denseBody),
+	mergeTokenOverrides(headerSidebarOneTokenDefaults, denseBody),
 );
 
 /** Lyon — HeaderSplitOne Center, sans sidebarTheme. */
-export const lyonTokens = defineTokens(
-	mergeTokenOverrides(headerSplitOneTokenDefaults, denseBody),
-);
+export const lyonTokens = defineTokens(mergeTokenOverrides(headerSplitOneTokenDefaults, denseBody));
 
 /** Bordeaux — HeaderSplitOne Center, sidebar sombre type Hamburg. */
 export const bordeauxTokens = defineTokens(
 	mergeTokenOverrides(headerSplitOneTokenDefaults, denseBody),
+);
+
+/** Amsterdam — HeaderSplitTwo (photo seule en col 0) + corps dense. */
+export const amsterdamTokens = defineTokens(
+	mergeTokenOverrides(headerSplitTwoTokenDefaults, denseBody),
+);
+
+/** Rotterdam — HeaderSplitTwo, sidebar sombre type Hamburg. */
+export const rotterdamTokens = defineTokens(
+	mergeTokenOverrides(headerSplitTwoTokenDefaults, denseBody),
+);
+
+/** Dublin — HeaderSplitTwo, sidebar blanche. */
+export const dublinTokens = defineTokens(
+	mergeTokenOverrides(headerSplitTwoTokenDefaults, denseBody),
+);
+
+/** Antwerp — HeaderSplitTwo Center, sidebar claire. */
+export const antwerpTokens = defineTokens(
+	mergeTokenOverrides(headerSplitTwoTokenDefaults, denseBody),
+);
+
+/** Cologne — HeaderSplitTwo Center, sidebar sombre type Bordeaux. */
+export const cologneTokens = defineTokens(
+	mergeTokenOverrides(headerSplitTwoTokenDefaults, denseBody),
+);
+
+/** Ghent — HeaderSplitTwo Center, sidebar blanche. */
+export const ghentTokens = defineTokens(
+	mergeTokenOverrides(headerSplitTwoTokenDefaults, denseBody),
+);
+
+/** Brussels — HeaderSidebarTwo, sidebar claire. */
+export const brusselsTokens = defineTokens(
+	mergeTokenOverrides(headerSidebarTwoTokenDefaults, denseBody),
+);
+
+/** Copenhagen — HeaderSidebarTwo, sidebar blanche. */
+export const copenhagenTokens = defineTokens(
+	mergeTokenOverrides(headerSidebarTwoTokenDefaults, denseBody),
+);
+
+/** Glasgow — HeaderSidebarTwo, sidebar sombre type Hamburg. */
+export const glasgowTokens = defineTokens(
+	mergeTokenOverrides(headerSidebarTwoTokenDefaults, denseBody),
+);
+
+/** Bruges — HeaderSidebarTwo Center, sidebar claire. */
+export const brugesTokens = defineTokens(
+	mergeTokenOverrides(headerSidebarTwoTokenDefaults, denseBody),
+);
+
+/** Porto — HeaderSidebarTwo Center, sidebar blanche. */
+export const portoTokens = defineTokens(
+	mergeTokenOverrides(headerSidebarTwoTokenDefaults, denseBody),
+);
+
+/** Bilbao — HeaderSidebarTwo Center, sidebar sombre type Hamburg. */
+export const bilbaoTokens = defineTokens(
+	mergeTokenOverrides(headerSidebarTwoTokenDefaults, denseBody),
 );

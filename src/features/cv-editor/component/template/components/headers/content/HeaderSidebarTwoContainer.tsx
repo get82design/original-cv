@@ -1,7 +1,7 @@
-import type { TemplateLayout } from "@/services/schemas/cvTemplate.schema";
 import type { JSX } from "react";
+import type { TemplateLayout } from "@/services/schemas/cvTemplate.schema";
 
-interface HeaderFiveContainerProps {
+interface HeaderSidebarTwoContainerProps {
 	modelGeneral: TemplateLayout;
 	titleCompo: JSX.Element;
 	subTitleCompo: JSX.Element;
@@ -12,7 +12,8 @@ interface HeaderFiveContainerProps {
 	photo: JSX.Element;
 }
 
-export function HeaderFiveContainer({
+/** Comme HeaderSidebarOne, avec le nom entre la photo et l’intitulé. */
+export function HeaderSidebarTwoContainer({
 	modelGeneral,
 	titleCompo,
 	subTitleCompo,
@@ -21,11 +22,11 @@ export function HeaderFiveContainer({
 	locationCompo,
 	drivingLicenseCompo,
 	photo,
-}: HeaderFiveContainerProps) {
+}: HeaderSidebarTwoContainerProps) {
 	return (
 		<div className="flex flex-col justify-center items-center gap-6 p-4">
-			{titleCompo}
 			{modelGeneral?.withPhoto && photo}
+			{titleCompo}
 			{subTitleCompo}
 			<div className="w-full bg-gray-400" style={{ height: "1px" }} />
 			<div className="w-full flex flex-col gap-1">

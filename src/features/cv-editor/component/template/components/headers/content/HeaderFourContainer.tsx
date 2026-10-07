@@ -1,7 +1,7 @@
-import { GetPrimaryColor } from "@/features/cv-editor/utils/utilsCv/color";
-import type { TemplateLayout } from "@/services/schemas/cvTemplate.schema";
 import type { JSX } from "react";
 import { useFormContext } from "react-hook-form";
+import { GetPrimaryColor } from "@/features/cv-editor/utils/utilsCv/color";
+import type { TemplateLayout } from "@/services/schemas/cvTemplate.schema";
 import type { HeaderChrome } from "../utils/headerLayout";
 
 interface HeaderContentProps {
@@ -35,8 +35,8 @@ export const HeaderFourContainer = ({
 
 	const nameRowClass =
 		chrome.photoSide === "right"
-			? "flex justify-end items-end gap-2"
-			: "flex justify-start items-end gap-2";
+			? "flex flex-wrap justify-end items-end gap-2 min-w-0"
+			: "flex flex-wrap justify-start items-end gap-2 min-w-0";
 
 	return (
 		<div className="flex flex-col gap-2">
@@ -48,11 +48,11 @@ export const HeaderFourContainer = ({
 			/>
 			{/* photo à droite = flex-row (texte puis photo) ; à gauche = reverse */}
 			<div
-				className={`w-full flex gap-2 ${
+				className={`w-full min-w-0 flex items-start gap-2 ${
 					chrome.photoSide === "right" ? "flex-row" : "flex-row-reverse"
 				}`}
 			>
-				<div className={`w-full flex flex-col gap-0 ${chrome.textAlignClass}`}>
+				<div className={`min-w-0 flex-1 flex flex-col gap-0 ${chrome.textAlignClass}`}>
 					<div className={nameRowClass}>
 						{nomCompo}
 						{prenomCompo}
@@ -65,7 +65,7 @@ export const HeaderFourContainer = ({
 						{drivingLicenseCompo}
 					</div>
 				</div>
-				{modelGeneral?.withPhoto && photo}
+				{modelGeneral?.withPhoto && <div className="shrink-0">{photo}</div>}
 			</div>
 		</div>
 	);

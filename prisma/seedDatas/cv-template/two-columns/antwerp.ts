@@ -1,33 +1,27 @@
-import { milanTokens } from "../../themeTokens";
+import { antwerpTokens } from "../../themeTokens";
 import { defineTemplate } from "../_shared/defineTemplate";
 import { sharedLayout } from "../_shared/layouts";
 
-/**
- * Milan : TwoColumnCenter (50/50) + HeaderSidebarOne en tête de col 0 —
- * comble le trou HeaderSidebarOne × Center du catalogue.
- */
-export const milan = defineTemplate({
-	name: "Milan",
-	slug: "milan-sidebar-center-x",
-	tokens: milanTokens,
-	primaryColor: { name: "stone", primary: "-600" },
-	sectionHeader: "HeaderSidebarOne",
+/** Antwerp : TwoColumnCenter + HeaderSplitTwo, sidebar claire (style Munich / Amsterdam). */
+export const antwerp = defineTemplate({
+	name: "Antwerp",
+	slug: "antwerp-split-center-x",
+	tokens: antwerpTokens,
+	primaryColor: { name: "amber", primary: "-700" },
+	sectionHeader: "HeaderSplitTwo",
 	pageLayout: "TwoColumnCenter",
 	variant: 1,
 	layout: {
 		...sharedLayout,
 		columns: 2,
 		lockPhotoSide: true,
-		headerPlacement: "sidebar",
+		headerPlacement: "split",
 		withPhoto: true,
 		stylePhoto: "circle",
 		sidebarTheme: { bgColor: "primaryColor", shadeBgColor: "-100", fg: "black" },
 		listStyle: "none",
 		titleSection: {
 			...sharedLayout.titleSection,
-			withIcon: true,
-			iconStyle: "flat",
-			iconColor: "primaryColor",
 			textTransform: "uppercase",
 		},
 	},

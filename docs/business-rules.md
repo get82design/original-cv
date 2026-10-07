@@ -133,6 +133,7 @@ Ne pas implémenter / affirmer comme déjà vrai sans re-vérifier :
 | Différenciation bandeau / URL publique par plan | **V4** (package abo + CV en ligne) |
 | Finition V1 (header split, tips, footers logo, cover letter, freeze admin, RGPD min, 3 DL/j, modale 10 min) | Voir `docs/v1-roadmap.md` + `TODO.md` — hors scope tant que non demandé |
 | Options / layouts **exclusifs** aux templates premium (vs gratuits) | Cible **avant fin V3** — voir `TODO.md` ; V1 = split partagé, pas de gating options |
+| Quels templates sont `isPremium` | **V3** — avec le chemin d’achat Stripe ; catalogue V2 entièrement gratuit |
 | Guest / localStorage + paywall | **V3** avec Stripe |
 | Tracker candidatures | Parking — après que l’app vive |
 

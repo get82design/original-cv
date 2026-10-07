@@ -11,7 +11,7 @@ Point d’entrée agent : [`AGENTS.md`](../AGENTS.md) · règles actives : [`.cu
 | [data-model.md](./data-model.md) | Profile / CV / modules Prisma |
 | [api-patterns.md](./api-patterns.md) | tRPC, services, schemas, erreurs |
 | [cv-editor.md](./cv-editor.md) | A4, pagination, DnD, templates UI |
-| [cv-layout-config.md](./cv-layout-config.md) | pageLayout, headerPlacement, HeaderOne…Five (effets vérifiés) |
+| [cv-layout-config.md](./cv-layout-config.md) | pageLayout, headerPlacement, headers (effets vérifiés) |
 | [cv-templates-catalog.md](./cv-templates-catalog.md) | Inventaire seed + convention typo (`defaultTokens`, presets header) |
 | [frontend.md](./frontend.md) | PrimeReact, RHF, admin, profile |
 | [testing.md](./testing.md) | Vitest, miroir, DB de test |

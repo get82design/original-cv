@@ -17,8 +17,8 @@ export const florence = defineTemplate({
 		stylePhoto: "circle",
 		sidebarSide: "right",
 		listStyle: "none",
-		marge: "sm",
-		space: "sm",
+		marge: "md",
+		space: "md",
 		titleSection: {
 			...sharedLayout.titleSection,
 			withLigneDessous: true,
@@ -42,7 +42,7 @@ export const florence = defineTemplate({
 			column: 1,
 			columns: 1,
 		},
-		project: { isActive: true, column: 1 },
+		project: { isActive: false, column: 1 },
 		// sidebar (colonne 0)
 		language: {
 			design: "dots",

@@ -1,18 +1,15 @@
-import { milanTokens } from "../../themeTokens";
+import { glasgowTokens } from "../../themeTokens";
 import { defineTemplate } from "../_shared/defineTemplate";
 import { sharedLayout } from "../_shared/layouts";
 
-/**
- * Milan : TwoColumnCenter (50/50) + HeaderSidebarOne en tête de col 0 —
- * comble le trou HeaderSidebarOne × Center du catalogue.
- */
-export const milan = defineTemplate({
-	name: "Milan",
-	slug: "milan-sidebar-center-x",
-	tokens: milanTokens,
-	primaryColor: { name: "stone", primary: "-600" },
-	sectionHeader: "HeaderSidebarOne",
-	pageLayout: "TwoColumnCenter",
+/** Glasgow : HeaderSidebarTwo comme Brussels, col 0 fond sombre (style Hamburg). */
+export const glasgow = defineTemplate({
+	name: "Glasgow",
+	slug: "glasgow-line-dark-x",
+	tokens: glasgowTokens,
+	primaryColor: { name: "teal", primary: "-700" },
+	sectionHeader: "HeaderSidebarTwo",
+	pageLayout: "TwoColumnSideBar",
 	variant: 1,
 	layout: {
 		...sharedLayout,
@@ -21,13 +18,10 @@ export const milan = defineTemplate({
 		headerPlacement: "sidebar",
 		withPhoto: true,
 		stylePhoto: "circle",
-		sidebarTheme: { bgColor: "primaryColor", shadeBgColor: "-100", fg: "black" },
+		sidebarTheme: { bgColor: "gray", shadeBgColor: "-700", fg: "white" },
 		listStyle: "none",
 		titleSection: {
 			...sharedLayout.titleSection,
-			withIcon: true,
-			iconStyle: "flat",
-			iconColor: "primaryColor",
 			textTransform: "uppercase",
 		},
 	},
@@ -49,22 +43,34 @@ export const milan = defineTemplate({
 			columns: 1,
 		},
 		project: { isActive: false, column: 1 },
+		language: {
+			design: "stars",
+			isActive: true,
+			order: 1,
+			column: 0,
+			columns: 1,
+		},
+		tag: {
+			title: "Skills",
+			design: "tag",
+			isActive: true,
+			order: 2,
+			column: 0,
+		},
+		socialMedia: {
+			title: "Réseaux",
+			isActive: true,
+			order: 4,
+			column: 0,
+			columns: 1,
+		},
+		passion: { isActive: false, column: 0, columns: 1 },
 		volunteering: { isActive: false, column: 1 },
 		philosophy: { isActive: false, column: 1 },
 		certification: { isActive: false, column: 1 },
 		formation: { isActive: false, column: 1 },
 		achievement: { isActive: false, column: 1 },
 		publication: { isActive: false, column: 1 },
-		language: {
-			design: "bars",
-			isActive: true,
-			order: 1,
-			column: 0,
-			columns: 1,
-		},
-		tag: { title: "Skills", design: "border", isActive: true, order: 2, column: 0 },
-		socialMedia: { title: "Réseaux", isActive: true, order: 3, column: 0, columns: 1 },
-		passion: { isActive: false, column: 0, columns: 1 },
 		prize: { isActive: false, column: 0, columns: 1 },
 		expertise: { isActive: false, column: 0, columns: 1 },
 	},

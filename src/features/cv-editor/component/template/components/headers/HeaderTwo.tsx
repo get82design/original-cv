@@ -22,10 +22,10 @@ export const HeaderTwo = () => {
 					textAlign={watchDataHeaderSubTitleSettings?.textAlign ?? "center"}
 				/>
 			}
-			emailCompo={<EmailInput textAlign="center" />}
+			emailCompo={<EmailInput textAlign="center" inline />}
 			phoneCompo={<PhoneInput textAlign="center" />}
-			locationCompo={<LocationInput textAlign="center" />}
-			drivingLicenseCompo={<DrivingLicenseCvInput textAlign="center" leadingSeparator />}
+			locationCompo={<LocationInput textAlign="center" inline />}
+			drivingLicenseCompo={<DrivingLicenseCvInput textAlign="right" />}
 		/>
 	);
 };

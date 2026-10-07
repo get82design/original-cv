@@ -1,24 +1,23 @@
-import { berlinTokens } from "../../themeTokens";
+import { brusselsTokens } from "../../themeTokens";
 import { defineTemplate } from "../_shared/defineTemplate";
 import { sharedLayout } from "../_shared/layouts";
 
-/** Berlin : vitrine HeaderSplitOne — photo + contacts en sidebar, nom/intitulé en colonne 1. */
-export const berlin = defineTemplate({
-	name: "Berlin",
-	slug: "berlin-line-x",
-	tokens: berlinTokens,
-	primaryColor: { name: "teal", primary: "-600" },
-	sectionHeader: "HeaderSplitOne",
+/** Brussels : TwoColumnSideBar + HeaderSidebarTwo, sidebar claire. */
+export const brussels = defineTemplate({
+	name: "Brussels",
+	slug: "brussels-line-x",
+	tokens: brusselsTokens,
+	primaryColor: { name: "taupe", primary: "-600" },
+	sectionHeader: "HeaderSidebarTwo",
 	pageLayout: "TwoColumnSideBar",
 	variant: 1,
 	layout: {
 		...sharedLayout,
 		columns: 2,
 		lockPhotoSide: true,
-		headerPlacement: "split",
+		headerPlacement: "sidebar",
 		withPhoto: true,
 		stylePhoto: "circle",
-		marge: "sm",
 		space: "sm",
 		sidebarTheme: {
 			bgColor: "primaryColor",
@@ -32,7 +31,6 @@ export const berlin = defineTemplate({
 		},
 	},
 	modules: {
-		// main (colonne 1)
 		description: { title: "Présentation", isActive: true, order: 1, column: 1 },
 		experience: { title: "Expériences", isActive: true, order: 2, column: 1 },
 		education: {
@@ -50,9 +48,8 @@ export const berlin = defineTemplate({
 			columns: 1,
 		},
 		project: { isActive: true, column: 1 },
-		// sidebar (colonne 0)
 		language: {
-			design: "bars",
+			design: "dots",
 			isActive: true,
 			order: 1,
 			column: 0,
@@ -60,7 +57,7 @@ export const berlin = defineTemplate({
 		},
 		tag: {
 			title: "Skills",
-			design: "border",
+			design: "tag",
 			isActive: true,
 			order: 2,
 			column: 0,

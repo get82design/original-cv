@@ -18,6 +18,8 @@ export const seattle = defineTemplate({
 		headerPlacement: "split",
 		withPhoto: true,
 		stylePhoto: "circle",
+		marge: "sm",
+		space: "sm",
 		// pas de sidebarTheme → col 0 sans bgColor
 		listStyle: "none",
 		titleSection: {
@@ -54,8 +56,20 @@ export const seattle = defineTemplate({
 			column: 0,
 			columns: 1,
 		},
-		tag: { title: "Skills", design: "tag", isActive: true, order: 2, column: 0 },
-		socialMedia: { title: "Réseaux", isActive: true, order: 4, column: 0, columns: 1 },
+		tag: {
+			title: "Skills",
+			design: "tag",
+			isActive: true,
+			order: 2,
+			column: 0,
+		},
+		socialMedia: {
+			title: "Réseaux",
+			isActive: true,
+			order: 4,
+			column: 0,
+			columns: 1,
+		},
 		passion: { isActive: false, column: 0, columns: 1 },
 		volunteering: { isActive: false, column: 1 },
 		philosophy: { isActive: false, column: 1 },

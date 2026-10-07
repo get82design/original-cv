@@ -7,7 +7,7 @@ export const toronto = defineTemplate({
 	slug: "toronto-line-x",
 	tokens: torontoTokens,
 	primaryColor: { name: "blue", primary: "-600" },
-	sectionHeader: "HeaderFive",
+	sectionHeader: "HeaderSidebarOne",
 	pageLayout: "TwoColumnSideBar",
 	variant: 1,
 	layout: {

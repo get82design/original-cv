@@ -21,9 +21,7 @@ export type HeaderTokenPreset = Pick<
  * Deep-merge de plusieurs override packs (rôles TextStyle fusionnés).
  * Utile pour empiler preset header + deltas template.
  */
-export function mergeTokenOverrides(
-	...parts: ThemeTokenOverrides[]
-): ThemeTokenOverrides {
+export function mergeTokenOverrides(...parts: ThemeTokenOverrides[]): ThemeTokenOverrides {
 	const out: ThemeTokenOverrides = {};
 	for (const part of parts) {
 		for (const key of Object.keys(part) as (keyof ThemeTokenOverrides)[]) {
@@ -101,10 +99,32 @@ export const headerFourTokenDefaults: HeaderTokenPreset = {
 };
 
 /**
- * HeaderFive — titre / sous-titre centrés (sidebar) ; seeds portent aussi nom/prénom droite.
+ * HeaderSidebarOne — titre / sous-titre centrés (sidebar) ; seeds portent aussi nom/prénom droite.
  * Base catalogue : Singapore / Toronto / Frankfurt.
  */
-export const headerFiveTokenDefaults: HeaderTokenPreset = {
+export const headerSidebarOneTokenDefaults: HeaderTokenPreset = {
+	headerNom: {
+		textAlign: "right",
+		sizeModel: "28px",
+		weightModel: 700,
+		colorSelect: "primaryColor",
+	},
+	headerPrenom: {
+		textAlign: "right",
+		sizeModel: "28px",
+		weightModel: 500,
+		colorSelect: "gray",
+	},
+	headerTitle: { sizeModel: "18px", weightModel: 600, textAlign: "center" },
+	headerSubTitle: { sizeModel: "18px", weightModel: 600, textAlign: "center" },
+};
+
+/**
+ * HeaderSidebarTwo — même typo que HeaderSidebarOne.
+ * L’écart est l’ordre visuel (photo → nom → intitulé), pas les tokens.
+ * Base catalogue : Bilbao, Bruges, Brussels, Copenhagen, Glasgow, Porto.
+ */
+export const headerSidebarTwoTokenDefaults: HeaderTokenPreset = {
 	headerNom: {
 		textAlign: "right",
 		sizeModel: "28px",
@@ -126,6 +146,38 @@ export const headerFiveTokenDefaults: HeaderTokenPreset = {
  * Base catalogue : Berlin, Seattle, Hamburg.
  */
 export const headerSplitOneTokenDefaults: HeaderTokenPreset = {
+	headerNom: {
+		textAlign: "left",
+		sizeModel: "26px",
+		weightModel: 700,
+		colorSelect: "black",
+	},
+	headerPrenom: {
+		textAlign: "left",
+		sizeModel: "26px",
+		weightModel: 400,
+		colorSelect: "black",
+	},
+	headerTitle: {
+		sizeModel: "26px",
+		weightModel: 700,
+		colorSelect: "black",
+		textAlign: "left",
+	},
+	headerSubTitle: {
+		sizeModel: "18px",
+		weightModel: 600,
+		colorSelect: "primaryColor",
+		textAlign: "left",
+	},
+	headerContent: { sizeModel: "12px", textAlign: "left" },
+};
+
+/**
+ * HeaderSplitTwo — sidebar photo seule + main nom/prénom / intitulé / contacts.
+ * Base catalogue : Amsterdam, Rotterdam, Dublin, Antwerp, Cologne, Ghent.
+ */
+export const headerSplitTwoTokenDefaults: HeaderTokenPreset = {
 	headerNom: {
 		textAlign: "left",
 		sizeModel: "26px",

@@ -20,8 +20,6 @@ interface DrivingLicenseCvInputProps {
 	withIcon?: boolean;
 	colorIcon?: string;
 	textAlign?: "left" | "center" | "right";
-	/** Séparateur « | » avant la ligne (HeaderTwo) — masqué à la capture si vide */
-	leadingSeparator?: boolean;
 }
 
 /**
@@ -32,7 +30,6 @@ export const DrivingLicenseCvInput = ({
 	withIcon,
 	colorIcon,
 	textAlign = "left",
-	leadingSeparator = false,
 }: DrivingLicenseCvInputProps) => {
 	const { watch, control } = useFormContext();
 	const { setSelectModifInput, setSelectInputForm } = useCreateCvContext();
@@ -62,13 +59,10 @@ export const DrivingLicenseCvInput = ({
 
 	return (
 		<div
-			className={`flex ${GetAlignementHeader(textAlign)} gap-2 items-center ${
-				leadingSeparator ? "gap-3" : "w-full"
-			}`}
+			className={`flex w-full ${GetAlignementHeader(textAlign)} gap-2 items-center`}
 			data-cv-selectable
 			{...(!hasInfo ? { "data-preview-ignore": "true" } : {})}
 		>
-			{leadingSeparator ? <p className="m-0">|</p> : null}
 			{!iconAfter && icon}
 			<button
 				type="button"

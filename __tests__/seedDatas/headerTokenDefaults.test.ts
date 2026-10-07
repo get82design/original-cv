@@ -1,14 +1,16 @@
 import { describe, expect, it } from "vitest";
 import {
-	headerFiveTokenDefaults,
 	headerFourTokenDefaults,
 	headerOneTokenDefaults,
+	headerSidebarOneTokenDefaults,
+	headerSidebarTwoTokenDefaults,
 	headerSplitOneTokenDefaults,
+	headerSplitTwoTokenDefaults,
 	headerThreeTokenDefaults,
 	headerTwoTokenDefaults,
 	mergeTokenOverrides,
 } from "../../prisma/seedDatas/headerTokenDefaults";
-import { defineTokens, defaultTokens } from "../../prisma/seedDatas/themeTokens";
+import { defaultTokens, defineTokens } from "../../prisma/seedDatas/themeTokens";
 
 describe("headerTokenDefaults", () => {
 	it("expose un preset par sectionHeader du catalogue", () => {
@@ -16,8 +18,11 @@ describe("headerTokenDefaults", () => {
 		expect(headerTwoTokenDefaults.headerTitle?.textAlign).toBe("center");
 		expect(headerThreeTokenDefaults.headerNom?.sizeModel).toBe("24px");
 		expect(headerFourTokenDefaults.headerNom?.textAlign).toBe("right");
-		expect(headerFiveTokenDefaults.headerTitle?.textAlign).toBe("center");
+		expect(headerSidebarOneTokenDefaults.headerTitle?.textAlign).toBe("center");
+		expect(headerSidebarTwoTokenDefaults.headerTitle?.textAlign).toBe("center");
 		expect(headerSplitOneTokenDefaults.headerNom?.sizeModel).toBe("26px");
+		expect(headerSplitTwoTokenDefaults.headerContent?.textAlign).toBe("left");
+		expect(headerSplitTwoTokenDefaults.headerSubTitle?.colorSelect).toBe("primaryColor");
 	});
 
 	it("mergeTokenOverrides fusionne les rôles sans écraser les autres clés", () => {

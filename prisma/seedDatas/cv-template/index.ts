@@ -14,14 +14,24 @@ import { shenzhen } from "./one-column/shenzhen";
 import { stockholm } from "./one-column/stockholm";
 import { tallinn } from "./one-column/tallinn";
 import { zurich } from "./one-column/zurich";
+import { amsterdam } from "./two-columns/amsterdam";
+import { antwerp } from "./two-columns/antwerp";
 import { barcelona } from "./two-columns/barcelona";
 import { berlin } from "./two-columns/berlin";
+import { bilbao } from "./two-columns/bilbao";
 import { bordeaux } from "./two-columns/bordeaux";
+import { bruges } from "./two-columns/bruges";
+import { brussels } from "./two-columns/brussels";
 import { budapest } from "./two-columns/budapest";
 import { chicago } from "./two-columns/chicago";
+import { cologne } from "./two-columns/cologne";
+import { copenhagen } from "./two-columns/copenhagen";
+import { dublin } from "./two-columns/dublin";
 import { florence } from "./two-columns/florence";
 import { frankfurt } from "./two-columns/frankfurt";
 import { genoa } from "./two-columns/genoa";
+import { ghent } from "./two-columns/ghent";
+import { glasgow } from "./two-columns/glasgow";
 import { hamburg } from "./two-columns/hamburg";
 import { krakow } from "./two-columns/krakow";
 import { lisbon } from "./two-columns/lisbon";
@@ -30,7 +40,9 @@ import { madrid } from "./two-columns/madrid";
 import { milan } from "./two-columns/milan";
 import { munich } from "./two-columns/munich";
 import { naples } from "./two-columns/naples";
+import { porto } from "./two-columns/porto";
 import { prague } from "./two-columns/prague";
+import { rotterdam } from "./two-columns/rotterdam";
 import { seattle } from "./two-columns/seattle";
 import { singapore } from "./two-columns/singapore";
 import { tokyo } from "./two-columns/tokyo";
@@ -76,4 +88,16 @@ export const seedTemplates = [
 	naples,
 	lyon,
 	bordeaux,
+	amsterdam,
+	rotterdam,
+	dublin,
+	antwerp,
+	cologne,
+	ghent,
+	brussels,
+	copenhagen,
+	glasgow,
+	bruges,
+	porto,
+	bilbao,
 ];
