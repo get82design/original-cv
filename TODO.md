@@ -92,8 +92,7 @@ Critère done : créer/sauver CV → DL gratuit/payant → IA review/rewrite/let
 - [x] `robots.txt` + `sitemap.xml` dynamiques ; `noindex` pages privées + **gate** `SEARCH_INDEXING_ENABLED`
 	- défaut = **fermé** (`Disallow: /` + meta `noindex`) jusqu’au feu vert prod
 	- ouvrir : `SEARCH_INDEXING_ENABLED=true` (sitemap catalogue + `index,follow` pages marketing)
-- [x] **Décision** : pas de migration App Router en V1 — SEO light suffisant en Pages Router
-	- cible éventuelle : **V2 hybride** (marketing `app/` d’abord) si besoin DX/RSC — pas un prérequis SEO
+- [x] **Décision** : pas de migration App Router — SEO light suffisant en Pages Router (pas de hybride V2)
 
 ### Admin (freeze V1)
 
@@ -109,7 +108,7 @@ Critère done : créer/sauver CV → DL gratuit/payant → IA review/rewrite/let
 	- mentions (SIRET / hébergeur), URSSAF, Stripe, cookies analytics → **reportés ouverture prod (fin V3)**
 	- placeholders mentions + bandeau amber OK jusqu’à la prod
 - [x] Sync canvas + ce fichier
-	- carte `avancement-v1.canvas.tsx` recalée **2026-10-02** : V1 100 % · V2 ~64 % (match-job + fiche métier livrés ; reste catalogue premium, App Router, clôture)
+	- carte `avancement-v1.canvas.tsx` recalée **2026-10-02** : V1 100 % · V2 ~64 % (match-job + fiche métier livrés ; reste favicon, smoke, clôture)
 
 ---
 
@@ -119,11 +118,10 @@ Critère done : créer/sauver CV → DL gratuit/payant → IA review/rewrite/let
 
 1. DnD / layouts 2 cols (`TwoColumnCenter` 50/50 + preuve Vienna) → smoke
 2. CRUD couleurs / catalogue admin *(// possible avec 1)*
-3. Volume templates — **livré** (50 seeds, tous gratuits) ; logos / couleurs brand — templates `isPremium` → **V3**
+3. Volume templates — **livré** (50 seeds, tous gratuits) ; logos palette — **livré** ; favicon brand — **livré** ; templates `isPremium` → **V3**
 4. Onboarding stepper + opt-out compte · Tips (guide dans `DialogCvTips`) — **livré** ; illustrations → **V3**
 5. `match-job` → fiche métier France Travail
 6. Smoke + checklist légal light
-7. **Fin V2** : App Router hybride + évolution `/modeles/[slug]` *(mini CV ? — à cadrer)*
 
 ### Éditeur CV
 
@@ -136,7 +134,8 @@ Critère done : créer/sauver CV → DL gratuit/payant → IA review/rewrite/let
 	- inventaire vivant : [`docs/cv-templates-catalog.md`](./docs/cv-templates-catalog.md) (à tenir à jour à chaque seed)
 	- création structure = **seeds** pré-prod ; admin = flags catalogue seulement (pas de builder)
 	- quels modèles sont `isPremium` → **V3**, avec le chemin d’achat Stripe
-- [ ] Logos / variantes couleurs manquantes (polish brand)
+- [x] Logos couleurs — signature CV teintée sur toute la palette (`logoTokensForCv`) ; logo site figé teal
+- [x] Favicon brand — `public/favicon.ico` + `public/favicon.svg` + `public/apple-touch-icon.png` (180×180, nom exigé par iOS) ; liens dans `_document`
 - [x] Onboarding guidé « première utilisation » (stepper) — **≠** modal Tips
 	- comptes connectés : checkbox « ne plus afficher » (préférence persistée)
 	- `hideCvOnboarding` sur `User` ; auto-open `CvEditor` ; prefs profil pour réactiver
@@ -145,8 +144,6 @@ Critère done : créer/sauver CV → DL gratuit/payant → IA review/rewrite/let
 	- section « Guide de l’éditeur » = même source `CV_ONBOARDING_STEPS` que le stepper
 	- conseils rédaction (`cvTips.ts`) + Accordion (1 panneau ouvert)
 	- illustrations / captures → **reporté V3** (`public/tips/`, `media` déjà prévu dans `cvTips.ts`)
-- [ ] App Router **hybride** (surfaces marketing `app/` d’abord) — **fin V2**
-	- lien probable avec `/modeles/[slug]` (ex. mini CV à la place de la vignette) — à trancher au moment du chantier
 
 ### Profil
 
@@ -170,8 +167,12 @@ Critère done : créer/sauver CV → DL gratuit/payant → IA review/rewrite/let
 
 ### Clôture V2
 
-- [ ] Smoke parcours (3-col si livré, DL, IA dont match-job, recover profil)
-- [ ] Checklist légal fin de version — **light** (même logique preprod que V1 ; ouverture prod = V3)
+- [x] Smoke parcours (3-col si livré, DL, IA dont match-job, recover profil)
+- [x] Checklist légal fin de version — **light** (même logique preprod que V1 ; ouverture prod = V3)
+	- relire CGU / privacy vs produit live ; suppression compte inchangée (delete immédiat, pas de nouvelle PII persistée)
+	- privacy : France Travail (intitulé / code ROME seulement) + fournisseur d’IA pour match annonce / fiche
+	- mentions (SIRET / hébergeur), URSSAF, Stripe, cookies analytics → **reportés ouverture prod (fin V3)**
+	- placeholders mentions + bandeau amber OK jusqu’à la prod
 
 ---
 
@@ -312,7 +313,7 @@ Contexte : **pas de prod publique avant fin V3**. Preprod sert à figer / faire 
 | Tips illustrations | **V3** — captures `public/tips/` ; structure `media` déjà en place |
 | Recover CV → profil | **Socle livré V1** — smoke clôture V2 si besoin |
 | Funnel sans GA | **Reporté V3** |
-| App Router hybride + `/modeles/[slug]` | **Fin V2** — mini CV `(?)` à cadrer sur le chantier |
+| App Router hybride + mini CV `/modeles/[slug]` | **Abandonné** (2026-10-07) — Pages Router + vignette PNG ; régénération images en **V3** |
 | Cover letter | **API V1** |
 | Historique IA en BDD | **V3 (?)** ou **V4** (abo) — session only en V1 |
 | Export données (portabilité) | **V3** |
@@ -330,6 +331,6 @@ Contexte : **pas de prod publique avant fin V3**. Preprod sert à figer / faire 
 | Tracker candidatures | **Parking** (après V3) |
 | RGPD min (delete + CGU) | **V1** |
 | OAuth Google/GitHub + acceptation CGU | **Avant activation réelle des providers** (case actuelle = register email only) |
-| SEO templates | **V1 light livré** (Pages) ; App Router **pas maintenant** — éventuel V2 hybride |
+| SEO templates | **V1 light livré** (Pages Router) — pas de migration App Router |
 | Prod publique | **Pas avant fin V3** ; preprod pour tests / bugs (corrections en **v1.1** ou au passage **V2**) |
 | Légal | Checklist **fin de chaque version** ; ouverture prod = checklist **complète** à la clôture **V3** |
